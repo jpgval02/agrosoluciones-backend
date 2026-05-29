@@ -8,8 +8,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #f0fdf4; } /* Fondo menta claro */
-        .tabla-header { background-color: #1b6b43; } /* Verde oscuro institucional */
+        body { font-family: 'Inter', sans-serif; background-color: #f0fdf4; } 
+        .tabla-header { background-color: #1b6b43; } 
     </style>
 </head>
 <body class="text-gray-800">
@@ -44,8 +44,7 @@
                     </div>
                 </div>
                 
-                <div id="loginError" class="hidden bg-rose-50 text-rose-600 text-sm font-bold p-3 rounded-lg text-center border border-rose-100">
-                    </div>
+                <div id="loginError" class="hidden bg-rose-50 text-rose-600 text-sm font-bold p-3 rounded-lg text-center border border-rose-100"></div>
 
                 <button type="submit" id="btnLogin" class="w-full py-3 rounded-xl text-sm font-bold text-white bg-green-700 hover:bg-green-600 transition-all shadow-md flex items-center justify-center">
                     <i class="fa-solid fa-right-to-bracket mr-2"></i> Iniciar Sesión
@@ -178,14 +177,12 @@
                 <div id="vista-tabla-clientes" class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden block">
                     <div class="tabla-header px-6 py-4 flex flex-col md:flex-row md:justify-between items-center text-white gap-3">
                         <h2 class="text-sm font-bold uppercase tracking-wider whitespace-nowrap"><i class="fa-solid fa-list mr-2"></i> Directorio de Clientes</h2>
-                        
                         <div class="relative w-full md:w-72">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <i class="fa-solid fa-search text-gray-400"></i>
                             </div>
                             <input type="text" id="buscadorClientes" onkeyup="filtrarClientes()" placeholder="Buscar por nombre, RFC o ID..." class="w-full pl-10 pr-4 py-1.5 bg-white text-gray-800 rounded-full text-sm focus:ring-2 focus:ring-green-400 outline-none shadow-inner transition-all">
                         </div>
-
                         <span id="contadorClientes" class="bg-white text-green-800 text-xs font-bold px-3 py-1 rounded-full shadow-sm whitespace-nowrap">0 REGISTRADOS</span>
                     </div>
                     
@@ -242,7 +239,9 @@
 
             </div>
         </div>
-    </div> <script>
+    </div> 
+
+    <script>
         const API_URL = "https://agrosoluciones-backend.onrender.com";
         let memoriaClientes = []; 
         let memoriaPropiedades = [];
@@ -317,13 +316,16 @@
             document.getElementById('nav-' + vista).className = "bg-green-700 hover:bg-green-600 px-4 py-2 rounded-md text-sm font-bold transition-colors shadow-sm";
         }
 
-        // --- FUNCIONES DE DIBUJO Y FILTRADO DE CLIENTES ---
+        // --- AQUI ESTA EL CAMBIO PARA MOSTRAR TU NUM_CLIENTE ---
         function renderizarTablaClientes(listaDeClientes) {
             const cuerpoTabla = document.getElementById('cuerpoTabla');
             cuerpoTabla.innerHTML = '';
             document.getElementById('contadorClientes').textContent = `${listaDeClientes.length} REGISTRADOS`;
 
             listaDeClientes.forEach(c => {
+                // AQUÍ LEEMOS TU NUEVA COLUMNA num_cliente
+                const textoId = c.num_cliente ? String(c.num_cliente).padStart(3, '0') : 'N/A';
+
                 cuerpoTabla.innerHTML += `
                     <tr class="hover:bg-gray-50 transition-colors group">
                         <td class="px-6 py-4">
@@ -333,7 +335,7 @@
                                 </div>
                                 <div>
                                     <p class="font-bold text-gray-800">${c.nombre} <br> ${c.apellidos}</p>
-                                    <p class="text-[10px] text-gray-400 mt-1"><i class="fa-solid fa-id-card mr-1"></i>RFC: ${c.rfc || 'S/N'} | ID: ${c.id.substring(0,8)}...</p>
+                                    <p class="text-[10px] text-gray-400 mt-1"><i class="fa-solid fa-hashtag text-green-500 mr-1"></i>ID: <span class="font-bold text-gray-600">#${textoId}</span> <span class="mx-2 text-gray-300">|</span> <i class="fa-solid fa-id-card text-blue-400 mr-1"></i>RFC: ${c.rfc || 'S/N'}</p>
                                 </div>
                             </div>
                         </td>
@@ -354,9 +356,9 @@
             const textoBuscado = document.getElementById('buscadorClientes').value.toLowerCase();
             const clientesFiltrados = memoriaClientes.filter(c => {
                 const nombreCompleto = `${c.nombre} ${c.apellidos}`.toLowerCase();
-                const idCliente = c.id.toLowerCase();
+                const numCliente = c.num_cliente ? String(c.num_cliente) : '';
                 const rfcCliente = (c.rfc || '').toLowerCase();
-                return nombreCompleto.includes(textoBuscado) || idCliente.includes(textoBuscado) || rfcCliente.includes(textoBuscado);
+                return nombreCompleto.includes(textoBuscado) || numCliente.includes(textoBuscado) || rfcCliente.includes(textoBuscado);
             });
             renderizarTablaClientes(clientesFiltrados);
         }

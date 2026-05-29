@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agrosoluciones Aéreas - Sistema Profesional</title>
+    <!-- Tailwind CSS para el diseño -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome para los iconos profesionales -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f0fdf4; } /* Fondo menta claro */
+        .tabla-header { background-color: #1b6b43; } /* Verde oscuro institucional */
+    </style>
+</head>
+<body class="text-gray-800 pb-12">
+
+    <!-- Navbar Superior -->
+    <nav class="tabla-header text-white px-6 py-3 flex justify-between items-center shadow-md sticky top-0 z-50">
+        <div class="flex items-center space-x-3">
+            <i class="fa-solid fa-helicopter text-2xl"></i>
+            <div>
+                <h1 class="text-xl font-bold leading-tight">Agrosoluciones Aéreas</h1>
+                <p class="text-[10px] text-green-200 font-medium tracking-wider uppercase">Sistema Profesional</p>
+            </div>
+        </div>
+        <div class="flex items-center space-x-4">
+            <span class="hidden md:inline-flex items-center text-xs font-semibold bg-green-900 px-3 py-1 rounded-full text-green-100">
+                <span class="w-2 h-2 rounded-full bg-green-400 mr-2 animate-pulse"></span> Nube Activa
+            </span>
+            <button class="border border-green-500/50 hover:bg-green-700 px-4 py-1.5 rounded-md text-sm font-medium transition-colors">
+                <i class="fa-solid fa-bars mr-2"></i> Menú
+            </button>
+        </div>
+    </nav>
+
+    <!-- Título de Sección -->
+    <div class="max-w-7xl mx-auto mt-8 px-6 flex justify-between items-end">
+        <div>
+            <h2 class="text-3xl font-bold text-gray-800">Panel de Control Operativo</h2>
+            <p class="text-gray-500 text-sm mt-1">Administre su cartera de clientes, parcelas y vuelos de fumigación.</p>
+        </div>
+    </div>
+
+    <!-- Contenedor Principal (Dos Columnas) -->
+    <div class="max-w-7xl mx-auto mt-6 px-6 block lg:table lg:table-fixed w-full border-spacing-x-8">
+        
+        <!-- COLUMNA IZQUIERDA: FORMULARIOS -->
+        <div class="block lg:table-cell w-full lg:w-1/3 vertical-align-top space-y-6 pb-8 lg:pb-0">
+            
+            <!-- Form 1: Cliente -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                <h3 id="tituloFormCliente" class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                    <i class="fa-solid fa-user-plus text-green-600 mr-2"></i> Nuevo Cliente
+                </h3>
+                <form id="registroForm" class="space-y-4">
+                    <input type="hidden" id="editClienteId">
+                    <div class="grid grid-cols-2 gap-3">
+                        <input type="text" id="nombre" placeholder="Nombre(s)" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
+                        <input type="text" id="apellidos" placeholder="Apellidos" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
+                    </div>
+                    <input type="email" id="email" placeholder="Correo Electrónico" class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
+                    <div class="grid grid-cols-2 gap-3">
+                        <input type="text" id="telefono" placeholder="Teléfono" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
+                        <input type="text" id="rfc" placeholder="RFC" class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none uppercase">
+                    </div>
+                    <button type="submit" id="btnSubmitCliente" class="w-full py-2.5 rounded-full text-sm font-bold text-white bg-[#4ade80] hover:bg-green-500 text-green-900 transition-colors shadow-sm"><i class="fa-solid fa-save mr-1"></i> Guardar Cliente</button>
+                    <button type="button" id="btnCancelarCliente" class="hidden w-full py-2 rounded-full text-xs font-bold text-gray-600 bg-gray-200 hover:bg-gray-300 transition-colors">Cancelar Edición</button>
+                </form>
+            </div>
+
+            <!-- Form 2: Propiedad -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                <h3 id="tituloFormPropiedad" class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                    <i class="fa-solid fa-map-location-dot text-green-600 mr-2"></i> Registrar Parcela
+                </h3>
+                <form id="propiedadForm" class="space-y-4">
+                    <input type="hidden" id="editPropiedadId">
+                    <select id="selectCliente" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
+                        <option value="">-- Selecciona el Propietario --</option>
+                    </select>
+                    <div class="grid grid-cols-2 gap-3">
+                        <input type="text" id="nombre_propiedad" placeholder="Nombre Rancho" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
+                        <input type="text" id="tipo_cultivo" placeholder="Cultivo (Ej. Maíz)" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <input type="number" step="0.01" id="superficie_has" placeholder="Hectáreas" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
+                        <select id="sistema_riego" class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
+                            <option value="Temporal">Temporal</option>
+                            <option value="Aspersión">Aspersión</option>
+                            <option value="Goteo">Goteo</option>
+                            <option value="Gravedad">Gravedad</option>
+                        </select>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <input type="text" id="direccion" placeholder="Ubicación" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
+                        <input type="text" id="estado" value="Veracruz" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
+                    </div>
+                    <textarea id="comentarios" placeholder="Notas extra..." rows="1" class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none"></textarea>
+                    
+                    <button type="submit" id="btnSubmitPropiedad" class="w-full py-2.5 rounded-full text-sm font-bold text-white bg-[#4ade80] hover:bg-green-500 text-green-900 transition-colors shadow-sm"><i class="fa-solid fa-save mr-1"></i> Guardar Parcela</button>
+                    <button type="button" id="btnCancelarPropiedad" class="hidden w-full py-2 rounded-full text-xs font-bold text-gray-600 bg-gray-200 hover:bg-gray-300 transition-colors">Cancelar Edición</button>
+                </form>
+            </div>
+
+            <!-- Form 3: Servicio -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                <h3 id="tituloFormServio" class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                    <i class="fa-solid fa-plane-up text-green-600 mr-2"></i> Programar Vuelo
+                </h3>
+                <form id="servicioForm" class="space-y-4">
+                    <input type="hidden" id="editServioId">
+                    <select id="selectPropiedad" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
+                        <option value="">-- Selecciona la Parcela --</option>
+                    </select>
+                    <div class="grid grid-cols-2 gap-3">
+                        <input type="date" id="fecha_aplicacion" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none text-gray-600">
+                        <input type="number" step="0.01" id="costo_servicio" placeholder="Costo ($ MXN)" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <select id="estado_cuenta" class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
+                            <option value="Pendiente">Pendiente</option>
+                            <option value="Parcial">Abono Parcial</option>
+                            <option value="Cobrado">Cobrado</option>
+                        </select>
+                        <input type="number" min="1" max="5" value="5" id="satisfaccion" placeholder="Satisfacción" class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
+                    </div>
+                    <button type="submit" id="btnSubmitServicio" class="w-full py-2.5 rounded-full text-sm font-bold text-white bg-[#4ade80] hover:bg-green-500 text-green-900 transition-colors shadow-sm"><i class="fa-solid fa-save mr-1"></i> Registrar Vuelo</button>
+                    <button type="button" id="btnCancelarServicio" class="hidden w-full py-2 rounded-full text-xs font-bold text-gray-600 bg-gray-200 hover:bg-gray-300 transition-colors">Cancelar Edición</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- COLUMNA DERECHA: TABLAS ESTILO PREMIUM -->
+        <div class="block lg:table-cell w-full lg:w-2/3 vertical-align-top space-y-8">
+            
+            <!-- Tabla Clientes -->
+            <div class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
+                <div class="tabla-header px-6 py-4 flex justify-between items-center text-white">
+                    <h2 class="text-sm font-bold uppercase tracking-wider"><i class="fa-solid fa-list mr-2"></i> Directorio de Clientes</h2>
+                    <span id="contadorClientes" class="bg-white text-green-800 text-xs font-bold px-3 py-1 rounded-full shadow-sm">0 REGISTRADOS</span>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-100 text-sm">
+                        <thead class="bg-[#187547] text-white">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-semibold tracking-wider"><i class="fa-solid fa-user mr-1"></i> CLIENTE</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold tracking-wider"><i class="fa-solid fa-envelope mr-1"></i> CONTACTO</th>
+                                <th class="px-6 py-3 text-center text-xs font-semibold tracking-wider"><i class="fa-solid fa-gears mr-1"></i> ACCIONES</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cuerpoTabla" class="bg-white divide-y divide-gray-100"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tabla Propiedades -->
+            <div class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
+                <div class="tabla-header px-6 py-4 flex justify-between items-center text-white">
+                    <h2 class="text-sm font-bold uppercase tracking-wider"><i class="fa-solid fa-map mr-2"></i> Inventario de Parcelas</h2>
+                </div>
+                <div class="overflow-x-auto h-64">
+                    <table class="min-w-full divide-y divide-gray-100 text-sm">
+                        <thead class="bg-[#187547] text-white sticky top-0 z-10">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-semibold tracking-wider"><i class="fa-solid fa-house mr-1"></i> PROPIEDAD</th>
+                                <th class="px-6 py-3 text-center text-xs font-semibold tracking-wider"><i class="fa-solid fa-seedling mr-1"></i> CULTIVO</th>
+                                <th class="px-6 py-3 text-center text-xs font-semibold tracking-wider"><i class="fa-solid fa-ruler-combined mr-1"></i> SUPERFICIE</th>
+                                <th class="px-6 py-3 text-center text-xs font-semibold tracking-wider"><i class="fa-solid fa-gears mr-1"></i> ACCIONES</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cuerpoTablaPropiedades" class="bg-white divide-y divide-gray-100"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tabla Servicios -->
+            <div class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
+                <div class="tabla-header px-6 py-4 flex justify-between items-center text-white">
+                    <h2 class="text-sm font-bold uppercase tracking-wider"><i class="fa-solid fa-clipboard-check mr-2"></i> Historial de Vuelos T-50</h2>
+                </div>
+                <div class="overflow-x-auto h-64">
+                    <table class="min-w-full divide-y divide-gray-100 text-sm">
+                        <thead class="bg-[#187547] text-white sticky top-0 z-10">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-semibold tracking-wider"><i class="fa-solid fa-location-crosshairs mr-1"></i> RANCHO</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold tracking-wider"><i class="fa-solid fa-file-invoice-dollar mr-1"></i> FACTURACIÓN</th>
+                                <th class="px-6 py-3 text-center text-xs font-semibold tracking-wider"><i class="fa-solid fa-gears mr-1"></i> ACCIONES</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cuerpoTablaServicios" class="bg-white divide-y divide-gray-100"></tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- CABLEADO LÓGICO -->
+    <script>
+        const API_URL = "http://127.0.0.1:8000";
+        let memoriaClientes = []; 
+        let memoriaPropiedades = [];
+        let memoriaServicios = [];
+
+        async function inicializarPanel() {
+            await cargarClientes();
+            await cargarPropiedades();
+            await cargarServicios();
+        }
+        window.onload = inicializarPanel;
+
+        // --- CARGAR DATOS ---
+        async function cargarClientes() {
+            try {
+                const res = await fetch(`${API_URL}/clientes/`);
+                memoriaClientes = await res.json();
+                const cuerpoTabla = document.getElementById('cuerpoTabla');
+                const selectCliente = document.getElementById('selectCliente');
+                
+                cuerpoTabla.innerHTML = '';
+                selectCliente.innerHTML = '<option value="">-- Selecciona el Propietario --</option>';
+                document.getElementById('contadorClientes').textContent = `${memoriaClientes.length} REGISTRADOS`;
+
+                memoriaClientes.forEach(c => {
+                    cuerpoTabla.innerHTML += `
+                        <tr class="hover:bg-gray-50 transition-colors group">
+                            <td class="px-6 py-4">
+                                <div class="flex items-center space-x-4">
+                                    <div class="bg-green-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold shadow-sm">
+                                        <i class="fa-solid fa-user"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-bold text-gray-800">${c.nombre} <br> ${c.apellidos}</p>
+                                        <p class="text-[10px] text-gray-400 mt-1"><i class="fa-solid fa-id-card mr-1"></i>${c.rfc || 'S/N'}</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <p class="text-sm text-blue-600 font-medium"><i class="fa-solid fa-envelope mr-2"></i>${c.email || 'Sin correo'}</p>
+                                <p class="text-sm text-gray-600 mt-1"><i class="fa-solid fa-phone text-green-600 mr-2"></i>${c.telefono}</p>
+                            </td>
+                            <td class="px-6 py-4 text-center space-x-1 whitespace-nowrap">
+                                <button onclick="prepararEdicionCliente('${c.id}')" class="bg-amber-400 hover:bg-amber-500 text-white text-xs font-bold px-4 py-2 rounded-full transition-colors shadow-sm"><i class="fa-solid fa-pen-to-square mr-1"></i> Editar</button>
+                                <button onclick="eliminarCliente('${c.id}')" class="bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-4 py-2 rounded-full transition-colors shadow-sm"><i class="fa-solid fa-trash mr-1"></i> Eliminar</button>
+                            </td>
+                        </tr>
+                    `;
+                    selectCliente.innerHTML += `<option value="${c.id}">${c.nombre} ${c.apellidos}</option>`;
+                });
+            } catch (e) { console.error(e); }
+        }
+
+        async function cargarPropiedades() {
+            try {
+                const res = await fetch(`${API_URL}/propiedades/`);
+                memoriaPropiedades = await res.json();
+                const cuerpoPropiedades = document.getElementById('cuerpoTablaPropiedades');
+                const selectPropiedad = document.getElementById('selectPropiedad');
+                
+                cuerpoPropiedades.innerHTML = '';
+                selectPropiedad.innerHTML = '<option value="">-- Selecciona la Parcela --</option>';
+
+                memoriaPropiedades.forEach(p => {
+                    const cl = memoriaClientes.find(c => c.id === p.cliente_id);
+                    const nombreDueno = cl ? `${cl.nombre} ${cl.apellidos}` : 'Desconocido';
+
+                    cuerpoPropiedades.innerHTML += `
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="px-6 py-4">
+                                <p class="font-bold text-gray-800 text-sm"><i class="fa-solid fa-house-chimney text-yellow-500 mr-2"></i>${p.nombre_propiedad}</p>
+                                <p class="text-[11px] text-gray-500 mt-1"><i class="fa-solid fa-location-dot text-red-500 mr-1 ml-1"></i> ${p.estado} - Prop: ${nombreDueno}</p>
+                            </td>
+                            <td class="px-6 py-4 text-center">
+                                <span class="inline-flex items-center whitespace-nowrap bg-[#1b6b43] text-white px-3 py-1.5 rounded-full text-[10px] font-bold tracking-wider uppercase shadow-sm">
+                                    <i class="fa-solid fa-seedling mr-1"></i> ${p.tipo_cultivo}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 text-center">
+                                <p class="text-xl font-extrabold text-gray-800">${p.superficie_has}</p>
+                                <p class="text-[9px] text-gray-400 uppercase tracking-widest font-bold">Hectáreas</p>
+                            </td>
+                            <td class="px-6 py-4 text-center space-x-1 whitespace-nowrap">
+                                <button onclick="prepararEdicionPropiedad('${p.id}')" class="bg-amber-400 hover:bg-amber-500 text-white text-xs font-bold px-4 py-2 rounded-full shadow-sm"><i class="fa-solid fa-pen-to-square"></i></button>
+                                <button onclick="eliminarPropiedad('${p.id}')" class="bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-4 py-2 rounded-full shadow-sm"><i class="fa-solid fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    `;
+                    selectPropiedad.innerHTML += `<option value="${p.id}">${p.nombre_propiedad} (${nombreDueno})</option>`;
+                });
+            } catch (e) { console.error(e); }
+        }
+
+        async function cargarServicios() {
+            try {
+                const res = await fetch(`${API_URL}/servicios/`);
+                memoriaServicios = await res.json();
+                const cuerpoServicios = document.getElementById('cuerpoTablaServicios');
+                cuerpoServicios.innerHTML = '';
+
+                memoriaServicios.forEach(s => {
+                    const pr = memoriaPropiedades.find(p => p.id === s.propiedad_id);
+                    let nombreTerreno = 'Desconocido';
+                    if (pr) {
+                        const cl = memoriaClientes.find(c => c.id === pr.cliente_id);
+                        nombreTerreno = `${pr.nombre_propiedad} <br> <span class="text-[10px] text-gray-400 font-normal">Prop: ${cl ? cl.nombre : 'S/N'}</span>`;
+                    }
+                    
+                    let col = s.estado_cuenta === 'Cobrado' ? 'bg-green-100 text-green-800' : (s.estado_cuenta === 'Parcial' ? 'bg-blue-100 text-blue-800' : 'bg-red-100 text-red-800');
+
+                    cuerpoServicios.innerHTML += `
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="px-6 py-4">
+                                <p class="font-bold text-gray-800">${nombreTerreno}</p>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex flex-col justify-center">
+                                    <p class="font-bold text-gray-800 text-sm"><i class="fa-solid fa-calendar-day text-blue-500 mr-2"></i>${s.fecha_aplicacion}</p>
+                                    <div class="mt-2 flex items-center">
+                                        <span class="text-green-700 font-extrabold mr-3">$${s.costo_servicio}</span>
+                                        <span class="inline-flex whitespace-nowrap px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${col}">${s.estado_cuenta}</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 text-center space-x-1 whitespace-nowrap">
+                                <button onclick="prepararEdicionServio('${s.id}')" class="bg-amber-400 hover:bg-amber-500 text-white text-xs font-bold px-4 py-2 rounded-full shadow-sm"><i class="fa-solid fa-pen-to-square mr-1"></i> Editar</button>
+                                <button onclick="eliminarServio('${s.id}')" class="bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-4 py-2 rounded-full shadow-sm"><i class="fa-solid fa-trash mr-1"></i> Borrar</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } catch (e) { console.error(e); }
+        }
+
+        // --- LÓGICA DE BORRADO ---
+        async function eliminarCliente(id) {
+            if(confirm("¿Seguro que deseas eliminar este cliente?")) {
+                const res = await fetch(`${API_URL}/clientes/${id}`, { method: 'DELETE' });
+                if (!res.ok) alert("⚠️ No puedes borrar a este cliente porque tiene parcelas a su nombre. Borra sus parcelas primero.");
+                await inicializarPanel();
+            }
+        }
+        async function eliminarPropiedad(id) {
+            if(confirm("¿Seguro que deseas eliminar esta parcela?")) {
+                const res = await fetch(`${API_URL}/propiedades/${id}`, { method: 'DELETE' });
+                if (!res.ok) alert("⚠️ No puedes borrar esta parcela porque tiene vuelos de fumigación registrados en el historial.");
+                await inicializarPanel();
+            }
+        }
+        async function eliminarServio(id) {
+            if(confirm("¿Seguro que deseas eliminar el registro de este vuelo?")) {
+                await fetch(`${API_URL}/servicios/${id}`, { method: 'DELETE' });
+                await inicializarPanel();
+            }
+        }
+
+        // --- PREPARAR EDICIÓN ---
+        function prepararEdicionCliente(id) {
+            const c = memoriaClientes.find(item => item.id === id);
+            document.getElementById('editClienteId').value = c.id;
+            document.getElementById('nombre').value = c.nombre;
+            document.getElementById('apellidos').value = c.apellidos;
+            document.getElementById('email').value = c.email;
+            document.getElementById('telefono').value = c.telefono;
+            document.getElementById('rfc').value = c.rfc;
+
+            document.getElementById('tituloFormCliente').innerHTML = `<i class="fa-solid fa-pen text-amber-500 mr-2"></i> Editando Cliente`;
+            document.getElementById('btnSubmitCliente').innerHTML = `<i class="fa-solid fa-check mr-1"></i> Actualizar Cambios`;
+            document.getElementById('btnSubmitCliente').className = "w-full py-2.5 rounded-full text-sm font-bold text-white bg-amber-500 hover:bg-amber-600 transition-colors shadow-sm";
+            document.getElementById('btnCancelarCliente').classList.remove('hidden');
+        }
+
+        function limpiarFormCliente() {
+            document.getElementById('registroForm').reset();
+            document.getElementById('editClienteId').value = '';
+            document.getElementById('tituloFormCliente').innerHTML = `<i class="fa-solid fa-user-plus text-green-600 mr-2"></i> Nuevo Cliente`;
+            document.getElementById('btnSubmitCliente').innerHTML = `<i class="fa-solid fa-save mr-1"></i> Guardar Cliente`;
+            document.getElementById('btnSubmitCliente').className = "w-full py-2.5 rounded-full text-sm font-bold text-white bg-[#4ade80] hover:bg-green-500 text-green-900 transition-colors shadow-sm";
+            document.getElementById('btnCancelarCliente').classList.add('hidden');
+        }
+        document.getElementById('btnCancelarCliente').addEventListener('click', limpiarFormCliente);
+
+        function prepararEdicionPropiedad(id) {
+            const p = memoriaPropiedades.find(item => item.id === id);
+            document.getElementById('editPropiedadId').value = p.id;
+            document.getElementById('selectCliente').value = p.cliente_id;
+            document.getElementById('nombre_propiedad').value = p.nombre_propiedad;
+            document.getElementById('tipo_cultivo').value = p.tipo_cultivo;
+            document.getElementById('superficie_has').value = p.superficie_has;
+            document.getElementById('sistema_riego').value = p.sistema_riego;
+            document.getElementById('direccion').value = p.direccion;
+            document.getElementById('estado').value = p.estado;
+            document.getElementById('comentarios').value = p.comentarios;
+
+            document.getElementById('tituloFormPropiedad').innerHTML = `<i class="fa-solid fa-pen text-amber-500 mr-2"></i> Editando Parcela`;
+            document.getElementById('btnSubmitPropiedad').innerHTML = `<i class="fa-solid fa-check mr-1"></i> Actualizar Cambios`;
+            document.getElementById('btnSubmitPropiedad').className = "w-full py-2.5 rounded-full text-sm font-bold text-white bg-amber-500 hover:bg-amber-600 transition-colors shadow-sm";
+            document.getElementById('btnCancelarPropiedad').classList.remove('hidden');
+        }
+
+        function limpiarFormPropiedad() {
+            document.getElementById('propiedadForm').reset();
+            document.getElementById('editPropiedadId').value = '';
+            document.getElementById('estado').value = 'Veracruz';
+            document.getElementById('tituloFormPropiedad').innerHTML = `<i class="fa-solid fa-map-location-dot text-green-600 mr-2"></i> Registrar Parcela`;
+            document.getElementById('btnSubmitPropiedad').innerHTML = `<i class="fa-solid fa-save mr-1"></i> Guardar Parcela`;
+            document.getElementById('btnSubmitPropiedad').className = "w-full py-2.5 rounded-full text-sm font-bold text-white bg-[#4ade80] hover:bg-green-500 text-green-900 transition-colors shadow-sm";
+            document.getElementById('btnCancelarPropiedad').classList.add('hidden');
+        }
+        document.getElementById('btnCancelarPropiedad').addEventListener('click', limpiarFormPropiedad);
+
+        function prepararEdicionServio(id) {
+            const s = memoriaServicios.find(item => item.id === id);
+            document.getElementById('editServioId').value = s.id;
+            document.getElementById('selectPropiedad').value = s.propiedad_id;
+            document.getElementById('fecha_aplicacion').value = s.fecha_aplicacion;
+            document.getElementById('costo_servicio').value = s.costo_servicio;
+            document.getElementById('estado_cuenta').value = s.estado_cuenta;
+            document.getElementById('satisfaccion').value = s.satisfaccion;
+
+            document.getElementById('tituloFormServio').innerHTML = `<i class="fa-solid fa-pen text-amber-500 mr-2"></i> Editando Vuelo`;
+            document.getElementById('btnSubmitServicio').innerHTML = `<i class="fa-solid fa-check mr-1"></i> Actualizar Cambios`;
+            document.getElementById('btnSubmitServicio').className = "w-full py-2.5 rounded-full text-sm font-bold text-white bg-amber-500 hover:bg-amber-600 transition-colors shadow-sm";
+            document.getElementById('btnCancelarServicio').classList.remove('hidden');
+        }
+
+        function limpiarFormServicio() {
+            document.getElementById('servicioForm').reset();
+            document.getElementById('editServioId').value = '';
+            document.getElementById('satisfaccion').value = '5';
+            document.getElementById('tituloFormServio').innerHTML = `<i class="fa-solid fa-plane-up text-green-600 mr-2"></i> Programar Vuelo`;
+            document.getElementById('btnSubmitServicio').innerHTML = `<i class="fa-solid fa-save mr-1"></i> Registrar Vuelo`;
+            document.getElementById('btnSubmitServicio').className = "w-full py-2.5 rounded-full text-sm font-bold text-white bg-[#4ade80] hover:bg-green-500 text-green-900 transition-colors shadow-sm";
+            document.getElementById('btnCancelarServicio').classList.add('hidden');
+        }
+        document.getElementById('btnCancelarServicio').addEventListener('click', limpiarFormServicio);
+
+        // --- MANEJAR EL ENVÍO (POST o PUT) ---
+        document.getElementById('registroForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const id = document.getElementById('editClienteId').value;
+            const datos = {
+                nombre: document.getElementById('nombre').value, apellidos: document.getElementById('apellidos').value,
+                email: document.getElementById('email').value, telefono: document.getElementById('telefono').value,
+                rfc: document.getElementById('rfc').value
+            };
+            
+            const url = id ? `${API_URL}/clientes/${id}` : `${API_URL}/clientes/`;
+            const metodo = id ? 'PUT' : 'POST';
+
+            await fetch(url, { method: metodo, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos) });
+            limpiarFormCliente();
+            await inicializarPanel();
+        });
+
+        document.getElementById('propiedadForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const id = document.getElementById('editPropiedadId').value;
+            const datos = {
+                cliente_id: document.getElementById('selectCliente').value, nombre_propiedad: document.getElementById('nombre_propiedad').value,
+                direccion: document.getElementById('direccion').value, estado: document.getElementById('estado').value,
+                tipo_cultivo: document.getElementById('tipo_cultivo').value, superficie_has: parseFloat(document.getElementById('superficie_has').value),
+                sistema_riego: document.getElementById('sistema_riego').value, comentarios: document.getElementById('comentarios').value
+            };
+
+            const url = id ? `${API_URL}/propiedades/${id}` : `${API_URL}/propiedades/`;
+            const metodo = id ? 'PUT' : 'POST';
+
+            await fetch(url, { method: metodo, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos) });
+            limpiarFormPropiedad();
+            await inicializarPanel();
+        });
+
+        document.getElementById('servicioForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const id = document.getElementById('editServioId').value;
+            const datos = {
+                propiedad_id: document.getElementById('selectPropiedad').value, fecha_aplicacion: document.getElementById('fecha_aplicacion').value,
+                costo_servicio: parseFloat(document.getElementById('costo_servicio').value), estado_cuenta: document.getElementById('estado_cuenta').value,
+                satisfaccion: parseInt(document.getElementById('satisfaccion').value)
+            };
+
+            const url = id ? `${API_URL}/servicios/${id}` : `${API_URL}/servicios/`;
+            const metodo = id ? 'PUT' : 'POST';
+
+            await fetch(url, { method: metodo, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos) });
+            limpiarFormServicio();
+            await inicializarPanel();
+        });
+    </script>
+</body>
+</html>

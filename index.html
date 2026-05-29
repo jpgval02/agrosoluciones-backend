@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agrosoluciones Aéreas - Sistema Profesional</title>
-    <!-- Tailwind CSS para el diseño -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome para los iconos profesionales -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
@@ -16,7 +14,6 @@
 </head>
 <body class="text-gray-800 pb-12">
 
-    <!-- Navbar Superior -->
     <nav class="tabla-header text-white px-6 py-3 flex justify-between items-center shadow-md sticky top-0 z-50">
         <div class="flex items-center space-x-3">
             <i class="fa-solid fa-helicopter text-2xl"></i>
@@ -25,17 +22,20 @@
                 <p class="text-[10px] text-green-200 font-medium tracking-wider uppercase">Sistema Profesional</p>
             </div>
         </div>
-        <div class="flex items-center space-x-4">
-            <span class="hidden md:inline-flex items-center text-xs font-semibold bg-green-900 px-3 py-1 rounded-full text-green-100">
-                <span class="w-2 h-2 rounded-full bg-green-400 mr-2 animate-pulse"></span> Nube Activa
-            </span>
-            <button class="border border-green-500/50 hover:bg-green-700 px-4 py-1.5 rounded-md text-sm font-medium transition-colors">
-                <i class="fa-solid fa-bars mr-2"></i> Menú
+        
+        <div class="flex items-center space-x-2 md:space-x-4">
+            <button onclick="cambiarVista('clientes')" id="nav-clientes" class="bg-green-700 hover:bg-green-600 px-4 py-2 rounded-md text-sm font-bold transition-colors shadow-sm">
+                <i class="fa-solid fa-users md:mr-2"></i> <span class="hidden md:inline">Clientes</span>
+            </button>
+            <button onclick="cambiarVista('propiedades')" id="nav-propiedades" class="border border-green-500/50 hover:bg-green-700 px-4 py-2 rounded-md text-sm font-medium transition-colors">
+                <i class="fa-solid fa-map-location-dot md:mr-2"></i> <span class="hidden md:inline">Parcelas</span>
+            </button>
+            <button onclick="cambiarVista('servicios')" id="nav-servicios" class="border border-green-500/50 hover:bg-green-700 px-4 py-2 rounded-md text-sm font-medium transition-colors">
+                <i class="fa-solid fa-plane-up md:mr-2"></i> <span class="hidden md:inline">Vuelos</span>
             </button>
         </div>
     </nav>
 
-    <!-- Título de Sección -->
     <div class="max-w-7xl mx-auto mt-8 px-6 flex justify-between items-end">
         <div>
             <h2 class="text-3xl font-bold text-gray-800">Panel de Control Operativo</h2>
@@ -43,14 +43,11 @@
         </div>
     </div>
 
-    <!-- Contenedor Principal (Dos Columnas) -->
     <div class="max-w-7xl mx-auto mt-6 px-6 block lg:table lg:table-fixed w-full border-spacing-x-8">
         
-        <!-- COLUMNA IZQUIERDA: FORMULARIOS -->
         <div class="block lg:table-cell w-full lg:w-1/3 vertical-align-top space-y-6 pb-8 lg:pb-0">
             
-            <!-- Form 1: Cliente -->
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+            <div id="vista-form-clientes" class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 block">
                 <h3 id="tituloFormCliente" class="text-lg font-bold text-gray-800 mb-4 flex items-center">
                     <i class="fa-solid fa-user-plus text-green-600 mr-2"></i> Nuevo Cliente
                 </h3>
@@ -70,8 +67,7 @@
                 </form>
             </div>
 
-            <!-- Form 2: Propiedad -->
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+            <div id="vista-form-propiedades" class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hidden">
                 <h3 id="tituloFormPropiedad" class="text-lg font-bold text-gray-800 mb-4 flex items-center">
                     <i class="fa-solid fa-map-location-dot text-green-600 mr-2"></i> Registrar Parcela
                 </h3>
@@ -104,8 +100,7 @@
                 </form>
             </div>
 
-            <!-- Form 3: Servicio -->
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+            <div id="vista-form-servicios" class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hidden">
                 <h3 id="tituloFormServio" class="text-lg font-bold text-gray-800 mb-4 flex items-center">
                     <i class="fa-solid fa-plane-up text-green-600 mr-2"></i> Programar Vuelo
                 </h3>
@@ -132,11 +127,9 @@
             </div>
         </div>
 
-        <!-- COLUMNA DERECHA: TABLAS ESTILO PREMIUM -->
         <div class="block lg:table-cell w-full lg:w-2/3 vertical-align-top space-y-8">
             
-            <!-- Tabla Clientes -->
-            <div class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
+            <div id="vista-tabla-clientes" class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden block">
                 <div class="tabla-header px-6 py-4 flex justify-between items-center text-white">
                     <h2 class="text-sm font-bold uppercase tracking-wider"><i class="fa-solid fa-list mr-2"></i> Directorio de Clientes</h2>
                     <span id="contadorClientes" class="bg-white text-green-800 text-xs font-bold px-3 py-1 rounded-full shadow-sm">0 REGISTRADOS</span>
@@ -155,8 +148,7 @@
                 </div>
             </div>
 
-            <!-- Tabla Propiedades -->
-            <div class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
+            <div id="vista-tabla-propiedades" class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden hidden">
                 <div class="tabla-header px-6 py-4 flex justify-between items-center text-white">
                     <h2 class="text-sm font-bold uppercase tracking-wider"><i class="fa-solid fa-map mr-2"></i> Inventario de Parcelas</h2>
                 </div>
@@ -175,8 +167,7 @@
                 </div>
             </div>
 
-            <!-- Tabla Servicios -->
-            <div class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
+            <div id="vista-tabla-servicios" class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden hidden">
                 <div class="tabla-header px-6 py-4 flex justify-between items-center text-white">
                     <h2 class="text-sm font-bold uppercase tracking-wider"><i class="fa-solid fa-clipboard-check mr-2"></i> Historial de Vuelos T-50</h2>
                 </div>
@@ -197,9 +188,8 @@
         </div>
     </div>
 
-    <!-- CABLEADO LÓGICO -->
     <script>
-        const API_URL = "https://api-agrosoluciones.onrender.com";
+        const API_URL = "https://agrosoluciones-backend.onrender.com";
         let memoriaClientes = []; 
         let memoriaPropiedades = [];
         let memoriaServicios = [];
@@ -210,6 +200,32 @@
             await cargarServicios();
         }
         window.onload = inicializarPanel;
+
+        // --- SISTEMA DE NAVEGACIÓN ---
+        function cambiarVista(vista) {
+            // 1. Ocultar todos los formularios y tablas
+            const secciones = ['clientes', 'propiedades', 'servicios'];
+            secciones.forEach(sec => {
+                document.getElementById('vista-form-' + sec).classList.add('hidden');
+                document.getElementById('vista-form-' + sec).classList.remove('block');
+                
+                document.getElementById('vista-tabla-' + sec).classList.add('hidden');
+                document.getElementById('vista-tabla-' + sec).classList.remove('block');
+                
+                // Reiniciar estilo de botones
+                document.getElementById('nav-' + sec).className = "border border-green-500/50 hover:bg-green-700 px-4 py-2 rounded-md text-sm font-medium transition-colors";
+            });
+
+            // 2. Mostrar solo la sección seleccionada
+            document.getElementById('vista-form-' + vista).classList.remove('hidden');
+            document.getElementById('vista-form-' + vista).classList.add('block');
+            
+            document.getElementById('vista-tabla-' + vista).classList.remove('hidden');
+            document.getElementById('vista-tabla-' + vista).classList.add('block');
+
+            // 3. Resaltar el botón activo
+            document.getElementById('nav-' + vista).className = "bg-green-700 hover:bg-green-600 px-4 py-2 rounded-md text-sm font-bold transition-colors shadow-sm";
+        }
 
         // --- CARGAR DATOS ---
         async function cargarClientes() {

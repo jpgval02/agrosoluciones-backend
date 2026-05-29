@@ -176,10 +176,19 @@
             <div class="block lg:table-cell w-full lg:w-2/3 vertical-align-top space-y-8">
                 
                 <div id="vista-tabla-clientes" class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden block">
-                    <div class="tabla-header px-6 py-4 flex justify-between items-center text-white">
-                        <h2 class="text-sm font-bold uppercase tracking-wider"><i class="fa-solid fa-list mr-2"></i> Directorio de Clientes</h2>
-                        <span id="contadorClientes" class="bg-white text-green-800 text-xs font-bold px-3 py-1 rounded-full shadow-sm">0 REGISTRADOS</span>
+                    <div class="tabla-header px-6 py-4 flex flex-col md:flex-row md:justify-between items-center text-white gap-3">
+                        <h2 class="text-sm font-bold uppercase tracking-wider whitespace-nowrap"><i class="fa-solid fa-list mr-2"></i> Directorio de Clientes</h2>
+                        
+                        <div class="relative w-full md:w-72">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fa-solid fa-search text-gray-400"></i>
+                            </div>
+                            <input type="text" id="buscadorClientes" onkeyup="filtrarClientes()" placeholder="Buscar por nombre, RFC o ID..." class="w-full pl-10 pr-4 py-1.5 bg-white text-gray-800 rounded-full text-sm focus:ring-2 focus:ring-green-400 outline-none shadow-inner transition-all">
+                        </div>
+
+                        <span id="contadorClientes" class="bg-white text-green-800 text-xs font-bold px-3 py-1 rounded-full shadow-sm whitespace-nowrap">0 REGISTRADOS</span>
                     </div>
+                    
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-100 text-sm">
                             <thead class="bg-[#187547] text-white">
@@ -247,7 +256,6 @@
             const btn = document.getElementById('btnLogin');
             const errorMsg = document.getElementById('loginError');
 
-            // Mostrar estado de carga
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Verificando...';
             btn.disabled = true;
             errorMsg.classList.add('hidden');
@@ -260,19 +268,16 @@
                 });
 
                 if (res.ok) {
-                    // ¡Login exitoso! Ocultar login, mostrar panel y cargar datos
                     document.getElementById('login-container').classList.add('hidden');
                     document.getElementById('dashboard-container').classList.remove('hidden');
                     await inicializarPanel(); 
                 } else {
-                    // Error de credenciales
                     errorMsg.textContent = "Correo o contraseña incorrectos.";
                     errorMsg.classList.remove('hidden');
                     btn.innerHTML = '<i class="fa-solid fa-right-to-bracket mr-2"></i> Iniciar Sesión';
                     btn.disabled = false;
                 }
             } catch (error) {
-                // Error de conexión
                 errorMsg.textContent = "Error al conectar con el servidor.";
                 errorMsg.classList.remove('hidden');
                 btn.innerHTML = '<i class="fa-solid fa-right-to-bracket mr-2"></i> Iniciar Sesión';
@@ -281,7 +286,6 @@
         });
 
         function cerrarSesion() {
-            // Recargar la página limpia todo y vuelve a mostrar el login
             window.location.reload();
         }
 
@@ -290,8 +294,6 @@
             await cargarPropiedades();
             await cargarServicios();
         }
-
-        // Ya NO usamos window.onload = inicializarPanel; porque los datos se cargan DESPUÉS de hacer login
 
         // --- SISTEMA DE NAVEGACIÓN ---
         function cambiarVista(vista) {
@@ -315,44 +317,63 @@
             document.getElementById('nav-' + vista).className = "bg-green-700 hover:bg-green-600 px-4 py-2 rounded-md text-sm font-bold transition-colors shadow-sm";
         }
 
-        // --- CARGAR DATOS ---
+        // --- FUNCIONES DE DIBUJO Y FILTRADO DE CLIENTES ---
+        function renderizarTablaClientes(listaDeClientes) {
+            const cuerpoTabla = document.getElementById('cuerpoTabla');
+            cuerpoTabla.innerHTML = '';
+            document.getElementById('contadorClientes').textContent = `${listaDeClientes.length} REGISTRADOS`;
+
+            listaDeClientes.forEach(c => {
+                cuerpoTabla.innerHTML += `
+                    <tr class="hover:bg-gray-50 transition-colors group">
+                        <td class="px-6 py-4">
+                            <div class="flex items-center space-x-4">
+                                <div class="bg-green-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold shadow-sm">
+                                    <i class="fa-solid fa-user"></i>
+                                </div>
+                                <div>
+                                    <p class="font-bold text-gray-800">${c.nombre} <br> ${c.apellidos}</p>
+                                    <p class="text-[10px] text-gray-400 mt-1"><i class="fa-solid fa-id-card mr-1"></i>RFC: ${c.rfc || 'S/N'} | ID: ${c.id.substring(0,8)}...</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <p class="text-sm text-blue-600 font-medium"><i class="fa-solid fa-envelope mr-2"></i>${c.email || 'Sin correo'}</p>
+                            <p class="text-sm text-gray-600 mt-1"><i class="fa-solid fa-phone text-green-600 mr-2"></i>${c.telefono}</p>
+                        </td>
+                        <td class="px-6 py-4 text-center space-x-1 whitespace-nowrap">
+                            <button onclick="prepararEdicionCliente('${c.id}')" class="bg-amber-400 hover:bg-amber-500 text-white text-xs font-bold px-4 py-2 rounded-full transition-colors shadow-sm"><i class="fa-solid fa-pen-to-square mr-1"></i> Editar</button>
+                            <button onclick="eliminarCliente('${c.id}')" class="bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-4 py-2 rounded-full transition-colors shadow-sm"><i class="fa-solid fa-trash mr-1"></i> Eliminar</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function filtrarClientes() {
+            const textoBuscado = document.getElementById('buscadorClientes').value.toLowerCase();
+            const clientesFiltrados = memoriaClientes.filter(c => {
+                const nombreCompleto = `${c.nombre} ${c.apellidos}`.toLowerCase();
+                const idCliente = c.id.toLowerCase();
+                const rfcCliente = (c.rfc || '').toLowerCase();
+                return nombreCompleto.includes(textoBuscado) || idCliente.includes(textoBuscado) || rfcCliente.includes(textoBuscado);
+            });
+            renderizarTablaClientes(clientesFiltrados);
+        }
+
+        // --- CARGAR DATOS DESDE LA NUBE ---
         async function cargarClientes() {
             try {
                 const res = await fetch(`${API_URL}/clientes/`);
                 memoriaClientes = await res.json();
-                const cuerpoTabla = document.getElementById('cuerpoTabla');
-                const selectCliente = document.getElementById('selectCliente');
                 
-                cuerpoTabla.innerHTML = '';
+                const selectCliente = document.getElementById('selectCliente');
                 selectCliente.innerHTML = '<option value="">-- Selecciona el Propietario --</option>';
-                document.getElementById('contadorClientes').textContent = `${memoriaClientes.length} REGISTRADOS`;
-
                 memoriaClientes.forEach(c => {
-                    cuerpoTabla.innerHTML += `
-                        <tr class="hover:bg-gray-50 transition-colors group">
-                            <td class="px-6 py-4">
-                                <div class="flex items-center space-x-4">
-                                    <div class="bg-green-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold shadow-sm">
-                                        <i class="fa-solid fa-user"></i>
-                                    </div>
-                                    <div>
-                                        <p class="font-bold text-gray-800">${c.nombre} <br> ${c.apellidos}</p>
-                                        <p class="text-[10px] text-gray-400 mt-1"><i class="fa-solid fa-id-card mr-1"></i>${c.rfc || 'S/N'}</p>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <p class="text-sm text-blue-600 font-medium"><i class="fa-solid fa-envelope mr-2"></i>${c.email || 'Sin correo'}</p>
-                                <p class="text-sm text-gray-600 mt-1"><i class="fa-solid fa-phone text-green-600 mr-2"></i>${c.telefono}</p>
-                            </td>
-                            <td class="px-6 py-4 text-center space-x-1 whitespace-nowrap">
-                                <button onclick="prepararEdicionCliente('${c.id}')" class="bg-amber-400 hover:bg-amber-500 text-white text-xs font-bold px-4 py-2 rounded-full transition-colors shadow-sm"><i class="fa-solid fa-pen-to-square mr-1"></i> Editar</button>
-                                <button onclick="eliminarCliente('${c.id}')" class="bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-4 py-2 rounded-full transition-colors shadow-sm"><i class="fa-solid fa-trash mr-1"></i> Eliminar</button>
-                            </td>
-                        </tr>
-                    `;
                     selectCliente.innerHTML += `<option value="${c.id}">${c.nombre} ${c.apellidos}</option>`;
                 });
+
+                renderizarTablaClientes(memoriaClientes);
             } catch (e) { console.error(e); }
         }
 

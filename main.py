@@ -21,6 +21,10 @@ app.add_middleware(
 )
 
 # --- MODELOS DE DATOS ---
+class Credenciales(BaseModel):
+    email: str
+    password: str
+
 class ClienteNuevo(BaseModel):
     nombre: str
     apellidos: str
@@ -44,6 +48,22 @@ class ServicioNuevo(BaseModel):
     costo_servicio: float
     estado_cuenta: str
     satisfaccion: int
+
+
+# --- RUTA DE LOGIN (EL PORTERO) ---
+@app.post("/login/")
+async def iniciar_sesion(credenciales: Credenciales):
+    try:
+        # Supabase verifica si el correo y la contraseña son correctos
+        respuesta = supabase.auth.sign_in_with_password({
+            "email": credenciales.email,
+            "password": credenciales.password
+        })
+        return {"mensaje": "Acceso concedido"}
+    except Exception as e:
+        # Si la contraseña o el correo están mal, rechazamos la entrada (Error 401)
+        raise HTTPException(status_code=401, detail="Correo o contraseña incorrectos")
+
 
 # --- RUTAS DE CLIENTES ---
 @app.post("/clientes/")
@@ -128,4 +148,3 @@ async def eliminar_servicio(servicio_id: str):
         return {"mensaje": "Eliminado exitosamente"}
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
     
-    #cambio de prueba

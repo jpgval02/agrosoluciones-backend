@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agrosoluciones Aéreas - Sistema Profesional</title>
+    <title>Agrosoluciones Aéreas - Login</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -12,198 +12,289 @@
         .tabla-header { background-color: #1b6b43; } /* Verde oscuro institucional */
     </style>
 </head>
-<body class="text-gray-800 pb-12">
+<body class="text-gray-800">
 
-    <nav class="tabla-header text-white px-6 py-3 flex justify-between items-center shadow-md sticky top-0 z-50">
-        <div class="flex items-center space-x-3">
-            <i class="fa-solid fa-helicopter text-2xl"></i>
+    <div id="login-container" class="min-h-screen flex items-center justify-center p-4">
+        <div class="bg-white p-8 rounded-3xl shadow-xl border border-green-100 max-w-md w-full">
+            <div class="text-center mb-8">
+                <div class="bg-green-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fa-solid fa-helicopter text-4xl text-green-700"></i>
+                </div>
+                <h1 class="text-2xl font-extrabold text-gray-800">Agrosoluciones Aéreas</h1>
+                <p class="text-sm text-gray-500 mt-1 font-medium">Acceso exclusivo al sistema operativo</p>
+            </div>
+
+            <form id="loginForm" class="space-y-5">
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-1">Correo Electrónico</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fa-solid fa-envelope text-gray-400"></i>
+                        </div>
+                        <input type="email" id="loginEmail" required class="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-green-600 outline-none transition-all">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-1">Contraseña</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fa-solid fa-lock text-gray-400"></i>
+                        </div>
+                        <input type="password" id="loginPassword" required class="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-green-600 outline-none transition-all">
+                    </div>
+                </div>
+                
+                <div id="loginError" class="hidden bg-rose-50 text-rose-600 text-sm font-bold p-3 rounded-lg text-center border border-rose-100">
+                    </div>
+
+                <button type="submit" id="btnLogin" class="w-full py-3 rounded-xl text-sm font-bold text-white bg-green-700 hover:bg-green-600 transition-all shadow-md flex items-center justify-center">
+                    <i class="fa-solid fa-right-to-bracket mr-2"></i> Iniciar Sesión
+                </button>
+            </form>
+        </div>
+    </div>
+
+
+    <div id="dashboard-container" class="hidden pb-12">
+        <nav class="tabla-header text-white px-6 py-3 flex justify-between items-center shadow-md sticky top-0 z-50">
+            <div class="flex items-center space-x-3">
+                <i class="fa-solid fa-helicopter text-2xl"></i>
+                <div>
+                    <h1 class="text-xl font-bold leading-tight">Agrosoluciones Aéreas</h1>
+                    <p class="text-[10px] text-green-200 font-medium tracking-wider uppercase">Sistema Profesional</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-2 md:space-x-4">
+                <button onclick="cambiarVista('clientes')" id="nav-clientes" class="bg-green-700 hover:bg-green-600 px-4 py-2 rounded-md text-sm font-bold transition-colors shadow-sm">
+                    <i class="fa-solid fa-users md:mr-2"></i> <span class="hidden md:inline">Clientes</span>
+                </button>
+                <button onclick="cambiarVista('propiedades')" id="nav-propiedades" class="border border-green-500/50 hover:bg-green-700 px-4 py-2 rounded-md text-sm font-medium transition-colors">
+                    <i class="fa-solid fa-map-location-dot md:mr-2"></i> <span class="hidden md:inline">Parcelas</span>
+                </button>
+                <button onclick="cambiarVista('servicios')" id="nav-servicios" class="border border-green-500/50 hover:bg-green-700 px-4 py-2 rounded-md text-sm font-medium transition-colors">
+                    <i class="fa-solid fa-plane-up md:mr-2"></i> <span class="hidden md:inline">Vuelos</span>
+                </button>
+                <div class="h-6 w-px bg-green-600 mx-2 hidden md:block"></div>
+                <button onclick="cerrarSesion()" class="bg-rose-600 hover:bg-rose-500 px-3 py-2 rounded-md text-sm font-bold transition-colors shadow-sm" title="Cerrar Sesión">
+                    <i class="fa-solid fa-power-off"></i>
+                </button>
+            </div>
+        </nav>
+
+        <div class="max-w-7xl mx-auto mt-8 px-6 flex justify-between items-end">
             <div>
-                <h1 class="text-xl font-bold leading-tight">Agrosoluciones Aéreas</h1>
-                <p class="text-[10px] text-green-200 font-medium tracking-wider uppercase">Sistema Profesional</p>
+                <h2 class="text-3xl font-bold text-gray-800">Panel de Control Operativo</h2>
+                <p class="text-gray-500 text-sm mt-1">Administre su cartera de clientes, parcelas y vuelos de fumigación.</p>
             </div>
         </div>
-        
-        <div class="flex items-center space-x-2 md:space-x-4">
-            <button onclick="cambiarVista('clientes')" id="nav-clientes" class="bg-green-700 hover:bg-green-600 px-4 py-2 rounded-md text-sm font-bold transition-colors shadow-sm">
-                <i class="fa-solid fa-users md:mr-2"></i> <span class="hidden md:inline">Clientes</span>
-            </button>
-            <button onclick="cambiarVista('propiedades')" id="nav-propiedades" class="border border-green-500/50 hover:bg-green-700 px-4 py-2 rounded-md text-sm font-medium transition-colors">
-                <i class="fa-solid fa-map-location-dot md:mr-2"></i> <span class="hidden md:inline">Parcelas</span>
-            </button>
-            <button onclick="cambiarVista('servicios')" id="nav-servicios" class="border border-green-500/50 hover:bg-green-700 px-4 py-2 rounded-md text-sm font-medium transition-colors">
-                <i class="fa-solid fa-plane-up md:mr-2"></i> <span class="hidden md:inline">Vuelos</span>
-            </button>
-        </div>
-    </nav>
 
-    <div class="max-w-7xl mx-auto mt-8 px-6 flex justify-between items-end">
-        <div>
-            <h2 class="text-3xl font-bold text-gray-800">Panel de Control Operativo</h2>
-            <p class="text-gray-500 text-sm mt-1">Administre su cartera de clientes, parcelas y vuelos de fumigación.</p>
-        </div>
-    </div>
-
-    <div class="max-w-7xl mx-auto mt-6 px-6 block lg:table lg:table-fixed w-full border-spacing-x-8">
-        
-        <div class="block lg:table-cell w-full lg:w-1/3 vertical-align-top space-y-6 pb-8 lg:pb-0">
+        <div class="max-w-7xl mx-auto mt-6 px-6 block lg:table lg:table-fixed w-full border-spacing-x-8">
             
-            <div id="vista-form-clientes" class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 block">
-                <h3 id="tituloFormCliente" class="text-lg font-bold text-gray-800 mb-4 flex items-center">
-                    <i class="fa-solid fa-user-plus text-green-600 mr-2"></i> Nuevo Cliente
-                </h3>
-                <form id="registroForm" class="space-y-4">
-                    <input type="hidden" id="editClienteId">
-                    <div class="grid grid-cols-2 gap-3">
-                        <input type="text" id="nombre" placeholder="Nombre(s)" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
-                        <input type="text" id="apellidos" placeholder="Apellidos" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
-                    </div>
-                    <input type="email" id="email" placeholder="Correo Electrónico" class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
-                    <div class="grid grid-cols-2 gap-3">
-                        <input type="text" id="telefono" placeholder="Teléfono" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
-                        <input type="text" id="rfc" placeholder="RFC" class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none uppercase">
-                    </div>
-                    <button type="submit" id="btnSubmitCliente" class="w-full py-2.5 rounded-full text-sm font-bold text-white bg-[#4ade80] hover:bg-green-500 text-green-900 transition-colors shadow-sm"><i class="fa-solid fa-save mr-1"></i> Guardar Cliente</button>
-                    <button type="button" id="btnCancelarCliente" class="hidden w-full py-2 rounded-full text-xs font-bold text-gray-600 bg-gray-200 hover:bg-gray-300 transition-colors">Cancelar Edición</button>
-                </form>
+            <div class="block lg:table-cell w-full lg:w-1/3 vertical-align-top space-y-6 pb-8 lg:pb-0">
+                
+                <div id="vista-form-clientes" class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 block">
+                    <h3 id="tituloFormCliente" class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                        <i class="fa-solid fa-user-plus text-green-600 mr-2"></i> Nuevo Cliente
+                    </h3>
+                    <form id="registroForm" class="space-y-4">
+                        <input type="hidden" id="editClienteId">
+                        <div class="grid grid-cols-2 gap-3">
+                            <input type="text" id="nombre" placeholder="Nombre(s)" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
+                            <input type="text" id="apellidos" placeholder="Apellidos" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
+                        </div>
+                        <input type="email" id="email" placeholder="Correo Electrónico" class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
+                        <div class="grid grid-cols-2 gap-3">
+                            <input type="text" id="telefono" placeholder="Teléfono" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
+                            <input type="text" id="rfc" placeholder="RFC" class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none uppercase">
+                        </div>
+                        <button type="submit" id="btnSubmitCliente" class="w-full py-2.5 rounded-full text-sm font-bold text-white bg-[#4ade80] hover:bg-green-500 text-green-900 transition-colors shadow-sm"><i class="fa-solid fa-save mr-1"></i> Guardar Cliente</button>
+                        <button type="button" id="btnCancelarCliente" class="hidden w-full py-2 rounded-full text-xs font-bold text-gray-600 bg-gray-200 hover:bg-gray-300 transition-colors">Cancelar Edición</button>
+                    </form>
+                </div>
+
+                <div id="vista-form-propiedades" class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hidden">
+                    <h3 id="tituloFormPropiedad" class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                        <i class="fa-solid fa-map-location-dot text-green-600 mr-2"></i> Registrar Parcela
+                    </h3>
+                    <form id="propiedadForm" class="space-y-4">
+                        <input type="hidden" id="editPropiedadId">
+                        <select id="selectCliente" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
+                            <option value="">-- Selecciona el Propietario --</option>
+                        </select>
+                        <div class="grid grid-cols-2 gap-3">
+                            <input type="text" id="nombre_propiedad" placeholder="Nombre Rancho" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
+                            <input type="text" id="tipo_cultivo" placeholder="Cultivo (Ej. Maíz)" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <input type="number" step="0.01" id="superficie_has" placeholder="Hectáreas" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
+                            <select id="sistema_riego" class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
+                                <option value="Temporal">Temporal</option>
+                                <option value="Aspersión">Aspersión</option>
+                                <option value="Goteo">Goteo</option>
+                                <option value="Gravedad">Gravedad</option>
+                            </select>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <input type="text" id="direccion" placeholder="Ubicación" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
+                            <input type="text" id="estado" value="Veracruz" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
+                        </div>
+                        <textarea id="comentarios" placeholder="Notas extra..." rows="1" class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none"></textarea>
+                        
+                        <button type="submit" id="btnSubmitPropiedad" class="w-full py-2.5 rounded-full text-sm font-bold text-white bg-[#4ade80] hover:bg-green-500 text-green-900 transition-colors shadow-sm"><i class="fa-solid fa-save mr-1"></i> Guardar Parcela</button>
+                        <button type="button" id="btnCancelarPropiedad" class="hidden w-full py-2 rounded-full text-xs font-bold text-gray-600 bg-gray-200 hover:bg-gray-300 transition-colors">Cancelar Edición</button>
+                    </form>
+                </div>
+
+                <div id="vista-form-servicios" class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hidden">
+                    <h3 id="tituloFormServio" class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                        <i class="fa-solid fa-plane-up text-green-600 mr-2"></i> Programar Vuelo
+                    </h3>
+                    <form id="servicioForm" class="space-y-4">
+                        <input type="hidden" id="editServioId">
+                        <select id="selectPropiedad" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
+                            <option value="">-- Selecciona la Parcela --</option>
+                        </select>
+                        <div class="grid grid-cols-2 gap-3">
+                            <input type="date" id="fecha_aplicacion" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none text-gray-600">
+                            <input type="number" step="0.01" id="costo_servicio" placeholder="Costo ($ MXN)" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <select id="estado_cuenta" class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
+                                <option value="Pendiente">Pendiente</option>
+                                <option value="Parcial">Abono Parcial</option>
+                                <option value="Cobrado">Cobrado</option>
+                            </select>
+                            <input type="number" min="1" max="5" value="5" id="satisfaccion" placeholder="Satisfacción" class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
+                        </div>
+                        <button type="submit" id="btnSubmitServicio" class="w-full py-2.5 rounded-full text-sm font-bold text-white bg-[#4ade80] hover:bg-green-500 text-green-900 transition-colors shadow-sm"><i class="fa-solid fa-save mr-1"></i> Registrar Vuelo</button>
+                        <button type="button" id="btnCancelarServicio" class="hidden w-full py-2 rounded-full text-xs font-bold text-gray-600 bg-gray-200 hover:bg-gray-300 transition-colors">Cancelar Edición</button>
+                    </form>
+                </div>
             </div>
 
-            <div id="vista-form-propiedades" class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hidden">
-                <h3 id="tituloFormPropiedad" class="text-lg font-bold text-gray-800 mb-4 flex items-center">
-                    <i class="fa-solid fa-map-location-dot text-green-600 mr-2"></i> Registrar Parcela
-                </h3>
-                <form id="propiedadForm" class="space-y-4">
-                    <input type="hidden" id="editPropiedadId">
-                    <select id="selectCliente" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
-                        <option value="">-- Selecciona el Propietario --</option>
-                    </select>
-                    <div class="grid grid-cols-2 gap-3">
-                        <input type="text" id="nombre_propiedad" placeholder="Nombre Rancho" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
-                        <input type="text" id="tipo_cultivo" placeholder="Cultivo (Ej. Maíz)" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
+            <div class="block lg:table-cell w-full lg:w-2/3 vertical-align-top space-y-8">
+                
+                <div id="vista-tabla-clientes" class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden block">
+                    <div class="tabla-header px-6 py-4 flex justify-between items-center text-white">
+                        <h2 class="text-sm font-bold uppercase tracking-wider"><i class="fa-solid fa-list mr-2"></i> Directorio de Clientes</h2>
+                        <span id="contadorClientes" class="bg-white text-green-800 text-xs font-bold px-3 py-1 rounded-full shadow-sm">0 REGISTRADOS</span>
                     </div>
-                    <div class="grid grid-cols-2 gap-3">
-                        <input type="number" step="0.01" id="superficie_has" placeholder="Hectáreas" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
-                        <select id="sistema_riego" class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
-                            <option value="Temporal">Temporal</option>
-                            <option value="Aspersión">Aspersión</option>
-                            <option value="Goteo">Goteo</option>
-                            <option value="Gravedad">Gravedad</option>
-                        </select>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-100 text-sm">
+                            <thead class="bg-[#187547] text-white">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold tracking-wider"><i class="fa-solid fa-user mr-1"></i> CLIENTE</th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold tracking-wider"><i class="fa-solid fa-envelope mr-1"></i> CONTACTO</th>
+                                    <th class="px-6 py-3 text-center text-xs font-semibold tracking-wider"><i class="fa-solid fa-gears mr-1"></i> ACCIONES</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cuerpoTabla" class="bg-white divide-y divide-gray-100"></tbody>
+                        </table>
                     </div>
-                    <div class="grid grid-cols-2 gap-3">
-                        <input type="text" id="direccion" placeholder="Ubicación" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
-                        <input type="text" id="estado" value="Veracruz" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
-                    </div>
-                    <textarea id="comentarios" placeholder="Notas extra..." rows="1" class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none"></textarea>
-                    
-                    <button type="submit" id="btnSubmitPropiedad" class="w-full py-2.5 rounded-full text-sm font-bold text-white bg-[#4ade80] hover:bg-green-500 text-green-900 transition-colors shadow-sm"><i class="fa-solid fa-save mr-1"></i> Guardar Parcela</button>
-                    <button type="button" id="btnCancelarPropiedad" class="hidden w-full py-2 rounded-full text-xs font-bold text-gray-600 bg-gray-200 hover:bg-gray-300 transition-colors">Cancelar Edición</button>
-                </form>
-            </div>
+                </div>
 
-            <div id="vista-form-servicios" class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hidden">
-                <h3 id="tituloFormServio" class="text-lg font-bold text-gray-800 mb-4 flex items-center">
-                    <i class="fa-solid fa-plane-up text-green-600 mr-2"></i> Programar Vuelo
-                </h3>
-                <form id="servicioForm" class="space-y-4">
-                    <input type="hidden" id="editServioId">
-                    <select id="selectPropiedad" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
-                        <option value="">-- Selecciona la Parcela --</option>
-                    </select>
-                    <div class="grid grid-cols-2 gap-3">
-                        <input type="date" id="fecha_aplicacion" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none text-gray-600">
-                        <input type="number" step="0.01" id="costo_servicio" placeholder="Costo ($ MXN)" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
+                <div id="vista-tabla-propiedades" class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden hidden">
+                    <div class="tabla-header px-6 py-4 flex justify-between items-center text-white">
+                        <h2 class="text-sm font-bold uppercase tracking-wider"><i class="fa-solid fa-map mr-2"></i> Inventario de Parcelas</h2>
                     </div>
-                    <div class="grid grid-cols-2 gap-3">
-                        <select id="estado_cuenta" class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
-                            <option value="Pendiente">Pendiente</option>
-                            <option value="Parcial">Abono Parcial</option>
-                            <option value="Cobrado">Cobrado</option>
-                        </select>
-                        <input type="number" min="1" max="5" value="5" id="satisfaccion" placeholder="Satisfacción" class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
+                    <div class="overflow-x-auto h-64">
+                        <table class="min-w-full divide-y divide-gray-100 text-sm">
+                            <thead class="bg-[#187547] text-white sticky top-0 z-10">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold tracking-wider"><i class="fa-solid fa-house mr-1"></i> PROPIEDAD</th>
+                                    <th class="px-6 py-3 text-center text-xs font-semibold tracking-wider"><i class="fa-solid fa-seedling mr-1"></i> CULTIVO</th>
+                                    <th class="px-6 py-3 text-center text-xs font-semibold tracking-wider"><i class="fa-solid fa-ruler-combined mr-1"></i> SUPERFICIE</th>
+                                    <th class="px-6 py-3 text-center text-xs font-semibold tracking-wider"><i class="fa-solid fa-gears mr-1"></i> ACCIONES</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cuerpoTablaPropiedades" class="bg-white divide-y divide-gray-100"></tbody>
+                        </table>
                     </div>
-                    <button type="submit" id="btnSubmitServicio" class="w-full py-2.5 rounded-full text-sm font-bold text-white bg-[#4ade80] hover:bg-green-500 text-green-900 transition-colors shadow-sm"><i class="fa-solid fa-save mr-1"></i> Registrar Vuelo</button>
-                    <button type="button" id="btnCancelarServicio" class="hidden w-full py-2 rounded-full text-xs font-bold text-gray-600 bg-gray-200 hover:bg-gray-300 transition-colors">Cancelar Edición</button>
-                </form>
+                </div>
+
+                <div id="vista-tabla-servicios" class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden hidden">
+                    <div class="tabla-header px-6 py-4 flex justify-between items-center text-white">
+                        <h2 class="text-sm font-bold uppercase tracking-wider"><i class="fa-solid fa-clipboard-check mr-2"></i> Historial de Vuelos T-50</h2>
+                    </div>
+                    <div class="overflow-x-auto h-64">
+                        <table class="min-w-full divide-y divide-gray-100 text-sm">
+                            <thead class="bg-[#187547] text-white sticky top-0 z-10">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold tracking-wider"><i class="fa-solid fa-location-crosshairs mr-1"></i> RANCHO</th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold tracking-wider"><i class="fa-solid fa-file-invoice-dollar mr-1"></i> FACTURACIÓN</th>
+                                    <th class="px-6 py-3 text-center text-xs font-semibold tracking-wider"><i class="fa-solid fa-gears mr-1"></i> ACCIONES</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cuerpoTablaServicios" class="bg-white divide-y divide-gray-100"></tbody>
+                        </table>
+                    </div>
+                </div>
+
             </div>
         </div>
-
-        <div class="block lg:table-cell w-full lg:w-2/3 vertical-align-top space-y-8">
-            
-            <div id="vista-tabla-clientes" class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden block">
-                <div class="tabla-header px-6 py-4 flex justify-between items-center text-white">
-                    <h2 class="text-sm font-bold uppercase tracking-wider"><i class="fa-solid fa-list mr-2"></i> Directorio de Clientes</h2>
-                    <span id="contadorClientes" class="bg-white text-green-800 text-xs font-bold px-3 py-1 rounded-full shadow-sm">0 REGISTRADOS</span>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-100 text-sm">
-                        <thead class="bg-[#187547] text-white">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-semibold tracking-wider"><i class="fa-solid fa-user mr-1"></i> CLIENTE</th>
-                                <th class="px-6 py-3 text-left text-xs font-semibold tracking-wider"><i class="fa-solid fa-envelope mr-1"></i> CONTACTO</th>
-                                <th class="px-6 py-3 text-center text-xs font-semibold tracking-wider"><i class="fa-solid fa-gears mr-1"></i> ACCIONES</th>
-                            </tr>
-                        </thead>
-                        <tbody id="cuerpoTabla" class="bg-white divide-y divide-gray-100"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div id="vista-tabla-propiedades" class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden hidden">
-                <div class="tabla-header px-6 py-4 flex justify-between items-center text-white">
-                    <h2 class="text-sm font-bold uppercase tracking-wider"><i class="fa-solid fa-map mr-2"></i> Inventario de Parcelas</h2>
-                </div>
-                <div class="overflow-x-auto h-64">
-                    <table class="min-w-full divide-y divide-gray-100 text-sm">
-                        <thead class="bg-[#187547] text-white sticky top-0 z-10">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-semibold tracking-wider"><i class="fa-solid fa-house mr-1"></i> PROPIEDAD</th>
-                                <th class="px-6 py-3 text-center text-xs font-semibold tracking-wider"><i class="fa-solid fa-seedling mr-1"></i> CULTIVO</th>
-                                <th class="px-6 py-3 text-center text-xs font-semibold tracking-wider"><i class="fa-solid fa-ruler-combined mr-1"></i> SUPERFICIE</th>
-                                <th class="px-6 py-3 text-center text-xs font-semibold tracking-wider"><i class="fa-solid fa-gears mr-1"></i> ACCIONES</th>
-                            </tr>
-                        </thead>
-                        <tbody id="cuerpoTablaPropiedades" class="bg-white divide-y divide-gray-100"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div id="vista-tabla-servicios" class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden hidden">
-                <div class="tabla-header px-6 py-4 flex justify-between items-center text-white">
-                    <h2 class="text-sm font-bold uppercase tracking-wider"><i class="fa-solid fa-clipboard-check mr-2"></i> Historial de Vuelos T-50</h2>
-                </div>
-                <div class="overflow-x-auto h-64">
-                    <table class="min-w-full divide-y divide-gray-100 text-sm">
-                        <thead class="bg-[#187547] text-white sticky top-0 z-10">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-semibold tracking-wider"><i class="fa-solid fa-location-crosshairs mr-1"></i> RANCHO</th>
-                                <th class="px-6 py-3 text-left text-xs font-semibold tracking-wider"><i class="fa-solid fa-file-invoice-dollar mr-1"></i> FACTURACIÓN</th>
-                                <th class="px-6 py-3 text-center text-xs font-semibold tracking-wider"><i class="fa-solid fa-gears mr-1"></i> ACCIONES</th>
-                            </tr>
-                        </thead>
-                        <tbody id="cuerpoTablaServicios" class="bg-white divide-y divide-gray-100"></tbody>
-                    </table>
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-    <script>
+    </div> <script>
         const API_URL = "https://agrosoluciones-backend.onrender.com";
         let memoriaClientes = []; 
         let memoriaPropiedades = [];
         let memoriaServicios = [];
+
+        // --- SISTEMA DE LOGIN ---
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const btn = document.getElementById('btnLogin');
+            const errorMsg = document.getElementById('loginError');
+
+            // Mostrar estado de carga
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Verificando...';
+            btn.disabled = true;
+            errorMsg.classList.add('hidden');
+
+            try {
+                const res = await fetch(`${API_URL}/login/`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: email, password: password })
+                });
+
+                if (res.ok) {
+                    // ¡Login exitoso! Ocultar login, mostrar panel y cargar datos
+                    document.getElementById('login-container').classList.add('hidden');
+                    document.getElementById('dashboard-container').classList.remove('hidden');
+                    await inicializarPanel(); 
+                } else {
+                    // Error de credenciales
+                    errorMsg.textContent = "Correo o contraseña incorrectos.";
+                    errorMsg.classList.remove('hidden');
+                    btn.innerHTML = '<i class="fa-solid fa-right-to-bracket mr-2"></i> Iniciar Sesión';
+                    btn.disabled = false;
+                }
+            } catch (error) {
+                // Error de conexión
+                errorMsg.textContent = "Error al conectar con el servidor.";
+                errorMsg.classList.remove('hidden');
+                btn.innerHTML = '<i class="fa-solid fa-right-to-bracket mr-2"></i> Iniciar Sesión';
+                btn.disabled = false;
+            }
+        });
+
+        function cerrarSesion() {
+            // Recargar la página limpia todo y vuelve a mostrar el login
+            window.location.reload();
+        }
 
         async function inicializarPanel() {
             await cargarClientes();
             await cargarPropiedades();
             await cargarServicios();
         }
-        window.onload = inicializarPanel;
+
+        // Ya NO usamos window.onload = inicializarPanel; porque los datos se cargan DESPUÉS de hacer login
 
         // --- SISTEMA DE NAVEGACIÓN ---
         function cambiarVista(vista) {
-            // 1. Ocultar todos los formularios y tablas
             const secciones = ['clientes', 'propiedades', 'servicios'];
             secciones.forEach(sec => {
                 document.getElementById('vista-form-' + sec).classList.add('hidden');
@@ -212,18 +303,15 @@
                 document.getElementById('vista-tabla-' + sec).classList.add('hidden');
                 document.getElementById('vista-tabla-' + sec).classList.remove('block');
                 
-                // Reiniciar estilo de botones
                 document.getElementById('nav-' + sec).className = "border border-green-500/50 hover:bg-green-700 px-4 py-2 rounded-md text-sm font-medium transition-colors";
             });
 
-            // 2. Mostrar solo la sección seleccionada
             document.getElementById('vista-form-' + vista).classList.remove('hidden');
             document.getElementById('vista-form-' + vista).classList.add('block');
             
             document.getElementById('vista-tabla-' + vista).classList.remove('hidden');
             document.getElementById('vista-tabla-' + vista).classList.add('block');
 
-            // 3. Resaltar el botón activo
             document.getElementById('nav-' + vista).className = "bg-green-700 hover:bg-green-600 px-4 py-2 rounded-md text-sm font-bold transition-colors shadow-sm";
         }
 

@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agrosoluciones Aéreas - Login</title>
+    <title>Agrosoluciones Aéreas - Sistema Operativo</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
@@ -14,7 +16,9 @@
 </head>
 <body class="text-gray-800">
 
-    <!-- PANTALLA DE LOGIN -->
+    <!-- ========================================== -->
+    <!-- PANTALLA DE LOGIN (CERRADURA)              -->
+    <!-- ========================================== -->
     <div id="login-container" class="min-h-screen flex items-center justify-center p-4">
         <div class="bg-white p-8 rounded-3xl shadow-xl border border-green-100 max-w-md w-full">
             <div class="text-center mb-8">
@@ -55,8 +59,11 @@
     </div>
 
 
-    <!-- PANEL DE CONTROL -->
+    <!-- ========================================== -->
+    <!-- PANEL DE CONTROL                             -->
+    <!-- ========================================== -->
     <div id="dashboard-container" class="hidden pb-12">
+        <!-- Navbar -->
         <nav class="tabla-header text-white px-6 py-3 flex justify-between items-center shadow-md sticky top-0 z-50">
             <div class="flex items-center space-x-3">
                 <i class="fa-solid fa-helicopter text-2xl"></i>
@@ -92,9 +99,10 @@
 
         <div class="max-w-7xl mx-auto mt-6 px-6 block lg:table lg:table-fixed w-full border-spacing-x-8">
             
-            <!-- FORMULARIOS -->
+            <!-- COLUMNA IZQUIERDA: FORMULARIOS -->
             <div class="block lg:table-cell w-full lg:w-1/3 vertical-align-top space-y-6 pb-8 lg:pb-0">
                 
+                <!-- Form Cliente -->
                 <div id="vista-form-clientes" class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 block">
                     <h3 id="tituloFormCliente" class="text-lg font-bold text-gray-800 mb-4 flex items-center">
                         <i class="fa-solid fa-user-plus text-green-600 mr-2"></i> Nuevo Cliente
@@ -115,6 +123,7 @@
                     </form>
                 </div>
 
+                <!-- Form Propiedad -->
                 <div id="vista-form-propiedades" class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hidden">
                     <h3 id="tituloFormPropiedad" class="text-lg font-bold text-gray-800 mb-4 flex items-center">
                         <i class="fa-solid fa-map-location-dot text-green-600 mr-2"></i> Registrar Parcela
@@ -148,6 +157,7 @@
                     </form>
                 </div>
 
+                <!-- Form Servicio -->
                 <div id="vista-form-servicios" class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hidden">
                     <h3 id="tituloFormServio" class="text-lg font-bold text-gray-800 mb-4 flex items-center">
                         <i class="fa-solid fa-plane-up text-green-600 mr-2"></i> Programar Vuelo
@@ -175,9 +185,10 @@
                 </div>
             </div>
 
-            <!-- TABLAS -->
+            <!-- COLUMNA DERECHA: TABLAS -->
             <div class="block lg:table-cell w-full lg:w-2/3 vertical-align-top space-y-8">
                 
+                <!-- Tabla Clientes -->
                 <div id="vista-tabla-clientes" class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden block">
                     <div class="tabla-header px-6 py-4 flex flex-col md:flex-row md:justify-between items-center text-white gap-3">
                         <h2 class="text-sm font-bold uppercase tracking-wider whitespace-nowrap"><i class="fa-solid fa-list mr-2"></i> Directorio de Clientes</h2>
@@ -185,7 +196,6 @@
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <i class="fa-solid fa-search text-gray-400"></i>
                             </div>
-                            <!-- SE ACTUALIZÓ EL PLACEHOLDER AQUÍ -->
                             <input type="text" id="buscadorClientes" onkeyup="filtrarClientes()" placeholder="Buscar por nombre o ID..." class="w-full pl-10 pr-4 py-1.5 bg-white text-gray-800 rounded-full text-sm focus:ring-2 focus:ring-green-400 outline-none shadow-inner transition-all">
                         </div>
                         <span id="contadorClientes" class="bg-white text-green-800 text-xs font-bold px-3 py-1 rounded-full shadow-sm whitespace-nowrap">0 REGISTRADOS</span>
@@ -205,6 +215,7 @@
                     </div>
                 </div>
 
+                <!-- Tabla Propiedades -->
                 <div id="vista-tabla-propiedades" class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden hidden">
                     <div class="tabla-header px-6 py-4 flex justify-between items-center text-white">
                         <h2 class="text-sm font-bold uppercase tracking-wider"><i class="fa-solid fa-map mr-2"></i> Inventario de Parcelas</h2>
@@ -224,6 +235,7 @@
                     </div>
                 </div>
 
+                <!-- Tabla Servicios -->
                 <div id="vista-tabla-servicios" class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden hidden">
                     <div class="tabla-header px-6 py-4 flex justify-between items-center text-white">
                         <h2 class="text-sm font-bold uppercase tracking-wider"><i class="fa-solid fa-clipboard-check mr-2"></i> Historial de Vuelos T-50</h2>
@@ -246,7 +258,66 @@
         </div>
     </div> 
 
-    <!-- CABLEADO LÓGICO -->
+
+    <!-- ========================================== -->
+    <!-- NUEVO: VENTANA EMERGENTE (MODAL)           -->
+    <!-- ========================================== -->
+    <div id="modalDetalle" class="hidden fixed inset-0 bg-black/60 z-[70] flex items-center justify-center p-4 transition-opacity">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-hidden flex flex-col transform transition-all scale-100">
+            <!-- Encabezado Modal -->
+            <div class="bg-green-700 p-6 text-white text-center relative shrink-0">
+                <button onclick="cerrarModal()" class="absolute top-4 right-4 text-green-200 hover:text-white transition-colors">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+                <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3 shadow-inner">
+                    <i class="fa-solid fa-user text-2xl"></i>
+                </div>
+                <h2 id="modalNombre" class="text-xl font-extrabold tracking-tight"></h2>
+                <p id="modalId" class="text-green-200 text-sm font-medium mt-1 uppercase tracking-wider"></p>
+            </div>
+            
+            <!-- Cuerpo Modal (Hacemos que esta parte tenga scroll si es muy larga) -->
+            <div class="p-6 space-y-5 overflow-y-auto custom-scrollbar">
+                <!-- Datos Contacto -->
+                <div class="bg-gray-50 rounded-2xl p-4 border border-gray-100 space-y-3">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center shrink-0"><i class="fa-solid fa-envelope text-xs"></i></div>
+                        <span id="modalEmail" class="text-sm font-medium text-gray-700 truncate w-full"></span>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 rounded-full bg-green-100 text-green-600 flex items-center justify-center shrink-0"><i class="fa-solid fa-phone text-xs"></i></div>
+                        <span id="modalTelefono" class="text-sm font-medium text-gray-700"></span>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center shrink-0"><i class="fa-solid fa-id-card text-xs"></i></div>
+                        <span id="modalRfc" class="text-sm font-medium text-gray-700"></span>
+                    </div>
+                </div>
+
+                <!-- Lista de Parcelas -->
+                <div>
+                    <h4 class="font-bold text-gray-800 mb-3 flex items-center text-sm uppercase tracking-wide">
+                        <i class="fa-solid fa-map-location-dot text-green-600 mr-2"></i> Parcelas del Cliente
+                    </h4>
+                    <div id="modalParcelas" class="space-y-2">
+                        <!-- Las parcelas se inyectan aquí -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Pie Modal -->
+            <div class="p-4 border-t border-gray-100 bg-gray-50 shrink-0">
+                <button onclick="cerrarModal()" class="w-full py-2.5 bg-gray-200 hover:bg-gray-300 rounded-xl text-sm font-bold text-gray-700 transition-colors shadow-sm">
+                    Cerrar Detalle
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ========================================== -->
+    <!-- CABLEADO LÓGICO Y SCRIPTS                  -->
+    <!-- ========================================== -->
     <script>
         const API_URL = "https://agrosoluciones-backend.onrender.com";
         let memoriaClientes = []; 
@@ -322,6 +393,58 @@
             document.getElementById('nav-' + vista).className = "bg-green-700 hover:bg-green-600 px-4 py-2 rounded-md text-sm font-bold transition-colors shadow-sm";
         }
 
+
+        // --- NUEVO: FUNCIONES DEL MODAL DE DETALLE ---
+        function verDetalleCliente(id) {
+            // Buscamos al cliente en la memoria
+            const c = memoriaClientes.find(item => item.id === id);
+            if (!c) return;
+
+            // Inyectamos sus datos en la ventana
+            document.getElementById('modalNombre').textContent = `${c.nombre} ${c.apellidos}`;
+            document.getElementById('modalId').textContent = `ID: #${String(c.num_cliente).padStart(3, '0')}`;
+            document.getElementById('modalEmail').textContent = c.email || 'Sin correo registrado';
+            document.getElementById('modalTelefono').textContent = c.telefono || 'Sin teléfono';
+            document.getElementById('modalRfc').textContent = c.rfc || 'Sin RFC';
+
+            // Buscamos sus parcelas en la memoria de propiedades
+            const parcelasDelCliente = memoriaPropiedades.filter(p => p.cliente_id === id);
+            const contenedorParcelas = document.getElementById('modalParcelas');
+            
+            // Limpiamos la lista anterior
+            contenedorParcelas.innerHTML = '';
+
+            if (parcelasDelCliente.length === 0) {
+                contenedorParcelas.innerHTML = `
+                    <div class="text-center py-4 bg-white border border-dashed border-gray-300 rounded-xl">
+                        <p class="text-xs text-gray-400 italic">No tiene parcelas registradas aún.</p>
+                    </div>`;
+            } else {
+                parcelasDelCliente.forEach(p => {
+                    contenedorParcelas.innerHTML += `
+                        <div class="p-3 bg-white border border-gray-100 rounded-xl shadow-sm hover:border-green-300 transition-colors flex justify-between items-center">
+                            <div>
+                                <p class="text-sm font-bold text-gray-800"><i class="fa-solid fa-house-chimney text-yellow-500 mr-1.5 text-xs"></i>${p.nombre_propiedad}</p>
+                                <p class="text-[10px] text-gray-500 mt-0.5 ml-5">${p.tipo_cultivo} • ${p.estado}</p>
+                            </div>
+                            <div class="bg-green-50 text-green-700 px-2.5 py-1 rounded-lg border border-green-100">
+                                <p class="text-xs font-extrabold">${p.superficie_has} <span class="text-[9px] font-normal">Ha</span></p>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            // Mostramos el Modal
+            document.getElementById('modalDetalle').classList.remove('hidden');
+        }
+
+        function cerrarModal() {
+            document.getElementById('modalDetalle').classList.add('hidden');
+        }
+
+
+        // --- TABLA Y BUSCADOR DE CLIENTES ---
         function renderizarTablaClientes(listaDeClientes) {
             const cuerpoTabla = document.getElementById('cuerpoTabla');
             cuerpoTabla.innerHTML = '';
@@ -338,7 +461,8 @@
                                     <i class="fa-solid fa-user"></i>
                                 </div>
                                 <div>
-                                    <p class="font-bold text-gray-800">${c.nombre} <br> ${c.apellidos}</p>
+                                    <!-- AQUI ESTÁ EL CLICK PARA ABRIR EL MODAL -->
+                                    <p class="font-bold text-gray-800 cursor-pointer hover:text-green-600 transition-colors" onclick="verDetalleCliente('${c.id}')">${c.nombre} <br> ${c.apellidos}</p>
                                     <p class="text-[10px] text-gray-400 mt-1"><i class="fa-solid fa-hashtag text-green-500 mr-1"></i>ID: <span class="font-bold text-gray-600">#${textoId}</span> <span class="mx-2 text-gray-300">|</span> <i class="fa-solid fa-id-card text-blue-400 mr-1"></i>RFC: ${c.rfc || 'S/N'}</p>
                                 </div>
                             </div>
@@ -356,14 +480,11 @@
             });
         }
 
-        // --- SE ACTUALIZÓ LA FUNCIÓN DE FILTRADO AQUÍ ---
         function filtrarClientes() {
             const textoBuscado = document.getElementById('buscadorClientes').value.toLowerCase();
             const clientesFiltrados = memoriaClientes.filter(c => {
                 const nombreCompleto = `${c.nombre} ${c.apellidos}`.toLowerCase();
                 const numCliente = c.num_cliente ? String(c.num_cliente) : '';
-                
-                // Solo busca coincidencias en el nombre o en el ID
                 return nombreCompleto.includes(textoBuscado) || numCliente.includes(textoBuscado);
             });
             renderizarTablaClientes(clientesFiltrados);

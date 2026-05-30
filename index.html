@@ -23,9 +23,6 @@
 </head>
 <body class="text-gray-800">
 
-    <!-- IMAGEN OCULTA PARA EL PDF -->
-    <img id="logoEmpresa" src="logo.jpg" style="display:none;" />
-
     <!-- ========================================== -->
     <!-- PANTALLA DE LOGIN                          -->
     <!-- ========================================== -->
@@ -89,7 +86,7 @@
                         <option value="todos">Histórico Total</option>
                         <option value="01">Enero</option><option value="02">Febrero</option><option value="03">Marzo</option><option value="04">Abril</option><option value="05">Mayo</option><option value="06">Junio</option><option value="07">Julio</option><option value="08">Agosto</option><option value="09">Septiembre</option><option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option>
                     </select>
-                    <button onclick="generarReportePDF()" class="w-full bg-red-600 hover:bg-red-700 text-white text-xs font-bold py-2 rounded-lg transition-colors shadow-sm flex items-center justify-center">
+                    <button id="btnGenerarPDF" onclick="generarReportePDF()" class="w-full bg-red-600 hover:bg-red-700 text-white text-xs font-bold py-2 rounded-lg transition-colors shadow-sm flex items-center justify-center">
                         <i class="fa-solid fa-file-pdf mr-1.5"></i> Generar PDF
                     </button>
                 </div>
@@ -264,18 +261,43 @@
         // GENERACIÓN DE PDF CON TU LOGO OFICIAL
         // ==========================================
         function generarReportePDF() {
+            const btn = document.getElementById('btnGenerarPDF');
+            const textoOriginal = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> Generando...';
+            btn.disabled = true;
+
+            const logo = new Image();
+            // AHORA EL CÓDIGO BUSCA EXACTAMENTE "logo asoa.jpeg"
+            logo.src = 'logo asoa.jpeg'; 
+            
+            logo.onload = function() {
+                crearDocumentoPDF(logo);
+                btn.innerHTML = textoOriginal;
+                btn.disabled = false;
+            };
+            
+            logo.onerror = function() {
+                alert("⚠️ ATENCIÓN: No se encontró la imagen 'logo asoa.jpeg' en tu carpeta de GitHub. Asegúrate de haberla subido con el comando 'git add .'");
+                crearDocumentoPDF(null);
+                btn.innerHTML = textoOriginal;
+                btn.disabled = false;
+            };
+        }
+
+        function crearDocumentoPDF(logoImg) {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             const selectMes = document.getElementById('filtroMes');
             const nombreMes = selectMes.options[selectMes.selectedIndex].text;
 
-            // DIBUJAR EL LOGO DESDE LA IMAGEN OCULTA
-            const logo = document.getElementById('logoEmpresa');
-            try {
-                // Posición X:14, Y:12. Ancho:70, Alto:18 (Ajustado a la proporción de tu foto)
-                doc.addImage(logo, 'JPEG', 14, 12, 70, 18);
-            } catch(e) {
-                console.log("No se pudo cargar el logo local. Asegúrate de llamarlo logo.jpg");
+            if (logoImg) {
+                // Si la imagen cargó bien, la dibuja
+                doc.addImage(logoImg, 'JPEG', 14, 12, 70, 18);
+            } else {
+                // Si falló, pone el texto de respaldo
+                doc.setFontSize(22);
+                doc.setTextColor(27, 107, 67);
+                doc.text("Agrosoluciones Aéreas", 14, 20);
             }
 
             // Textos del encabezado
@@ -296,7 +318,7 @@
             doc.setTextColor(40, 40, 40);
             doc.text(`Vuelos Totales: ${statsVuelos}`, 14, 55);
             doc.text(`Superficie Cubierta: ${statsHa} Ha`, 70, 55);
-            doc.setTextColor(21, 128, 61); // Verde dinero
+            doc.setTextColor(21, 128, 61); 
             doc.text(`Ingresos: ${statsIngresos}`, 140, 55);
 
             // Preparar los datos de la tabla
@@ -322,13 +344,13 @@
                 startY: 60,
                 head: [['Fecha', 'Cliente', 'Parcela', 'Costo', 'Estado']],
                 body: bodyDatos,
-                headStyles: { fillColor: [27, 107, 67] }, // Tu color verde oscuro
-                alternateRowStyles: { fillColor: [240, 253, 244] }, // Verde muy clarito
+                headStyles: { fillColor: [27, 107, 67] }, 
+                alternateRowStyles: { fillColor: [240, 253, 244] }, 
                 styles: { fontSize: 9 }
             });
 
             // Descargar archivo PDF
-            doc.save(`Reporte_Agrosoluciones_${nombreMes.replace(' ', '_')}.pdf`);
+            doc.save(`Reporte_Agrosoluciones_${nombreMes.replace(/ /g, '_')}.pdf`);
         }
 
         // ==========================================

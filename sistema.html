@@ -297,7 +297,7 @@
         });
 
         async function eliminarCliente(id) { if(confirm("¿Eliminar cliente?")) { const res = await fetch(`${API_URL}/clientes/${id}`, { method: 'DELETE' }); if (!res.ok) alert("⚠️ No se puede borrar. Tiene parcelas asignadas."); await inicializarPanel(); } }
-        function prepararEdicionCliente(id) { const c = memoriaClientes.find(item => item.id === id); document.getElementById('editClienteId').value = c.id; document.getElementById('nombre').value = c.nombre; document.getElementById('apellidos').value = c.apellidos; document.getElementById('email').value = c.email; document.getElementById('telefono').value = c.telefono; document.getElementById('rfc').value = c.rfc; document.getElementById('tituloFormCliente').innerHTML = `<i class="fa-solid fa-pen text-amber-500 mr-2"></i> Editando`; document.getElementById('btnSubmitCliente').innerHTML = `<i class="fa-solid fa-check mr-1"></i> Actualizar`; document.getElementById('btnSubmitCliente').className = "w-full py-2.5 rounded-full text-sm font-bold text-white bg-amber-500 hover:bg-amber-600 transition-colors shadow-sm"; document.getElementById('btnCancelarCliente').classList.remove('hidden'); }
+        function prepararEdicionCliente(id) { const c = memoriaClientes.find(item => item.id === id); document.getElementById('editClienteId').value = c.id; document.getElementById('nombre').value = c.nombre; document.getElementById('apellidos').value = c.apellidos; document.getElementById('email').value = c.email; document.getElementById('telefono').value = c.telefono; document.getElementById('rfc').value = c.rfc; document.getElementById('tituloFormCliente').innerHTML = `<i class="fa-solid fa-pen text-amber-500 mr-2"></i> Editando`; document.getElementById('btnSubmitCliente').innerHTML = `<i class="fa-solid fa-check mr-1"></i> Actualizar`; document.getElementById('btnSubmitCliente').className = "w-full py-2.5 rounded-full text-sm font-bold text-white bg-amber-500 hover:bg-amber-600 transition-colors shadow-sm"; document.getElementById('btnCancelarCliente').classList.remove('hidden'); window.scrollTo({ top: 0, behavior: 'smooth' });}
         function limpiarFormCliente() { document.getElementById('registroForm').reset(); document.getElementById('editClienteId').value = ''; document.getElementById('tituloFormCliente').innerHTML = `<i class="fa-solid fa-user-plus text-green-600 mr-2"></i> Nuevo Cliente`; document.getElementById('btnSubmitCliente').innerHTML = `<i class="fa-solid fa-save mr-1"></i> Guardar Cliente`; document.getElementById('btnSubmitCliente').className = "w-full py-2.5 rounded-full text-sm font-bold text-white bg-[#4ade80] hover:bg-green-500 text-green-900 transition-colors shadow-sm"; document.getElementById('btnCancelarCliente').classList.add('hidden'); }
         document.getElementById('btnCancelarCliente').addEventListener('click', limpiarFormCliente);
 
@@ -326,7 +326,7 @@
         });
 
         async function eliminarPropiedad(id) { if(confirm("¿Eliminar parcela?")) { const res = await fetch(`${API_URL}/propiedades/${id}`, { method: 'DELETE' }); if (!res.ok) alert("⚠️ No se puede borrar. Tiene vuelos asignados."); await inicializarPanel(); } }
-        function prepararEdicionPropiedad(id) { const p = memoriaPropiedades.find(item => item.id === id); document.getElementById('editPropiedadId').value = p.id; document.getElementById('selectCliente').value = p.cliente_id; document.getElementById('nombre_propiedad').value = p.nombre_propiedad; document.getElementById('tipo_cultivo').value = p.tipo_cultivo; document.getElementById('superficie_has').value = p.superficie_has; document.getElementById('sistema_riego').value = p.sistema_riego; document.getElementById('direccion').value = p.direccion; document.getElementById('estado').value = p.estado; document.getElementById('tituloFormPropiedad').innerHTML = `<i class="fa-solid fa-pen text-amber-500 mr-2"></i> Editando Parcela`; document.getElementById('btnSubmitPropiedad').innerHTML = `<i class="fa-solid fa-check mr-1"></i> Actualizar`; document.getElementById('btnSubmitPropiedad').className = "w-full py-2.5 rounded-full text-sm font-bold text-white bg-amber-500 hover:bg-amber-600 transition-colors shadow-sm"; document.getElementById('btnCancelarPropiedad').classList.remove('hidden'); }
+        function prepararEdicionPropiedad(id) { const p = memoriaPropiedades.find(item => item.id === id); document.getElementById('editPropiedadId').value = p.id; document.getElementById('selectCliente').value = p.cliente_id; document.getElementById('nombre_propiedad').value = p.nombre_propiedad; document.getElementById('tipo_cultivo').value = p.tipo_cultivo; document.getElementById('superficie_has').value = p.superficie_has; document.getElementById('sistema_riego').value = p.sistema_riego; document.getElementById('direccion').value = p.direccion; document.getElementById('estado').value = p.estado; document.getElementById('tituloFormPropiedad').innerHTML = `<i class="fa-solid fa-pen text-amber-500 mr-2"></i> Editando Parcela`; document.getElementById('btnSubmitPropiedad').innerHTML = `<i class="fa-solid fa-check mr-1"></i> Actualizar`; document.getElementById('btnSubmitPropiedad').className = "w-full py-2.5 rounded-full text-sm font-bold text-white bg-amber-500 hover:bg-amber-600 transition-colors shadow-sm"; document.getElementById('btnCancelarPropiedad').classList.remove('hidden'); window.scrollTo({ top: 0, behavior: 'smooth' });}
         function limpiarFormPropiedad() { document.getElementById('propiedadForm').reset(); document.getElementById('editPropiedadId').value = ''; document.getElementById('estado').value = 'Veracruz'; document.getElementById('tituloFormPropiedad').innerHTML = `<i class="fa-solid fa-map-location-dot text-green-600 mr-2"></i> Registrar Parcela`; document.getElementById('btnSubmitPropiedad').innerHTML = `<i class="fa-solid fa-save mr-1"></i> Guardar Parcela`; document.getElementById('btnSubmitPropiedad').className = "w-full py-2.5 rounded-full text-sm font-bold text-white bg-[#4ade80] hover:bg-green-500 text-green-900 transition-colors shadow-sm"; document.getElementById('btnCancelarPropiedad').classList.add('hidden'); }
         document.getElementById('btnCancelarPropiedad').addEventListener('click', limpiarFormPropiedad);
 
@@ -350,13 +350,14 @@
                     let ingresos = s.costo_servicio || 0; let gastos = s.gastos || 0; let utilidad = ingresos - gastos;
                     let fSeguimiento = s.fecha_seguimiento || 'S/N'; let factura = s.no_factura || 'S/N'; let observaciones = s.observaciones || '';
 
-                    cuerpo.innerHTML += `<tr class="hover:bg-yellow-50 transition-colors"><td class="td-excel bg-gray-50 font-bold text-gray-500">${noControl}</td><td class="td-excel font-semibold text-gray-800">${nomProd}</td><td class="td-excel text-gray-600">${apeProd}</td><td class="td-excel text-gray-600">${telProd}</td><td class="td-excel bg-green-50/50">${cultivo}</td><td class="td-excel bg-green-50/50 font-bold text-center">${hectareas}</td><td class="td-excel bg-green-50/50 text-gray-600 truncate max-w-[120px]">${localidad}</td><td class="td-excel bg-blue-50/30">${cotizacion}</td><td class="td-excel bg-blue-50/30">${ordenServ}</td><td class="td-excel bg-blue-50/30 font-bold text-blue-800">${fechaVen}</td><td class="td-excel bg-emerald-50 text-green-700 font-extrabold text-right">$${ingresos.toLocaleString('es-MX')}</td><td class="td-excel bg-rose-50 text-rose-600 font-bold text-right">$${gastos.toLocaleString('es-MX')}</td><td class="td-excel bg-indigo-50 text-indigo-700 font-extrabold text-right">$${utilidad.toLocaleString('es-MX')}</td><td class="td-excel text-gray-500 text-center">${fSeguimiento}</td><td class="td-excel text-gray-500 text-center">${factura}</td><td class="td-excel text-gray-400 italic truncate max-w-[150px] cursor-help" title="${observaciones}">${observaciones ? observaciones : 'Sin obs.'}</td><td class="td-excel text-center space-x-1"><button onclick="eliminarServio('${s.id}')" class="text-rose-500 hover:text-rose-700 px-2"><i class="fa-solid fa-trash"></i></button></td></tr>`;
+                    cuerpo.innerHTML += `<tr class="hover:bg-yellow-50 transition-colors"><td class="td-excel bg-gray-50 font-bold text-gray-500">${noControl}</td><td class="td-excel font-semibold text-gray-800">${nomProd}</td><td class="td-excel text-gray-600">${apeProd}</td><td class="td-excel text-gray-600">${telProd}</td><td class="td-excel bg-green-50/50">${cultivo}</td><td class="td-excel bg-green-50/50 font-bold text-center">${hectareas}</td><td class="td-excel bg-green-50/50 text-gray-600 truncate max-w-[120px]">${localidad}</td><td class="td-excel bg-blue-50/30">${cotizacion}</td><td class="td-excel bg-blue-50/30">${ordenServ}</td><td class="td-excel bg-blue-50/30 font-bold text-blue-800">${fechaVen}</td><td class="td-excel bg-emerald-50 text-green-700 font-extrabold text-right">$${ingresos.toLocaleString('es-MX')}</td><td class="td-excel bg-rose-50 text-rose-600 font-bold text-right">$${gastos.toLocaleString('es-MX')}</td><td class="td-excel bg-indigo-50 text-indigo-700 font-extrabold text-right">$${utilidad.toLocaleString('es-MX')}</td><td class="td-excel text-gray-500 text-center">${fSeguimiento}</td><td class="td-excel text-gray-500 text-center">${factura}</td><td class="td-excel text-gray-400 italic truncate max-w-[150px] cursor-help" title="${observaciones}">${observaciones ? observaciones : 'Sin obs.'}</td><td class="td-excel text-center space-x-2"><button onclick="prepararEdicionServicio('${s.id}')" class="text-amber-500 hover:text-amber-700" title="Editar Venta"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="eliminarServio('${s.id}')" class="text-rose-500 hover:text-rose-700" title="Eliminar Venta"><i class="fa-solid fa-trash"></i></button></td></tr>`;
                 });
             } catch (e) { console.error("Error ventas", e); }
         }
 
         document.getElementById('servicioForm').addEventListener('submit', async function(e) { 
             e.preventDefault(); 
+            const id = document.getElementById('editServioId').value;
             const btn = document.getElementById('btnSubmitServicio'); btn.innerHTML = 'Guardando...';
             
             const datos = { 
@@ -367,11 +368,48 @@
                 no_factura: document.getElementById('no_factura').value, observaciones: document.getElementById('observaciones').value
             }; 
             
-            await fetch(`${API_URL}/servicios/`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos) }); 
-            document.getElementById('servicioForm').reset(); btn.innerHTML = '<i class="fa-solid fa-save mr-1"></i> Guardar en Base de Datos'; await inicializarPanel(); 
+            await fetch(id ? `${API_URL}/servicios/${id}` : `${API_URL}/servicios/`, { 
+                method: id ? 'PUT' : 'POST', 
+                headers: { 'Content-Type': 'application/json' }, 
+                body: JSON.stringify(datos) 
+            }); 
+            
+            limpiarFormServicio(); 
+            await inicializarPanel(); 
         });
 
         async function eliminarServio(id) { if(confirm("¿Borrar registro de venta?")) { await fetch(`${API_URL}/servicios/${id}`, { method: 'DELETE' }); await inicializarPanel(); } }
+        
+        function prepararEdicionServicio(id) { 
+            const s = memoriaServicios.find(item => item.id === id); 
+            document.getElementById('editServioId').value = s.id; 
+            document.getElementById('selectPropiedad').value = s.propiedad_id; 
+            document.getElementById('fecha_aplicacion').value = s.fecha_aplicacion || ''; 
+            document.getElementById('costo_servicio').value = s.costo_servicio || ''; 
+            document.getElementById('no_cotizacion').value = s.no_cotizacion || ''; 
+            document.getElementById('no_orden').value = s.no_orden || ''; 
+            document.getElementById('gastos').value = s.gastos || ''; 
+            document.getElementById('fecha_seguimiento').value = s.fecha_seguimiento || ''; 
+            document.getElementById('no_factura').value = s.no_factura || ''; 
+            document.getElementById('observaciones').value = s.observaciones || ''; 
+            
+            document.getElementById('tituloFormServio').innerHTML = `<i class="fa-solid fa-pen text-amber-500 mr-2"></i> Editando Venta`; 
+            document.getElementById('btnSubmitServicio').innerHTML = `<i class="fa-solid fa-check mr-1"></i> Actualizar Venta`; 
+            document.getElementById('btnSubmitServicio').className = "w-full py-2.5 rounded-xl text-sm font-bold text-white bg-amber-500 hover:bg-amber-600 transition-colors shadow-sm"; 
+            document.getElementById('btnCancelarServicio').classList.remove('hidden'); 
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        function limpiarFormServicio() { 
+            document.getElementById('servicioForm').reset(); 
+            document.getElementById('editServioId').value = ''; 
+            document.getElementById('tituloFormServio').innerHTML = `<i class="fa-solid fa-file-invoice-dollar text-green-600 mr-2"></i> Registrar Venta`; 
+            document.getElementById('btnSubmitServicio').innerHTML = `<i class="fa-solid fa-save mr-1"></i> Guardar en Base de Datos`; 
+            document.getElementById('btnSubmitServicio').className = "w-full py-2.5 rounded-xl text-sm font-bold text-white bg-green-700 hover:bg-green-600 transition-colors shadow-sm"; 
+            document.getElementById('btnCancelarServicio').classList.add('hidden'); 
+        }
+        document.getElementById('btnCancelarServicio').addEventListener('click', limpiarFormServicio);
     </script>
 </body>
 </html>

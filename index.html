@@ -267,8 +267,8 @@
             btn.disabled = true;
 
             const logo = new Image();
-            // AHORA EL CÓDIGO BUSCA EXACTAMENTE "logo asoa.jpeg"
-            logo.src = 'logo asoa.jpeg'; 
+            // AHORA EL CÓDIGO BUSCA EXACTAMENTE "logo.jpeg" (Sin espacios)
+            logo.src = 'logo.jpeg'; 
             
             logo.onload = function() {
                 crearDocumentoPDF(logo);
@@ -277,7 +277,7 @@
             };
             
             logo.onerror = function() {
-                alert("⚠️ ATENCIÓN: No se encontró la imagen 'logo asoa.jpeg' en tu carpeta de GitHub. Asegúrate de haberla subido con el comando 'git add .'");
+                alert("⚠️ ATENCIÓN: No se encontró la imagen. Asegúrate de llamarla exactamente 'logo.jpeg' en tu computadora y súbela con 'git add .'");
                 crearDocumentoPDF(null);
                 btn.innerHTML = textoOriginal;
                 btn.disabled = false;
@@ -291,10 +291,8 @@
             const nombreMes = selectMes.options[selectMes.selectedIndex].text;
 
             if (logoImg) {
-                // Si la imagen cargó bien, la dibuja
                 doc.addImage(logoImg, 'JPEG', 14, 12, 70, 18);
             } else {
-                // Si falló, pone el texto de respaldo
                 doc.setFontSize(22);
                 doc.setTextColor(27, 107, 67);
                 doc.text("Agrosoluciones Aéreas", 14, 20);

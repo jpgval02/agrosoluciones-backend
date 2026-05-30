@@ -50,16 +50,30 @@ class ServicioNuevo(BaseModel):
     satisfaccion: int
 
 
-# --- RUTA DE LOGIN (EL PORTERO) ---
+# --- RUTA DE LOGIN (EL PORTERO CON ROLES) ---
 @app.post("/login/")
 async def iniciar_sesion(credenciales: Credenciales):
     try:
-        # Supabase verifica si el correo y la contraseña son correctos
+        # 1. Supabase verifica si el correo y la contraseña son correctos
         respuesta = supabase.auth.sign_in_with_password({
             "email": credenciales.email,
             "password": credenciales.password
         })
-        return {"mensaje": "Acceso concedido"}
+        
+        # 2. Buscamos qué rol tiene este usuario en la base de datos
+        rol_usuario = "trabajador" # Rol por defecto (el más restrictivo)
+        try:
+            # Buscamos el correo en la tabla 'roles'
+            datos_rol = supabase.table('roles').select('rol').eq('email', credenciales.email).execute()
+            if len(datos_rol.data) > 0:
+                rol_usuario = datos_rol.data[0]['rol']
+        except Exception as e:
+            # Si hay algún error leyendo la tabla, se queda como trabajador por seguridad
+            pass
+            
+        # 3. Devolvemos el acceso y el gafete (rol)
+        return {"mensaje": "Acceso concedido", "rol": rol_usuario}
+        
     except Exception as e:
         # Si la contraseña o el correo están mal, rechazamos la entrada (Error 401)
         raise HTTPException(status_code=401, detail="Correo o contraseña incorrectos")

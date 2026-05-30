@@ -159,10 +159,12 @@
             </div>
 
             <div class="block xl:table-cell w-full xl:w-3/4 vertical-align-top space-y-8">
+                
                 <div id="vista-tabla-clientes" class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden hidden">
                     <div class="tabla-header px-6 py-4 flex flex-col md:flex-row md:justify-between items-center text-white gap-3"><h2 class="text-sm font-bold uppercase tracking-wider whitespace-nowrap"><i class="fa-solid fa-list mr-2"></i> Directorio de Clientes</h2><div class="relative w-full md:w-72"><div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><i class="fa-solid fa-search text-gray-400"></i></div><input type="text" id="buscadorClientes" onkeyup="filtrarClientes()" placeholder="Buscar..." class="w-full pl-10 pr-4 py-1.5 bg-white text-gray-800 rounded-full text-sm outline-none shadow-inner"></div><span id="contadorClientes" class="bg-white text-green-800 text-xs font-bold px-3 py-1 rounded-full shadow-sm whitespace-nowrap">0 REGISTRADOS</span></div>
                     <div class="overflow-x-auto custom-scrollbar"><table class="min-w-full divide-y divide-gray-100 text-sm"><thead class="bg-[#187547] text-white"><tr><th class="px-6 py-3 text-left text-xs font-semibold tracking-wider">CLIENTE</th><th class="px-6 py-3 text-left text-xs font-semibold tracking-wider">CONTACTO</th><th class="px-6 py-3 text-center text-xs font-semibold tracking-wider">ACCIONES</th></tr></thead><tbody id="cuerpoTabla" class="bg-white divide-y divide-gray-100"></tbody></table></div>
                 </div>
+                
                 <div id="vista-tabla-propiedades" class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden hidden">
                     <div class="tabla-header px-6 py-4 flex justify-between items-center text-white"><h2 class="text-sm font-bold uppercase tracking-wider"><i class="fa-solid fa-map mr-2"></i> Inventario de Parcelas</h2></div>
                     <div class="overflow-x-auto custom-scrollbar"><table class="min-w-full divide-y divide-gray-100 text-sm"><thead class="bg-[#187547] text-white"><tr><th class="px-6 py-3 text-left text-xs font-semibold tracking-wider">PROPIEDAD / PREDIO</th><th class="px-6 py-3 text-center text-xs font-semibold tracking-wider">CULTIVO</th><th class="px-6 py-3 text-center text-xs font-semibold tracking-wider">SUPERFICIE</th><th class="px-6 py-3 text-center text-xs font-semibold tracking-wider">ACCIONES</th></tr></thead><tbody id="cuerpoTablaPropiedades" class="bg-white divide-y divide-gray-100"></tbody></table></div>
@@ -170,7 +172,6 @@
                 
                 <div id="vista-tabla-servicios" class="bg-white rounded-xl shadow-lg border border-gray-300 overflow-hidden block">
                     <div class="tabla-header px-4 py-3 flex justify-between items-center text-white"><h2 class="text-sm font-bold uppercase tracking-wider"><i class="fa-solid fa-table border border-white/30 p-1.5 rounded bg-white/10 mr-2"></i> Base de Datos de Ventas 2026</h2></div>
-                    
                     <div class="overflow-x-auto custom-scrollbar max-h-[600px] relative">
                         <table class="w-full divide-y divide-gray-200 text-sm border-collapse">
                             <thead class="bg-gray-100 text-gray-700 sticky top-0 z-10 shadow-sm border-b-2 border-gray-300">
@@ -204,13 +205,11 @@
         </div>
     </div> 
 
-    <div id="modalDetalle" class="hidden fixed inset-0 bg-black/60 z-[70] flex items-center justify-center p-4">
-        </div>
-
     <script>
         const API_URL = "https://agrosoluciones-backend.onrender.com";
         let memoriaClientes = [], memoriaPropiedades = [], memoriaServicios = [];
 
+        // --- SISTEMA DE LOGIN ---
         document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const btn = document.getElementById('btnLogin');
@@ -218,7 +217,7 @@
             btn.disabled = true; 
             
             try {
-                // Pasamos el login rápido por practicidad del prototipo
+                // By-pass temporal para tu prototipo público
                 document.getElementById('login-container').classList.add('hidden');
                 document.getElementById('dashboard-container').classList.remove('hidden');
                 await inicializarPanel(); 
@@ -227,12 +226,25 @@
 
         function cerrarSesion() { window.location.reload(); }
 
+        // --- INICIALIZADOR ---
         async function inicializarPanel() {
             await cargarClientes();
             await cargarPropiedades();
             await cargarServicios();
-            cambiarVista('servicios'); // Mostrar por defecto Ventas
+            cambiarVista('servicios'); // Mostrar Ventas por defecto
             actualizarEstadisticas();
+        }
+
+        // --- NAVEGACIÓN Y ESTADÍSTICAS ---
+        function cambiarVista(vista) {
+            ['clientes', 'propiedades', 'servicios'].forEach(sec => {
+                document.getElementById('vista-form-' + sec).classList.add('hidden'); document.getElementById('vista-form-' + sec).classList.remove('block');
+                document.getElementById('vista-tabla-' + sec).classList.add('hidden'); document.getElementById('vista-tabla-' + sec).classList.remove('block');
+                document.getElementById('nav-' + sec).className = "border border-green-500/50 hover:bg-green-700 px-4 py-2 rounded-md text-sm font-medium transition-colors shadow-sm";
+            });
+            document.getElementById('vista-form-' + vista).classList.remove('hidden'); document.getElementById('vista-form-' + vista).classList.add('block');
+            document.getElementById('vista-tabla-' + vista).classList.remove('hidden'); document.getElementById('vista-tabla-' + vista).classList.add('block');
+            document.getElementById('nav-' + vista).className = "bg-green-700 hover:bg-green-600 px-4 py-2 rounded-md text-sm font-bold transition-colors shadow-sm";
         }
 
         function actualizarEstadisticas() {
@@ -248,7 +260,7 @@
                 let prop = memoriaPropiedades.find(p => p.id === s.propiedad_id);
                 if(prop) totalHaFumigadas += (prop.superficie_has || 0);
                 totalIngresos += (s.costo_servicio || 0);
-                totalGastos += (s.gastos || 0); // Asumiendo que existan los gastos
+                totalGastos += (s.gastos || 0);
             });
 
             document.getElementById('stat-hectareas').textContent = totalHaFumigadas.toFixed(2);
@@ -256,127 +268,107 @@
             document.getElementById('stat-utilidad').textContent = "$" + (totalIngresos - totalGastos).toLocaleString('es-MX', {minimumFractionDigits: 2});
         }
 
-        function cambiarVista(vista) {
-            ['clientes', 'propiedades', 'servicios'].forEach(sec => {
-                document.getElementById('vista-form-' + sec).classList.add('hidden'); document.getElementById('vista-form-' + sec).classList.remove('block');
-                document.getElementById('vista-tabla-' + sec).classList.add('hidden'); document.getElementById('vista-tabla-' + sec).classList.remove('block');
-                document.getElementById('nav-' + sec).className = "border border-green-500/50 hover:bg-green-700 px-4 py-2 rounded-md text-sm font-medium transition-colors";
+        // --- MÓDULO 1: CLIENTES ---
+        function renderizarTablaClientes(lista) {
+            const cuerpo = document.getElementById('cuerpoTabla'); cuerpo.innerHTML = ''; 
+            document.getElementById('contadorClientes').textContent = `${lista.length} REGISTRADOS`;
+            lista.forEach(c => {
+                const textoId = c.num_cliente ? String(c.num_cliente).padStart(3, '0') : 'N/A';
+                cuerpo.innerHTML += `<tr class="hover:bg-gray-50 transition-colors group"><td class="px-6 py-4"><div class="flex items-center space-x-4"><div class="bg-green-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold shadow-sm"><i class="fa-solid fa-user"></i></div><div><p class="font-bold text-gray-800">${c.nombre} <br> ${c.apellidos}</p><p class="text-[10px] text-gray-400 mt-1"><i class="fa-solid fa-hashtag text-green-500 mr-1"></i>ID: <span class="font-bold text-gray-600">#${textoId}</span> <span class="mx-2 text-gray-300">|</span> <i class="fa-solid fa-id-card text-blue-400 mr-1"></i>RFC: ${c.rfc || 'S/N'}</p></div></div></td><td class="px-6 py-4"><p class="text-sm text-blue-600 font-medium"><i class="fa-solid fa-envelope mr-2"></i>${c.email || 'Sin correo'}</p><p class="text-sm text-gray-600 mt-1"><i class="fa-solid fa-phone text-green-600 mr-2"></i>${c.telefono}</p></td><td class="px-6 py-4 text-center space-x-1 whitespace-nowrap"><button onclick="prepararEdicionCliente('${c.id}')" class="bg-amber-400 hover:bg-amber-500 text-white text-xs font-bold px-4 py-2 rounded-full transition-colors shadow-sm"><i class="fa-solid fa-pen-to-square mr-1"></i> Editar</button><button onclick="eliminarCliente('${c.id}')" class="bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-4 py-2 rounded-full transition-colors shadow-sm"><i class="fa-solid fa-trash mr-1"></i></button></td></tr>`;
             });
-            document.getElementById('vista-form-' + vista).classList.remove('hidden'); document.getElementById('vista-form-' + vista).classList.add('block');
-            document.getElementById('vista-tabla-' + vista).classList.remove('hidden'); document.getElementById('vista-tabla-' + vista).classList.add('block');
-            document.getElementById('nav-' + vista).className = "bg-green-700 hover:bg-green-600 px-4 py-2 rounded-md text-sm font-bold transition-colors shadow-sm";
+        }
+        function filtrarClientes() { const txt = document.getElementById('buscadorClientes').value.toLowerCase(); renderizarTablaClientes(memoriaClientes.filter(c => `${c.nombre} ${c.apellidos}`.toLowerCase().includes(txt))); }
+
+        async function cargarClientes() { 
+            try { 
+                const res = await fetch(`${API_URL}/clientes/`); memoriaClientes = await res.json(); 
+                const select = document.getElementById('selectCliente'); select.innerHTML = '<option value="">-- Selecciona el Propietario --</option>'; 
+                memoriaClientes.forEach(c => { select.innerHTML += `<option value="${c.id}">${c.nombre} ${c.apellidos}</option>`; }); 
+                renderizarTablaClientes(memoriaClientes); 
+            } catch (e) { console.error("Error clientes", e); } 
         }
 
-        // ==========================================
-        // RENDERIZADO DE LA "SÚPER TABLA" DE VENTAS
-        // ==========================================
+        document.getElementById('registroForm').addEventListener('submit', async function(e) { 
+            e.preventDefault(); 
+            const id = document.getElementById('editClienteId').value; 
+            const datos = { nombre: document.getElementById('nombre').value, apellidos: document.getElementById('apellidos').value, email: document.getElementById('email').value, telefono: document.getElementById('telefono').value, rfc: document.getElementById('rfc').value }; 
+            await fetch(id ? `${API_URL}/clientes/${id}` : `${API_URL}/clientes/`, { method: id ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos) }); 
+            limpiarFormCliente(); await inicializarPanel(); 
+        });
+
+        async function eliminarCliente(id) { if(confirm("¿Eliminar cliente?")) { const res = await fetch(`${API_URL}/clientes/${id}`, { method: 'DELETE' }); if (!res.ok) alert("⚠️ No se puede borrar. Tiene parcelas asignadas."); await inicializarPanel(); } }
+        function prepararEdicionCliente(id) { const c = memoriaClientes.find(item => item.id === id); document.getElementById('editClienteId').value = c.id; document.getElementById('nombre').value = c.nombre; document.getElementById('apellidos').value = c.apellidos; document.getElementById('email').value = c.email; document.getElementById('telefono').value = c.telefono; document.getElementById('rfc').value = c.rfc; document.getElementById('tituloFormCliente').innerHTML = `<i class="fa-solid fa-pen text-amber-500 mr-2"></i> Editando`; document.getElementById('btnSubmitCliente').innerHTML = `<i class="fa-solid fa-check mr-1"></i> Actualizar`; document.getElementById('btnSubmitCliente').className = "w-full py-2.5 rounded-full text-sm font-bold text-white bg-amber-500 hover:bg-amber-600 transition-colors shadow-sm"; document.getElementById('btnCancelarCliente').classList.remove('hidden'); }
+        function limpiarFormCliente() { document.getElementById('registroForm').reset(); document.getElementById('editClienteId').value = ''; document.getElementById('tituloFormCliente').innerHTML = `<i class="fa-solid fa-user-plus text-green-600 mr-2"></i> Nuevo Cliente`; document.getElementById('btnSubmitCliente').innerHTML = `<i class="fa-solid fa-save mr-1"></i> Guardar Cliente`; document.getElementById('btnSubmitCliente').className = "w-full py-2.5 rounded-full text-sm font-bold text-white bg-[#4ade80] hover:bg-green-500 text-green-900 transition-colors shadow-sm"; document.getElementById('btnCancelarCliente').classList.add('hidden'); }
+        document.getElementById('btnCancelarCliente').addEventListener('click', limpiarFormCliente);
+
+
+        // --- MÓDULO 2: PARCELAS ---
+        async function cargarPropiedades() {
+            try { 
+                const res = await fetch(`${API_URL}/propiedades/`); memoriaPropiedades = await res.json(); 
+                const cuerpo = document.getElementById('cuerpoTablaPropiedades'); cuerpo.innerHTML = ''; 
+                const select = document.getElementById('selectPropiedad'); select.innerHTML = '<option value="">-- Selecciona --</option>';
+                
+                memoriaPropiedades.forEach(p => {
+                    const cl = memoriaClientes.find(c => c.id === p.cliente_id); const nombreDueno = cl ? `${cl.nombre} ${cl.apellidos}` : 'Desconocido';
+                    cuerpo.innerHTML += `<tr class="hover:bg-gray-50 transition-colors"><td class="px-6 py-4"><p class="font-bold text-gray-800 text-sm"><i class="fa-solid fa-house-chimney text-yellow-500 mr-2"></i>${p.nombre_propiedad}</p><p class="text-[11px] text-gray-500 mt-1"><i class="fa-solid fa-location-dot text-red-500 mr-1 ml-1"></i> ${p.direccion || p.estado} - Prop: ${nombreDueno}</p></td><td class="px-6 py-4 text-center"><span class="inline-flex items-center whitespace-nowrap bg-[#1b6b43] text-white px-3 py-1.5 rounded-full text-[10px] font-bold tracking-wider uppercase shadow-sm"><i class="fa-solid fa-seedling mr-1"></i> ${p.tipo_cultivo}</span></td><td class="px-6 py-4 text-center"><p class="text-xl font-extrabold text-gray-800">${p.superficie_has}</p><p class="text-[9px] text-gray-400 uppercase tracking-widest font-bold">Hectáreas</p></td><td class="px-6 py-4 text-center space-x-1 whitespace-nowrap"><button onclick="prepararEdicionPropiedad('${p.id}')" class="bg-amber-400 hover:bg-amber-500 text-white text-xs font-bold px-4 py-2 rounded-full shadow-sm"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="eliminarPropiedad('${p.id}')" class="bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-4 py-2 rounded-full shadow-sm"><i class="fa-solid fa-trash"></i></button></td></tr>`;
+                    select.innerHTML += `<option value="${p.id}">${nombreDueno} - ${p.nombre_propiedad} (${p.tipo_cultivo})</option>`;
+                });
+            } catch (e) { console.error("Error parcelas", e); }
+        }
+
+        document.getElementById('propiedadForm').addEventListener('submit', async function(e) { 
+            e.preventDefault(); 
+            const id = document.getElementById('editPropiedadId').value; 
+            const datos = { cliente_id: document.getElementById('selectCliente').value, nombre_propiedad: document.getElementById('nombre_propiedad').value, direccion: document.getElementById('direccion').value, estado: document.getElementById('estado').value, tipo_cultivo: document.getElementById('tipo_cultivo').value, superficie_has: parseFloat(document.getElementById('superficie_has').value), sistema_riego: document.getElementById('sistema_riego').value, comentarios: '' }; 
+            await fetch(id ? `${API_URL}/propiedades/${id}` : `${API_URL}/propiedades/`, { method: id ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos) }); 
+            limpiarFormPropiedad(); await inicializarPanel(); 
+        });
+
+        async function eliminarPropiedad(id) { if(confirm("¿Eliminar parcela?")) { const res = await fetch(`${API_URL}/propiedades/${id}`, { method: 'DELETE' }); if (!res.ok) alert("⚠️ No se puede borrar. Tiene vuelos asignados."); await inicializarPanel(); } }
+        function prepararEdicionPropiedad(id) { const p = memoriaPropiedades.find(item => item.id === id); document.getElementById('editPropiedadId').value = p.id; document.getElementById('selectCliente').value = p.cliente_id; document.getElementById('nombre_propiedad').value = p.nombre_propiedad; document.getElementById('tipo_cultivo').value = p.tipo_cultivo; document.getElementById('superficie_has').value = p.superficie_has; document.getElementById('sistema_riego').value = p.sistema_riego; document.getElementById('direccion').value = p.direccion; document.getElementById('estado').value = p.estado; document.getElementById('tituloFormPropiedad').innerHTML = `<i class="fa-solid fa-pen text-amber-500 mr-2"></i> Editando Parcela`; document.getElementById('btnSubmitPropiedad').innerHTML = `<i class="fa-solid fa-check mr-1"></i> Actualizar`; document.getElementById('btnSubmitPropiedad').className = "w-full py-2.5 rounded-full text-sm font-bold text-white bg-amber-500 hover:bg-amber-600 transition-colors shadow-sm"; document.getElementById('btnCancelarPropiedad').classList.remove('hidden'); }
+        function limpiarFormPropiedad() { document.getElementById('propiedadForm').reset(); document.getElementById('editPropiedadId').value = ''; document.getElementById('estado').value = 'Veracruz'; document.getElementById('tituloFormPropiedad').innerHTML = `<i class="fa-solid fa-map-location-dot text-green-600 mr-2"></i> Registrar Parcela`; document.getElementById('btnSubmitPropiedad').innerHTML = `<i class="fa-solid fa-save mr-1"></i> Guardar Parcela`; document.getElementById('btnSubmitPropiedad').className = "w-full py-2.5 rounded-full text-sm font-bold text-white bg-[#4ade80] hover:bg-green-500 text-green-900 transition-colors shadow-sm"; document.getElementById('btnCancelarPropiedad').classList.add('hidden'); }
+        document.getElementById('btnCancelarPropiedad').addEventListener('click', limpiarFormPropiedad);
+
+
+        // --- MÓDULO 3: VENTAS Y SERVICIOS ---
         async function cargarServicios() {
             try { 
                 const res = await fetch(`${API_URL}/servicios/`); 
                 memoriaServicios = await res.json(); 
-                const cuerpo = document.getElementById('cuerpoTablaServicios'); 
-                cuerpo.innerHTML = '';
+                const cuerpo = document.getElementById('cuerpoTablaServicios'); cuerpo.innerHTML = '';
                 
                 memoriaServicios.forEach(s => {
                     const pr = memoriaPropiedades.find(p => p.id === s.propiedad_id); 
                     const cl = pr ? memoriaClientes.find(c => c.id === pr.cliente_id) : null;
                     
-                    // Extraer o generar datos cruzados
                     let noControl = s.id ? String(s.id).substring(0,6).toUpperCase() : 'S/N';
-                    let nomProd = cl ? cl.nombre : 'S/N';
-                    let apeProd = cl ? cl.apellidos : 'S/N';
-                    let telProd = cl ? cl.telefono : 'S/N';
+                    let nomProd = cl ? cl.nombre : 'S/N'; let apeProd = cl ? cl.apellidos : 'S/N'; let telProd = cl ? cl.telefono : 'S/N';
+                    let cultivo = pr ? pr.tipo_cultivo : 'S/N'; let hectareas = pr ? pr.superficie_has : 0; let localidad = pr ? (pr.direccion || pr.estado) : 'S/N';
                     
-                    let cultivo = pr ? pr.tipo_cultivo : 'S/N';
-                    let hectareas = pr ? pr.superficie_has : 0;
-                    let localidad = pr ? pr.direccion : 'S/N';
+                    let cotizacion = s.no_cotizacion || 'S/N'; let ordenServ = s.no_orden || 'S/N'; let fechaVen = s.fecha_aplicacion || 'S/N';
+                    let ingresos = s.costo_servicio || 0; let gastos = s.gastos || 0; let utilidad = ingresos - gastos;
+                    let fSeguimiento = s.fecha_seguimiento || 'S/N'; let factura = s.no_factura || 'S/N'; let observaciones = s.observaciones || '';
 
-                    // Variables nuevas (Si la BD aún no las tiene, ponemos S/N o 0)
-                    let cotizacion = s.no_cotizacion || 'S/N';
-                    let ordenServ = s.no_orden || 'S/N';
-                    let fechaVen = s.fecha_aplicacion || 'S/N';
-                    let ingresos = s.costo_servicio || 0;
-                    let gastos = s.gastos || 0;
-                    let utilidad = ingresos - gastos;
-                    let fSeguimiento = s.fecha_seguimiento || 'S/N';
-                    let factura = s.no_factura || 'S/N';
-                    let observaciones = s.observaciones || '';
-
-                    cuerpo.innerHTML += `
-                        <tr class="hover:bg-yellow-50 transition-colors">
-                            <td class="td-excel bg-gray-50 font-bold text-gray-500">${noControl}</td>
-                            <td class="td-excel font-semibold text-gray-800">${nomProd}</td>
-                            <td class="td-excel text-gray-600">${apeProd}</td>
-                            <td class="td-excel text-gray-600">${telProd}</td>
-                            
-                            <td class="td-excel bg-green-50/50">${cultivo}</td>
-                            <td class="td-excel bg-green-50/50 font-bold text-center">${hectareas}</td>
-                            <td class="td-excel bg-green-50/50 text-gray-600 truncate max-w-[120px]">${localidad}</td>
-                            
-                            <td class="td-excel bg-blue-50/30">${cotizacion}</td>
-                            <td class="td-excel bg-blue-50/30">${ordenServ}</td>
-                            <td class="td-excel bg-blue-50/30 font-bold text-blue-800">${fechaVen}</td>
-                            
-                            <td class="td-excel bg-emerald-50 text-green-700 font-extrabold text-right">$${ingresos.toLocaleString('es-MX')}</td>
-                            <td class="td-excel bg-rose-50 text-rose-600 font-bold text-right">$${gastos.toLocaleString('es-MX')}</td>
-                            <td class="td-excel bg-indigo-50 text-indigo-700 font-extrabold text-right">$${utilidad.toLocaleString('es-MX')}</td>
-                            
-                            <td class="td-excel text-gray-500 text-center">${fSeguimiento}</td>
-                            <td class="td-excel text-gray-500 text-center">${factura}</td>
-                            <td class="td-excel text-gray-400 italic truncate max-w-[150px] cursor-help" title="${observaciones}">${observaciones ? observaciones : 'Sin obs.'}</td>
-                            
-                            <td class="td-excel text-center space-x-1">
-                                <button onclick="eliminarServio('${s.id}')" class="text-rose-500 hover:text-rose-700 px-2"><i class="fa-solid fa-trash"></i></button>
-                            </td>
-                        </tr>
-                    `;
+                    cuerpo.innerHTML += `<tr class="hover:bg-yellow-50 transition-colors"><td class="td-excel bg-gray-50 font-bold text-gray-500">${noControl}</td><td class="td-excel font-semibold text-gray-800">${nomProd}</td><td class="td-excel text-gray-600">${apeProd}</td><td class="td-excel text-gray-600">${telProd}</td><td class="td-excel bg-green-50/50">${cultivo}</td><td class="td-excel bg-green-50/50 font-bold text-center">${hectareas}</td><td class="td-excel bg-green-50/50 text-gray-600 truncate max-w-[120px]">${localidad}</td><td class="td-excel bg-blue-50/30">${cotizacion}</td><td class="td-excel bg-blue-50/30">${ordenServ}</td><td class="td-excel bg-blue-50/30 font-bold text-blue-800">${fechaVen}</td><td class="td-excel bg-emerald-50 text-green-700 font-extrabold text-right">$${ingresos.toLocaleString('es-MX')}</td><td class="td-excel bg-rose-50 text-rose-600 font-bold text-right">$${gastos.toLocaleString('es-MX')}</td><td class="td-excel bg-indigo-50 text-indigo-700 font-extrabold text-right">$${utilidad.toLocaleString('es-MX')}</td><td class="td-excel text-gray-500 text-center">${fSeguimiento}</td><td class="td-excel text-gray-500 text-center">${factura}</td><td class="td-excel text-gray-400 italic truncate max-w-[150px] cursor-help" title="${observaciones}">${observaciones ? observaciones : 'Sin obs.'}</td><td class="td-excel text-center space-x-1"><button onclick="eliminarServio('${s.id}')" class="text-rose-500 hover:text-rose-700 px-2"><i class="fa-solid fa-trash"></i></button></td></tr>`;
                 });
-            } catch (e) { console.error(e); }
+            } catch (e) { console.error("Error ventas", e); }
         }
 
-        // ==========================================
-        // CARGA DE CLIENTES Y PROPIEDADES (BÁSICO)
-        // ==========================================
-        async function cargarClientes() { try { const res = await fetch(`${API_URL}/clientes/`); memoriaClientes = await res.json(); const selectCliente = document.getElementById('selectCliente'); selectCliente.innerHTML = '<option value="">-- Selecciona --</option>'; memoriaClientes.forEach(c => { selectCliente.innerHTML += `<option value="${c.id}">${c.nombre} ${c.apellidos}</option>`; }); } catch (e) {} }
-        
-        async function cargarPropiedades() {
-            try { const res = await fetch(`${API_URL}/propiedades/`); memoriaPropiedades = await res.json(); const selectPropiedad = document.getElementById('selectPropiedad'); selectPropiedad.innerHTML = '<option value="">-- Selecciona --</option>';
-                memoriaPropiedades.forEach(p => {
-                    const cl = memoriaClientes.find(c => c.id === p.cliente_id); const nombreDueno = cl ? `${cl.nombre} ${cl.apellidos}` : 'Desconocido';
-                    selectPropiedad.innerHTML += `<option value="${p.id}">${nombreDueno} - ${p.nombre_propiedad} (${p.tipo_cultivo})</option>`;
-                });
-            } catch (e) {}
-        }
-
-        // ==========================================
-        // GUARDAR DATOS
-        // ==========================================
         document.getElementById('servicioForm').addEventListener('submit', async function(e) { 
             e.preventDefault(); 
-            const btn = document.getElementById('btnSubmitServicio');
-            btn.innerHTML = 'Guardando...';
+            const btn = document.getElementById('btnSubmitServicio'); btn.innerHTML = 'Guardando...';
             
-            // Recolectar datos incluyendo los NUEVOS CAMPOS DEL CEO
             const datos = { 
-                propiedad_id: document.getElementById('selectPropiedad').value, 
-                fecha_aplicacion: document.getElementById('fecha_aplicacion').value, 
-                costo_servicio: parseFloat(document.getElementById('costo_servicio').value || 0), 
-                estado_cuenta: 'Cobrado', satisfaccion: 5,
-                
-                // NOTA: Estos campos requieren que tu API de backend los reciba, si no, se perderán.
-                no_cotizacion: document.getElementById('no_cotizacion').value,
-                no_orden: document.getElementById('no_orden').value,
-                gastos: parseFloat(document.getElementById('gastos').value || 0),
-                fecha_seguimiento: document.getElementById('fecha_seguimiento').value,
-                no_factura: document.getElementById('no_factura').value,
-                observaciones: document.getElementById('observaciones').value
+                propiedad_id: document.getElementById('selectPropiedad').value, fecha_aplicacion: document.getElementById('fecha_aplicacion').value, 
+                costo_servicio: parseFloat(document.getElementById('costo_servicio').value || 0), estado_cuenta: 'Cobrado', satisfaccion: 5,
+                no_cotizacion: document.getElementById('no_cotizacion').value, no_orden: document.getElementById('no_orden').value,
+                gastos: parseFloat(document.getElementById('gastos').value || 0), fecha_seguimiento: document.getElementById('fecha_seguimiento').value,
+                no_factura: document.getElementById('no_factura').value, observaciones: document.getElementById('observaciones').value
             }; 
             
             await fetch(`${API_URL}/servicios/`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos) }); 
-            
-            document.getElementById('servicioForm').reset();
-            btn.innerHTML = '<i class="fa-solid fa-save mr-1"></i> Guardar en Base de Datos';
-            await inicializarPanel(); 
+            document.getElementById('servicioForm').reset(); btn.innerHTML = '<i class="fa-solid fa-save mr-1"></i> Guardar en Base de Datos'; await inicializarPanel(); 
         });
 
         async function eliminarServio(id) { if(confirm("¿Borrar registro de venta?")) { await fetch(`${API_URL}/servicios/${id}`, { method: 'DELETE' }); await inicializarPanel(); } }

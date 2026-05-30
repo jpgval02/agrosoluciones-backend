@@ -7,10 +7,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- LIBRERÍAS PARA GENERAR PDF -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
-
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #f0fdf4; } 
@@ -71,24 +67,21 @@
 
         <div class="max-w-7xl mx-auto mt-8 px-6">
             <h2 class="text-3xl font-bold text-gray-800">Panel de Control Operativo</h2>
-            <p class="text-gray-500 text-sm mt-1">Análisis financiero, métricas de vuelo y generación de reportes.</p>
+            <p class="text-gray-500 text-sm mt-1">Análisis financiero y métricas de vuelo por mes.</p>
         </div>
 
         <!-- DASHBOARD DE ESTADÍSTICAS -->
         <div class="max-w-7xl mx-auto mt-6 px-6">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-200 flex flex-col justify-center space-y-2">
-                    <div class="flex items-center space-x-3">
-                        <div class="bg-indigo-100 w-8 h-8 rounded-full flex items-center justify-center text-indigo-600 shrink-0"><i class="fa-solid fa-calendar-days text-xs"></i></div>
-                        <p class="text-[10px] text-gray-500 font-bold uppercase tracking-wider">Filtrar Mes</p>
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-200 flex items-center space-x-4">
+                    <div class="bg-indigo-100 w-12 h-12 rounded-full flex items-center justify-center text-indigo-600 shrink-0"><i class="fa-solid fa-calendar-days text-lg"></i></div>
+                    <div class="w-full">
+                        <p class="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-1">Filtrar por Mes</p>
+                        <select id="filtroMes" onchange="actualizarEstadisticas()" class="w-full bg-gray-50 border border-gray-200 rounded-lg text-sm font-bold text-gray-700 py-1.5 px-2 focus:ring-2 focus:ring-green-600 outline-none cursor-pointer">
+                            <option value="todos">Histórico Total</option>
+                            <option value="01">Enero</option><option value="02">Febrero</option><option value="03">Marzo</option><option value="04">Abril</option><option value="05">Mayo</option><option value="06">Junio</option><option value="07">Julio</option><option value="08">Agosto</option><option value="09">Septiembre</option><option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option>
+                        </select>
                     </div>
-                    <select id="filtroMes" onchange="actualizarEstadisticas()" class="w-full bg-gray-50 border border-gray-200 rounded-lg text-sm font-bold text-gray-700 py-1.5 px-2 focus:ring-2 focus:ring-green-600 outline-none cursor-pointer">
-                        <option value="todos">Histórico Total</option>
-                        <option value="01">Enero</option><option value="02">Febrero</option><option value="03">Marzo</option><option value="04">Abril</option><option value="05">Mayo</option><option value="06">Junio</option><option value="07">Julio</option><option value="08">Agosto</option><option value="09">Septiembre</option><option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option>
-                    </select>
-                    <button id="btnGenerarPDF" onclick="generarReportePDF()" class="w-full bg-red-600 hover:bg-red-700 text-white text-xs font-bold py-2 rounded-lg transition-colors shadow-sm flex items-center justify-center">
-                        <i class="fa-solid fa-file-pdf mr-1.5"></i> Generar PDF
-                    </button>
                 </div>
                 <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex items-center space-x-4">
                     <div class="bg-yellow-100 w-12 h-12 rounded-full flex items-center justify-center text-yellow-600 shrink-0"><i class="fa-solid fa-ruler-combined text-lg"></i></div>
@@ -255,100 +248,6 @@
 
             let totalDinero = serviciosFiltrados.reduce((suma, s) => suma + (s.costo_servicio || 0), 0);
             document.getElementById('stat-ingresos').textContent = "$" + totalDinero.toLocaleString('es-MX', {minimumFractionDigits: 2});
-        }
-
-        // ==========================================
-        // GENERACIÓN DE PDF CON TU LOGO OFICIAL
-        // ==========================================
-        function generarReportePDF() {
-            const btn = document.getElementById('btnGenerarPDF');
-            const textoOriginal = btn.innerHTML;
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> Generando...';
-            btn.disabled = true;
-
-            const logo = new Image();
-            // AHORA EL CÓDIGO BUSCA EXACTAMENTE "logo.jpeg" (Sin espacios)
-            logo.src = 'logo.jpeg'; 
-            
-            logo.onload = function() {
-                crearDocumentoPDF(logo);
-                btn.innerHTML = textoOriginal;
-                btn.disabled = false;
-            };
-            
-            logo.onerror = function() {
-                alert("⚠️ ATENCIÓN: No se encontró la imagen. Asegúrate de llamarla exactamente 'logo.jpeg' en tu computadora y súbela con 'git add .'");
-                crearDocumentoPDF(null);
-                btn.innerHTML = textoOriginal;
-                btn.disabled = false;
-            };
-        }
-
-        function crearDocumentoPDF(logoImg) {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            const selectMes = document.getElementById('filtroMes');
-            const nombreMes = selectMes.options[selectMes.selectedIndex].text;
-
-            if (logoImg) {
-                doc.addImage(logoImg, 'JPEG', 14, 12, 70, 18);
-            } else {
-                doc.setFontSize(22);
-                doc.setTextColor(27, 107, 67);
-                doc.text("Agrosoluciones Aéreas", 14, 20);
-            }
-
-            // Textos del encabezado
-            doc.setFontSize(12);
-            doc.setTextColor(80, 80, 80);
-            doc.text(`Reporte Operativo y Financiero: ${nombreMes}`, 14, 38);
-            
-            const fechaHoy = new Date().toLocaleDateString('es-MX');
-            doc.setFontSize(10);
-            doc.text(`Fecha de emisión: ${fechaHoy}`, 14, 44);
-
-            // Resumen de Métricas
-            const statsHa = document.getElementById('stat-hectareas').innerText;
-            const statsVuelos = document.getElementById('stat-vuelos').innerText;
-            const statsIngresos = document.getElementById('stat-ingresos').innerText;
-
-            doc.setFontSize(11);
-            doc.setTextColor(40, 40, 40);
-            doc.text(`Vuelos Totales: ${statsVuelos}`, 14, 55);
-            doc.text(`Superficie Cubierta: ${statsHa} Ha`, 70, 55);
-            doc.setTextColor(21, 128, 61); 
-            doc.text(`Ingresos: ${statsIngresos}`, 140, 55);
-
-            // Preparar los datos de la tabla
-            let vuelosParaPDF = memoriaServicios;
-            const mesVal = document.getElementById('filtroMes').value;
-            if (mesVal !== 'todos') {
-                vuelosParaPDF = memoriaServicios.filter(s => s.fecha_aplicacion && s.fecha_aplicacion.split('-')[1] === mesVal);
-            }
-
-            const bodyDatos = vuelosParaPDF.map(s => {
-                const prop = memoriaPropiedades.find(p => p.id === s.propiedad_id);
-                let nombreP = prop ? prop.nombre_propiedad : 'N/A';
-                let clienteN = 'Desconocido';
-                if(prop) {
-                   const cli = memoriaClientes.find(c => c.id === prop.cliente_id);
-                   if(cli) clienteN = `${cli.nombre} ${cli.apellidos}`;
-                }
-                return [s.fecha_aplicacion, clienteN, nombreP, `$${s.costo_servicio}`, s.estado_cuenta];
-            });
-
-            // Dibujar Tabla
-            doc.autoTable({
-                startY: 60,
-                head: [['Fecha', 'Cliente', 'Parcela', 'Costo', 'Estado']],
-                body: bodyDatos,
-                headStyles: { fillColor: [27, 107, 67] }, 
-                alternateRowStyles: { fillColor: [240, 253, 244] }, 
-                styles: { fontSize: 9 }
-            });
-
-            // Descargar archivo PDF
-            doc.save(`Reporte_Agrosoluciones_${nombreMes.replace(/ /g, '_')}.pdf`);
         }
 
         // ==========================================

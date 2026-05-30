@@ -221,6 +221,7 @@
                 document.getElementById('login-container').classList.add('hidden');
                 document.getElementById('dashboard-container').classList.remove('hidden');
                 await inicializarPanel(); 
+                cambiarVista('servicios'); // <--- AÑADIDO AQUÍ PARA QUE SOLO SALTE AL INICIAR SESIÓN
             } catch (error) { alert("Error de conexión"); }
         });
 
@@ -231,7 +232,7 @@
             await cargarClientes();
             await cargarPropiedades();
             await cargarServicios();
-            cambiarVista('servicios'); // Mostrar Ventas por defecto
+            // <-- SE ELIMINÓ EL SALTO DE VISTA DE AQUÍ
             actualizarEstadisticas();
         }
 

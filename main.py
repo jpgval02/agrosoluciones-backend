@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from typing import Optional  # <-- IMPORTANTE: Agregado para permitir campos vacíos
 from supabase import create_client, Client
 import os
 from dotenv import load_dotenv
@@ -48,6 +49,13 @@ class ServicioNuevo(BaseModel):
     costo_servicio: float
     estado_cuenta: str
     satisfaccion: int
+    # --- NUEVOS CAMPOS DEL CEO ---
+    no_cotizacion: Optional[str] = None
+    no_orden: Optional[str] = None
+    gastos: Optional[float] = 0.0
+    fecha_seguimiento: Optional[str] = None
+    no_factura: Optional[str] = None
+    observaciones: Optional[str] = None
 
 
 # --- RUTA DE LOGIN (EL PORTERO CON ROLES) ---
@@ -161,4 +169,3 @@ async def eliminar_servicio(servicio_id: str):
         supabase.table('servicios_aplicacion').delete().eq('id', servicio_id).execute()
         return {"mensaje": "Eliminado exitosamente"}
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
-    

@@ -25,6 +25,7 @@
     <div id="login-container" class="min-h-screen flex items-center justify-center p-4">
         <div class="bg-white p-8 rounded-3xl shadow-xl border border-green-100 max-w-md w-full">
             <div class="text-center mb-8">
+                <!-- LOGO DEL LOGIN: Fondo blanco (.jpeg) -->
                 <img src="logo_nuevo.jpeg" alt="Logo Agrosoluciones" class="h-24 w-auto object-contain mx-auto mb-4">
                 <p class="text-sm text-gray-500 mt-1 font-medium">Portal Operativo Privado</p>
             </div>
@@ -46,7 +47,8 @@
     <div id="dashboard-container" class="hidden pb-12">
         <nav class="tabla-header text-white px-6 py-3 flex justify-between items-center shadow-md sticky top-0 z-50">
             <div class="flex items-center">
-                <img src="logo_nuevo.jpeg" alt="Logo Agrosoluciones" class="h-12 w-auto object-contain drop-shadow-md">
+                <!-- LOGO INTERNO: Fondo verde oscuro (.png) -->
+                <img src="logo_alternativo.png" alt="Logo Agrosoluciones" class="h-12 w-auto object-contain drop-shadow-md">
             </div>
             <div class="flex items-center space-x-2 md:space-x-4">
                 <button onclick="cambiarVista('clientes')" id="nav-clientes" class="border border-green-500/50 hover:bg-green-700 px-4 py-2 rounded-md text-sm font-medium transition-colors shadow-sm"><i class="fa-solid fa-users md:mr-2"></i> <span class="hidden md:inline">Clientes</span></button>
@@ -270,7 +272,7 @@
             document.getElementById('contadorClientes').textContent = `${lista.length} REGISTRADOS`;
             lista.forEach(c => {
                 const textoId = c.num_cliente ? String(c.num_cliente).padStart(3, '0') : 'N/A';
-                cuerpo.innerHTML += `<tr class="hover:bg-gray-50 transition-colors group"><td class="px-6 py-4"><div class="flex items-center space-x-4"><div class="bg-green-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold shadow-sm"><i class="fa-solid fa-user"></i></div><div><p class="font-bold text-gray-800">${c.nombre} <br> ${c.apellidos}</p><p class="text-[10px] text-gray-400 mt-1"><i class="fa-solid fa-hashtag text-green-500 mr-1"></i>ID: <span class="font-bold text-gray-600">#${textoId}</span> <span class="mx-2 text-gray-300">|</span> <i class="fa-solid fa-id-card text-blue-400 mr-1"></i>RFC: ${c.rfc || 'S/N'}</p></div></div></td><td class="px-6 py-4"><p class="text-sm text-blue-600 font-medium"><i class="fa-solid fa-envelope mr-2"></i>${c.email || 'Sin correo'}</p><p class="text-sm text-gray-600 mt-1"><i class="fa-solid fa-phone text-green-600 mr-2"></i>${c.telefono}</p></td><td class="px-6 py-4 text-center space-x-1 whitespace-nowrap"><button onclick="prepararEdicionCliente('${c.id}')" class="bg-amber-400 hover:bg-amber-500 text-white text-xs font-bold px-4 py-2 rounded-full transition-colors shadow-sm"><i class="fa-solid fa-pen-to-square mr-1"></i> Editar</button><button onclick="eliminarCliente('${c.id}')" class="bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-4 py-2 rounded-full transition-colors shadow-sm"><i class="fa-solid fa-trash mr-1"></i></button></td></tr>`;
+                cuerpo.innerHTML += `<tr class="hover:bg-gray-50 transition-colors group"><td class="px-6 py-4"><div class="flex items-center space-x-4"><div class="bg-green-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold shadow-sm"><i class="fa-solid fa-user"></i></div><div><p class="font-bold text-gray-800">${c.nombre} <br> ${c.apellidos}</p><p class="text-[10px] text-gray-400 mt-1"><i class="fa-solid fa-hashtag text-green-500 mr-1"></i>ID: <span class="font-bold text-gray-600">#${textoId}</span> <span class="mx-2 text-gray-300">|</span> <i class="fa-solid fa-id-card text-blue-400 mr-1"></i>RFC: ${c.rfc || 'S/N'}</p></div></div></td><td class="px-6 py-4"><p class="text-sm text-blue-600 font-medium"><i class="fa-solid fa-envelope mr-2"></i>${c.email || 'Sin correo'}</p><p class="text-sm text-gray-600 mt-1"><i class="fa-solid fa-phone text-green-600 mr-2"></i>${c.telefono}</p></td><td class="px-6 py-4 text-center space-x-1 whitespace-nowrap"><button onclick="tabularEdicionCliente('${c.id}')" class="bg-amber-400 hover:bg-amber-500 text-white text-xs font-bold px-4 py-2 rounded-full transition-colors shadow-sm"><i class="fa-solid fa-pen-to-square mr-1"></i> Editar</button><button onclick="eliminarCliente('${c.id}')" class="bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-4 py-2 rounded-full transition-colors shadow-sm"><i class="fa-solid fa-trash mr-1"></i></button></td></tr>`;
             });
         }
         function filtrarClientes() { const txt = document.getElementById('buscadorClientes').value.toLowerCase(); renderizarTablaClientes(memoriaClientes.filter(c => `${c.nombre} ${c.apellidos}`.toLowerCase().includes(txt))); }

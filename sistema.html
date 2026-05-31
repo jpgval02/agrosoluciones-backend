@@ -25,8 +25,7 @@
     <div id="login-container" class="min-h-screen flex items-center justify-center p-4">
         <div class="bg-white p-8 rounded-3xl shadow-xl border border-green-100 max-w-md w-full">
             <div class="text-center mb-8">
-                <!-- Aquí se carga tu logo en el login (con .jpg) -->
-                <img src="logo_nuevo.jpg" alt="Logo Agrosoluciones" class="h-24 w-auto object-contain mx-auto mb-4">
+                <img src="logo_nuevo.jpeg" alt="Logo Agrosoluciones" class="h-24 w-auto object-contain mx-auto mb-4">
                 <p class="text-sm text-gray-500 mt-1 font-medium">Portal Operativo Privado</p>
             </div>
             <form id="loginForm" class="space-y-5">
@@ -47,8 +46,7 @@
     <div id="dashboard-container" class="hidden pb-12">
         <nav class="tabla-header text-white px-6 py-3 flex justify-between items-center shadow-md sticky top-0 z-50">
             <div class="flex items-center">
-                <!-- Aquí se carga tu logo en la barra de navegación (con .jpg) -->
-                <img src="logo_nuevo.jpg" alt="Logo Agrosoluciones" class="h-12 w-auto object-contain drop-shadow-md">
+                <img src="logo_nuevo.jpeg" alt="Logo Agrosoluciones" class="h-12 w-auto object-contain drop-shadow-md">
             </div>
             <div class="flex items-center space-x-2 md:space-x-4">
                 <button onclick="cambiarVista('clientes')" id="nav-clientes" class="border border-green-500/50 hover:bg-green-700 px-4 py-2 rounded-md text-sm font-medium transition-colors shadow-sm"><i class="fa-solid fa-users md:mr-2"></i> <span class="hidden md:inline">Clientes</span></button>
@@ -295,7 +293,7 @@
         });
 
         async function eliminarCliente(id) { if(confirm("¿Eliminar cliente?")) { const res = await fetch(`${API_URL}/clientes/${id}`, { method: 'DELETE' }); if (!res.ok) alert("⚠️ No se puede borrar. Tiene parcelas asignadas."); await inicializarPanel(); } }
-        function prepararEdicionCliente(id) { const c = memoriaClientes.find(item => item.id === id); document.getElementById('editClienteId').value = c.id; document.getElementById('nombre').value = c.nombre; document.getElementById('apellidos').value = c.apellidos; document.getElementById('email').value = c.email; document.getElementById('telefono').value = c.telefono; document.getElementById('rfc').value = c.rfc; document.getElementById('tituloFormCliente').innerHTML = `<i class="fa-solid fa-pen text-amber-500 mr-2"></i> Editando`; document.getElementById('btnSubmitCliente').innerHTML = `<i class="fa-solid fa-check mr-1"></i> Actualizar`; document.getElementById('btnSubmitCliente').className = "w-full py-2.5 rounded-full text-sm font-bold text-white bg-amber-500 hover:bg-amber-600 transition-colors shadow-sm"; document.getElementById('btnCancelarCliente').classList.remove('hidden'); window.scrollTo({ top: 0, behavior: 'smooth' });}
+        function tabularEdicionCliente(id) { const c = memoriaClientes.find(item => item.id === id); document.getElementById('editClienteId').value = c.id; document.getElementById('nombre').value = c.nombre; document.getElementById('apellidos').value = c.apellidos; document.getElementById('email').value = c.email; document.getElementById('telefono').value = c.telefono; document.getElementById('rfc').value = c.rfc; document.getElementById('tituloFormCliente').innerHTML = `<i class="fa-solid fa-pen text-amber-500 mr-2"></i> Editando`; document.getElementById('btnSubmitCliente').innerHTML = `<i class="fa-solid fa-check mr-1"></i> Actualizar`; document.getElementById('btnSubmitCliente').className = "w-full py-2.5 rounded-full text-sm font-bold text-white bg-amber-500 hover:bg-amber-600 transition-colors shadow-sm"; document.getElementById('btnCancelarCliente').classList.remove('hidden'); window.scrollTo({ top: 0, behavior: 'smooth' });}
         function limpiarFormCliente() { document.getElementById('registroForm').reset(); document.getElementById('editClienteId').value = ''; document.getElementById('tituloFormCliente').innerHTML = `<i class="fa-solid fa-user-plus text-green-600 mr-2"></i> Nuevo Cliente`; document.getElementById('btnSubmitCliente').innerHTML = `<i class="fa-solid fa-save mr-1"></i> Guardar Cliente`; document.getElementById('btnSubmitCliente').className = "w-full py-2.5 rounded-full text-sm font-bold text-white bg-[#4ade80] hover:bg-green-500 text-green-900 transition-colors shadow-sm"; document.getElementById('btnCancelarCliente').classList.add('hidden'); }
         document.getElementById('btnCancelarCliente').addEventListener('click', limpiarFormCliente);
 

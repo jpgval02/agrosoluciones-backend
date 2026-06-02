@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from typing import Optional  # <-- IMPORTANTE: Agregado para permitir campos vacíos
+from typing import Optional  
 from supabase import create_client, Client
 import os
 from dotenv import load_dotenv
@@ -49,7 +49,6 @@ class ServicioNuevo(BaseModel):
     costo_servicio: float
     estado_cuenta: str
     satisfaccion: int
-    # --- NUEVOS CAMPOS DEL CEO ---
     no_cotizacion: Optional[str] = None
     no_orden: Optional[str] = None
     gastos: Optional[float] = 0.0
@@ -57,35 +56,24 @@ class ServicioNuevo(BaseModel):
     no_factura: Optional[str] = None
     observaciones: Optional[str] = None
 
-
-# --- RUTA DE LOGIN (EL PORTERO CON ROLES) ---
+# --- RUTA DE LOGIN ---
 @app.post("/login/")
 async def iniciar_sesion(credenciales: Credenciales):
     try:
-        # 1. Supabase verifica si el correo y la contraseña son correctos
         respuesta = supabase.auth.sign_in_with_password({
             "email": credenciales.email,
             "password": credenciales.password
         })
-        
-        # 2. Buscamos qué rol tiene este usuario en la base de datos
-        rol_usuario = "trabajador" # Rol por defecto (el más restrictivo)
+        rol_usuario = "trabajador"
         try:
-            # Buscamos el correo en la tabla 'roles'
             datos_rol = supabase.table('roles').select('rol').eq('email', credenciales.email).execute()
             if len(datos_rol.data) > 0:
                 rol_usuario = datos_rol.data[0]['rol']
         except Exception as e:
-            # Si hay algún error leyendo la tabla, se queda como trabajador por seguridad
             pass
-            
-        # 3. Devolvemos el acceso y el gafete (rol)
         return {"mensaje": "Acceso concedido", "rol": rol_usuario}
-        
     except Exception as e:
-        # Si la contraseña o el correo están mal, rechazamos la entrada (Error 401)
         raise HTTPException(status_code=401, detail="Correo o contraseña incorrectos")
-
 
 # --- RUTAS DE CLIENTES ---
 @app.post("/clientes/")
@@ -114,7 +102,6 @@ async def eliminar_cliente(cliente_id: str):
         return {"mensaje": "Eliminado exitosamente"}
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
 
-
 # --- RUTAS DE PROPIEDADES ---
 @app.post("/propiedades/")
 async def registrar_propiedad(propiedad: PropiedadNueva):
@@ -142,7 +129,6 @@ async def eliminar_propiedad(propiedad_id: str):
         return {"mensaje": "Eliminado exitosamente"}
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
 
-
 # --- RUTAS DE SERVICIOS ---
 @app.post("/servicios/")
 async def registrar_servicio(servicio: ServicioNuevo):
@@ -169,3 +155,43 @@ async def eliminar_servicio(servicio_id: str):
         supabase.table('servicios_aplicacion').delete().eq('id', servicio_id).execute()
         return {"mensaje": "Eliminado exitosamente"}
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
+
+# --- RUTA DEL DASHBOARD (METAS VS REALIDAD) ---
+@app.get("/api/dashboard/{mes_anio}")
+async def obtener_dashboard(mes_anio: str):
+    try:
+        # 1. Buscar la meta
+        respuesta_metas = supabase.table('metas_mensuales').select('*').eq('mes_anio', mes_anio).execute()
+        
+        if len(respuesta_metas.data) == 0:
+            metas = {
+                "meta_ventas": 0, "meta_servicios": 0, 
+                "meta_clientes": 0, "meta_prospectos": 0, "meta_visitas": 0
+            }
+        else:
+            metas = respuesta_metas.data[0]
+
+        # 2. Calcular la realidad
+        mes, anio = mes_anio.split("-")
+        filtro_fecha = f"{anio}-{mes}" 
+
+        respuesta_servicios = supabase.table('servicios_aplicacion').select('costo_servicio', 'fecha_aplicacion').execute()
+        servicios_mes = [s for s in respuesta_servicios.data if s.get('fecha_aplicacion', '').startswith(filtro_fecha)]
+        
+        ventas_reales = sum(float(s.get('costo_servicio', 0)) for s in servicios_mes)
+        servicios_reales = len(servicios_mes)
+
+        respuesta_clientes = supabase.table('clientes').select('id').execute()
+        clientes_reales = len(respuesta_clientes.data)
+
+        # 3. Devolver empaquetado
+        return {
+            "metas": metas,
+            "reales": {
+                "ventas": ventas_reales,
+                "servicios": servicios_reales,
+                "clientes": clientes_reales
+            }
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

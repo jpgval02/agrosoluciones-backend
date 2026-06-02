@@ -56,6 +56,13 @@ class ServicioNuevo(BaseModel):
     no_factura: Optional[str] = None
     observaciones: Optional[str] = None
 
+class MetasMensuales(BaseModel):
+    mes_anio: str
+    meta_ventas: float
+    meta_servicios: int
+    meta_clientes: int
+    meta_prospectos: int
+
 # --- RUTA DE LOGIN ---
 @app.post("/login/")
 async def iniciar_sesion(credenciales: Credenciales):
@@ -156,22 +163,20 @@ async def eliminar_servicio(servicio_id: str):
         return {"mensaje": "Eliminado exitosamente"}
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
 
-# --- RUTA DEL DASHBOARD (METAS VS REALIDAD) ---
+# --- RUTA DEL DASHBOARD (LEER METAS Y REALIDAD) ---
 @app.get("/api/dashboard/{mes_anio}")
 async def obtener_dashboard(mes_anio: str):
     try:
-        # 1. Buscar la meta
         respuesta_metas = supabase.table('metas_mensuales').select('*').eq('mes_anio', mes_anio).execute()
         
         if len(respuesta_metas.data) == 0:
             metas = {
                 "meta_ventas": 0, "meta_servicios": 0, 
-                "meta_clientes": 0, "meta_prospectos": 0, "meta_visitas": 0
+                "meta_clientes": 0, "meta_prospectos": 0
             }
         else:
             metas = respuesta_metas.data[0]
 
-        # 2. Calcular la realidad
         mes, anio = mes_anio.split("-")
         filtro_fecha = f"{anio}-{mes}" 
 
@@ -184,7 +189,6 @@ async def obtener_dashboard(mes_anio: str):
         respuesta_clientes = supabase.table('clientes').select('id').execute()
         clientes_reales = len(respuesta_clientes.data)
 
-        # 3. Devolver empaquetado
         return {
             "metas": metas,
             "reales": {
@@ -193,5 +197,18 @@ async def obtener_dashboard(mes_anio: str):
                 "clientes": clientes_reales
             }
         }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+# --- RUTA PARA GUARDAR/EDITAR METAS ---
+@app.post("/api/metas/")
+async def guardar_metas(metas: MetasMensuales):
+    try:
+        existe = supabase.table('metas_mensuales').select('id').eq('mes_anio', metas.mes_anio).execute()
+        if len(existe.data) > 0:
+            respuesta = supabase.table('metas_mensuales').update(metas.dict()).eq('mes_anio', metas.mes_anio).execute()
+        else:
+            respuesta = supabase.table('metas_mensuales').insert(metas.dict()).execute()
+        return {"mensaje": "Metas guardadas correctamente"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

@@ -87,7 +87,7 @@
         <div id="vista-inicio" class="max-w-[1600px] mx-auto mt-8 px-6 block">
             
             <!-- SECCIÓN METAS (Sin botón de configurar) -->
-            <h2 class="text-2xl font-bold text-gray-800 mb-4 tracking-tight">Objetivos del Mes - Junio 2026</h2>
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 tracking-tight">Objetivos del Mes </h2>
             <div class="dashboard-container">
                 <div class="kpi-card"><div class="kpi-title">Ventas vs Meta</div><div id="velocimetro-ventas"></div><div class="kpi-text-real" id="texto-ventas-real">$0 / $0</div></div>
                 <div class="kpi-card"><div class="kpi-title">Vuelos de Drones</div><div id="velocimetro-servicios"></div><div class="kpi-text-real" id="texto-servicios-real">0 / 0</div></div>
@@ -210,7 +210,7 @@
                 <div class="flex justify-between items-center mb-4"><h3 class="text-xl font-bold text-gray-800"><i class="fa-solid fa-bullseye text-green-600 mr-2"></i> Ajustar Objetivos</h3><button onclick="cerrarModalMetas()" class="text-gray-400 hover:text-red-500"><i class="fa-solid fa-xmark text-xl"></i></button></div>
                 <form id="formMetas" class="space-y-4">
                     <input type="hidden" id="meta_mes_anio" value="06-2026">
-                    <div><label class="block text-xs font-bold text-gray-500 uppercase">Meta Global Ventas ($ MXN)</label><input type="number" id="input_meta_ventas" required class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg font-bold text-green-700 outline-none focus:ring-2 focus:ring-green-500"></div>
+                    <div><label class="block text-xs font-bold text-gray-500 uppercase">Meta Mensual de Ventas ($ MXN)</label><input type="number" id="input_meta_ventas" required class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg font-bold text-green-700 outline-none focus:ring-2 focus:ring-green-500"></div>
                     <div class="grid grid-cols-2 gap-4">
                         <div><label class="block text-xs font-bold text-gray-500 uppercase">Vuelos Objetivo</label><input type="number" id="input_meta_servicios" required class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg font-bold outline-none focus:ring-2 focus:ring-green-500"></div>
                         <div><label class="block text-xs font-bold text-gray-500 uppercase">Nuevos Clientes</label><input type="number" id="input_meta_clientes" required class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg font-bold outline-none focus:ring-2 focus:ring-green-500"></div>
@@ -289,7 +289,7 @@
             document.getElementById('stat-utilidad').textContent = "$" + (ing - gas).toLocaleString('es-MX', {minimumFractionDigits: 2});
         }
 
-        // --- LÓGICA METAS CEO ---
+        // --- LÓGICA METAS ---
         function crearVelocimetro(id, color, nombre) {
             return { series: [0], chart: { type: 'radialBar', height: 240, background: 'transparent' }, plotOptions: { radialBar: { startAngle: -90, endAngle: 90, track: { background: '#e7e7e7', strokeWidth: '97%' }, dataLabels: { name: { show: false }, value: { offsetY: -5, fontSize: '24px', fontWeight: 'bold', color: '#000000', formatter: function (val) { return val.toFixed(1) + "%"; } } } } }, colors: [color], labels: [nombre] };
         }

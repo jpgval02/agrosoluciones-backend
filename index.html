@@ -25,7 +25,6 @@
             gap: 20px;
             background-color: #ffffff; 
             padding: 20px;
-            font-family: Arial, sans-serif;
             border-radius: 12px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.05);
             margin-bottom: 30px;
@@ -44,6 +43,7 @@
 </head>
 <body class="text-gray-800">
 
+    <!-- LOGIN -->
     <div id="login-container" class="min-h-screen flex items-center justify-center p-4">
         <div class="bg-white p-8 rounded-3xl shadow-xl border border-green-100 max-w-md w-full">
             <div class="text-center mb-8">
@@ -59,53 +59,155 @@
                     <label class="block text-sm font-bold text-gray-700 mb-1">Contraseña</label>
                     <div class="relative"><div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><i class="fa-solid fa-lock text-gray-400"></i></div><input type="password" id="loginPassword" required class="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-green-600 outline-none transition-all"></div>
                 </div>
-                <div id="loginError" class="hidden bg-rose-50 text-rose-600 text-sm font-bold p-3 rounded-lg text-center border border-rose-100"></div>
                 <button type="submit" id="btnLogin" class="w-full py-3 rounded-xl text-sm font-bold text-white bg-green-700 hover:bg-green-600 transition-all shadow-md flex items-center justify-center"><i class="fa-solid fa-right-to-bracket mr-2"></i> Iniciar Sesión</button>
             </form>
         </div>
     </div>
 
+    <!-- MAIN DASHBOARD -->
     <div id="dashboard-container" class="hidden pb-12">
         <nav class="tabla-header text-white px-6 py-3 flex justify-between items-center shadow-md sticky top-0 z-50">
             <div class="flex items-center">
                 <img src="logo_alternativo.png" alt="Logo Agrosoluciones" class="h-12 w-auto object-contain drop-shadow-md">
             </div>
             <div class="flex items-center space-x-2 md:space-x-4">
+                <!-- NUEVO MENÚ CON INICIO -->
+                <button onclick="cambiarVista('inicio')" id="nav-inicio" class="border border-green-500/50 hover:bg-green-700 px-4 py-2 rounded-md text-sm font-medium transition-colors shadow-sm"><i class="fa-solid fa-house md:mr-2"></i> <span class="hidden md:inline">Inicio</span></button>
                 <button onclick="cambiarVista('clientes')" id="nav-clientes" class="border border-green-500/50 hover:bg-green-700 px-4 py-2 rounded-md text-sm font-medium transition-colors shadow-sm"><i class="fa-solid fa-users md:mr-2"></i> <span class="hidden md:inline">Clientes</span></button>
                 <button onclick="cambiarVista('propiedades')" id="nav-propiedades" class="border border-green-500/50 hover:bg-green-700 px-4 py-2 rounded-md text-sm font-medium transition-colors shadow-sm"><i class="fa-solid fa-map-location-dot md:mr-2"></i> <span class="hidden md:inline">Parcelas</span></button>
                 <button onclick="cambiarVista('servicios')" id="nav-servicios" class="border border-green-500/50 hover:bg-green-700 px-4 py-2 rounded-md text-sm font-medium transition-colors shadow-sm"><i class="fa-solid fa-chart-line md:mr-2"></i> <span class="hidden md:inline">Ventas 2026</span></button>
-                <button onclick="cambiarVista('metas')" id="nav-metas" class="border border-green-500/50 hover:bg-green-700 px-4 py-2 rounded-md text-sm font-medium transition-colors shadow-sm"><i class="fa-solid fa-bullseye md:mr-2"></i> <span class="hidden md:inline">Metas</span></button>
-
                 <div class="h-6 w-px bg-green-600 mx-2 hidden md:block"></div>
-                
                 <button onclick="cerrarSesion()" class="bg-red-600 hover:bg-red-500 px-3 py-2 rounded-md text-sm font-bold transition-colors shadow-sm border border-red-400" title="Cerrar Sesión"><i class="fa-solid fa-power-off"></i></button>
             </div>
         </nav>
 
-        <div class="max-w-7xl mx-auto mt-8 px-6">
-            <h2 class="text-3xl font-bold text-gray-800">Panel de Control Operativo</h2>
-            <p class="text-gray-500 text-sm mt-1">Análisis financiero y métricas de vuelo por mes.</p>
-        </div>
-
-        <div id="vista-seccion-metas" class="hidden max-w-7xl mx-auto mt-6 px-6">
-            <div class="flex justify-between items-center mb-4">
-                <h2 style="color: #000000; font-family: Arial; font-weight: bold; font-size: 24px;">Objetivos Operativos - Junio 2026</h2>
-                <button onclick="abrirModalMetas()" class="bg-gray-800 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-bold shadow-md transition-colors flex items-center">
-                    <i class="fa-solid fa-gear mr-2"></i> Configurar Metas
-                </button>
-            </div>
+        <!-- ============================================== -->
+        <!-- PANTALLA 1: INICIO (METAS Y FORMULARIOS) -->
+        <!-- ============================================== -->
+        <div id="vista-inicio" class="max-w-[1600px] mx-auto mt-8 px-6 block">
             
+            <!-- SECCIÓN METAS (Sin botón de configurar) -->
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 tracking-tight">Objetivos del Mes - Junio 2026</h2>
             <div class="dashboard-container">
                 <div class="kpi-card"><div class="kpi-title">Ventas vs Meta</div><div id="velocimetro-ventas"></div><div class="kpi-text-real" id="texto-ventas-real">$0 / $0</div></div>
                 <div class="kpi-card"><div class="kpi-title">Vuelos de Drones</div><div id="velocimetro-servicios"></div><div class="kpi-text-real" id="texto-servicios-real">0 / 0</div></div>
                 <div class="kpi-card"><div class="kpi-title">Nuevos Clientes</div><div id="velocimetro-clientes"></div><div class="kpi-text-real" id="texto-clientes-real">0 / 0</div></div>
                 <div class="kpi-card"><div class="kpi-title">Prospectos Alcanzados</div><div id="velocimetro-prospectos"></div><div class="kpi-text-real" id="texto-prospectos-real">0 / 0</div></div>
             </div>
+
+            <h2 class="text-2xl font-bold text-gray-800 mt-10 mb-6 tracking-tight">Panel de Captura Rápida</h2>
+            
+            <!-- GRID DE 3 COLUMNAS PARA FORMULARIOS -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+                
+                <!-- Formulario 1: Clientes -->
+                <div id="vista-form-clientes" class="bg-white p-6 rounded-2xl shadow-md border border-green-100">
+                    <h3 id="tituloFormCliente" class="text-xl font-bold text-gray-800 mb-6 flex items-center"><i class="fa-solid fa-user-plus text-green-600 mr-2 text-2xl"></i> Nuevo Cliente</h3>
+                    <form id="registroForm" class="space-y-4">
+                        <input type="hidden" id="editClienteId">
+                        <div class="grid grid-cols-2 gap-3"><input type="text" id="nombre" placeholder="Nombre(s)" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none"><input type="text" id="apellidos" placeholder="Apellidos" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none"></div>
+                        <input type="email" id="email" placeholder="Correo Electrónico" class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
+                        <div class="grid grid-cols-2 gap-3"><input type="text" id="telefono" placeholder="Teléfono" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none"><input type="text" id="rfc" placeholder="RFC" class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none uppercase"></div>
+                        <button type="submit" id="btnSubmitCliente" class="w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-[#4ade80] hover:bg-green-500 text-green-900 transition-colors shadow-sm"><i class="fa-solid fa-save mr-1"></i> Guardar Cliente</button>
+                        <button type="button" id="btnCancelarCliente" class="hidden w-full py-2 rounded-xl text-xs font-bold text-gray-600 bg-gray-200 hover:bg-gray-300 transition-colors">Cancelar Edición</button>
+                    </form>
+                </div>
+
+                <!-- Formulario 2: Parcelas -->
+                <div id="vista-form-propiedades" class="bg-white p-6 rounded-2xl shadow-md border border-green-100">
+                    <h3 id="tituloFormPropiedad" class="text-xl font-bold text-gray-800 mb-6 flex items-center"><i class="fa-solid fa-map-location-dot text-green-600 mr-2 text-2xl"></i> Registrar Parcela</h3>
+                    <form id="propiedadForm" class="space-y-4">
+                        <input type="hidden" id="editPropiedadId">
+                        <select id="selectCliente" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none"><option value="">-- Selecciona el Propietario --</option></select>
+                        <div class="grid grid-cols-2 gap-3"><input type="text" id="nombre_propiedad" placeholder="Nombre Rancho" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none"><input type="text" id="tipo_cultivo" placeholder="Cultivo (Ej. Maíz)" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none"></div>
+                        <div class="grid grid-cols-2 gap-3"><input type="number" step="0.01" id="superficie_has" placeholder="Hectáreas" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none"><select id="sistema_riego" class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none"><option value="Temporal">Temporal</option><option value="Aspersión">Aspersión</option><option value="Goteo">Goteo</option><option value="Gravedad">Gravedad</option></select></div>
+                        <div class="grid grid-cols-2 gap-3"><input type="text" id="direccion" placeholder="Localidad (Predio)" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none"><input type="text" id="estado" value="Veracruz" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none"></div>
+                        <button type="submit" id="btnSubmitPropiedad" class="w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-[#4ade80] hover:bg-green-500 text-green-900 transition-colors shadow-sm"><i class="fa-solid fa-save mr-1"></i> Guardar Parcela</button>
+                        <button type="button" id="btnCancelarPropiedad" class="hidden w-full py-2 rounded-xl text-xs font-bold text-gray-600 bg-gray-200 hover:bg-gray-300 transition-colors">Cancelar Edición</button>
+                    </form>
+                </div>
+
+                <!-- Formulario 3: Ventas -->
+                <div id="vista-form-servicios" class="bg-white p-6 rounded-2xl shadow-md border border-green-100">
+                    <h3 id="tituloFormServio" class="text-xl font-bold text-gray-800 mb-6 flex items-center"><i class="fa-solid fa-file-invoice-dollar text-green-600 mr-2 text-2xl"></i> Registrar Venta</h3>
+                    <form id="servicioForm" class="space-y-4">
+                        <input type="hidden" id="editServioId">
+                        <div><label class="text-[10px] text-gray-500 font-bold uppercase">Productor / Parcela</label>
+                        <select id="selectPropiedad" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none"><option value="">-- Selecciona --</option></select></div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div><label class="text-[10px] text-gray-500 font-bold uppercase">No. Cotización</label><input type="text" id="no_cotizacion" placeholder="Ej. C-001" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none"></div>
+                            <div><label class="text-[10px] text-gray-500 font-bold uppercase">No. Orden Serv.</label><input type="text" id="no_orden" placeholder="Ej. OS-001" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none"></div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div><label class="text-[10px] text-gray-500 font-bold uppercase">Fecha de Venta</label><input type="date" id="fecha_aplicacion" required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none text-gray-600"></div>
+                            <div><label class="text-[10px] text-gray-500 font-bold uppercase">Fecha Seguimiento</label><input type="date" id="fecha_seguimiento" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none text-gray-600"></div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div><label class="text-[10px] text-gray-500 font-bold uppercase">Ingresos ($)</label><input type="number" step="0.01" id="costo_servicio" required class="w-full px-3 py-2 bg-gray-50 border border-green-300 rounded-lg text-sm font-bold text-green-700 focus:ring-2 focus:ring-green-600 outline-none"></div>
+                            <div><label class="text-[10px] text-gray-500 font-bold uppercase">Gastos ($)</label><input type="number" step="0.01" id="gastos" class="w-full px-3 py-2 bg-gray-50 border border-red-300 rounded-lg text-sm font-bold text-red-600 focus:ring-2 focus:ring-red-600 outline-none"></div>
+                        </div>
+                        <div><label class="text-[10px] text-gray-500 font-bold uppercase">Observaciones</label><textarea id="observaciones" rows="1" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none"></textarea></div>
+                        <div class="hidden"><input type="text" id="no_factura" value="S/N"><select id="estado_cuenta"><option value="Cobrado">Cobrado</option></select><input type="number" id="satisfaccion" value="5"></div>
+                        
+                        <button type="submit" id="btnSubmitServicio" class="w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-green-700 hover:bg-green-600 transition-colors shadow-sm"><i class="fa-solid fa-save mr-1"></i> Guardar en BD</button>
+                        <button type="button" id="btnCancelarServicio" class="hidden w-full py-2 rounded-xl text-xs font-bold text-gray-600 bg-gray-200 hover:bg-gray-300 transition-colors">Cancelar Edición</button>
+                    </form>
+                </div>
+
+            </div>
         </div>
 
+
+        <!-- ============================================== -->
+        <!-- PANTALLA 2: TABLAS DE DATOS Y ESTADÍSTICAS -->
+        <!-- ============================================== -->
+        <div id="vista-tablas" class="hidden max-w-[1600px] mx-auto mt-8 px-6 pb-12">
+            
+            <h2 class="text-3xl font-bold text-gray-800 mb-6">Base de Datos Operativa</h2>
+
+            <!-- TARJETAS DE ESTADÍSTICAS (Siempre visibles sobre las tablas) -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-200 flex items-center space-x-4">
+                    <div class="bg-indigo-100 w-12 h-12 rounded-full flex items-center justify-center text-indigo-600 shrink-0"><i class="fa-solid fa-calendar-days text-lg"></i></div>
+                    <div class="w-full">
+                        <p class="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-1">Filtrar por Mes</p>
+                        <select id="filtroMes" onchange="actualizarEstadisticas()" class="w-full bg-gray-50 border border-gray-200 rounded-lg text-sm font-bold text-gray-700 py-1.5 px-2 focus:ring-2 focus:ring-green-600 outline-none cursor-pointer">
+                            <option value="todos">Histórico Total</option><option value="01">Enero</option><option value="02">Febrero</option><option value="03">Marzo</option><option value="04">Abril</option><option value="05">Mayo</option><option value="06" selected>Junio</option><option value="07">Julio</option><option value="08">Agosto</option><option value="09">Septiembre</option><option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex items-center space-x-4"><div class="bg-yellow-100 w-12 h-12 rounded-full flex items-center justify-center text-yellow-600 shrink-0"><i class="fa-solid fa-ruler-combined text-lg"></i></div><div><p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Ha. Fumigadas</p><p id="stat-hectareas" class="text-2xl font-extrabold text-gray-800 leading-none mt-1">0</p></div></div>
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-green-200 flex items-center space-x-4"><div class="bg-green-100 w-12 h-12 rounded-full flex items-center justify-center text-green-600 shrink-0"><i class="fa-solid fa-arrow-trend-up text-lg"></i></div><div><p class="text-[10px] text-green-600/80 font-bold uppercase tracking-wider">Ingresos Mensuales</p><p id="stat-ingresos" class="text-2xl font-extrabold text-green-700 leading-none mt-1">$0</p></div></div>
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-blue-200 flex items-center space-x-4"><div class="bg-blue-100 w-12 h-12 rounded-full flex items-center justify-center text-blue-600 shrink-0"><i class="fa-solid fa-sack-dollar text-lg"></i></div><div><p class="text-[10px] text-blue-600/80 font-bold uppercase tracking-wider">Utilidad Neta</p><p id="stat-utilidad" class="text-2xl font-extrabold text-blue-700 leading-none mt-1">$0</p></div></div>
+            </div>
+
+            <!-- CONTENEDORES INDIVIDUALES DE LAS TABLAS -->
+            <div id="vista-tabla-clientes" class="hidden bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
+                <div class="tabla-header px-6 py-4 flex flex-col md:flex-row md:justify-between items-center text-white gap-3"><h2 class="text-sm font-bold uppercase tracking-wider whitespace-nowrap"><i class="fa-solid fa-list mr-2"></i> Directorio de Clientes</h2><div class="relative w-full md:w-72"><div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><i class="fa-solid fa-search text-gray-400"></i></div><input type="text" id="buscadorClientes" onkeyup="filtrarClientes()" placeholder="Buscar..." class="w-full pl-10 pr-4 py-1.5 bg-white text-gray-800 rounded-full text-sm outline-none shadow-inner"></div><span id="contadorClientes" class="bg-white text-green-800 text-xs font-bold px-3 py-1 rounded-full shadow-sm whitespace-nowrap">0 REGISTRADOS</span></div>
+                <div class="overflow-x-auto custom-scrollbar"><table class="min-w-full divide-y divide-gray-100 text-sm"><thead class="bg-[#187547] text-white"><tr><th class="px-6 py-3 text-left text-xs font-semibold tracking-wider">CLIENTE</th><th class="px-6 py-3 text-left text-xs font-semibold tracking-wider">CONTACTO</th><th class="px-6 py-3 text-center text-xs font-semibold tracking-wider">ACCIONES</th></tr></thead><tbody id="cuerpoTabla" class="bg-white divide-y divide-gray-100"></tbody></table></div>
+            </div>
+            
+            <div id="vista-tabla-propiedades" class="hidden bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
+                <div class="tabla-header px-6 py-4 flex justify-between items-center text-white"><h2 class="text-sm font-bold uppercase tracking-wider"><i class="fa-solid fa-map mr-2"></i> Inventario de Parcelas</h2></div>
+                <div class="overflow-x-auto custom-scrollbar"><table class="min-w-full divide-y divide-gray-100 text-sm"><thead class="bg-[#187547] text-white"><tr><th class="px-6 py-3 text-left text-xs font-semibold tracking-wider">PROPIEDAD / PREDIO</th><th class="px-6 py-3 text-center text-xs font-semibold tracking-wider">CULTIVO</th><th class="px-6 py-3 text-center text-xs font-semibold tracking-wider">SUPERFICIE</th><th class="px-6 py-3 text-center text-xs font-semibold tracking-wider">ACCIONES</th></tr></thead><tbody id="cuerpoTablaPropiedades" class="bg-white divide-y divide-gray-100"></tbody></table></div>
+            </div>
+            
+            <div id="vista-tabla-servicios" class="hidden bg-white rounded-xl shadow-lg border border-gray-300 overflow-hidden">
+                <div class="tabla-header px-4 py-3 flex justify-between items-center text-white">
+                    <h2 class="text-sm font-bold uppercase tracking-wider"><i class="fa-solid fa-table border border-white/30 p-1.5 rounded bg-white/10 mr-2"></i> Base de Datos de Ventas 2026</h2>
+                    <!-- BOTÓN CONFIGURAR METAS AHORA VIVE AQUÍ -->
+                    <button onclick="abrirModalMetas()" class="bg-white text-green-900 hover:bg-gray-100 px-4 py-1.5 rounded-md text-xs font-bold transition-colors shadow-sm flex items-center">
+                        <i class="fa-solid fa-gear mr-2"></i> Configurar Metas del Mes
+                    </button>
+                </div>
+                <div class="overflow-x-auto custom-scrollbar max-h-[600px] relative"><table class="w-full divide-y divide-gray-200 text-sm border-collapse"><thead class="bg-gray-100 text-gray-700 sticky top-0 z-10 shadow-sm border-b-2 border-gray-300"><tr><th class="th-excel bg-gray-200">No. Control</th><th class="th-excel">Nombre del Productor</th><th class="th-excel">Apellidos</th><th class="th-excel">Teléfono</th><th class="th-excel bg-green-50">Cultivo</th><th class="th-excel bg-green-50">Hectáreas</th><th class="th-excel bg-green-50">Localidad</th><th class="th-excel bg-blue-50">Cotización</th><th class="th-excel bg-blue-50">Orden Serv.</th><th class="th-excel bg-blue-50">Fecha Venta</th><th class="th-excel bg-emerald-100 text-green-900">Ingresos</th><th class="th-excel bg-rose-100 text-rose-900">Gastos</th><th class="th-excel bg-indigo-100 text-indigo-900">Utilidad</th><th class="th-excel">Seguimiento</th><th class="th-excel">Factura</th><th class="th-excel">Observaciones</th><th class="th-excel bg-gray-200 text-center"><i class="fa-solid fa-gears"></i></th></tr></thead><tbody id="cuerpoTablaServicios" class="bg-white divide-y divide-gray-200"></tbody></table></div>
+            </div>
+        </div>
+
+        <!-- MODAL PARA EDITAR METAS -->
         <div id="modal-metas" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 p-4">
             <div class="bg-white p-6 rounded-2xl shadow-2xl w-full max-w-md border border-gray-200">
-                <div class="flex justify-between items-center mb-4"><h3 class="text-xl font-bold text-gray-800"><i class="fa-solid fa-bullseye text-red-500 mr-2"></i> Ajustar Objetivos</h3><button onclick="cerrarModalMetas()" class="text-gray-400 hover:text-red-500"><i class="fa-solid fa-xmark text-xl"></i></button></div>
+                <div class="flex justify-between items-center mb-4"><h3 class="text-xl font-bold text-gray-800"><i class="fa-solid fa-bullseye text-green-600 mr-2"></i> Ajustar Objetivos</h3><button onclick="cerrarModalMetas()" class="text-gray-400 hover:text-red-500"><i class="fa-solid fa-xmark text-xl"></i></button></div>
                 <form id="formMetas" class="space-y-4">
                     <input type="hidden" id="meta_mes_anio" value="06-2026">
                     <div><label class="block text-xs font-bold text-gray-500 uppercase">Meta Global Ventas ($ MXN)</label><input type="number" id="input_meta_ventas" required class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg font-bold text-green-700 outline-none focus:ring-2 focus:ring-green-500"></div>
@@ -119,45 +221,6 @@
             </div>
         </div>
 
-        <div id="vista-seccion-estadisticas" class="max-w-7xl mx-auto mt-6 px-6 block">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-200 flex items-center space-x-4">
-                    <div class="bg-indigo-100 w-12 h-12 rounded-full flex items-center justify-center text-indigo-600 shrink-0"><i class="fa-solid fa-calendar-days text-lg"></i></div>
-                    <div class="w-full">
-                        <p class="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-1">Filtrar por Mes</p>
-                        <select id="filtroMes" onchange="actualizarEstadisticas()" class="w-full bg-gray-50 border border-gray-200 rounded-lg text-sm font-bold text-gray-700 py-1.5 px-2 focus:ring-2 focus:ring-green-600 outline-none cursor-pointer">
-                            <option value="todos">Histórico Total</option><option value="01">Enero</option><option value="02">Febrero</option><option value="03">Marzo</option><option value="04">Abril</option><option value="05">Mayo</option><option value="06" selected>Junio</option><option value="07">Julio</option><option value="08">Agosto</option><option value="09">Septiembre</option><option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex items-center space-x-4"><div class="bg-yellow-100 w-12 h-12 rounded-full flex items-center justify-center text-yellow-600 shrink-0"><i class="fa-solid fa-ruler-combined text-lg"></i></div><div><p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Ha. Fumigadas</p><p id="stat-hectareas" class="text-2xl font-extrabold text-gray-800 leading-none mt-1">0</p></div></div>
-                <div id="card-ingresos" class="bg-white p-4 rounded-2xl shadow-sm border border-green-200 flex items-center space-x-4 relative overflow-hidden"><div class="bg-green-100 w-12 h-12 rounded-full flex items-center justify-center text-green-600 shrink-0 relative z-10"><i class="fa-solid fa-arrow-trend-up text-lg"></i></div><div class="relative z-10"><p class="text-[10px] text-green-600/80 font-bold uppercase tracking-wider">Ingresos Mensuales</p><p id="stat-ingresos" class="text-2xl font-extrabold text-green-700 leading-none mt-1">$0</p></div></div>
-                <div class="bg-white p-4 rounded-2xl shadow-sm border border-blue-200 flex items-center space-x-4 relative overflow-hidden"><div class="bg-blue-100 w-12 h-12 rounded-full flex items-center justify-center text-blue-600 shrink-0 relative z-10"><i class="fa-solid fa-sack-dollar text-lg"></i></div><div class="relative z-10"><p class="text-[10px] text-blue-600/80 font-bold uppercase tracking-wider">Utilidad Neta</p><p id="stat-utilidad" class="text-2xl font-extrabold text-blue-700 leading-none mt-1">$0</p></div></div>
-            </div>
-        </div>
-
-        <div id="vista-seccion-formularios" class="max-w-[1400px] mx-auto mt-6 px-6 block xl:table xl:table-fixed w-full border-spacing-x-8">
-            <div class="block xl:table-cell w-full xl:w-1/4 vertical-align-top space-y-6 pb-8 xl:pb-0">
-                <div id="vista-form-clientes" class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hidden">
-                    <h3 id="tituloFormCliente" class="text-lg font-bold text-gray-800 mb-4 flex items-center"><i class="fa-solid fa-user-plus text-green-600 mr-2"></i> Nuevo Cliente</h3>
-                    <form id="registroForm" class="space-y-4"><input type="hidden" id="editClienteId"><div class="grid grid-cols-2 gap-3"><input type="text" id="nombre" placeholder="Nombre(s)" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none"><input type="text" id="apellidos" placeholder="Apellidos" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none"></div><input type="email" id="email" placeholder="Correo Electrónico" class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none"><div class="grid grid-cols-2 gap-3"><input type="text" id="telefono" placeholder="Teléfono" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none"><input type="text" id="rfc" placeholder="RFC" class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none uppercase"></div><button type="submit" id="btnSubmitCliente" class="w-full py-2.5 rounded-full text-sm font-bold text-white bg-[#4ade80] hover:bg-green-500 text-green-900 transition-colors shadow-sm"><i class="fa-solid fa-save mr-1"></i> Guardar Cliente</button><button type="button" id="btnCancelarCliente" class="hidden w-full py-2 rounded-full text-xs font-bold text-gray-600 bg-gray-200 hover:bg-gray-300 transition-colors">Cancelar Edición</button></form>
-                </div>
-                <div id="vista-form-propiedades" class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hidden">
-                    <h3 id="tituloFormPropiedad" class="text-lg font-bold text-gray-800 mb-4 flex items-center"><i class="fa-solid fa-map-location-dot text-green-600 mr-2"></i> Registrar Parcela</h3>
-                    <form id="propiedadForm" class="space-y-4"><input type="hidden" id="editPropiedadId"><select id="selectCliente" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none"><option value="">-- Selecciona el Propietario --</option></select><div class="grid grid-cols-2 gap-3"><input type="text" id="nombre_propiedad" placeholder="Nombre Rancho" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none"><input type="text" id="tipo_cultivo" placeholder="Cultivo (Ej. Maíz)" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none"></div><div class="grid grid-cols-2 gap-3"><input type="number" step="0.01" id="superficie_has" placeholder="Hectáreas" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none"><select id="sistema_riego" class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none"><option value="Temporal">Temporal</option><option value="Aspersión">Aspersión</option><option value="Goteo">Goteo</option><option value="Gravedad">Gravedad</option></select></div><div class="grid grid-cols-2 gap-3"><input type="text" id="direccion" placeholder="Localidad (Predio)" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none"><input type="text" id="estado" value="Veracruz" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none"></div><button type="submit" id="btnSubmitPropiedad" class="w-full py-2.5 rounded-full text-sm font-bold text-white bg-[#4ade80] hover:bg-green-500 text-green-900 transition-colors shadow-sm"><i class="fa-solid fa-save mr-1"></i> Guardar Parcela</button><button type="button" id="btnCancelarPropiedad" class="hidden w-full py-2 rounded-full text-xs font-bold text-gray-600 bg-gray-200 hover:bg-gray-300 transition-colors">Cancelar Edición</button></form>
-                </div>
-                <div id="vista-form-servicios" class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hidden">
-                    <h3 id="tituloFormServio" class="text-lg font-bold text-gray-800 mb-4 flex items-center"><i class="fa-solid fa-file-invoice-dollar text-green-600 mr-2"></i> Registrar Venta</h3>
-                    <form id="servicioForm" class="space-y-4"><input type="hidden" id="editServioId"><div><label class="text-[10px] text-gray-500 font-bold uppercase">Productor / Parcela</label><select id="selectPropiedad" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none"><option value="">-- Selecciona --</option></select></div><div class="grid grid-cols-2 gap-3"><div><label class="text-[10px] text-gray-500 font-bold uppercase">No. Cotización</label><input type="text" id="no_cotizacion" placeholder="Ej. C-001" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none"></div><div><label class="text-[10px] text-gray-500 font-bold uppercase">No. Orden Serv.</label><input type="text" id="no_orden" placeholder="Ej. OS-001" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none"></div></div><div class="grid grid-cols-2 gap-3"><div><label class="text-[10px] text-gray-500 font-bold uppercase">Fecha de Venta</label><input type="date" id="fecha_aplicacion" required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none text-gray-600"></div><div><label class="text-[10px] text-gray-500 font-bold uppercase">Fecha Seguimiento</label><input type="date" id="fecha_seguimiento" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none text-gray-600"></div></div><div class="grid grid-cols-2 gap-3"><div><label class="text-[10px] text-gray-500 font-bold uppercase">Ingresos ($)</label><input type="number" step="0.01" id="costo_servicio" required class="w-full px-3 py-2 bg-gray-50 border border-green-300 rounded-lg text-sm font-bold text-green-700 focus:ring-2 focus:ring-green-600 outline-none"></div><div><label class="text-[10px] text-gray-500 font-bold uppercase">Gastos ($)</label><input type="number" step="0.01" id="gastos" class="w-full px-3 py-2 bg-gray-50 border border-red-300 rounded-lg text-sm font-bold text-red-600 focus:ring-2 focus:ring-red-600 outline-none"></div></div><div><label class="text-[10px] text-gray-500 font-bold uppercase">No. Factura</label><input type="text" id="no_factura" placeholder="S/N" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none"></div><div class="hidden"><select id="estado_cuenta"><option value="Cobrado">Cobrado</option></select><input type="number" id="satisfaccion" value="5"></div><div><label class="text-[10px] text-gray-500 font-bold uppercase">Observaciones</label><textarea id="observaciones" rows="2" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none"></textarea></div><button type="submit" id="btnSubmitServicio" class="w-full py-2.5 rounded-xl text-sm font-bold text-white bg-green-700 hover:bg-green-600 transition-colors shadow-sm"><i class="fa-solid fa-save mr-1"></i> Guardar en Base de Datos</button><button type="button" id="btnCancelarServicio" class="hidden w-full py-2 rounded-xl text-xs font-bold text-gray-600 bg-gray-200 hover:bg-gray-300 transition-colors">Cancelar Edición</button></form>
-                </div>
-            </div>
-
-            <div class="block xl:table-cell w-full xl:w-3/4 vertical-align-top space-y-8">
-                <div id="vista-tabla-clientes" class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden hidden"><div class="tabla-header px-6 py-4 flex flex-col md:flex-row md:justify-between items-center text-white gap-3"><h2 class="text-sm font-bold uppercase tracking-wider whitespace-nowrap"><i class="fa-solid fa-list mr-2"></i> Directorio de Clientes</h2><div class="relative w-full md:w-72"><div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><i class="fa-solid fa-search text-gray-400"></i></div><input type="text" id="buscadorClientes" onkeyup="filtrarClientes()" placeholder="Buscar..." class="w-full pl-10 pr-4 py-1.5 bg-white text-gray-800 rounded-full text-sm outline-none shadow-inner"></div><span id="contadorClientes" class="bg-white text-green-800 text-xs font-bold px-3 py-1 rounded-full shadow-sm whitespace-nowrap">0 REGISTRADOS</span></div><div class="overflow-x-auto custom-scrollbar"><table class="min-w-full divide-y divide-gray-100 text-sm"><thead class="bg-[#187547] text-white"><tr><th class="px-6 py-3 text-left text-xs font-semibold tracking-wider">CLIENTE</th><th class="px-6 py-3 text-left text-xs font-semibold tracking-wider">CONTACTO</th><th class="px-6 py-3 text-center text-xs font-semibold tracking-wider">ACCIONES</th></tr></thead><tbody id="cuerpoTabla" class="bg-white divide-y divide-gray-100"></tbody></table></div></div>
-                <div id="vista-tabla-propiedades" class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden hidden"><div class="tabla-header px-6 py-4 flex justify-between items-center text-white"><h2 class="text-sm font-bold uppercase tracking-wider"><i class="fa-solid fa-map mr-2"></i> Inventario de Parcelas</h2></div><div class="overflow-x-auto custom-scrollbar"><table class="min-w-full divide-y divide-gray-100 text-sm"><thead class="bg-[#187547] text-white"><tr><th class="px-6 py-3 text-left text-xs font-semibold tracking-wider">PROPIEDAD / PREDIO</th><th class="px-6 py-3 text-center text-xs font-semibold tracking-wider">CULTIVO</th><th class="px-6 py-3 text-center text-xs font-semibold tracking-wider">SUPERFICIE</th><th class="px-6 py-3 text-center text-xs font-semibold tracking-wider">ACCIONES</th></tr></thead><tbody id="cuerpoTablaPropiedades" class="bg-white divide-y divide-gray-100"></tbody></table></div></div>
-                <div id="vista-tabla-servicios" class="bg-white rounded-xl shadow-lg border border-gray-300 overflow-hidden hidden"><div class="tabla-header px-4 py-3 flex justify-between items-center text-white"><h2 class="text-sm font-bold uppercase tracking-wider"><i class="fa-solid fa-table border border-white/30 p-1.5 rounded bg-white/10 mr-2"></i> Base de Datos de Ventas 2026</h2></div><div class="overflow-x-auto custom-scrollbar max-h-[600px] relative"><table class="w-full divide-y divide-gray-200 text-sm border-collapse"><thead class="bg-gray-100 text-gray-700 sticky top-0 z-10 shadow-sm border-b-2 border-gray-300"><tr><th class="th-excel bg-gray-200">No. Control</th><th class="th-excel">Nombre del Productor</th><th class="th-excel">Apellidos</th><th class="th-excel">Teléfono</th><th class="th-excel bg-green-50">Cultivo</th><th class="th-excel bg-green-50">Hectáreas</th><th class="th-excel bg-green-50">Localidad</th><th class="th-excel bg-blue-50">Cotización</th><th class="th-excel bg-blue-50">Orden Serv.</th><th class="th-excel bg-blue-50">Fecha Venta</th><th class="th-excel bg-emerald-100 text-green-900">Ingresos</th><th class="th-excel bg-rose-100 text-rose-900">Gastos</th><th class="th-excel bg-indigo-100 text-indigo-900">Utilidad</th><th class="th-excel">Seguimiento</th><th class="th-excel">Factura</th><th class="th-excel">Observaciones</th><th class="th-excel bg-gray-200 text-center"><i class="fa-solid fa-gears"></i></th></tr></thead><tbody id="cuerpoTablaServicios" class="bg-white divide-y divide-gray-200"></tbody></table></div></div>
-            </div>
-        </div>
     </div> 
 
     <script>
@@ -167,14 +230,13 @@
         // --- LOGIN ---
         document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            const btn = document.getElementById('btnLogin');
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Cargando BD...';
-            btn.disabled = true; 
+            document.getElementById('btnLogin').innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Cargando BD...';
+            document.getElementById('btnLogin').disabled = true; 
             try {
                 document.getElementById('login-container').classList.add('hidden');
                 document.getElementById('dashboard-container').classList.remove('hidden');
                 await inicializarPanel(); 
-                cambiarVista('metas'); 
+                cambiarVista('inicio'); // Arranca directo en la pantalla compartida
             } catch (error) { alert("Error de conexión"); }
         });
 
@@ -184,39 +246,32 @@
             await cargarClientes(); await cargarPropiedades(); await cargarServicios(); actualizarEstadisticas();
         }
 
-        // --- SISTEMA NAVEGACIÓN SIMPLIFICADO ---
+        // --- SISTEMA NAVEGACIÓN NUEVO ---
         function cambiarVista(vista) {
-            // 1. Apagar todos los botones (volverlos transparentes con borde) y ocultar vistas
-            ['clientes', 'propiedades', 'servicios', 'metas'].forEach(sec => {
+            // Apaga botones
+            ['inicio', 'clientes', 'propiedades', 'servicios'].forEach(sec => {
                 const btn = document.getElementById('nav-' + sec);
                 if(btn) btn.className = "border border-green-500/50 hover:bg-green-700 px-4 py-2 rounded-md text-sm font-medium transition-colors shadow-sm";
                 
-                const form = document.getElementById('vista-form-' + sec);
-                if(form) { form.classList.add('hidden'); form.classList.remove('block'); }
-                
+                // Oculta tablas
                 const tabla = document.getElementById('vista-tabla-' + sec);
                 if(tabla) { tabla.classList.add('hidden'); tabla.classList.remove('block'); }
             });
 
-            // 2. Ocultar todos los contenedores principales
-            document.getElementById('vista-seccion-metas').classList.add('hidden');
-            document.getElementById('vista-seccion-estadisticas').classList.add('hidden');
-            document.getElementById('vista-seccion-formularios').classList.add('hidden');
+            // Oculta bloques mayores
+            document.getElementById('vista-inicio').classList.add('hidden');
+            document.getElementById('vista-tablas').classList.add('hidden');
 
-            // 3. Encender el botón seleccionado (relleno verde oscuro)
+            // Enciende botón
             document.getElementById('nav-' + vista).className = "bg-green-700 hover:bg-green-600 px-4 py-2 rounded-md text-sm font-bold transition-colors shadow-sm";
 
-            // 4. Mostrar el contenedor que toca
-            if (vista === 'metas') {
-                document.getElementById('vista-seccion-metas').classList.remove('hidden');
+            // Activa vistas correspondientes
+            if (vista === 'inicio') {
+                document.getElementById('vista-inicio').classList.remove('hidden');
                 actualizarMetasCEO();
             } else {
-                document.getElementById('vista-seccion-estadisticas').classList.remove('hidden');
-                document.getElementById('vista-seccion-formularios').classList.remove('hidden');
-                document.getElementById('vista-form-' + vista).classList.remove('hidden');
-                document.getElementById('vista-form-' + vista).classList.add('block');
+                document.getElementById('vista-tablas').classList.remove('hidden');
                 document.getElementById('vista-tabla-' + vista).classList.remove('hidden');
-                document.getElementById('vista-tabla-' + vista).classList.add('block');
             }
         }
 
@@ -256,7 +311,7 @@
                 document.getElementById("texto-clientes-real").innerText = datos.reales.clientes + " / " + (datos.metas.meta_clientes || 0);
                 document.getElementById("texto-prospectos-real").innerText = "0 / " + (datos.metas.meta_prospectos || 0);
                 document.getElementById('input_meta_ventas').value = datos.metas.meta_ventas || 0; document.getElementById('input_meta_servicios').value = datos.metas.meta_servicios || 0; document.getElementById('input_meta_clientes').value = datos.metas.meta_clientes || 0; document.getElementById('input_meta_prospectos').value = datos.metas.meta_prospectos || 0;
-            } catch (error) { console.error(error); }
+            } catch (error) {}
         }
 
         function abrirModalMetas() { document.getElementById('modal-metas').classList.remove('hidden'); }
@@ -265,7 +320,7 @@
         document.getElementById('formMetas').addEventListener('submit', async function(e) {
             e.preventDefault(); document.getElementById('btnGuardarMetas').innerText = "Guardando...";
             const datosMeta = { mes_anio: document.getElementById('meta_mes_anio').value, meta_ventas: parseFloat(document.getElementById('input_meta_ventas').value), meta_servicios: parseInt(document.getElementById('input_meta_servicios').value), meta_clientes: parseInt(document.getElementById('input_meta_clientes').value), meta_prospectos: parseInt(document.getElementById('input_meta_prospectos').value) };
-            try { await fetch(API_URL + "/api/metas/", { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datosMeta) }); cerrarModalMetas(); document.getElementById('btnGuardarMetas').innerText = "Guardar en Base de Datos"; actualizarMetasCEO(); } catch (error) { alert("Error"); document.getElementById('btnGuardarMetas').innerText = "Guardar en Base de Datos"; }
+            try { await fetch(API_URL + "/api/metas/", { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datosMeta) }); cerrarModalMetas(); document.getElementById('btnGuardarMetas').innerText = "Guardar en Base de Datos"; actualizarMetasCEO(); } catch (error) { document.getElementById('btnGuardarMetas').innerText = "Guardar en Base de Datos"; }
         });
 
         // --- CLIENTES ---
@@ -274,25 +329,50 @@
             lista.forEach(c => { cuerpo.innerHTML += `<tr class="hover:bg-gray-50"><td class="px-6 py-4"><div class="flex items-center space-x-4"><div class="bg-green-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold shadow-sm"><i class="fa-solid fa-user"></i></div><div><p class="font-bold text-gray-800">${c.nombre} <br> ${c.apellidos}</p><p class="text-[10px] text-gray-400 mt-1">RFC: ${c.rfc || 'S/N'}</p></div></div></td><td class="px-6 py-4"><p class="text-sm text-blue-600 font-medium"><i class="fa-solid fa-envelope mr-2"></i>${c.email || 'Sin correo'}</p><p class="text-sm text-gray-600 mt-1"><i class="fa-solid fa-phone text-green-600 mr-2"></i>${c.telefono}</p></td><td class="px-6 py-4 text-center whitespace-nowrap space-x-1"><button onclick="tabularEdicionCliente('${c.id}')" class="bg-amber-400 hover:bg-amber-500 text-white text-xs font-bold px-4 py-2 rounded-full shadow-sm"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="eliminarCliente('${c.id}')" class="bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-4 py-2 rounded-full shadow-sm"><i class="fa-solid fa-trash"></i></button></td></tr>`; });
         }
         function filtrarClientes() { renderizarTablaClientes(memoriaClientes.filter(c => `${c.nombre} ${c.apellidos}`.toLowerCase().includes(document.getElementById('buscadorClientes').value.toLowerCase()))); }
-        async function cargarClientes() { try { const res = await fetch(`${API_URL}/clientes/`); memoriaClientes = await res.json(); const sel = document.getElementById('selectCliente'); sel.innerHTML = '<option value="">-- Selecciona --</option>'; memoriaClientes.forEach(c => { sel.innerHTML += `<option value="${c.id}">${c.nombre} ${c.apellidos}</option>`; }); renderizarTablaClientes(memoriaClientes); } catch (e) { console.error(e); } }
+        async function cargarClientes() { try { const res = await fetch(`${API_URL}/clientes/`); memoriaClientes = await res.json(); const sel = document.getElementById('selectCliente'); sel.innerHTML = '<option value="">-- Selecciona --</option>'; memoriaClientes.forEach(c => { sel.innerHTML += `<option value="${c.id}">${c.nombre} ${c.apellidos}</option>`; }); renderizarTablaClientes(memoriaClientes); } catch (e) {} }
+        
         document.getElementById('registroForm').addEventListener('submit', async function(e) { e.preventDefault(); const id = document.getElementById('editClienteId').value; const datos = { nombre: document.getElementById('nombre').value, apellidos: document.getElementById('apellidos').value, email: document.getElementById('email').value, telefono: document.getElementById('telefono').value, rfc: document.getElementById('rfc').value }; await fetch(id ? `${API_URL}/clientes/${id}` : `${API_URL}/clientes/`, { method: id ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos) }); limpiarFormCliente(); await inicializarPanel(); });
         async function eliminarCliente(id) { if(confirm("¿Eliminar?")) { await fetch(`${API_URL}/clientes/${id}`, { method: 'DELETE' }); await inicializarPanel(); } }
-        function tabularEdicionCliente(id) { const c = memoriaClientes.find(x => x.id === id); document.getElementById('editClienteId').value = c.id; document.getElementById('nombre').value = c.nombre; document.getElementById('apellidos').value = c.apellidos; document.getElementById('email').value = c.email; document.getElementById('telefono').value = c.telefono; document.getElementById('rfc').value = c.rfc; document.getElementById('btnCancelarCliente').classList.remove('hidden'); window.scrollTo({ top: 0, behavior: 'smooth' });}
-        function limpiarFormCliente() { document.getElementById('registroForm').reset(); document.getElementById('editClienteId').value = ''; document.getElementById('btnCancelarCliente').classList.add('hidden'); }
+        
+        function tabularEdicionCliente(id) { 
+            const c = memoriaClientes.find(x => x.id === id); 
+            document.getElementById('editClienteId').value = c.id; document.getElementById('nombre').value = c.nombre; document.getElementById('apellidos').value = c.apellidos; document.getElementById('email').value = c.email; document.getElementById('telefono').value = c.telefono; document.getElementById('rfc').value = c.rfc; 
+            document.getElementById('tituloFormCliente').innerHTML = `<i class="fa-solid fa-pen text-amber-500 mr-2 text-2xl"></i> Editando Cliente`; document.getElementById('btnSubmitCliente').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-amber-500 hover:bg-amber-600 shadow-sm"; document.getElementById('btnCancelarCliente').classList.remove('hidden'); 
+            cambiarVista('inicio'); // Te regresa a la vista de inicio donde están los formularios
+            window.scrollTo({ top: document.getElementById('vista-form-clientes').offsetTop - 100, behavior: 'smooth' });
+        }
+        function limpiarFormCliente() { document.getElementById('registroForm').reset(); document.getElementById('editClienteId').value = ''; document.getElementById('tituloFormCliente').innerHTML = `<i class="fa-solid fa-user-plus text-green-600 mr-2 text-2xl"></i> Nuevo Cliente`; document.getElementById('btnSubmitCliente').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-[#4ade80] hover:bg-green-500 text-green-900 transition-colors shadow-sm"; document.getElementById('btnCancelarCliente').classList.add('hidden'); }
+        document.getElementById('btnCancelarCliente').addEventListener('click', limpiarFormCliente);
 
         // --- PARCELAS ---
         async function cargarPropiedades() { try { const res = await fetch(`${API_URL}/propiedades/`); memoriaPropiedades = await res.json(); const cuerpo = document.getElementById('cuerpoTablaPropiedades'); cuerpo.innerHTML = ''; const sel = document.getElementById('selectPropiedad'); sel.innerHTML = '<option value="">-- Selecciona --</option>'; memoriaPropiedades.forEach(p => { const cl = memoriaClientes.find(c => c.id === p.cliente_id); const nD = cl ? `${cl.nombre} ${cl.apellidos}` : 'N/A'; cuerpo.innerHTML += `<tr><td class="px-6 py-4"><p class="font-bold text-sm">${p.nombre_propiedad}</p><p class="text-[11px] text-gray-500">${p.direccion || p.estado} - Prop: ${nD}</p></td><td class="px-6 py-4 text-center"><span class="bg-[#1b6b43] text-white px-3 py-1 rounded-full text-[10px] font-bold">${p.tipo_cultivo}</span></td><td class="px-6 py-4 text-center"><p class="text-xl font-extrabold">${p.superficie_has}</p></td><td class="px-6 py-4 text-center"><button onclick="prepararEdicionPropiedad('${p.id}')" class="bg-amber-400 text-white text-xs px-4 py-2 rounded-full mr-1"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="eliminarPropiedad('${p.id}')" class="bg-rose-600 text-white text-xs px-4 py-2 rounded-full"><i class="fa-solid fa-trash"></i></button></td></tr>`; sel.innerHTML += `<option value="${p.id}">${nD} - ${p.nombre_propiedad}</option>`; }); } catch (e) {} }
+        
         document.getElementById('propiedadForm').addEventListener('submit', async function(e) { e.preventDefault(); const id = document.getElementById('editPropiedadId').value; const datos = { cliente_id: document.getElementById('selectCliente').value, nombre_propiedad: document.getElementById('nombre_propiedad').value, direccion: document.getElementById('direccion').value, estado: document.getElementById('estado').value, tipo_cultivo: document.getElementById('tipo_cultivo').value, superficie_has: parseFloat(document.getElementById('superficie_has').value), sistema_riego: document.getElementById('sistema_riego').value, comentarios: '' }; await fetch(id ? `${API_URL}/propiedades/${id}` : `${API_URL}/propiedades/`, { method: id ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos) }); limpiarFormPropiedad(); await inicializarPanel(); });
         async function eliminarPropiedad(id) { if(confirm("¿Eliminar?")) { await fetch(`${API_URL}/propiedades/${id}`, { method: 'DELETE' }); await inicializarPanel(); } }
-        function prepararEdicionPropiedad(id) { const p = memoriaPropiedades.find(x => x.id === id); document.getElementById('editPropiedadId').value = p.id; document.getElementById('selectCliente').value = p.cliente_id; document.getElementById('nombre_propiedad').value = p.nombre_propiedad; document.getElementById('tipo_cultivo').value = p.tipo_cultivo; document.getElementById('superficie_has').value = p.superficie_has; document.getElementById('sistema_riego').value = p.sistema_riego; document.getElementById('direccion').value = p.direccion; document.getElementById('estado').value = p.estado; document.getElementById('btnCancelarPropiedad').classList.remove('hidden'); window.scrollTo({ top: 0, behavior: 'smooth' });}
-        function limpiarFormPropiedad() { document.getElementById('propiedadForm').reset(); document.getElementById('editPropiedadId').value = ''; document.getElementById('btnCancelarPropiedad').classList.add('hidden'); }
+        
+        function prepararEdicionPropiedad(id) { 
+            const p = memoriaPropiedades.find(x => x.id === id); document.getElementById('editPropiedadId').value = p.id; document.getElementById('selectCliente').value = p.cliente_id; document.getElementById('nombre_propiedad').value = p.nombre_propiedad; document.getElementById('tipo_cultivo').value = p.tipo_cultivo; document.getElementById('superficie_has').value = p.superficie_has; document.getElementById('sistema_riego').value = p.sistema_riego; document.getElementById('direccion').value = p.direccion; document.getElementById('estado').value = p.estado; 
+            document.getElementById('tituloFormPropiedad').innerHTML = `<i class="fa-solid fa-pen text-amber-500 mr-2 text-2xl"></i> Editando Parcela`; document.getElementById('btnSubmitPropiedad').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-amber-500 hover:bg-amber-600 shadow-sm"; document.getElementById('btnCancelarPropiedad').classList.remove('hidden'); 
+            cambiarVista('inicio'); 
+            window.scrollTo({ top: document.getElementById('vista-form-propiedades').offsetTop - 100, behavior: 'smooth' });
+        }
+        function limpiarFormPropiedad() { document.getElementById('propiedadForm').reset(); document.getElementById('editPropiedadId').value = ''; document.getElementById('tituloFormPropiedad').innerHTML = `<i class="fa-solid fa-map-location-dot text-green-600 mr-2 text-2xl"></i> Registrar Parcela`; document.getElementById('btnSubmitPropiedad').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-[#4ade80] hover:bg-green-500 text-green-900 transition-colors shadow-sm"; document.getElementById('btnCancelarPropiedad').classList.add('hidden'); }
+        document.getElementById('btnCancelarPropiedad').addEventListener('click', limpiarFormPropiedad);
 
         // --- SERVICIOS ---
         async function cargarServicios() { try { const res = await fetch(`${API_URL}/servicios/`); memoriaServicios = await res.json(); const cuerpo = document.getElementById('cuerpoTablaServicios'); cuerpo.innerHTML = ''; memoriaServicios.forEach(s => { const pr = memoriaPropiedades.find(p => p.id === s.propiedad_id); const cl = pr ? memoriaClientes.find(c => c.id === pr.cliente_id) : null; cuerpo.innerHTML += `<tr><td class="td-excel bg-gray-50">${s.id ? String(s.id).substring(0,6) : 'S/N'}</td><td class="td-excel">${cl?cl.nombre:'N/A'}</td><td class="td-excel">${cl?cl.apellidos:'N/A'}</td><td class="td-excel">${cl?cl.telefono:'N/A'}</td><td class="td-excel">${pr?pr.tipo_cultivo:'N/A'}</td><td class="td-excel text-center">${pr?pr.superficie_has:'0'}</td><td class="td-excel">${pr?pr.direccion:'N/A'}</td><td class="td-excel">${s.no_cotizacion||'S/N'}</td><td class="td-excel">${s.no_orden||'S/N'}</td><td class="td-excel">${s.fecha_aplicacion||'S/N'}</td><td class="td-excel text-right text-green-700 font-bold">$${(s.costo_servicio||0).toLocaleString()}</td><td class="td-excel text-right text-red-600 font-bold">$${(s.gastos||0).toLocaleString()}</td><td class="td-excel text-right text-blue-700 font-bold">$${((s.costo_servicio||0)-(s.gastos||0)).toLocaleString()}</td><td class="td-excel text-center">${s.fecha_seguimiento||'S/N'}</td><td class="td-excel text-center">${s.no_factura||'S/N'}</td><td class="td-excel max-w-[150px] truncate">${s.observaciones||''}</td><td class="td-excel text-center space-x-2"><button onclick="prepararEdicionServicio('${s.id}')" class="text-amber-500"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="eliminarServio('${s.id}')" class="text-rose-500"><i class="fa-solid fa-trash"></i></button></td></tr>`; }); } catch (e) {} }
+        
         document.getElementById('servicioForm').addEventListener('submit', async function(e) { e.preventDefault(); const id = document.getElementById('editServioId').value; const datos = { propiedad_id: document.getElementById('selectPropiedad').value, fecha_aplicacion: document.getElementById('fecha_aplicacion').value, costo_servicio: parseFloat(document.getElementById('costo_servicio').value || 0), estado_cuenta: 'Cobrado', satisfaccion: 5, no_cotizacion: document.getElementById('no_cotizacion').value, no_orden: document.getElementById('no_orden').value, gastos: parseFloat(document.getElementById('gastos').value || 0), fecha_seguimiento: document.getElementById('fecha_seguimiento').value, no_factura: document.getElementById('no_factura').value, observaciones: document.getElementById('observaciones').value }; await fetch(id ? `${API_URL}/servicios/${id}` : `${API_URL}/servicios/`, { method: id ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos) }); limpiarFormService(); await inicializarPanel(); });
         async function eliminarServio(id) { if(confirm("¿Borrar?")) { await fetch(`${API_URL}/servicios/${id}`, { method: 'DELETE' }); await inicializarPanel(); } }
-        function prepararEdicionServicio(id) { const s = memoriaServicios.find(x => x.id === id); document.getElementById('editServioId').value = s.id; document.getElementById('selectPropiedad').value = s.propiedad_id; document.getElementById('fecha_aplicacion').value = s.fecha_aplicacion||''; document.getElementById('costo_servicio').value = s.costo_servicio||''; document.getElementById('no_cotizacion').value = s.no_cotizacion||''; document.getElementById('no_orden').value = s.no_orden||''; document.getElementById('gastos').value = s.gastos||''; document.getElementById('fecha_seguimiento').value = s.fecha_seguimiento||''; document.getElementById('no_factura').value = s.no_factura||''; document.getElementById('observaciones').value = s.observaciones||''; document.getElementById('btnCancelarServicio').classList.remove('hidden'); window.scrollTo({ top: 0, behavior: 'smooth' });}
-        function limpiarFormService() { document.getElementById('servicioForm').reset(); document.getElementById('editServioId').value = ''; document.getElementById('btnCancelarServicio').classList.add('hidden'); }
+        
+        function prepararEdicionServicio(id) { 
+            const s = memoriaServicios.find(x => x.id === id); document.getElementById('editServioId').value = s.id; document.getElementById('selectPropiedad').value = s.propiedad_id; document.getElementById('fecha_aplicacion').value = s.fecha_aplicacion||''; document.getElementById('costo_servicio').value = s.costo_servicio||''; document.getElementById('no_cotizacion').value = s.no_cotizacion||''; document.getElementById('no_orden').value = s.no_orden||''; document.getElementById('gastos').value = s.gastos||''; document.getElementById('fecha_seguimiento').value = s.fecha_seguimiento||''; document.getElementById('no_factura').value = s.no_factura||''; document.getElementById('observaciones').value = s.observaciones||''; 
+            document.getElementById('tituloFormServio').innerHTML = `<i class="fa-solid fa-pen text-amber-500 mr-2 text-2xl"></i> Editando Venta`; document.getElementById('btnSubmitServicio').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-amber-500 hover:bg-amber-600 shadow-sm"; document.getElementById('btnCancelarServicio').classList.remove('hidden'); 
+            cambiarVista('inicio'); 
+            window.scrollTo({ top: document.getElementById('vista-form-servicios').offsetTop - 100, behavior: 'smooth' });
+        }
+        function limpiarFormService() { document.getElementById('servicioForm').reset(); document.getElementById('editServioId').value = ''; document.getElementById('tituloFormServio').innerHTML = `<i class="fa-solid fa-file-invoice-dollar text-green-600 mr-2 text-2xl"></i> Registrar Venta`; document.getElementById('btnSubmitServicio').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-green-700 hover:bg-green-600 transition-colors shadow-sm"; document.getElementById('btnCancelarServicio').classList.add('hidden'); }
+        document.getElementById('btnCancelarServicio').addEventListener('click', limpiarFormService);
     </script>
 </body>
 </html>

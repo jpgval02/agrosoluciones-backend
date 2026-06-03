@@ -55,6 +55,13 @@ class ServicioNuevo(BaseModel):
     fecha_seguimiento: Optional[str] = None
     no_factura: Optional[str] = None
     observaciones: Optional[str] = None
+    # --- GASTOS DESGLOSADOS ---
+    gasto_gasolina_unidad: Optional[float] = 0.0
+    gasto_gasolina_generador: Optional[float] = 0.0
+    gasto_sueldos: Optional[float] = 0.0
+    gasto_insumos: Optional[float] = 0.0
+    gasto_comidas: Optional[float] = 0.0
+    gasto_oxxo: Optional[float] = 0.0
 
 class MetasMensuales(BaseModel):
     mes_anio: str
@@ -163,44 +170,29 @@ async def eliminar_servicio(servicio_id: str):
         return {"mensaje": "Eliminado exitosamente"}
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
 
-# --- RUTA DEL DASHBOARD (LEER METAS Y REALIDAD) ---
+# --- RUTA DEL DASHBOARD ---
 @app.get("/api/dashboard/{mes_anio}")
 async def obtener_dashboard(mes_anio: str):
     try:
         respuesta_metas = supabase.table('metas_mensuales').select('*').eq('mes_anio', mes_anio).execute()
-        
         if len(respuesta_metas.data) == 0:
-            metas = {
-                "meta_ventas": 0, "meta_servicios": 0, 
-                "meta_clientes": 0, "meta_prospectos": 0
-            }
+            metas = { "meta_ventas": 0, "meta_servicios": 0, "meta_clientes": 0, "meta_prospectos": 0 }
         else:
             metas = respuesta_metas.data[0]
 
         mes, anio = mes_anio.split("-")
         filtro_fecha = f"{anio}-{mes}" 
-
         respuesta_servicios = supabase.table('servicios_aplicacion').select('costo_servicio', 'fecha_aplicacion').execute()
         servicios_mes = [s for s in respuesta_servicios.data if s.get('fecha_aplicacion', '').startswith(filtro_fecha)]
-        
         ventas_reales = sum(float(s.get('costo_servicio', 0)) for s in servicios_mes)
         servicios_reales = len(servicios_mes)
-
         respuesta_clientes = supabase.table('clientes').select('id').execute()
         clientes_reales = len(respuesta_clientes.data)
 
-        return {
-            "metas": metas,
-            "reales": {
-                "ventas": ventas_reales,
-                "servicios": servicios_reales,
-                "clientes": clientes_reales
-            }
-        }
+        return {"metas": metas, "reales": {"ventas": ventas_reales, "servicios": servicios_reales, "clientes": clientes_reales}}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-# --- RUTA PARA GUARDAR/EDITAR METAS ---
 @app.post("/api/metas/")
 async def guardar_metas(metas: MetasMensuales):
     try:

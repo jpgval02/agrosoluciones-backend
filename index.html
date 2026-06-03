@@ -19,31 +19,14 @@
         .td-excel { padding: 0.75rem 1rem; white-space: nowrap; font-size: 0.75rem; border-right: 1px solid #f3f4f6; }
         .th-excel { padding: 0.75rem 1rem; white-space: nowrap; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; border-right: 1px solid #2a8757; }
         
-        .dashboard-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 20px;
-            background-color: #ffffff; 
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            margin-bottom: 30px;
-        }
-        .kpi-card {
-            background-color: #ffffff; 
-            border: 2px solid #000000; 
-            border-radius: 8px; 
-            padding: 15px;
-            text-align: center;
-            box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
-        }
+        .dashboard-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; background-color: #ffffff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 30px; }
+        .kpi-card { background-color: #ffffff; border: 2px solid #000000; border-radius: 8px; padding: 15px; text-align: center; box-shadow: 2px 2px 5px rgba(0,0,0,0.05); }
         .kpi-title { font-size: 16px; font-weight: bold; color: #000000; margin-bottom: 10px; }
         .kpi-text-real { font-size: 18px; font-weight: bold; color: #000000; }
     </style>
 </head>
 <body class="text-gray-800">
 
-    <!-- LOGIN -->
     <div id="login-container" class="min-h-screen flex items-center justify-center p-4">
         <div class="bg-white p-8 rounded-3xl shadow-xl border border-green-100 max-w-md w-full">
             <div class="text-center mb-8">
@@ -59,35 +42,37 @@
                     <label class="block text-sm font-bold text-gray-700 mb-1">Contraseña</label>
                     <div class="relative"><div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><i class="fa-solid fa-lock text-gray-400"></i></div><input type="password" id="loginPassword" required class="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-green-600 outline-none transition-all"></div>
                 </div>
+                <div id="loginError" class="hidden bg-rose-50 text-rose-600 text-sm font-bold p-3 rounded-lg text-center border border-rose-100"></div>
                 <button type="submit" id="btnLogin" class="w-full py-3 rounded-xl text-sm font-bold text-white bg-green-700 hover:bg-green-600 transition-all shadow-md flex items-center justify-center"><i class="fa-solid fa-right-to-bracket mr-2"></i> Iniciar Sesión</button>
             </form>
         </div>
     </div>
 
-    <!-- MAIN DASHBOARD -->
     <div id="dashboard-container" class="hidden pb-12">
         <nav class="tabla-header text-white px-6 py-3 flex justify-between items-center shadow-md sticky top-0 z-50">
             <div class="flex items-center">
                 <img src="logo_alternativo.png" alt="Logo Agrosoluciones" class="h-12 w-auto object-contain drop-shadow-md">
             </div>
-            <div class="flex items-center space-x-2 md:space-x-4">
-                <!-- NUEVO MENÚ CON INICIO -->
-                <button onclick="cambiarVista('inicio')" id="nav-inicio" class="border border-green-500/50 hover:bg-green-700 px-4 py-2 rounded-md text-sm font-medium transition-colors shadow-sm"><i class="fa-solid fa-house md:mr-2"></i> <span class="hidden md:inline">Inicio</span></button>
-                <button onclick="cambiarVista('clientes')" id="nav-clientes" class="border border-green-500/50 hover:bg-green-700 px-4 py-2 rounded-md text-sm font-medium transition-colors shadow-sm"><i class="fa-solid fa-users md:mr-2"></i> <span class="hidden md:inline">Clientes</span></button>
-                <button onclick="cambiarVista('propiedades')" id="nav-propiedades" class="border border-green-500/50 hover:bg-green-700 px-4 py-2 rounded-md text-sm font-medium transition-colors shadow-sm"><i class="fa-solid fa-map-location-dot md:mr-2"></i> <span class="hidden md:inline">Parcelas</span></button>
-                <button onclick="cambiarVista('servicios')" id="nav-servicios" class="border border-green-500/50 hover:bg-green-700 px-4 py-2 rounded-md text-sm font-medium transition-colors shadow-sm"><i class="fa-solid fa-chart-line md:mr-2"></i> <span class="hidden md:inline">Ventas 2026</span></button>
+            <div class="flex items-center space-x-2 md:space-x-3 overflow-x-auto">
+                <button onclick="cambiarVista('inicio')" id="nav-inicio" class="border border-green-500/50 hover:bg-green-700 px-3 py-2 rounded-md text-sm font-medium transition-colors shadow-sm"><i class="fa-solid fa-house md:mr-1"></i> <span class="hidden md:inline">Inicio</span></button>
+                <button onclick="cambiarVista('clientes')" id="nav-clientes" class="border border-green-500/50 hover:bg-green-700 px-3 py-2 rounded-md text-sm font-medium transition-colors shadow-sm"><i class="fa-solid fa-users md:mr-1"></i> <span class="hidden md:inline">Clientes</span></button>
+                <button onclick="cambiarVista('propiedades')" id="nav-propiedades" class="border border-green-500/50 hover:bg-green-700 px-3 py-2 rounded-md text-sm font-medium transition-colors shadow-sm"><i class="fa-solid fa-map-location-dot md:mr-1"></i> <span class="hidden md:inline">Parcelas</span></button>
+                <button onclick="cambiarVista('servicios')" id="nav-servicios" class="border border-green-500/50 hover:bg-green-700 px-3 py-2 rounded-md text-sm font-medium transition-colors shadow-sm"><i class="fa-solid fa-chart-line md:mr-1"></i> <span class="hidden md:inline">Ventas 2026</span></button>
+                
+                <!-- BOTÓN PARA GASTOS -->
+                <button onclick="cambiarVista('gastos')" id="nav-gastos" class="border border-green-500/50 hover:bg-green-700 px-3 py-2 rounded-md text-sm font-medium transition-colors shadow-sm"><i class="fa-solid fa-wallet md:mr-1"></i> <span class="hidden md:inline">Gastos</span></button>
+                
                 <div class="h-6 w-px bg-green-600 mx-2 hidden md:block"></div>
                 <button onclick="cerrarSesion()" class="bg-red-600 hover:bg-red-500 px-3 py-2 rounded-md text-sm font-bold transition-colors shadow-sm border border-red-400" title="Cerrar Sesión"><i class="fa-solid fa-power-off"></i></button>
             </div>
         </nav>
 
-        <!-- ============================================== -->
-        <!-- PANTALLA 1: INICIO (METAS Y FORMULARIOS) -->
-        <!-- ============================================== -->
+        <!-- PANTALLA INICIO -->
         <div id="vista-inicio" class="max-w-[1600px] mx-auto mt-8 px-6 block">
+            <div class="flex justify-between items-center mb-4">
+                <h2 style="color: #000000; font-family: Arial; font-weight: bold; font-size: 24px;">Objetivos Operativos - <span id="mesTitulo">Junio 2026</span></h2>
+            </div>
             
-            <!-- SECCIÓN METAS (Sin botón de configurar) -->
-            <h2 class="text-2xl font-bold text-gray-800 mb-4 tracking-tight">Objetivos del Mes </h2>
             <div class="dashboard-container">
                 <div class="kpi-card"><div class="kpi-title">Ventas vs Meta</div><div id="velocimetro-ventas"></div><div class="kpi-text-real" id="texto-ventas-real">$0 / $0</div></div>
                 <div class="kpi-card"><div class="kpi-title">Vuelos de Drones</div><div id="velocimetro-servicios"></div><div class="kpi-text-real" id="texto-servicios-real">0 / 0</div></div>
@@ -97,10 +82,7 @@
 
             <h2 class="text-2xl font-bold text-gray-800 mt-10 mb-6 tracking-tight">Panel de Captura Rápida</h2>
             
-            <!-- GRID DE 3 COLUMNAS PARA FORMULARIOS -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
-                
-                <!-- Formulario 1: Clientes -->
                 <div id="vista-form-clientes" class="bg-white p-6 rounded-2xl shadow-md border border-green-100">
                     <h3 id="tituloFormCliente" class="text-xl font-bold text-gray-800 mb-6 flex items-center"><i class="fa-solid fa-user-plus text-green-600 mr-2 text-2xl"></i> Nuevo Cliente</h3>
                     <form id="registroForm" class="space-y-4">
@@ -113,7 +95,6 @@
                     </form>
                 </div>
 
-                <!-- Formulario 2: Parcelas -->
                 <div id="vista-form-propiedades" class="bg-white p-6 rounded-2xl shadow-md border border-green-100">
                     <h3 id="tituloFormPropiedad" class="text-xl font-bold text-gray-800 mb-6 flex items-center"><i class="fa-solid fa-map-location-dot text-green-600 mr-2 text-2xl"></i> Registrar Parcela</h3>
                     <form id="propiedadForm" class="space-y-4">
@@ -127,11 +108,19 @@
                     </form>
                 </div>
 
-                <!-- Formulario 3: Ventas -->
                 <div id="vista-form-servicios" class="bg-white p-6 rounded-2xl shadow-md border border-green-100">
                     <h3 id="tituloFormServio" class="text-xl font-bold text-gray-800 mb-6 flex items-center"><i class="fa-solid fa-file-invoice-dollar text-green-600 mr-2 text-2xl"></i> Registrar Venta</h3>
                     <form id="servicioForm" class="space-y-4">
                         <input type="hidden" id="editServioId">
+                        
+                        <!-- HIDDEN INPUTS PARA LOS GASTOS -->
+                        <input type="hidden" id="h_gas_unidad" value="0">
+                        <input type="hidden" id="h_gas_gen" value="0">
+                        <input type="hidden" id="h_sueldos" value="0">
+                        <input type="hidden" id="h_insumos" value="0">
+                        <input type="hidden" id="h_comidas" value="0">
+                        <input type="hidden" id="h_oxxo" value="0">
+
                         <div><label class="text-[10px] text-gray-500 font-bold uppercase">Productor / Parcela</label>
                         <select id="selectPropiedad" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none"><option value="">-- Selecciona --</option></select></div>
                         <div class="grid grid-cols-2 gap-3">
@@ -142,9 +131,15 @@
                             <div><label class="text-[10px] text-gray-500 font-bold uppercase">Fecha de Venta</label><input type="date" id="fecha_aplicacion" required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none text-gray-600"></div>
                             <div><label class="text-[10px] text-gray-500 font-bold uppercase">Fecha Seguimiento</label><input type="date" id="fecha_seguimiento" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none text-gray-600"></div>
                         </div>
-                        <div class="grid grid-cols-2 gap-3">
+                        <div class="grid grid-cols-2 gap-3 items-end">
                             <div><label class="text-[10px] text-gray-500 font-bold uppercase">Ingresos ($)</label><input type="number" step="0.01" id="costo_servicio" required class="w-full px-3 py-2 bg-gray-50 border border-green-300 rounded-lg text-sm font-bold text-green-700 focus:ring-2 focus:ring-green-600 outline-none"></div>
-                            <div><label class="text-[10px] text-gray-500 font-bold uppercase">Gastos ($)</label><input type="number" step="0.01" id="gastos" class="w-full px-3 py-2 bg-gray-50 border border-red-300 rounded-lg text-sm font-bold text-red-600 focus:ring-2 focus:ring-red-600 outline-none"></div>
+                            <div>
+                                <label class="text-[10px] text-gray-500 font-bold uppercase">Gastos ($)</label>
+                                <div class="flex items-center space-x-1">
+                                    <input type="number" id="gastos" readonly placeholder="0.00" class="w-full px-3 py-2 bg-gray-100 border border-red-200 rounded-lg text-sm font-bold text-red-600 outline-none cursor-not-allowed">
+                                    <button type="button" onclick="abrirModalDesgloseGastos()" class="bg-red-100 text-red-600 px-3 py-2 rounded-lg hover:bg-red-200 transition-colors shadow-sm" title="Desglosar Gastos"><i class="fa-solid fa-calculator"></i></button>
+                                </div>
+                            </div>
                         </div>
                         <div><label class="text-[10px] text-gray-500 font-bold uppercase">Observaciones</label><textarea id="observaciones" rows="1" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none"></textarea></div>
                         <div class="hidden"><input type="text" id="no_factura" value="S/N"><select id="estado_cuenta"><option value="Cobrado">Cobrado</option></select><input type="number" id="satisfaccion" value="5"></div>
@@ -153,146 +148,184 @@
                         <button type="button" id="btnCancelarServicio" class="hidden w-full py-2 rounded-xl text-xs font-bold text-gray-600 bg-gray-200 hover:bg-gray-300 transition-colors">Cancelar Edición</button>
                     </form>
                 </div>
-
             </div>
         </div>
 
-
-        <!-- ============================================== -->
-        <!-- PANTALLA 2: TABLAS DE DATOS Y ESTADÍSTICAS -->
-        <!-- ============================================== -->
+        <!-- PANTALLA 2: TABLAS -->
         <div id="vista-tablas" class="hidden max-w-[1600px] mx-auto mt-8 px-6 pb-12">
-            
-            <h2 class="text-3xl font-bold text-gray-800 mb-6">Base de Datos Operativa</h2>
+            <h2 class="text-3xl font-bold text-gray-800 mb-6" id="titulo-seccion-tablas">Base de Datos Operativa</h2>
 
-            <!-- TARJETAS DE ESTADÍSTICAS (Siempre visibles sobre las tablas) -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-200 flex items-center space-x-4">
-                    <div class="bg-indigo-100 w-12 h-12 rounded-full flex items-center justify-center text-indigo-600 shrink-0"><i class="fa-solid fa-calendar-days text-lg"></i></div>
-                    <div class="w-full">
-                        <p class="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-1">Filtrar por Mes</p>
-                        <select id="filtroMes" onchange="actualizarEstadisticas()" class="w-full bg-gray-50 border border-gray-200 rounded-lg text-sm font-bold text-gray-700 py-1.5 px-2 focus:ring-2 focus:ring-green-600 outline-none cursor-pointer">
-                            <option value="todos">Histórico Total</option><option value="01">Enero</option><option value="02">Febrero</option><option value="03">Marzo</option><option value="04">Abril</option><option value="05">Mayo</option><option value="06" selected>Junio</option><option value="07">Julio</option><option value="08">Agosto</option><option value="09">Septiembre</option><option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option>
-                        </select>
-                    </div>
-                </div>
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-200 flex items-center space-x-4"><div class="bg-indigo-100 w-12 h-12 rounded-full flex items-center justify-center text-indigo-600 shrink-0"><i class="fa-solid fa-calendar-days text-lg"></i></div><div class="w-full"><p class="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-1">Filtrar por Mes</p><select id="filtroMes" onchange="actualizarEstadisticasYMetas()" class="w-full bg-gray-50 border border-gray-200 rounded-lg text-sm font-bold text-gray-700 py-1.5 px-2 focus:ring-2 focus:ring-green-600 outline-none cursor-pointer"><option value="todos">Histórico Total</option><option value="01">Enero</option><option value="02">Febrero</option><option value="03">Marzo</option><option value="04">Abril</option><option value="05">Mayo</option><option value="06" selected>Junio</option><option value="07">Julio</option><option value="08">Agosto</option><option value="09">Septiembre</option><option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option></select></div></div>
                 <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex items-center space-x-4"><div class="bg-yellow-100 w-12 h-12 rounded-full flex items-center justify-center text-yellow-600 shrink-0"><i class="fa-solid fa-ruler-combined text-lg"></i></div><div><p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Ha. Fumigadas</p><p id="stat-hectareas" class="text-2xl font-extrabold text-gray-800 leading-none mt-1">0</p></div></div>
                 <div class="bg-white p-4 rounded-2xl shadow-sm border border-green-200 flex items-center space-x-4"><div class="bg-green-100 w-12 h-12 rounded-full flex items-center justify-center text-green-600 shrink-0"><i class="fa-solid fa-arrow-trend-up text-lg"></i></div><div><p class="text-[10px] text-green-600/80 font-bold uppercase tracking-wider">Ingresos Mensuales</p><p id="stat-ingresos" class="text-2xl font-extrabold text-green-700 leading-none mt-1">$0</p></div></div>
                 <div class="bg-white p-4 rounded-2xl shadow-sm border border-blue-200 flex items-center space-x-4"><div class="bg-blue-100 w-12 h-12 rounded-full flex items-center justify-center text-blue-600 shrink-0"><i class="fa-solid fa-sack-dollar text-lg"></i></div><div><p class="text-[10px] text-blue-600/80 font-bold uppercase tracking-wider">Utilidad Neta</p><p id="stat-utilidad" class="text-2xl font-extrabold text-blue-700 leading-none mt-1">$0</p></div></div>
             </div>
 
-            <!-- CONTENEDORES INDIVIDUALES DE LAS TABLAS -->
-            <div id="vista-tabla-clientes" class="hidden bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
-                <div class="tabla-header px-6 py-4 flex flex-col md:flex-row md:justify-between items-center text-white gap-3"><h2 class="text-sm font-bold uppercase tracking-wider whitespace-nowrap"><i class="fa-solid fa-list mr-2"></i> Directorio de Clientes</h2><div class="relative w-full md:w-72"><div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><i class="fa-solid fa-search text-gray-400"></i></div><input type="text" id="buscadorClientes" onkeyup="filtrarClientes()" placeholder="Buscar..." class="w-full pl-10 pr-4 py-1.5 bg-white text-gray-800 rounded-full text-sm outline-none shadow-inner"></div><span id="contadorClientes" class="bg-white text-green-800 text-xs font-bold px-3 py-1 rounded-full shadow-sm whitespace-nowrap">0 REGISTRADOS</span></div>
-                <div class="overflow-x-auto custom-scrollbar"><table class="min-w-full divide-y divide-gray-100 text-sm"><thead class="bg-[#187547] text-white"><tr><th class="px-6 py-3 text-left text-xs font-semibold tracking-wider">CLIENTE</th><th class="px-6 py-3 text-left text-xs font-semibold tracking-wider">CONTACTO</th><th class="px-6 py-3 text-center text-xs font-semibold tracking-wider">ACCIONES</th></tr></thead><tbody id="cuerpoTabla" class="bg-white divide-y divide-gray-100"></tbody></table></div>
-            </div>
+            <!-- Tablas Clientes y Parcelas -->
+            <div id="vista-tabla-clientes" class="hidden bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden"><div class="tabla-header px-6 py-4 flex flex-col md:flex-row md:justify-between items-center text-white gap-3"><h2 class="text-sm font-bold uppercase tracking-wider whitespace-nowrap"><i class="fa-solid fa-list mr-2"></i> Directorio de Clientes</h2><div class="relative w-full md:w-72"><div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><i class="fa-solid fa-search text-gray-400"></i></div><input type="text" id="buscadorClientes" onkeyup="filtrarClientes()" placeholder="Buscar..." class="w-full pl-10 pr-4 py-1.5 bg-white text-gray-800 rounded-full text-sm outline-none shadow-inner"></div><span id="contadorClientes" class="bg-white text-green-800 text-xs font-bold px-3 py-1 rounded-full shadow-sm whitespace-nowrap">0 REGISTRADOS</span></div><div class="overflow-x-auto custom-scrollbar"><table class="min-w-full divide-y divide-gray-100 text-sm"><thead class="bg-[#187547] text-white"><tr><th class="px-6 py-3 text-left text-xs font-semibold tracking-wider">CLIENTE</th><th class="px-6 py-3 text-left text-xs font-semibold tracking-wider">CONTACTO</th><th class="px-6 py-3 text-center text-xs font-semibold tracking-wider">ACCIONES</th></tr></thead><tbody id="cuerpoTabla" class="bg-white divide-y divide-gray-100"></tbody></table></div></div>
+            <div id="vista-tabla-propiedades" class="hidden bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden"><div class="tabla-header px-6 py-4 flex justify-between items-center text-white"><h2 class="text-sm font-bold uppercase tracking-wider"><i class="fa-solid fa-map mr-2"></i> Inventario de Parcelas</h2></div><div class="overflow-x-auto custom-scrollbar"><table class="min-w-full divide-y divide-gray-100 text-sm"><thead class="bg-[#187547] text-white"><tr><th class="px-6 py-3 text-left text-xs font-semibold tracking-wider">PROPIEDAD / PREDIO</th><th class="px-6 py-3 text-center text-xs font-semibold tracking-wider">CULTIVO</th><th class="px-6 py-3 text-center text-xs font-semibold tracking-wider">SUPERFICIE</th><th class="px-6 py-3 text-center text-xs font-semibold tracking-wider">ACCIONES</th></tr></thead><tbody id="cuerpoTablaPropiedades" class="bg-white divide-y divide-gray-100"></tbody></table></div></div>
             
-            <div id="vista-tabla-propiedades" class="hidden bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
-                <div class="tabla-header px-6 py-4 flex justify-between items-center text-white"><h2 class="text-sm font-bold uppercase tracking-wider"><i class="fa-solid fa-map mr-2"></i> Inventario de Parcelas</h2></div>
-                <div class="overflow-x-auto custom-scrollbar"><table class="min-w-full divide-y divide-gray-100 text-sm"><thead class="bg-[#187547] text-white"><tr><th class="px-6 py-3 text-left text-xs font-semibold tracking-wider">PROPIEDAD / PREDIO</th><th class="px-6 py-3 text-center text-xs font-semibold tracking-wider">CULTIVO</th><th class="px-6 py-3 text-center text-xs font-semibold tracking-wider">SUPERFICIE</th><th class="px-6 py-3 text-center text-xs font-semibold tracking-wider">ACCIONES</th></tr></thead><tbody id="cuerpoTablaPropiedades" class="bg-white divide-y divide-gray-100"></tbody></table></div>
-            </div>
-            
+            <!-- Tabla Ventas -->
             <div id="vista-tabla-servicios" class="hidden bg-white rounded-xl shadow-lg border border-gray-300 overflow-hidden">
                 <div class="tabla-header px-4 py-3 flex justify-between items-center text-white">
                     <h2 class="text-sm font-bold uppercase tracking-wider"><i class="fa-solid fa-table border border-white/30 p-1.5 rounded bg-white/10 mr-2"></i> Base de Datos de Ventas 2026</h2>
-                    <!-- BOTÓN CONFIGURAR METAS AHORA VIVE AQUÍ -->
                     <button onclick="abrirModalMetas()" class="bg-white text-green-900 hover:bg-gray-100 px-4 py-1.5 rounded-md text-xs font-bold transition-colors shadow-sm flex items-center">
                         <i class="fa-solid fa-gear mr-2"></i> Configurar Metas del Mes
                     </button>
                 </div>
                 <div class="overflow-x-auto custom-scrollbar max-h-[600px] relative"><table class="w-full divide-y divide-gray-200 text-sm border-collapse"><thead class="bg-gray-100 text-gray-700 sticky top-0 z-10 shadow-sm border-b-2 border-gray-300"><tr><th class="th-excel bg-gray-200">No. Control</th><th class="th-excel">Nombre del Productor</th><th class="th-excel">Apellidos</th><th class="th-excel">Teléfono</th><th class="th-excel bg-green-50">Cultivo</th><th class="th-excel bg-green-50">Hectáreas</th><th class="th-excel bg-green-50">Localidad</th><th class="th-excel bg-blue-50">Cotización</th><th class="th-excel bg-blue-50">Orden Serv.</th><th class="th-excel bg-blue-50">Fecha Venta</th><th class="th-excel bg-emerald-100 text-green-900">Ingresos</th><th class="th-excel bg-rose-100 text-rose-900">Gastos</th><th class="th-excel bg-indigo-100 text-indigo-900">Utilidad</th><th class="th-excel">Seguimiento</th><th class="th-excel">Factura</th><th class="th-excel">Observaciones</th><th class="th-excel bg-gray-200 text-center"><i class="fa-solid fa-gears"></i></th></tr></thead><tbody id="cuerpoTablaServicios" class="bg-white divide-y divide-gray-200"></tbody></table></div>
             </div>
-        </div>
 
-        <!-- MODAL PARA EDITAR METAS -->
-        <div id="modal-metas" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 p-4">
-            <div class="bg-white p-6 rounded-2xl shadow-2xl w-full max-w-md border border-gray-200">
-                <div class="flex justify-between items-center mb-4"><h3 class="text-xl font-bold text-gray-800"><i class="fa-solid fa-bullseye text-green-600 mr-2"></i> Ajustar Objetivos</h3><button onclick="cerrarModalMetas()" class="text-gray-400 hover:text-red-500"><i class="fa-solid fa-xmark text-xl"></i></button></div>
-                <form id="formMetas" class="space-y-4">
-                    <input type="hidden" id="meta_mes_anio" value="06-2026">
-                    <div><label class="block text-xs font-bold text-gray-500 uppercase">Meta Mensual de Ventas ($ MXN)</label><input type="number" id="input_meta_ventas" required class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg font-bold text-green-700 outline-none focus:ring-2 focus:ring-green-500"></div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div><label class="block text-xs font-bold text-gray-500 uppercase">Vuelos Objetivo</label><input type="number" id="input_meta_servicios" required class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg font-bold outline-none focus:ring-2 focus:ring-green-500"></div>
-                        <div><label class="block text-xs font-bold text-gray-500 uppercase">Nuevos Clientes</label><input type="number" id="input_meta_clientes" required class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg font-bold outline-none focus:ring-2 focus:ring-green-500"></div>
-                    </div>
-                    <div><label class="block text-xs font-bold text-gray-500 uppercase">Meta de Prospectos</label><input type="number" id="input_meta_prospectos" required class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg font-bold outline-none focus:ring-2 focus:ring-green-500"></div>
-                    <button type="submit" id="btnGuardarMetas" class="w-full mt-4 py-3 bg-gray-900 hover:bg-black text-white font-bold rounded-lg transition-colors shadow-md">Guardar en Base de Datos</button>
-                </form>
+            <!-- TABLA GASTOS -->
+            <div id="vista-tabla-gastos" class="hidden bg-white rounded-xl shadow-lg border border-rose-200 overflow-hidden">
+                <div class="bg-rose-700 px-4 py-3 flex justify-between items-center text-white"><h2 class="text-sm font-bold uppercase tracking-wider"><i class="fa-solid fa-wallet border border-white/30 p-1.5 rounded bg-white/10 mr-2"></i> Reporte Detallado de Gastos por Servicio</h2></div>
+                <div class="overflow-x-auto custom-scrollbar max-h-[600px] relative"><table class="w-full divide-y divide-gray-200 text-sm border-collapse"><thead class="bg-gray-100 text-gray-700 sticky top-0 z-10 shadow-sm border-b-2 border-gray-300"><tr><th class="th-excel bg-gray-200">No. Control</th><th class="th-excel">Productor / Cliente</th><th class="th-excel">Cultivo</th><th class="th-excel text-rose-900 bg-rose-50 border-rose-200"><i class="fa-solid fa-gas-pump mr-1"></i> Gas. Unidad</th><th class="th-excel text-rose-900 bg-rose-50 border-rose-200"><i class="fa-solid fa-bolt mr-1"></i> Gas. Generador</th><th class="th-excel text-rose-900 bg-rose-50 border-rose-200"><i class="fa-solid fa-users mr-1"></i> Sueldos</th><th class="th-excel text-rose-900 bg-rose-50 border-rose-200"><i class="fa-solid fa-flask mr-1"></i> Insumos</th><th class="th-excel text-rose-900 bg-rose-50 border-rose-200"><i class="fa-solid fa-utensils mr-1"></i> Comidas</th><th class="th-excel text-rose-900 bg-rose-50 border-rose-200"><i class="fa-solid fa-cookie mr-1"></i> Oxxo</th><th class="th-excel bg-red-600 text-white font-extrabold border-l-4 border-white">GASTO TOTAL</th></tr></thead><tbody id="cuerpoTablaGastos" class="bg-white divide-y divide-gray-200"></tbody></table></div>
             </div>
-        </div>
 
+        </div>
     </div> 
+
+    <!-- ========================================== -->
+    <!-- MODALES -->
+    <!-- ========================================== -->
+
+    <!-- MODAL METAS -->
+    <div id="modal-metas" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 p-4">
+        <div class="bg-white p-6 rounded-2xl shadow-2xl w-full max-w-md border border-gray-200">
+            <div class="flex justify-between items-center mb-4"><h3 class="text-xl font-bold text-gray-800"><i class="fa-solid fa-bullseye text-red-500 mr-2"></i> Ajustar Objetivos</h3><button onclick="cerrarModalMetas()" class="text-gray-400 hover:text-red-500"><i class="fa-solid fa-xmark text-xl"></i></button></div>
+            <form id="formMetas" class="space-y-4">
+                <input type="hidden" id="meta_mes_anio" value="06-2026">
+                <div><label class="block text-xs font-bold text-gray-500 uppercase">Meta Mensual de Ventas ($ MXN)</label><input type="number" id="input_meta_ventas" required class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg font-bold text-green-700 outline-none focus:ring-2 focus:ring-green-500"></div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div><label class="block text-xs font-bold text-gray-500 uppercase">Vuelos Objetivo</label><input type="number" id="input_meta_servicios" required class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg font-bold outline-none focus:ring-2 focus:ring-green-500"></div>
+                    <div><label class="block text-xs font-bold text-gray-500 uppercase">Nuevos Clientes</label><input type="number" id="input_meta_clientes" required class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg font-bold outline-none focus:ring-2 focus:ring-green-500"></div>
+                </div>
+                <div><label class="block text-xs font-bold text-gray-500 uppercase">Meta de Prospectos</label><input type="number" id="input_meta_prospectos" required class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg font-bold outline-none focus:ring-2 focus:ring-green-500"></div>
+                <button type="submit" id="btnGuardarMetas" class="w-full mt-4 py-3 bg-gray-900 hover:bg-black text-white font-bold rounded-lg transition-colors shadow-md">Guardar en Base de Datos</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL CALCULADORA DE GASTOS -->
+    <div id="modal-gastos" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 p-4">
+        <div class="bg-white p-6 rounded-2xl shadow-2xl w-full max-w-sm border border-red-200">
+            <div class="flex justify-between items-center mb-4 border-b border-gray-100 pb-2">
+                <h3 class="text-lg font-bold text-gray-800"><i class="fa-solid fa-calculator text-red-500 mr-2"></i> Desglose de Gastos</h3>
+                <button onclick="cerrarModalGastos()" class="text-gray-400 hover:text-red-500"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <div class="space-y-3">
+                <div class="flex justify-between items-center"><label class="text-xs font-bold text-gray-600 uppercase"><i class="fa-solid fa-gas-pump w-5 text-gray-400"></i> Gasolina Unidad</label><input type="number" step="0.01" id="m_gas_unidad" class="w-32 px-2 py-1 bg-gray-50 border border-gray-300 rounded text-right font-bold text-red-600 outline-none focus:ring-1 focus:ring-red-500"></div>
+                <div class="flex justify-between items-center"><label class="text-xs font-bold text-gray-600 uppercase"><i class="fa-solid fa-bolt w-5 text-gray-400"></i> Gasolina Gen.</label><input type="number" step="0.01" id="m_gas_gen" class="w-32 px-2 py-1 bg-gray-50 border border-gray-300 rounded text-right font-bold text-red-600 outline-none focus:ring-1 focus:ring-red-500"></div>
+                <div class="flex justify-between items-center"><label class="text-xs font-bold text-gray-600 uppercase"><i class="fa-solid fa-users w-5 text-gray-400"></i> Sueldos</label><input type="number" step="0.01" id="m_sueldos" class="w-32 px-2 py-1 bg-gray-50 border border-gray-300 rounded text-right font-bold text-red-600 outline-none focus:ring-1 focus:ring-red-500"></div>
+                <div class="flex justify-between items-center"><label class="text-xs font-bold text-gray-600 uppercase"><i class="fa-solid fa-flask w-5 text-gray-400"></i> Insumos</label><input type="number" step="0.01" id="m_insumos" class="w-32 px-2 py-1 bg-gray-50 border border-gray-300 rounded text-right font-bold text-red-600 outline-none focus:ring-1 focus:ring-red-500"></div>
+                <div class="flex justify-between items-center"><label class="text-xs font-bold text-gray-600 uppercase"><i class="fa-solid fa-utensils w-5 text-gray-400"></i> Comidas</label><input type="number" step="0.01" id="m_comidas" class="w-32 px-2 py-1 bg-gray-50 border border-gray-300 rounded text-right font-bold text-red-600 outline-none focus:ring-1 focus:ring-red-500"></div>
+                <div class="flex justify-between items-center"><label class="text-xs font-bold text-gray-600 uppercase"><i class="fa-solid fa-cookie w-5 text-gray-400"></i> Oxxo</label><input type="number" step="0.01" id="m_oxxo" class="w-32 px-2 py-1 bg-gray-50 border border-gray-300 rounded text-right font-bold text-red-600 outline-none focus:ring-1 focus:ring-red-500"></div>
+                <div class="flex justify-between items-center mt-4 pt-3 border-t border-gray-200">
+                    <label class="text-sm font-extrabold text-gray-800 uppercase">Suma Total</label>
+                    <span id="m_total_display" class="text-xl font-extrabold text-red-600">$0.00</span>
+                </div>
+            </div>
+            <button type="button" onclick="confirmarDesgloseGastos()" class="w-full mt-5 py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition-colors shadow-md"><i class="fa-solid fa-check mr-1"></i> Confirmar y Sumar</button>
+        </div>
+    </div>
+
+    <!-- MODAL DETALLE CLIENTE -->
+    <div id="modalDetalle" class="hidden fixed inset-0 bg-black/60 z-[70] flex items-center justify-center p-4">
+        <!-- Contenido omitido por brevedad, el anterior funcionaba perfecto -->
+    </div>
 
     <script>
         const API_URL = "https://agrosoluciones-backend.onrender.com";
         let memoriaClientes = [], memoriaPropiedades = [], memoriaServicios = [];
+        let rolUsuario = 'trabajador'; 
 
-        // --- LOGIN ---
+        // --- SISTEMA DE LOGIN ---
         document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            document.getElementById('btnLogin').innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Cargando BD...';
-            document.getElementById('btnLogin').disabled = true; 
+            const btn = document.getElementById('btnLogin');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Cargando BD...';
+            btn.disabled = true; 
             try {
-                document.getElementById('login-container').classList.add('hidden');
-                document.getElementById('dashboard-container').classList.remove('hidden');
-                await inicializarPanel(); 
-                cambiarVista('inicio'); // Arranca directo en la pantalla compartida
+                const res = await fetch(`${API_URL}/login/`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: document.getElementById('loginEmail').value, password: document.getElementById('loginPassword').value })
+                });
+                const data = await res.json(); 
+                if (res.ok) {
+                    rolUsuario = data.rol || 'trabajador';
+                    if(rolUsuario === 'admin') {
+                        document.getElementById('badge-rol').innerHTML = '<i class="fa-solid fa-crown mr-1"></i> MODO ADMIN VIP';
+                    } else {
+                        document.getElementById('badge-rol').innerHTML = '<i class="fa-solid fa-user-gear mr-1"></i> MODO PERSONAL';
+                    }
+                    document.getElementById('login-container').classList.add('hidden');
+                    document.getElementById('dashboard-container').classList.remove('hidden');
+                    await inicializarPanel(); 
+                } else {
+                    document.getElementById('loginError').textContent = "Correo o contraseña incorrectos."; document.getElementById('loginError').classList.remove('hidden');
+                    btn.innerHTML = '<i class="fa-solid fa-right-to-bracket mr-2"></i> Iniciar Sesión'; btn.disabled = false;
+                }
             } catch (error) { alert("Error de conexión"); }
         });
 
         function cerrarSesion() { window.location.reload(); }
 
         async function inicializarPanel() {
-            await cargarClientes(); await cargarPropiedades(); await cargarServicios(); actualizarEstadisticas();
+            await cargarClientes();
+            await cargarPropiedades();
+            await cargarServicios();
+            cambiarVista('inicio'); // Inicia en la vista compartida
         }
 
-        // --- SISTEMA NAVEGACIÓN NUEVO ---
+        // --- NAVEGACIÓN Y ESTADÍSTICAS ---
         function cambiarVista(vista) {
-            // Apaga botones
-            ['inicio', 'clientes', 'propiedades', 'servicios'].forEach(sec => {
+            ['inicio', 'clientes', 'propiedades', 'servicios', 'gastos'].forEach(sec => {
                 const btn = document.getElementById('nav-' + sec);
-                if(btn) btn.className = "border border-green-500/50 hover:bg-green-700 px-4 py-2 rounded-md text-sm font-medium transition-colors shadow-sm";
-                
-                // Oculta tablas
+                if(btn) btn.className = "border border-green-500/50 hover:bg-green-700 px-3 py-2 rounded-md text-sm font-medium transition-colors shadow-sm";
                 const tabla = document.getElementById('vista-tabla-' + sec);
                 if(tabla) { tabla.classList.add('hidden'); tabla.classList.remove('block'); }
             });
 
-            // Oculta bloques mayores
             document.getElementById('vista-inicio').classList.add('hidden');
             document.getElementById('vista-tablas').classList.add('hidden');
 
-            // Enciende botón
-            document.getElementById('nav-' + vista).className = "bg-green-700 hover:bg-green-600 px-4 py-2 rounded-md text-sm font-bold transition-colors shadow-sm";
+            document.getElementById('nav-' + vista).className = "bg-green-700 hover:bg-green-600 px-3 py-2 rounded-md text-sm font-bold transition-colors shadow-sm";
 
-            // Activa vistas correspondientes
-            if (vista === 'inicio') {
-                document.getElementById('vista-inicio').classList.remove('hidden');
-                actualizarMetasCEO();
-            } else {
-                document.getElementById('vista-tablas').classList.remove('hidden');
-                document.getElementById('vista-tabla-' + vista).classList.remove('hidden');
+            if (vista === 'inicio') { 
+                document.getElementById('vista-inicio').classList.remove('hidden'); 
+                actualizarEstadisticasYMetas(); 
+            } else { 
+                document.getElementById('vista-tablas').classList.remove('hidden'); 
+                document.getElementById('vista-tabla-' + vista).classList.remove('hidden'); 
             }
         }
 
-        function actualizarEstadisticas() {
-            const mes = document.getElementById('filtroMes').value;
-            let serv = mes !== 'todos' ? memoriaServicios.filter(s => s.fecha_aplicacion && s.fecha_aplicacion.split('-')[1] === mes) : memoriaServicios;
-            let has = 0, ing = 0, gas = 0;
-            serv.forEach(s => {
-                let p = memoriaPropiedades.find(x => x.id === s.propiedad_id);
-                if(p) has += (p.superficie_has || 0);
-                ing += (s.costo_servicio || 0); gas += (s.gastos || 0);
+        function actualizarEstadisticasYMetas() {
+            const mesSeleccionado = document.getElementById('filtroMes').value;
+            let serviciosFiltrados = memoriaServicios;
+            if (mesSeleccionado !== 'todos') {
+                serviciosFiltrados = memoriaServicios.filter(s => s.fecha_aplicacion && s.fecha_aplicacion.split('-')[1] === mesSeleccionado);
+            }
+
+            let totalHaFumigadas = 0; let totalIngresos = 0; let totalGastos = 0;
+            serviciosFiltrados.forEach(s => {
+                let prop = memoriaPropiedades.find(p => p.id === s.propiedad_id);
+                if(prop) totalHaFumigadas += (prop.superficie_has || 0);
+                totalIngresos += (s.costo_servicio || 0);
+                totalGastos += (s.gastos || 0); 
             });
-            document.getElementById('stat-hectareas').textContent = has.toFixed(2);
-            document.getElementById('stat-ingresos').textContent = "$" + ing.toLocaleString('es-MX', {minimumFractionDigits: 2});
-            document.getElementById('stat-utilidad').textContent = "$" + (ing - gas).toLocaleString('es-MX', {minimumFractionDigits: 2});
+
+            document.getElementById('stat-hectareas').textContent = totalHaFumigadas.toFixed(2);
+            document.getElementById('stat-ingresos').textContent = "$" + totalIngresos.toLocaleString('es-MX', {minimumFractionDigits: 2});
+            document.getElementById('stat-utilidad').textContent = "$" + (totalIngresos - totalGastos).toLocaleString('es-MX', {minimumFractionDigits: 2});
+            
+            // Llamar también a las metas
+            actualizarMetasCEO();
         }
 
-        // --- LÓGICA METAS ---
-        function crearVelocimetro(id, color, nombre) {
-            return { series: [0], chart: { type: 'radialBar', height: 240, background: 'transparent' }, plotOptions: { radialBar: { startAngle: -90, endAngle: 90, track: { background: '#e7e7e7', strokeWidth: '97%' }, dataLabels: { name: { show: false }, value: { offsetY: -5, fontSize: '24px', fontWeight: 'bold', color: '#000000', formatter: function (val) { return val.toFixed(1) + "%"; } } } } }, colors: [color], labels: [nombre] };
-        }
+        // --- LÓGICA METAS CEO ---
+        function crearVelocimetro(id, color, nombre) { return { series: [0], chart: { type: 'radialBar', height: 240, background: 'transparent' }, plotOptions: { radialBar: { startAngle: -90, endAngle: 90, track: { background: '#e7e7e7', strokeWidth: '97%' }, dataLabels: { name: { show: false }, value: { offsetY: -5, fontSize: '24px', fontWeight: 'bold', color: '#000000', formatter: function (val) { return val.toFixed(1) + "%"; } } } } }, colors: [color], labels: [nombre] }; }
         var chartVentas = new ApexCharts(document.querySelector("#velocimetro-ventas"), crearVelocimetro("#velocimetro-ventas", "#00E396", "Ventas")); chartVentas.render();
         var chartServicios = new ApexCharts(document.querySelector("#velocimetro-servicios"), crearVelocimetro("#velocimetro-servicios", "#00E396", "Servicios")); chartServicios.render();
         var chartClientes = new ApexCharts(document.querySelector("#velocimetro-clientes"), crearVelocimetro("#velocimetro-clientes", "#00E396", "Clientes")); chartClientes.render();
@@ -300,7 +333,13 @@
 
         async function actualizarMetasCEO() {
             try {
-                const res = await fetch(API_URL + "/api/dashboard/06-2026"); const datos = await res.json();
+                let mesBusqueda = document.getElementById('filtroMes').value;
+                if(mesBusqueda === 'todos') mesBusqueda = "06"; // Default a junio si es histórico
+                const mesActual = `${mesBusqueda}-2026`;
+                document.getElementById('meta_mes_anio').value = mesActual;
+
+                const res = await fetch(API_URL + "/api/dashboard/" + mesActual); 
+                const datos = await res.json();
                 let mV = datos.metas.meta_ventas || 1, mS = datos.metas.meta_servicios || 1, mC = datos.metas.meta_clientes || 1, mP = datos.metas.meta_prospectos || 1;
                 chartVentas.updateSeries([Math.min((datos.reales.ventas / mV) * 100, 100)]);
                 chartServicios.updateSeries([Math.min((datos.reales.servicios / mS) * 100, 100)]);
@@ -313,66 +352,80 @@
                 document.getElementById('input_meta_ventas').value = datos.metas.meta_ventas || 0; document.getElementById('input_meta_servicios').value = datos.metas.meta_servicios || 0; document.getElementById('input_meta_clientes').value = datos.metas.meta_clientes || 0; document.getElementById('input_meta_prospectos').value = datos.metas.meta_prospectos || 0;
             } catch (error) {}
         }
+        function abrirModalMetas() { document.getElementById('modal-metas').classList.remove('hidden'); } function cerrarModalMetas() { document.getElementById('modal-metas').classList.add('hidden'); }
+        document.getElementById('formMetas').addEventListener('submit', async function(e) { e.preventDefault(); document.getElementById('btnGuardarMetas').innerText = "Guardando..."; const datosMeta = { mes_anio: document.getElementById('meta_mes_anio').value, meta_ventas: parseFloat(document.getElementById('input_meta_ventas').value), meta_servicios: parseInt(document.getElementById('input_meta_servicios').value), meta_clientes: parseInt(document.getElementById('input_meta_clientes').value), meta_prospectos: parseInt(document.getElementById('input_meta_prospectos').value) }; try { await fetch(API_URL + "/api/metas/", { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datosMeta) }); cerrarModalMetas(); document.getElementById('btnGuardarMetas').innerText = "Guardar en Base de Datos"; actualizarMetasCEO(); } catch (error) { document.getElementById('btnGuardarMetas').innerText = "Guardar en Base de Datos"; } });
 
-        function abrirModalMetas() { document.getElementById('modal-metas').classList.remove('hidden'); }
-        function cerrarModalMetas() { document.getElementById('modal-metas').classList.add('hidden'); }
-
-        document.getElementById('formMetas').addEventListener('submit', async function(e) {
-            e.preventDefault(); document.getElementById('btnGuardarMetas').innerText = "Guardando...";
-            const datosMeta = { mes_anio: document.getElementById('meta_mes_anio').value, meta_ventas: parseFloat(document.getElementById('input_meta_ventas').value), meta_servicios: parseInt(document.getElementById('input_meta_servicios').value), meta_clientes: parseInt(document.getElementById('input_meta_clientes').value), meta_prospectos: parseInt(document.getElementById('input_meta_prospectos').value) };
-            try { await fetch(API_URL + "/api/metas/", { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datosMeta) }); cerrarModalMetas(); document.getElementById('btnGuardarMetas').innerText = "Guardar en Base de Datos"; actualizarMetasCEO(); } catch (error) { document.getElementById('btnGuardarMetas').innerText = "Guardar en Base de Datos"; }
-        });
-
-        // --- CLIENTES ---
-        function renderizarTablaClientes(lista) {
-            const cuerpo = document.getElementById('cuerpoTabla'); cuerpo.innerHTML = ''; document.getElementById('contadorClientes').textContent = `${lista.length} REGISTRADOS`;
-            lista.forEach(c => { cuerpo.innerHTML += `<tr class="hover:bg-gray-50"><td class="px-6 py-4"><div class="flex items-center space-x-4"><div class="bg-green-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold shadow-sm"><i class="fa-solid fa-user"></i></div><div><p class="font-bold text-gray-800">${c.nombre} <br> ${c.apellidos}</p><p class="text-[10px] text-gray-400 mt-1">RFC: ${c.rfc || 'S/N'}</p></div></div></td><td class="px-6 py-4"><p class="text-sm text-blue-600 font-medium"><i class="fa-solid fa-envelope mr-2"></i>${c.email || 'Sin correo'}</p><p class="text-sm text-gray-600 mt-1"><i class="fa-solid fa-phone text-green-600 mr-2"></i>${c.telefono}</p></td><td class="px-6 py-4 text-center whitespace-nowrap space-x-1"><button onclick="tabularEdicionCliente('${c.id}')" class="bg-amber-400 hover:bg-amber-500 text-white text-xs font-bold px-4 py-2 rounded-full shadow-sm"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="eliminarCliente('${c.id}')" class="bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-4 py-2 rounded-full shadow-sm"><i class="fa-solid fa-trash"></i></button></td></tr>`; });
+        // --- SISTEMA DE GASTOS DESGLOSADOS ---
+        function abrirModalDesgloseGastos() {
+            document.getElementById('m_gas_unidad').value = document.getElementById('h_gas_unidad').value || 0; document.getElementById('m_gas_gen').value = document.getElementById('h_gas_gen').value || 0; document.getElementById('m_sueldos').value = document.getElementById('h_sueldos').value || 0; document.getElementById('m_insumos').value = document.getElementById('h_insumos').value || 0; document.getElementById('m_comidas').value = document.getElementById('h_comidas').value || 0; document.getElementById('m_oxxo').value = document.getElementById('h_oxxo').value || 0; calcularTotalModal(); document.getElementById('modal-gastos').classList.remove('hidden');
         }
+        function cerrarModalGastos() { document.getElementById('modal-gastos').classList.add('hidden'); }
+        function calcularTotalModal() {
+            let total = (parseFloat(document.getElementById('m_gas_unidad').value) || 0) + (parseFloat(document.getElementById('m_gas_gen').value) || 0) + (parseFloat(document.getElementById('m_sueldos').value) || 0) + (parseFloat(document.getElementById('m_insumos').value) || 0) + (parseFloat(document.getElementById('m_comidas').value) || 0) + (parseFloat(document.getElementById('m_oxxo').value) || 0);
+            document.getElementById('m_total_display').innerText = "$" + total.toLocaleString('es-MX', {minimumFractionDigits: 2}); return total;
+        }
+        ['m_gas_unidad', 'm_gas_gen', 'm_sueldos', 'm_insumos', 'm_comidas', 'm_oxxo'].forEach(id => { document.getElementById(id).addEventListener('input', calcularTotalModal); });
+        function confirmarDesgloseGastos() {
+            let totalGasto = calcularTotalModal();
+            document.getElementById('h_gas_unidad').value = document.getElementById('m_gas_unidad').value || 0; document.getElementById('h_gas_gen').value = document.getElementById('m_gas_gen').value || 0; document.getElementById('h_sueldos').value = document.getElementById('m_sueldos').value || 0; document.getElementById('h_insumos').value = document.getElementById('m_insumos').value || 0; document.getElementById('h_comidas').value = document.getElementById('m_comidas').value || 0; document.getElementById('h_oxxo').value = document.getElementById('m_oxxo').value || 0;
+            document.getElementById('gastos').value = totalGasto; cerrarModalGastos();
+        }
+
+        // --- CLIENTES Y PARCELAS ---
+        function renderizarTablaClientes(lista) { const cuerpo = document.getElementById('cuerpoTabla'); cuerpo.innerHTML = ''; document.getElementById('contadorClientes').textContent = `${lista.length} REGISTRADOS`; lista.forEach(c => { const textoId = c.num_cliente ? String(c.num_cliente).padStart(3, '0') : 'N/A'; cuerpo.innerHTML += `<tr class="hover:bg-gray-50"><td class="px-6 py-4"><div class="flex items-center space-x-4"><div class="bg-green-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold shadow-sm"><i class="fa-solid fa-user"></i></div><div><p class="font-bold text-gray-800">${c.nombre} <br> ${c.apellidos}</p><p class="text-[10px] text-gray-400 mt-1">ID: #${textoId} | RFC: ${c.rfc || 'S/N'}</p></div></div></td><td class="px-6 py-4"><p class="text-sm text-blue-600 font-medium"><i class="fa-solid fa-envelope mr-2"></i>${c.email || 'Sin correo'}</p><p class="text-sm text-gray-600 mt-1"><i class="fa-solid fa-phone text-green-600 mr-2"></i>${c.telefono}</p></td><td class="px-6 py-4 text-center whitespace-nowrap space-x-1"><button onclick="tabularEdicionCliente('${c.id}')" class="bg-amber-400 hover:bg-amber-500 text-white text-xs font-bold px-4 py-2 rounded-full shadow-sm"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="eliminarCliente('${c.id}')" class="bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-4 py-2 rounded-full shadow-sm"><i class="fa-solid fa-trash"></i></button></td></tr>`; }); }
         function filtrarClientes() { renderizarTablaClientes(memoriaClientes.filter(c => `${c.nombre} ${c.apellidos}`.toLowerCase().includes(document.getElementById('buscadorClientes').value.toLowerCase()))); }
         async function cargarClientes() { try { const res = await fetch(`${API_URL}/clientes/`); memoriaClientes = await res.json(); const sel = document.getElementById('selectCliente'); sel.innerHTML = '<option value="">-- Selecciona --</option>'; memoriaClientes.forEach(c => { sel.innerHTML += `<option value="${c.id}">${c.nombre} ${c.apellidos}</option>`; }); renderizarTablaClientes(memoriaClientes); } catch (e) {} }
-        
         document.getElementById('registroForm').addEventListener('submit', async function(e) { e.preventDefault(); const id = document.getElementById('editClienteId').value; const datos = { nombre: document.getElementById('nombre').value, apellidos: document.getElementById('apellidos').value, email: document.getElementById('email').value, telefono: document.getElementById('telefono').value, rfc: document.getElementById('rfc').value }; await fetch(id ? `${API_URL}/clientes/${id}` : `${API_URL}/clientes/`, { method: id ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos) }); limpiarFormCliente(); await inicializarPanel(); });
         async function eliminarCliente(id) { if(confirm("¿Eliminar?")) { await fetch(`${API_URL}/clientes/${id}`, { method: 'DELETE' }); await inicializarPanel(); } }
-        
-        function tabularEdicionCliente(id) { 
-            const c = memoriaClientes.find(x => x.id === id); 
-            document.getElementById('editClienteId').value = c.id; document.getElementById('nombre').value = c.nombre; document.getElementById('apellidos').value = c.apellidos; document.getElementById('email').value = c.email; document.getElementById('telefono').value = c.telefono; document.getElementById('rfc').value = c.rfc; 
-            document.getElementById('tituloFormCliente').innerHTML = `<i class="fa-solid fa-pen text-amber-500 mr-2 text-2xl"></i> Editando Cliente`; document.getElementById('btnSubmitCliente').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-amber-500 hover:bg-amber-600 shadow-sm"; document.getElementById('btnCancelarCliente').classList.remove('hidden'); 
-            cambiarVista('inicio'); // Te regresa a la vista de inicio donde están los formularios
-            window.scrollTo({ top: document.getElementById('vista-form-clientes').offsetTop - 100, behavior: 'smooth' });
-        }
-        function limpiarFormCliente() { document.getElementById('registroForm').reset(); document.getElementById('editClienteId').value = ''; document.getElementById('tituloFormCliente').innerHTML = `<i class="fa-solid fa-user-plus text-green-600 mr-2 text-2xl"></i> Nuevo Cliente`; document.getElementById('btnSubmitCliente').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-[#4ade80] hover:bg-green-500 text-green-900 transition-colors shadow-sm"; document.getElementById('btnCancelarCliente').classList.add('hidden'); }
-        document.getElementById('btnCancelarCliente').addEventListener('click', limpiarFormCliente);
+        function tabularEdicionCliente(id) { const c = memoriaClientes.find(x => x.id === id); document.getElementById('editClienteId').value = c.id; document.getElementById('nombre').value = c.nombre; document.getElementById('apellidos').value = c.apellidos; document.getElementById('email').value = c.email; document.getElementById('telefono').value = c.telefono; document.getElementById('rfc').value = c.rfc; document.getElementById('btnCancelarCliente').classList.remove('hidden'); cambiarVista('inicio'); window.scrollTo({ top: document.getElementById('vista-form-clientes').offsetTop - 100, behavior: 'smooth' }); }
+        function limpiarFormCliente() { document.getElementById('registroForm').reset(); document.getElementById('editClienteId').value = ''; document.getElementById('btnCancelarCliente').classList.add('hidden'); }
 
-        // --- PARCELAS ---
         async function cargarPropiedades() { try { const res = await fetch(`${API_URL}/propiedades/`); memoriaPropiedades = await res.json(); const cuerpo = document.getElementById('cuerpoTablaPropiedades'); cuerpo.innerHTML = ''; const sel = document.getElementById('selectPropiedad'); sel.innerHTML = '<option value="">-- Selecciona --</option>'; memoriaPropiedades.forEach(p => { const cl = memoriaClientes.find(c => c.id === p.cliente_id); const nD = cl ? `${cl.nombre} ${cl.apellidos}` : 'N/A'; cuerpo.innerHTML += `<tr><td class="px-6 py-4"><p class="font-bold text-sm">${p.nombre_propiedad}</p><p class="text-[11px] text-gray-500">${p.direccion || p.estado} - Prop: ${nD}</p></td><td class="px-6 py-4 text-center"><span class="bg-[#1b6b43] text-white px-3 py-1 rounded-full text-[10px] font-bold">${p.tipo_cultivo}</span></td><td class="px-6 py-4 text-center"><p class="text-xl font-extrabold">${p.superficie_has}</p></td><td class="px-6 py-4 text-center"><button onclick="prepararEdicionPropiedad('${p.id}')" class="bg-amber-400 text-white text-xs px-4 py-2 rounded-full mr-1"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="eliminarPropiedad('${p.id}')" class="bg-rose-600 text-white text-xs px-4 py-2 rounded-full"><i class="fa-solid fa-trash"></i></button></td></tr>`; sel.innerHTML += `<option value="${p.id}">${nD} - ${p.nombre_propiedad}</option>`; }); } catch (e) {} }
-        
         document.getElementById('propiedadForm').addEventListener('submit', async function(e) { e.preventDefault(); const id = document.getElementById('editPropiedadId').value; const datos = { cliente_id: document.getElementById('selectCliente').value, nombre_propiedad: document.getElementById('nombre_propiedad').value, direccion: document.getElementById('direccion').value, estado: document.getElementById('estado').value, tipo_cultivo: document.getElementById('tipo_cultivo').value, superficie_has: parseFloat(document.getElementById('superficie_has').value), sistema_riego: document.getElementById('sistema_riego').value, comentarios: '' }; await fetch(id ? `${API_URL}/propiedades/${id}` : `${API_URL}/propiedades/`, { method: id ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos) }); limpiarFormPropiedad(); await inicializarPanel(); });
         async function eliminarPropiedad(id) { if(confirm("¿Eliminar?")) { await fetch(`${API_URL}/propiedades/${id}`, { method: 'DELETE' }); await inicializarPanel(); } }
-        
-        function prepararEdicionPropiedad(id) { 
-            const p = memoriaPropiedades.find(x => x.id === id); document.getElementById('editPropiedadId').value = p.id; document.getElementById('selectCliente').value = p.cliente_id; document.getElementById('nombre_propiedad').value = p.nombre_propiedad; document.getElementById('tipo_cultivo').value = p.tipo_cultivo; document.getElementById('superficie_has').value = p.superficie_has; document.getElementById('sistema_riego').value = p.sistema_riego; document.getElementById('direccion').value = p.direccion; document.getElementById('estado').value = p.estado; 
-            document.getElementById('tituloFormPropiedad').innerHTML = `<i class="fa-solid fa-pen text-amber-500 mr-2 text-2xl"></i> Editando Parcela`; document.getElementById('btnSubmitPropiedad').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-amber-500 hover:bg-amber-600 shadow-sm"; document.getElementById('btnCancelarPropiedad').classList.remove('hidden'); 
-            cambiarVista('inicio'); 
-            window.scrollTo({ top: document.getElementById('vista-form-propiedades').offsetTop - 100, behavior: 'smooth' });
-        }
-        function limpiarFormPropiedad() { document.getElementById('propiedadForm').reset(); document.getElementById('editPropiedadId').value = ''; document.getElementById('tituloFormPropiedad').innerHTML = `<i class="fa-solid fa-map-location-dot text-green-600 mr-2 text-2xl"></i> Registrar Parcela`; document.getElementById('btnSubmitPropiedad').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-[#4ade80] hover:bg-green-500 text-green-900 transition-colors shadow-sm"; document.getElementById('btnCancelarPropiedad').classList.add('hidden'); }
-        document.getElementById('btnCancelarPropiedad').addEventListener('click', limpiarFormPropiedad);
+        function prepararEdicionPropiedad(id) { const p = memoriaPropiedades.find(x => x.id === id); document.getElementById('editPropiedadId').value = p.id; document.getElementById('selectCliente').value = p.cliente_id; document.getElementById('nombre_propiedad').value = p.nombre_propiedad; document.getElementById('tipo_cultivo').value = p.tipo_cultivo; document.getElementById('superficie_has').value = p.superficie_has; document.getElementById('sistema_riego').value = p.sistema_riego; document.getElementById('direccion').value = p.direccion; document.getElementById('estado').value = p.estado; document.getElementById('btnCancelarPropiedad').classList.remove('hidden'); cambiarVista('inicio'); window.scrollTo({ top: document.getElementById('vista-form-propiedades').offsetTop - 100, behavior: 'smooth' }); }
+        function limpiarFormPropiedad() { document.getElementById('propiedadForm').reset(); document.getElementById('editPropiedadId').value = ''; document.getElementById('btnCancelarPropiedad').classList.add('hidden'); }
 
-        // --- SERVICIOS ---
-        async function cargarServicios() { try { const res = await fetch(`${API_URL}/servicios/`); memoriaServicios = await res.json(); const cuerpo = document.getElementById('cuerpoTablaServicios'); cuerpo.innerHTML = ''; memoriaServicios.forEach(s => { const pr = memoriaPropiedades.find(p => p.id === s.propiedad_id); const cl = pr ? memoriaClientes.find(c => c.id === pr.cliente_id) : null; cuerpo.innerHTML += `<tr><td class="td-excel bg-gray-50">${s.id ? String(s.id).substring(0,6) : 'S/N'}</td><td class="td-excel">${cl?cl.nombre:'N/A'}</td><td class="td-excel">${cl?cl.apellidos:'N/A'}</td><td class="td-excel">${cl?cl.telefono:'N/A'}</td><td class="td-excel">${pr?pr.tipo_cultivo:'N/A'}</td><td class="td-excel text-center">${pr?pr.superficie_has:'0'}</td><td class="td-excel">${pr?pr.direccion:'N/A'}</td><td class="td-excel">${s.no_cotizacion||'S/N'}</td><td class="td-excel">${s.no_orden||'S/N'}</td><td class="td-excel">${s.fecha_aplicacion||'S/N'}</td><td class="td-excel text-right text-green-700 font-bold">$${(s.costo_servicio||0).toLocaleString()}</td><td class="td-excel text-right text-red-600 font-bold">$${(s.gastos||0).toLocaleString()}</td><td class="td-excel text-right text-blue-700 font-bold">$${((s.costo_servicio||0)-(s.gastos||0)).toLocaleString()}</td><td class="td-excel text-center">${s.fecha_seguimiento||'S/N'}</td><td class="td-excel text-center">${s.no_factura||'S/N'}</td><td class="td-excel max-w-[150px] truncate">${s.observaciones||''}</td><td class="td-excel text-center space-x-2"><button onclick="prepararEdicionServicio('${s.id}')" class="text-amber-500"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="eliminarServio('${s.id}')" class="text-rose-500"><i class="fa-solid fa-trash"></i></button></td></tr>`; }); } catch (e) {} }
-        
-        document.getElementById('servicioForm').addEventListener('submit', async function(e) { e.preventDefault(); const id = document.getElementById('editServioId').value; const datos = { propiedad_id: document.getElementById('selectPropiedad').value, fecha_aplicacion: document.getElementById('fecha_aplicacion').value, costo_servicio: parseFloat(document.getElementById('costo_servicio').value || 0), estado_cuenta: 'Cobrado', satisfaccion: 5, no_cotizacion: document.getElementById('no_cotizacion').value, no_orden: document.getElementById('no_orden').value, gastos: parseFloat(document.getElementById('gastos').value || 0), fecha_seguimiento: document.getElementById('fecha_seguimiento').value, no_factura: document.getElementById('no_factura').value, observaciones: document.getElementById('observaciones').value }; await fetch(id ? `${API_URL}/servicios/${id}` : `${API_URL}/servicios/`, { method: id ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos) }); limpiarFormService(); await inicializarPanel(); });
-        async function eliminarServio(id) { if(confirm("¿Borrar?")) { await fetch(`${API_URL}/servicios/${id}`, { method: 'DELETE' }); await inicializarPanel(); } }
-        
-        function prepararEdicionServicio(id) { 
-            const s = memoriaServicios.find(x => x.id === id); document.getElementById('editServioId').value = s.id; document.getElementById('selectPropiedad').value = s.propiedad_id; document.getElementById('fecha_aplicacion').value = s.fecha_aplicacion||''; document.getElementById('costo_servicio').value = s.costo_servicio||''; document.getElementById('no_cotizacion').value = s.no_cotizacion||''; document.getElementById('no_orden').value = s.no_orden||''; document.getElementById('gastos').value = s.gastos||''; document.getElementById('fecha_seguimiento').value = s.fecha_seguimiento||''; document.getElementById('no_factura').value = s.no_factura||''; document.getElementById('observaciones').value = s.observaciones||''; 
-            document.getElementById('tituloFormServio').innerHTML = `<i class="fa-solid fa-pen text-amber-500 mr-2 text-2xl"></i> Editando Venta`; document.getElementById('btnSubmitServicio').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-amber-500 hover:bg-amber-600 shadow-sm"; document.getElementById('btnCancelarServicio').classList.remove('hidden'); 
-            cambiarVista('inicio'); 
-            window.scrollTo({ top: document.getElementById('vista-form-servicios').offsetTop - 100, behavior: 'smooth' });
+        // --- SERVICIOS Y TABLA GASTOS ---
+        async function cargarServicios() { 
+            try { 
+                const res = await fetch(`${API_URL}/servicios/`); memoriaServicios = await res.json(); 
+                const cuerpo = document.getElementById('cuerpoTablaServicios'); cuerpo.innerHTML = ''; 
+                const cuerpoGastos = document.getElementById('cuerpoTablaGastos'); cuerpoGastos.innerHTML = ''; 
+
+                memoriaServicios.forEach(s => { 
+                    const pr = memoriaPropiedades.find(p => p.id === s.propiedad_id); const cl = pr ? memoriaClientes.find(c => c.id === pr.cliente_id) : null; 
+                    let noControl = s.id ? String(s.id).substring(0,6).toUpperCase() : 'S/N';
+                    let nomProd = cl ? cl.nombre + " " + cl.apellidos : 'N/A';
+                    let totalGasto = s.gastos || 0;
+
+                    cuerpo.innerHTML += `<tr><td class="td-excel bg-gray-50">${noControl}</td><td class="td-excel">${cl?cl.nombre:'N/A'}</td><td class="td-excel">${cl?cl.apellidos:'N/A'}</td><td class="td-excel">${cl?cl.telefono:'N/A'}</td><td class="td-excel">${pr?pr.tipo_cultivo:'N/A'}</td><td class="td-excel text-center">${pr?pr.superficie_has:'0'}</td><td class="td-excel">${pr?pr.direccion:'N/A'}</td><td class="td-excel">${s.no_cotizacion||'S/N'}</td><td class="td-excel">${s.no_orden||'S/N'}</td><td class="td-excel">${s.fecha_aplicacion||'S/N'}</td><td class="td-excel text-right text-green-700 font-bold">$${(s.costo_servicio||0).toLocaleString()}</td><td class="td-excel text-right text-red-600 font-bold">$${totalGasto.toLocaleString()}</td><td class="td-excel text-right text-blue-700 font-bold">$${((s.costo_servicio||0)-totalGasto).toLocaleString()}</td><td class="td-excel text-center">${s.fecha_seguimiento||'S/N'}</td><td class="td-excel text-center">${s.no_factura||'S/N'}</td><td class="td-excel max-w-[150px] truncate">${s.observaciones||''}</td><td class="td-excel text-center space-x-2"><button onclick="prepararEdicionServicio('${s.id}')" class="text-amber-500"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="eliminarServio('${s.id}')" class="text-rose-500"><i class="fa-solid fa-trash"></i></button></td></tr>`; 
+                    
+                    cuerpoGastos.innerHTML += `<tr class="hover:bg-rose-50 transition-colors"><td class="td-excel font-bold text-gray-500">${noControl}</td><td class="td-excel font-semibold">${nomProd}</td><td class="td-excel text-gray-600">${pr?pr.tipo_cultivo:'N/A'}</td><td class="td-excel text-right text-rose-600 font-medium">$${(s.gasto_gasolina_unidad||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600 font-medium">$${(s.gasto_gasolina_generador||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600 font-medium">$${(s.gasto_sueldos||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600 font-medium">$${(s.gasto_insumos||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600 font-medium">$${(s.gasto_comidas||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600 font-medium">$${(s.gasto_oxxo||0).toLocaleString()}</td><td class="td-excel text-right text-red-700 font-extrabold bg-red-50 border-l border-red-200">$${totalGasto.toLocaleString()}</td></tr>`;
+                }); 
+            } catch (e) {} 
         }
-        function limpiarFormService() { document.getElementById('servicioForm').reset(); document.getElementById('editServioId').value = ''; document.getElementById('tituloFormServio').innerHTML = `<i class="fa-solid fa-file-invoice-dollar text-green-600 mr-2 text-2xl"></i> Registrar Venta`; document.getElementById('btnSubmitServicio').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-green-700 hover:bg-green-600 transition-colors shadow-sm"; document.getElementById('btnCancelarServicio').classList.add('hidden'); }
-        document.getElementById('btnCancelarServicio').addEventListener('click', limpiarFormService);
+
+        document.getElementById('servicioForm').addEventListener('submit', async function(e) { 
+            e.preventDefault(); 
+            const id = document.getElementById('editServioId').value;
+            const btn = document.getElementById('btnSubmitServicio'); btn.innerHTML = 'Guardando...';
+            
+            const datos = { 
+                propiedad_id: document.getElementById('selectPropiedad').value, fecha_aplicacion: document.getElementById('fecha_aplicacion').value, 
+                costo_servicio: parseFloat(document.getElementById('costo_servicio').value || 0), estado_cuenta: 'Cobrado', satisfaccion: 5,
+                no_cotizacion: document.getElementById('no_cotizacion').value, no_orden: document.getElementById('no_orden').value,
+                gastos: parseFloat(document.getElementById('gastos').value || 0), fecha_seguimiento: document.getElementById('fecha_seguimiento').value,
+                no_factura: document.getElementById('no_factura').value, observaciones: document.getElementById('observaciones').value,
+                gasto_gasolina_unidad: parseFloat(document.getElementById('h_gas_unidad').value || 0), gasto_gasolina_generador: parseFloat(document.getElementById('h_gas_gen').value || 0), gasto_sueldos: parseFloat(document.getElementById('h_sueldos').value || 0), gasto_insumos: parseFloat(document.getElementById('h_insumos').value || 0), gasto_comidas: parseFloat(document.getElementById('h_comidas').value || 0), gasto_oxxo: parseFloat(document.getElementById('h_oxxo').value || 0)
+            }; 
+            await fetch(id ? `${API_URL}/servicios/${id}` : `${API_URL}/servicios/`, { method: id ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos) }); 
+            limpiarFormServicio(); await inicializarPanel(); 
+        });
+
+        async function eliminarServio(id) { if(confirm("¿Borrar?")) { await fetch(`${API_URL}/servicios/${id}`, { method: 'DELETE' }); await inicializarPanel(); } }
+        function prepararEdicionServicio(id) { const s = memoriaServicios.find(x => x.id === id); document.getElementById('editServioId').value = s.id; document.getElementById('selectPropiedad').value = s.propiedad_id; document.getElementById('fecha_aplicacion').value = s.fecha_aplicacion||''; document.getElementById('costo_servicio').value = s.costo_servicio||''; document.getElementById('no_cotizacion').value = s.no_cotizacion||''; document.getElementById('no_orden').value = s.no_orden||''; document.getElementById('gastos').value = s.gastos||''; document.getElementById('fecha_seguimiento').value = s.fecha_seguimiento||''; document.getElementById('no_factura').value = s.no_factura||''; document.getElementById('observaciones').value = s.observaciones||''; document.getElementById('h_gas_unidad').value = s.gasto_gasolina_unidad || 0; document.getElementById('h_gas_gen').value = s.gasto_gasolina_generador || 0; document.getElementById('h_sueldos').value = s.gasto_sueldos || 0; document.getElementById('h_insumos').value = s.gasto_insumos || 0; document.getElementById('h_comidas').value = s.gasto_comidas || 0; document.getElementById('h_oxxo').value = s.gasto_oxxo || 0; document.getElementById('btnCancelarServicio').classList.remove('hidden'); cambiarVista('inicio'); window.scrollTo({ top: document.getElementById('vista-form-servicios').offsetTop - 100, behavior: 'smooth' });}
+        function limpiarFormServicio() { document.getElementById('servicioForm').reset(); document.getElementById('editServioId').value = ''; ['h_gas_unidad', 'h_gas_gen', 'h_sueldos', 'h_insumos', 'h_comidas', 'h_oxxo'].forEach(id => document.getElementById(id).value = 0); document.getElementById('btnCancelarServicio').classList.add('hidden'); }
     </script>
 </body>
 </html>

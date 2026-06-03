@@ -19,10 +19,10 @@
         .td-excel { padding: 0.75rem 1rem; white-space: nowrap; font-size: 0.75rem; border-right: 1px solid #f3f4f6; }
         .th-excel { padding: 0.75rem 1rem; white-space: nowrap; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; border-right: 1px solid #2a8757; }
         
-        .dashboard-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; background-color: #ffffff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 30px; }
-        .kpi-card { background-color: #ffffff; border: 2px solid #000000; border-radius: 8px; padding: 15px; text-align: center; box-shadow: 2px 2px 5px rgba(0,0,0,0.05); }
-        .kpi-title { font-size: 16px; font-weight: bold; color: #000000; margin-bottom: 10px; }
-        .kpi-text-real { font-size: 18px; font-weight: bold; color: #000000; }
+        .dashboard-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; background-color: #ffffff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 30px; }
+        .kpi-card { background-color: #ffffff; border: 2px solid #000000; border-radius: 8px; padding: 12px; text-align: center; box-shadow: 2px 2px 5px rgba(0,0,0,0.05); }
+        .kpi-title { font-size: 14px; font-weight: bold; color: #000000; margin-bottom: 5px; }
+        .kpi-text-real { font-size: 16px; font-weight: bold; color: #000000; }
     </style>
 </head>
 <body class="text-gray-800">
@@ -73,6 +73,7 @@
                 <div class="kpi-card"><div class="kpi-title">Vuelos de Drones</div><div id="velocimetro-servicios"></div><div class="kpi-text-real" id="texto-servicios-real">0 / 0</div></div>
                 <div class="kpi-card"><div class="kpi-title">Nuevos Clientes</div><div id="velocimetro-clientes"></div><div class="kpi-text-real" id="texto-clientes-real">0 / 0</div></div>
                 <div class="kpi-card"><div class="kpi-title">Prospectos Alcanzados</div><div id="velocimetro-prospectos"></div><div class="kpi-text-real" id="texto-prospectos-real">0 / 0</div></div>
+                <div class="kpi-card"><div class="kpi-title">Visitas a Campo</div><div id="velocimetro-visitas"></div><div class="kpi-text-real" id="texto-visitas-real">0 / 0</div></div>
             </div>
 
             <h2 class="text-2xl font-bold text-gray-800 mt-10 mb-6 tracking-tight">Panel de Captura Rápida</h2>
@@ -180,7 +181,10 @@
                     <div><label class="block text-xs font-bold text-gray-500 uppercase">Vuelos Objetivo</label><input type="number" id="input_meta_servicios" required class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg font-bold outline-none focus:ring-2 focus:ring-green-500"></div>
                     <div><label class="block text-xs font-bold text-gray-500 uppercase">Nuevos Clientes</label><input type="number" id="input_meta_clientes" required class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg font-bold outline-none focus:ring-2 focus:ring-green-500"></div>
                 </div>
-                <div><label class="block text-xs font-bold text-gray-500 uppercase">Meta de Prospectos</label><input type="number" id="input_meta_prospectos" required class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg font-bold outline-none focus:ring-2 focus:ring-green-500"></div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div><label class="block text-xs font-bold text-gray-500 uppercase">Meta de Prospectos</label><input type="number" id="input_meta_prospectos" required class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg font-bold outline-none focus:ring-2 focus:ring-green-500"></div>
+                    <div><label class="block text-xs font-bold text-gray-500 uppercase">Meta Visitas Campo</label><input type="number" id="input_meta_visitas" required class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg font-bold outline-none focus:ring-2 focus:ring-green-500"></div>
+                </div>
                 <button type="submit" id="btnGuardarMetas" class="w-full mt-4 py-3 bg-gray-900 hover:bg-black text-white font-bold rounded-lg transition-colors shadow-md">Guardar en Base de Datos</button>
             </form>
         </div>
@@ -213,12 +217,10 @@
         let memoriaClientes = [], memoriaPropiedades = [], memoriaServicios = [];
         let rolUsuario = 'trabajador'; 
 
-        // --- SISTEMA DE LOGIN SEGURO SIN CRASHES ---
         document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const btn = document.getElementById('btnLogin');
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Cargando BD...';
-            btn.disabled = true; 
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Cargando BD...'; btn.disabled = true; 
             try {
                 const res = await fetch(`${API_URL}/login/`, {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -227,8 +229,6 @@
                 const data = await res.json(); 
                 if (res.ok) {
                     rolUsuario = data.rol || 'trabajador';
-                    
-                    // VALIDACIÓN SEGURA DEL BADGE DE ROL
                     const badge = document.getElementById('badge-rol');
                     if(badge) {
                         if(rolUsuario === 'admin') {
@@ -239,27 +239,19 @@
                             badge.className = "ml-4 text-xs font-bold px-2 py-1 bg-green-950 text-green-300 rounded-md border border-green-600 tracking-wider";
                         }
                     }
-                    
                     document.getElementById('login-container').classList.add('hidden');
                     document.getElementById('dashboard-container').classList.remove('hidden');
                     await inicializarPanel(); 
                 } else {
-                    document.getElementById('loginError').textContent = "Correo o contraseña incorrectos."; 
-                    document.getElementById('loginError').classList.remove('hidden');
-                    btn.innerHTML = '<i class="fa-solid fa-right-to-bracket mr-2"></i> Iniciar Sesión'; 
-                    btn.disabled = false;
+                    document.getElementById('loginError').textContent = "Correo o contraseña incorrectos."; document.getElementById('loginError').classList.remove('hidden');
+                    btn.innerHTML = '<i class="fa-solid fa-right-to-bracket mr-2"></i> Iniciar Sesión'; btn.disabled = false;
                 }
-            } catch (error) { 
-                alert("Error de conexión con el servidor. Revisa tu internet o los logs de Render."); 
-                btn.innerHTML = '<i class="fa-solid fa-right-to-bracket mr-2"></i> Iniciar Sesión'; 
-                btn.disabled = false;
-            }
+            } catch (error) { alert("Error de conexión"); btn.innerHTML = 'Iniciar Sesión'; btn.disabled = false; }
         });
 
         function cerrarSesion() { window.location.reload(); }
         async function inicializarPanel() { await cargarClientes(); await cargarPropiedades(); await cargarServicios(); cambiarVista('inicio'); }
 
-        // --- NAVEGACIÓN ---
         function cambiarVista(vista) {
             ['inicio', 'clientes', 'propiedades', 'servicios', 'gastos'].forEach(sec => {
                 const btn = document.getElementById('nav-' + sec);
@@ -267,49 +259,35 @@
                 const tabla = document.getElementById('vista-tabla-' + sec);
                 if(tabla) { tabla.classList.add('hidden'); tabla.classList.remove('block'); }
             });
-
             document.getElementById('vista-inicio').classList.add('hidden');
             document.getElementById('vista-tablas').classList.add('hidden');
-            document.getElementById('titulo-seccion-tablas').innerText = (vista === 'gastos') ? "Control Financiero de Gastos" : "Base de Datos Operativa";
-
-            document.getElementById('nav-' + vista).className = "bg-green-700 hover:bg-green-600 px-3 py-2 rounded-md text-sm font-bold transition-colors shadow-sm";
-
-            if (vista === 'inicio') { 
-                document.getElementById('vista-inicio').classList.remove('hidden'); 
-                actualizarEstadisticasYMetas(); 
-            } else { 
-                document.getElementById('vista-tablas').classList.remove('hidden'); 
-                document.getElementById('vista-tabla-' + vista).classList.remove('hidden'); 
-            }
+            if (vista === 'inicio') { document.getElementById('vista-inicio').classList.remove('hidden'); actualizarEstadisticasYMetas(); } 
+            else { document.getElementById('vista-tablas').classList.remove('hidden'); document.getElementById('vista-tabla-' + vista).classList.remove('hidden'); }
         }
 
         function actualizarEstadisticasYMetas() {
             const mesSeleccionado = document.getElementById('filtroMes').value;
             let serviciosFiltrados = memoriaServicios;
-            if (mesSeleccionado !== 'todos') {
-                serviciosFiltrados = memoriaServicios.filter(s => s.fecha_aplicacion && s.fecha_aplicacion.split('-')[1] === mesSeleccionado);
-            }
-
+            if (mesSeleccionado !== 'todos') { serviciosFiltrados = memoriaServicios.filter(s => s.fecha_aplicacion && s.fecha_aplicacion.split('-')[1] === mesSeleccionado); }
             let totalHaFumigadas = 0; let totalIngresos = 0; let totalGastos = 0;
             serviciosFiltrados.forEach(s => {
                 let prop = memoriaPropiedades.find(p => p.id === s.propiedad_id);
                 if(prop) totalHaFumigadas += (prop.superficie_has || 0);
-                totalIngresos += (s.costo_servicio || 0);
-                totalGastos += (s.gastos || 0); 
+                totalIngresos += (s.costo_servicio || 0); totalGastos += (s.gastos || 0); 
             });
-
             document.getElementById('stat-hectareas').textContent = totalHaFumigadas.toFixed(2);
             document.getElementById('stat-ingresos').textContent = "$" + totalIngresos.toLocaleString('es-MX', {minimumFractionDigits: 2});
             document.getElementById('stat-utilidad').textContent = "$" + (totalIngresos - totalGastos).toLocaleString('es-MX', {minimumFractionDigits: 2});
             actualizarMetasCEO();
         }
 
-        // --- VELOCÍMETROS APEXCHARTS ---
-        function crearVelocimetro(id, color, nombre) { return { series: [0], chart: { type: 'radialBar', height: 240, background: 'transparent' }, plotOptions: { radialBar: { startAngle: -90, endAngle: 90, track: { background: '#e7e7e7', strokeWidth: '97%' }, dataLabels: { name: { show: false }, value: { offsetY: -5, fontSize: '24px', fontWeight: 'bold', color: '#000000', formatter: function (val) { return val.toFixed(1) + "%"; } } } } }, colors: [color], labels: [nombre] }; }
+        // --- VELOCÍMETROS APEXCHARTS (DISEÑO VERDE UNIFORME #00E396) ---
+        function crearVelocimetro(id, color, nombre) { return { series: [0], chart: { type: 'radialBar', height: 200, background: 'transparent' }, plotOptions: { radialBar: { startAngle: -90, endAngle: 90, track: { background: '#e7e7e7', strokeWidth: '97%' }, dataLabels: { name: { show: false }, value: { offsetY: -5, fontSize: '20px', fontWeight: 'bold', color: '#000000', formatter: function (val) { return val.toFixed(1) + "%"; } } } } }, colors: [color], labels: [nombre] }; }
         var chartVentas = new ApexCharts(document.querySelector("#velocimetro-ventas"), crearVelocimetro("#velocimetro-ventas", "#00E396", "Ventas")); chartVentas.render();
         var chartServicios = new ApexCharts(document.querySelector("#velocimetro-servicios"), crearVelocimetro("#velocimetro-servicios", "#00E396", "Servicios")); chartServicios.render();
         var chartClientes = new ApexCharts(document.querySelector("#velocimetro-clientes"), crearVelocimetro("#velocimetro-clientes", "#00E396", "Clientes")); chartClientes.render();
         var chartProspectos = new ApexCharts(document.querySelector("#velocimetro-prospectos"), crearVelocimetro("#velocimetro-prospectos", "#00E396", "Prospectos")); chartProspectos.render();
+        var chartVisitas = new ApexCharts(document.querySelector("#velocimetro-visitas"), crearVelocimetro("#velocimetro-visitas", "#00E396", "Visitas")); chartVisitas.render();
 
         async function actualizarMetasCEO() {
             try {
@@ -318,40 +296,47 @@
                 const mesActual = `${mesBusqueda}-2026`;
                 document.getElementById('meta_mes_anio').value = mesActual;
 
-                const res = await fetch(API_URL + "/api/dashboard/" + mesActual); 
-                const datos = await res.json();
-                let mV = datos.metas.meta_ventas || 1, mS = datos.metas.meta_servicios || 1, mC = datos.metas.meta_clientes || 1, mP = datos.metas.meta_prospectos || 1;
+                const res = await fetch(API_URL + "/api/dashboard/" + mesActual); const datos = await res.json();
+                let mV = datos.metas.meta_ventas || 1, mS = datos.metas.meta_servicios || 1, mC = datos.metas.meta_clientes || 1, mP = datos.metas.meta_prospectos || 1, mVis = datos.metas.meta_prospectos_visitas || 1;
+
                 chartVentas.updateSeries([Math.min((datos.reales.ventas / mV) * 100, 100)]);
                 chartServicios.updateSeries([Math.min((datos.reales.servicios / mS) * 100, 100)]);
                 chartClientes.updateSeries([Math.min((datos.reales.clientes / mC) * 100, 100)]);
                 chartProspectos.updateSeries([Math.min((0 / mP) * 100, 100)]);
+                chartVisitas.updateSeries([Math.min((0 / mVis) * 100, 100)]);
+
                 document.getElementById("texto-ventas-real").innerText = "$" + datos.reales.ventas.toLocaleString() + " / $" + parseFloat(datos.metas.meta_ventas || 0).toLocaleString();
                 document.getElementById("texto-servicios-real").innerText = datos.reales.servicios + " / " + (datos.metas.meta_servicios || 0);
                 document.getElementById("texto-clientes-real").innerText = datos.reales.clientes + " / " + (datos.metas.meta_clientes || 0);
                 document.getElementById("texto-prospectos-real").innerText = "0 / " + (datos.metas.meta_prospectos || 0);
-                document.getElementById('input_meta_ventas').value = datos.metas.meta_ventas || 0; document.getElementById('input_meta_servicios').value = datos.metas.meta_servicios || 0; document.getElementById('input_meta_clientes').value = datos.metas.meta_clientes || 0; document.getElementById('input_meta_prospectos').value = datos.metas.meta_prospectos || 0;
+                document.getElementById("texto-visitas-real").innerText = "0 / " + (datos.metas.meta_prospectos_visitas || 0);
+
+                document.getElementById('input_meta_ventas').value = datos.metas.meta_ventas || 0; document.getElementById('input_meta_servicios').value = datos.metas.meta_servicios || 0; document.getElementById('input_meta_clientes').value = datos.metas.meta_clientes || 0; document.getElementById('input_meta_prospectos').value = datos.metas.meta_prospectos || 0; document.getElementById('input_meta_visitas').value = datos.metas.meta_prospectos_visitas || 0;
             } catch (error) {}
         }
         function abrirModalMetas() { document.getElementById('modal-metas').classList.remove('hidden'); } function cerrarModalMetas() { document.getElementById('modal-metas').classList.add('hidden'); }
-        document.getElementById('formMetas').addEventListener('submit', async function(e) { e.preventDefault(); document.getElementById('btnGuardarMetas').innerText = "Guardando..."; const datosMeta = { mes_anio: document.getElementById('meta_mes_anio').value, meta_ventas: parseFloat(document.getElementById('input_meta_ventas').value), meta_servicios: parseInt(document.getElementById('input_meta_servicios').value), meta_clientes: parseInt(document.getElementById('input_meta_clientes').value), meta_prospectos: parseInt(document.getElementById('input_meta_prospectos').value) }; try { await fetch(API_URL + "/api/metas/", { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datosMeta) }); cerrarModalMetas(); document.getElementById('btnGuardarMetas').innerText = "Guardar en Base de Datos"; actualizarMetasCEO(); } catch (error) { document.getElementById('btnGuardarMetas').innerText = "Guardar en Base de Datos"; } });
+        
+        document.getElementById('formMetas').addEventListener('submit', async function(e) { 
+            e.preventDefault(); document.getElementById('btnGuardarMetas').innerText = "Guardando..."; 
+            const datosMeta = { 
+                mes_anio: document.getElementById('meta_mes_anio').value, 
+                meta_ventas: parseFloat(document.getElementById('input_meta_ventas').value), 
+                meta_servicios: parseInt(document.getElementById('input_meta_servicios').value), 
+                meta_clientes: parseInt(document.getElementById('input_meta_clientes').value), 
+                meta_prospectos: parseInt(document.getElementById('input_meta_prospectos').value),
+                meta_prospectos_visitas: parseInt(document.getElementById('input_meta_visitas').value)
+            }; 
+            try { await fetch(API_URL + "/api/metas/", { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datosMeta) }); cerrarModalMetas(); document.getElementById('btnGuardarMetas').innerText = "Guardar en Base de Datos"; actualizarMetasCEO(); } catch (error) { document.getElementById('btnGuardarMetas').innerText = "Guardar en Base de Datos"; } 
+        });
 
         // --- CALCULADORA DE GASTOS ---
-        function abrirModalDesgloseGastos() {
-            document.getElementById('m_gas_unidad').value = document.getElementById('h_gas_unidad').value || 0; document.getElementById('m_gas_gen').value = document.getElementById('h_gas_gen').value || 0; document.getElementById('m_sueldos').value = document.getElementById('h_sueldos').value || 0; document.getElementById('m_insumos').value = document.getElementById('h_insumos').value || 0; document.getElementById('m_comidas').value = document.getElementById('h_comidas').value || 0; document.getElementById('m_oxxo').value = document.getElementById('h_oxxo').value || 0; calcularTotalModal(); document.getElementById('modal-gastos').classList.remove('hidden');
-        }
+        function abrirModalDesgloseGastos() { document.getElementById('m_gas_unidad').value = document.getElementById('h_gas_unidad').value || 0; document.getElementById('m_gas_gen').value = document.getElementById('h_gas_gen').value || 0; document.getElementById('m_sueldos').value = document.getElementById('h_sueldos').value || 0; document.getElementById('m_insumos').value = document.getElementById('h_insumos').value || 0; document.getElementById('m_comidas').value = document.getElementById('h_comidas').value || 0; document.getElementById('m_oxxo').value = document.getElementById('h_oxxo').value || 0; calcularTotalModal(); document.getElementById('modal-gastos').classList.remove('hidden'); }
         function cerrarModalGastos() { document.getElementById('modal-gastos').classList.add('hidden'); }
-        function calcularTotalModal() {
-            let total = (parseFloat(document.getElementById('m_gas_unidad').value) || 0) + (parseFloat(document.getElementById('m_gas_gen').value) || 0) + (parseFloat(document.getElementById('m_sueldos').value) || 0) + (parseFloat(document.getElementById('m_insumos').value) || 0) + (parseFloat(document.getElementById('m_comidas').value) || 0) + (parseFloat(document.getElementById('m_oxxo').value) || 0);
-            document.getElementById('m_total_display').innerText = "$" + total.toLocaleString('es-MX', {minimumFractionDigits: 2}); return total;
-        }
+        function calcularTotalModal() { let total = (parseFloat(document.getElementById('m_gas_unidad').value) || 0) + (parseFloat(document.getElementById('m_gas_gen').value) || 0) + (parseFloat(document.getElementById('m_sueldos').value) || 0) + (parseFloat(document.getElementById('m_insumos').value) || 0) + (parseFloat(document.getElementById('m_comidas').value) || 0) + (parseFloat(document.getElementById('m_oxxo').value) || 0); document.getElementById('m_total_display').innerText = "$" + total.toLocaleString('es-MX', {minimumFractionDigits: 2}); return total; }
         ['m_gas_unidad', 'm_gas_gen', 'm_sueldos', 'm_insumos', 'm_comidas', 'm_oxxo'].forEach(id => { document.getElementById(id).addEventListener('input', calcularTotalModal); });
-        function confirmarDesgloseGastos() {
-            let totalGasto = calcularTotalModal();
-            document.getElementById('h_gas_unidad').value = document.getElementById('m_gas_unidad').value || 0; document.getElementById('h_gas_gen').value = document.getElementById('m_gas_gen').value || 0; document.getElementById('h_sueldos').value = document.getElementById('m_sueldos').value || 0; document.getElementById('h_insumos').value = document.getElementById('m_insumos').value || 0; document.getElementById('h_comidas').value = document.getElementById('m_comidas').value || 0; document.getElementById('h_oxxo').value = document.getElementById('m_oxxo').value || 0;
-            document.getElementById('gastos').value = totalGasto; cerrarModalGastos();
-        }
+        function confirmarDesgloseGastos() { let totalGasto = calcularTotalModal(); document.getElementById('h_gas_unidad').value = document.getElementById('m_gas_unidad').value || 0; document.getElementById('h_gas_gen').value = document.getElementById('m_gas_gen').value || 0; document.getElementById('h_sueldos').value = document.getElementById('m_sueldos').value || 0; document.getElementById('h_insumos').value = document.getElementById('m_insumos').value || 0; document.getElementById('h_comidas').value = document.getElementById('m_comidas').value || 0; document.getElementById('h_oxxo').value = document.getElementById('m_oxxo').value || 0; document.getElementById('gastos').value = totalGasto; cerrarModalGastos(); }
 
-        // --- CONTROL DE CLIENTES ---
+        // --- CONTROL INTERNO ---
         function renderizarTablaClientes(lista) { const cuerpo = document.getElementById('cuerpoTabla'); cuerpo.innerHTML = ''; document.getElementById('contadorClientes').textContent = `${lista.length} REGISTRADOS`; lista.forEach(c => { cuerpo.innerHTML += `<tr class="hover:bg-gray-50"><td class="px-6 py-4"><div class="flex items-center space-x-4"><div class="bg-green-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold shadow-sm"><i class="fa-solid fa-user"></i></div><div><p class="font-bold text-gray-800">${c.nombre} ${c.apellidos}</p><p class="text-[10px] text-gray-400 mt-1">RFC: ${c.rfc || 'S/N'}</p></div></div></td><td class="px-6 py-4"><p class="text-sm text-blue-600 font-medium"><i class="fa-solid fa-envelope mr-2"></i>${c.email || 'Sin correo'}</p><p class="text-sm text-gray-600 mt-1"><i class="fa-solid fa-phone text-green-600 mr-2"></i>${c.telefono}</p></td><td class="px-6 py-4 text-center whitespace-nowrap space-x-1"><button onclick="tabularEdicionCliente('${c.id}')" class="bg-amber-400 hover:bg-amber-500 text-white text-xs font-bold px-4 py-2 rounded-full shadow-sm"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="eliminarCliente('${c.id}')" class="bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-4 py-2 rounded-full shadow-sm"><i class="fa-solid fa-trash"></i></button></td></tr>`; }); }
         function filtrarClientes() { renderizarTablaClientes(memoriaClientes.filter(c => `${c.nombre} ${c.apellidos}`.toLowerCase().includes(document.getElementById('buscadorClientes').value.toLowerCase()))); }
         async function cargarClientes() { try { const res = await fetch(`${API_URL}/clientes/`); memoriaClientes = await res.json(); const sel = document.getElementById('selectCliente'); sel.innerHTML = '<option value="">-- Selecciona --</option>'; memoriaClientes.forEach(c => { sel.innerHTML += `<option value="${c.id}">${c.nombre} ${c.apellidos}</option>`; }); renderizarTablaClientes(memoriaClientes); } catch (e) {} }
@@ -360,28 +345,22 @@
         function tabularEdicionCliente(id) { const c = memoriaClientes.find(x => x.id === id); document.getElementById('editClienteId').value = c.id; document.getElementById('nombre').value = c.nombre; document.getElementById('apellidos').value = c.apellidos; document.getElementById('email').value = c.email; document.getElementById('telefono').value = c.telefono; document.getElementById('rfc').value = c.rfc; document.getElementById('tituloFormCliente').innerHTML = `<i class="fa-solid fa-pen text-amber-500 mr-2 text-2xl"></i> Editando Cliente`; document.getElementById('btnSubmitCliente').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-amber-500 hover:bg-amber-600 shadow-sm"; document.getElementById('btnCancelarCliente').classList.remove('hidden'); cambiarVista('inicio'); window.scrollTo({ top: document.getElementById('vista-form-clientes').offsetTop - 100, behavior: 'smooth' }); }
         function limpiarFormCliente() { document.getElementById('registroForm').reset(); document.getElementById('editClienteId').value = ''; document.getElementById('tituloFormCliente').innerHTML = `<i class="fa-solid fa-user-plus text-green-600 mr-2 text-2xl"></i> Nuevo Cliente`; document.getElementById('btnSubmitCliente').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-[#4ade80] hover:bg-green-500 text-green-900 transition-colors shadow-sm"; document.getElementById('btnCancelarCliente').classList.add('hidden'); }
 
-        // --- CONTROL DE PARCELAS ---
-        async function cargarPropiedades() { try { const res = await fetch(`${API_URL}/propiedades/`); memoriaPropiedades = await res.json(); const cuerpo = document.getElementById('cuerpoTablaPropiedades'); cuerpo.innerHTML = ''; const sel = document.getElementById('selectPropiedad'); sel.innerHTML = '<option value="">-- Selecciona --</option>'; memoriaPropiedades.forEach(p => { const cl = memoriaClientes.find(c => c.id === p.cliente_id); const nD = cl ? `${cl.nombre} ${cl.apellidos}` : 'N/A'; cuerpo.innerHTML += `<tr><td class="px-6 py-4"><p class="font-bold text-sm">${p.nombre_propiedad}</p><p class="text-[11px] text-gray-500">${p.direccion || p.estado} - Prop: ${nD}</p></td><td class="px-6 py-4 text-center"><span class="bg-[#1b6b43] text-white px-3 py-1 rounded-full text-[10px] font-bold">${p.tipo_cultivo}</span></td><td class="px-6 py-4 text-center"><p class="text-xl font-extrabold">${p.superficie_has}</p></td><td class="px-6 py-4 text-center"><button onclick="prepararEdicionPropiedad('${p.id}')" class="bg-amber-400 text-white text-xs px-4 py-2 rounded-full mr-1"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="eliminarPropiedad('${p.id}')" class="bg-rose-600 text-white text-xs px-4 py-2 rounded-full"><i class="fa-solid fa-trash"></i></button></td></tr>`; sel.innerHTML += `<option value="${p.id}">${nD} - ${p.nombre_propiedad}</option>`; }); } catch (e) {} }
+        async function cargarPropiedades() { try { const res = await fetch(`${API_URL}/propiedades/`); memoriaPropiedades = await res.json(); const cuerpo = document.getElementById('cuerpoTablaPropiedades'); cuerpo.innerHTML = ''; const sel = document.getElementById('selectPropiedad'); sel.innerHTML = '<option value="">-- Selecciona --</option>'; memoriaPropiedades.forEach(p => { const cl = memoriaClientes.find(c => c.id === p.cliente_id); const nD = cl ? `${cl.nombre} ${cl.apellidos}` : 'N/A'; cuerpo.innerHTML += `<tr><td class="px-6 py-4"><p class="font-bold text-sm">${p.nombre_propiedad}</p><p class="text-[11px] text-gray-500">${p.direccion || p.estado} - Prop: ${nD}</p></td><td class="px-6 py-4 text-center"><span class="bg-[#1b6b43] text-white px-3 py-1 rounded-full text-[10px] font-bold">${p.tipo_cultivo}</span></td><td class="px-6 py-4 text-center"><p class="text-xl font-extrabold">${p.superficie_has}</p></td><td class="px-6 py-4 text-center"><button onclick="ajustarEdicionPropiedad('${p.id}')" class="bg-amber-400 text-white text-xs px-4 py-2 rounded-full mr-1"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="eliminarPropiedad('${p.id}')" class="bg-rose-600 text-white text-xs px-4 py-2 rounded-full"><i class="fa-solid fa-trash"></i></button></td></tr>`; sel.innerHTML += `<option value="${p.id}">${nD} - ${p.nombre_propiedad}</option>`; }); } catch (e) {} }
         document.getElementById('propiedadForm').addEventListener('submit', async function(e) { e.preventDefault(); const id = document.getElementById('editPropiedadId').value; const datos = { cliente_id: document.getElementById('selectCliente').value, nombre_propiedad: document.getElementById('nombre_propiedad').value, direccion: document.getElementById('direccion').value, estado: document.getElementById('estado').value, tipo_cultivo: document.getElementById('tipo_cultivo').value, superficie_has: parseFloat(document.getElementById('superficie_has').value), sistema_riego: document.getElementById('sistema_riego').value, comentarios: '' }; await fetch(id ? `${API_URL}/propiedades/${id}` : `${API_URL}/propiedades/`, { method: id ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos) }); limpiarFormPropiedad(); await inicializarPanel(); });
         async function eliminarPropiedad(id) { if(confirm("¿Eliminar parcela?")) { await fetch(`${API_URL}/propiedades/${id}`, { method: 'DELETE' }); await inicializarPanel(); } }
         function ajustarEdicionPropiedad(id) { const p = memoriaPropiedades.find(x => x.id === id); document.getElementById('editPropiedadId').value = p.id; document.getElementById('selectCliente').value = p.cliente_id; document.getElementById('nombre_propiedad').value = p.nombre_propiedad; document.getElementById('tipo_cultivo').value = p.tipo_cultivo; document.getElementById('superficie_has').value = p.superficie_has; document.getElementById('sistema_riego').value = p.sistema_riego; document.getElementById('direccion').value = p.direccion; document.getElementById('estado').value = p.estado; document.getElementById('tituloFormPropiedad').innerHTML = `<i class="fa-solid fa-pen text-amber-500 mr-2 text-2xl"></i> Editando Parcela`; document.getElementById('btnSubmitPropiedad').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-amber-500 hover:bg-amber-600 shadow-sm"; document.getElementById('btnCancelarPropiedad').classList.remove('hidden'); cambiarVista('inicio'); window.scrollTo({ top: document.getElementById('vista-form-propiedades').offsetTop - 100, behavior: 'smooth' }); }
         function limpiarFormPropiedad() { document.getElementById('propiedadForm').reset(); document.getElementById('editPropiedadId').value = ''; document.getElementById('tituloFormPropiedad').innerHTML = `<i class="fa-solid fa-map-location-dot text-green-600 mr-2 text-2xl"></i> Registrar Parcela`; document.getElementById('btnSubmitPropiedad').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-[#4ade80] hover:bg-green-500 text-green-900 transition-colors shadow-sm"; document.getElementById('btnCancelarPropiedad').classList.add('hidden'); }
 
-        // --- CONTROL DE VENTAS Y REPORTES ---
         async function cargarServicios() { 
             try { 
                 const res = await fetch(`${API_URL}/servicios/`); memoriaServicios = await res.json(); 
                 const cuerpoVentas = document.getElementById('cuerpoTablaServicios'); cuerpoVentas.innerHTML = ''; 
                 const cuerpoGastos = document.getElementById('cuerpoTablaGastos'); cuerpoGastos.innerHTML = ''; 
-
                 memoriaServicios.forEach(s => { 
                     const pr = memoriaPropiedades.find(p => p.id === s.propiedad_id); const cl = pr ? memoriaClientes.find(c => c.id === pr.cliente_id) : null; 
                     let noControl = s.id ? String(s.id).substring(0,6).toUpperCase() : 'S/N';
-                    let nomProd = cl ? cl.nombre + " " + cl.apellidos : 'N/A';
-                    let totalGasto = s.gastos || 0;
-
+                    let nomProd = cl ? cl.nombre + " " + cl.apellidos : 'N/A'; let totalGasto = s.gastos || 0;
                     cuerpoVentas.innerHTML += `<tr><td class="td-excel bg-gray-50">${noControl}</td><td class="td-excel">${cl?cl.nombre:'N/A'}</td><td class="td-excel">${cl?cl.apellidos:'N/A'}</td><td class="td-excel">${cl?cl.telefono:'N/A'}</td><td class="td-excel">${pr?pr.tipo_cultivo:'N/A'}</td><td class="td-excel text-center">${pr?pr.superficie_has:'0'}</td><td class="td-excel">${pr?pr.direccion:'N/A'}</td><td class="td-excel">${s.no_cotizacion||'S/N'}</td><td class="td-excel">${s.no_orden||'S/N'}</td><td class="td-excel">${s.fecha_aplicacion||'S/N'}</td><td class="td-excel text-right text-green-700 font-bold">$${(s.costo_servicio||0).toLocaleString()}</td><td class="td-excel text-right text-red-600 font-bold">$${totalGasto.toLocaleString()}</td><td class="td-excel text-right text-blue-700 font-bold">$${((s.costo_servicio||0)-totalGasto).toLocaleString()}</td><td class="td-excel text-center">${s.fecha_seguimiento||'S/N'}</td><td class="td-excel text-center">${s.no_factura||'S/N'}</td><td class="td-excel max-w-[150px] truncate">${s.observaciones||''}</td><td class="td-excel text-center space-x-2"><button onclick="prepararEdicionServicio('${s.id}')" class="text-amber-500"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="eliminarServio('${s.id}')" class="text-rose-500"><i class="fa-solid fa-trash"></i></button></td></tr>`; 
-                    
                     cuerpoGastos.innerHTML += `<tr class="hover:bg-rose-50 transition-colors"><td class="td-excel font-bold text-gray-500">${noControl}</td><td class="td-excel font-semibold">${nomProd}</td><td class="td-excel text-gray-600">${pr?pr.tipo_cultivo:'N/A'}</td><td class="td-excel text-right text-rose-600 font-medium">$${(s.gasto_gasolina_unidad||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600 font-medium">$${(s.gasto_gasolina_generador||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600 font-medium">$${(s.gasto_sueldos||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600 font-medium">$${(s.gasto_insumos||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600 font-medium">$${(s.gasto_comidas||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600 font-medium">$${(s.gasto_oxxo||0).toLocaleString()}</td><td class="td-excel text-right text-red-700 font-extrabold bg-red-50 border-l border-red-200">$${totalGasto.toLocaleString()}</td></tr>`;
                 }); 
             } catch (e) {} 

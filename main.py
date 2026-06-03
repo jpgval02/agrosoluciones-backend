@@ -55,7 +55,7 @@ class ServicioNuevo(BaseModel):
     fecha_seguimiento: Optional[str] = None
     no_factura: Optional[str] = None
     observaciones: Optional[str] = None
-    # --- GASTOS DESGLOSADOS ---
+    # GASTOS DESGLOSADOS
     gasto_gasolina_unidad: Optional[float] = 0.0
     gasto_gasolina_generador: Optional[float] = 0.0
     gasto_sueldos: Optional[float] = 0.0
@@ -69,6 +69,7 @@ class MetasMensuales(BaseModel):
     meta_servicios: int
     meta_clientes: int
     meta_prospectos: int
+    meta_prospectos_visitas: Optional[int] = 0
 
 # --- RUTA DE LOGIN ---
 @app.post("/login/")
@@ -176,7 +177,7 @@ async def obtener_dashboard(mes_anio: str):
     try:
         respuesta_metas = supabase.table('metas_mensuales').select('*').eq('mes_anio', mes_anio).execute()
         if len(respuesta_metas.data) == 0:
-            metas = { "meta_ventas": 0, "meta_servicios": 0, "meta_clientes": 0, "meta_prospectos": 0 }
+            metas = { "meta_ventas": 0, "meta_servicios": 0, "meta_clientes": 0, "meta_prospectos": 0, "meta_prospectos_visitas": 0 }
         else:
             metas = respuesta_metas.data[0]
 

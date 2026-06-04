@@ -54,13 +54,12 @@
         </div>
 
         <div class="p-4 bg-[#022c22] text-center text-[10px] text-green-500 font-bold tracking-wider border-t border-green-800">
-            AGROSOLUCIONES AÉREAS v3.3
+            AGROSOLUCIONES AÉREAS v3.4
         </div>
     </div>
 
     <!-- FONDO OSCURO COMPLEMENTARIO DEL SIDEBAR -->
     <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/60 hidden z-[90] transition-opacity duration-300"></div>
-
 
     <!-- CONTENEDOR DE LOGIN -->
     <div id="login-container" class="min-h-screen flex items-center justify-center p-4">
@@ -96,7 +95,7 @@
                 <button onclick="cambiarVista('clientes')" id="nav-clientes" class="border border-green-500/50 hover:bg-green-700 px-3 py-2 rounded-md text-sm font-medium transition-colors shadow-sm"><i class="fa-solid fa-users md:mr-1"></i> <span class="hidden md:inline">Clientes</span></button>
                 <button onclick="cambiarVista('propiedades')" id="nav-propiedades" class="border border-green-500/50 hover:bg-green-700 px-3 py-2 rounded-md text-sm font-medium transition-colors shadow-sm"><i class="fa-solid fa-map-location-dot md:mr-1"></i> <span class="hidden md:inline">Parcelas</span></button>
                 <button onclick="cambiarVista('servicios')" id="nav-servicios" class="border border-green-500/50 hover:bg-green-700 px-3 py-2 rounded-md text-sm font-medium transition-colors shadow-sm"><i class="fa-solid fa-chart-line md:mr-1"></i> <span class="hidden md:inline">Ventas 2026</span></button>
-                <button onclick="cambiarVista('gastos')" id="nav-gastos" class="border border-green-500/50 hover:bg-green-700 px-3 py-2 rounded-md text-sm font-medium transition-colors shadow-sm"><i class="fa-solid fa-wallet md:mr-1"></i> <span class="hidden md:inline">Gastos</span></button>
+                <button onclick="cambiarVista('financieros')" id="nav-financieros" class="border border-green-500/50 hover:bg-green-700 px-3 py-2 rounded-md text-sm font-medium transition-colors shadow-sm"><i class="fa-solid fa-wallet md:mr-1"></i> <span class="hidden md:inline">Finanzas</span></button>
                 <div class="h-6 w-px bg-green-600 mx-2 hidden md:block"></div>
                 <button onclick="cerrarSesion()" class="bg-red-600 hover:bg-red-500 px-3 py-2 rounded-md text-sm font-bold transition-colors shadow-sm border border-red-400" title="Cerrar Sesión"><i class="fa-solid fa-power-off"></i></button>
             </div>
@@ -111,7 +110,6 @@
 
         <!-- PANTALLA 1: INICIO -->
         <div id="vista-inicio" class="max-w-[1600px] mx-auto mt-6 px-6 block">
-            
             <h2 class="text-2xl font-bold text-gray-800 mb-4 tracking-tight">Objetivos Operativos - Junio 2026</h2>
             
             <div class="dashboard-container">
@@ -228,13 +226,7 @@
                 <div class="overflow-x-auto custom-scrollbar max-h-[600px] relative"><table class="w-full divide-y divide-gray-200 text-sm border-collapse"><thead class="bg-gray-100 text-gray-700 sticky top-0 z-10 shadow-sm border-b-2 border-gray-300"><tr><th class="th-excel bg-gray-200">No. Control</th><th class="th-excel">Nombre del Productor</th><th class="th-excel">Apellidos</th><th class="th-excel">Teléfono</th><th class="th-excel bg-green-50">Cultivo</th><th class="th-excel bg-green-50">Hectáreas</th><th class="th-excel bg-green-50">Localidad</th><th class="th-excel bg-blue-50">Cotización</th><th class="th-excel bg-blue-50">Orden Serv.</th><th class="th-excel bg-blue-50">Fecha Venta</th><th class="th-excel bg-emerald-100 text-green-900">Ingresos</th><th class="th-excel bg-rose-100 text-rose-900">Gastos</th><th class="th-excel bg-indigo-100 text-indigo-900">Utilidad</th><th class="th-excel">Seguimiento</th><th class="th-excel">Factura</th><th class="th-excel">Observaciones</th><th class="th-excel bg-gray-200 text-center"><i class="fa-solid fa-gears"></i></th></tr></thead><tbody id="cuerpoTablaServicios" class="bg-white divide-y divide-gray-200"></tbody></table></div>
             </div>
 
-            <!-- Tabla Desglose Gastos -->
-            <div id="vista-tabla-gastos" class="hidden bg-white rounded-xl shadow-lg border border-rose-200 overflow-hidden">
-                <div class="bg-rose-700 px-4 py-3 flex justify-between items-center text-white"><h2 class="text-sm font-bold uppercase tracking-wider"><i class="fa-solid fa-wallet border border-white/30 p-1.5 rounded bg-white/10 mr-2"></i> Reporte Detallado de Gastos por Servicio</h2></div>
-                <div class="overflow-x-auto custom-scrollbar max-h-[600px] relative"><table class="w-full divide-y divide-gray-200 text-sm border-collapse"><thead class="bg-gray-100 text-gray-700 sticky top-0 z-10 shadow-sm border-b-2 border-gray-300"><tr><th class="th-excel bg-gray-200">No. Control</th><th class="th-excel">Productor / Cliente</th><th class="th-excel">Cultivo</th><th class="th-excel text-rose-900 bg-rose-50 border-rose-200"><i class="fa-solid fa-gas-pump mr-1"></i> Gas. Unidad</th><th class="th-excel text-rose-900 bg-rose-50 border-rose-200"><i class="fa-solid fa-bolt mr-1"></i> Gas. Generador</th><th class="th-excel text-rose-900 bg-rose-50 border-rose-200"><i class="fa-solid fa-users mr-1"></i> Sueldos</th><th class="th-excel text-rose-900 bg-rose-50 border-rose-200"><i class="fa-solid fa-flask mr-1"></i> Insumos</th><th class="th-excel text-rose-900 bg-rose-50 border-rose-200"><i class="fa-solid fa-utensils mr-1"></i> Comidas</th><th class="th-excel text-rose-900 bg-rose-50 border-rose-200"><i class="fa-solid fa-cookie mr-1"></i> Oxxo</th><th class="th-excel bg-red-600 text-white font-extrabold border-l-4 border-white">GASTO TOTAL</th></tr></thead><tbody id="cuerpoTablaGastos" class="bg-white divide-y divide-gray-200"></tbody></table></div>
-            </div>
-
-            <!-- PESTAÑA EN BLANCO: OPERACIONES -->
+            <!-- PESTAÑA: OPERACIONES -->
             <div id="vista-tabla-operaciones" class="hidden bg-white p-8 rounded-2xl shadow-xl border border-gray-200 min-h-[450px]">
                 <div class="flex items-center gap-3 border-b border-gray-100 pb-4 mb-6">
                     <div class="bg-green-100 p-3 rounded-xl text-green-700 text-xl"><i class="fa-solid fa-gears"></i></div>
@@ -247,20 +239,39 @@
                 </div>
             </div>
 
-            <!-- PESTAÑA EN BLANCO: FINANCIEROS -->
-            <div id="vista-tabla-financieros" class="hidden bg-white p-8 rounded-2xl shadow-xl border border-gray-200 min-h-[450px]">
+            <!-- PESTAÑA: FINANCIEROS (AHORA CONTIENE LA TABLA DE GASTOS) -->
+            <div id="vista-tabla-financieros" class="hidden bg-white p-6 md:p-8 rounded-2xl shadow-xl border border-gray-200 min-h-[450px]">
                 <div class="flex items-center gap-3 border-b border-gray-100 pb-4 mb-6">
-                    <div class="bg-green-100 p-3 rounded-xl text-green-700 text-xl"><i class="fa-solid fa-wallet"></i></div>
-                    <div><h2 class="text-xl font-bold text-gray-800">Módulo Financiero</h2><p class="text-xs text-gray-400 mt-0.5">Espacio en blanco listo para desarrollo</p></div>
+                    <div class="bg-rose-100 p-3 rounded-xl text-rose-700 text-xl"><i class="fa-solid fa-wallet"></i></div>
+                    <div><h2 class="text-xl font-bold text-gray-800">Módulo Financiero</h2><p class="text-xs text-gray-400 mt-0.5">Control y desglose detallado de gastos operativos</p></div>
                 </div>
-                <div class="flex flex-col items-center justify-center py-12 border border-dashed border-gray-200 rounded-xl bg-gray-50/50 text-center px-4">
-                    <div class="bg-white p-4 rounded-full shadow-sm text-gray-300 text-3xl mb-3"><i class="fa-solid fa-money-bill-trend-up"></i></div>
-                    <p class="text-sm font-bold text-gray-600">Lienzo Disponible</p>
-                    <p class="text-xs text-gray-400 max-w-sm mt-1">Aquí se renderizará el módulo financiero, balances o reportes que me indiques en nuestra siguiente mejora.</p>
+                
+                <!-- Tabla Desglose Gastos -->
+                <div class="bg-white rounded-xl shadow-md border border-rose-200 overflow-hidden">
+                    <div class="bg-rose-700 px-4 py-3 flex justify-between items-center text-white"><h2 class="text-sm font-bold uppercase tracking-wider"><i class="fa-solid fa-file-invoice-dollar border border-white/30 p-1.5 rounded bg-white/10 mr-2"></i> Reporte Detallado de Gastos por Servicio</h2></div>
+                    <div class="overflow-x-auto custom-scrollbar max-h-[600px] relative">
+                        <table class="w-full divide-y divide-gray-200 text-sm border-collapse">
+                            <thead class="bg-gray-100 text-gray-700 sticky top-0 z-10 shadow-sm border-b-2 border-gray-300">
+                                <tr>
+                                    <th class="th-excel bg-gray-200">No. Control</th>
+                                    <th class="th-excel">Productor / Cliente</th>
+                                    <th class="th-excel">Cultivo</th>
+                                    <th class="th-excel text-rose-900 bg-rose-50 border-rose-200"><i class="fa-solid fa-gas-pump mr-1"></i> Gas. Unidad</th>
+                                    <th class="th-excel text-rose-900 bg-rose-50 border-rose-200"><i class="fa-solid fa-bolt mr-1"></i> Gas. Generador</th>
+                                    <th class="th-excel text-rose-900 bg-rose-50 border-rose-200"><i class="fa-solid fa-users mr-1"></i> Sueldos</th>
+                                    <th class="th-excel text-rose-900 bg-rose-50 border-rose-200"><i class="fa-solid fa-flask mr-1"></i> Insumos</th>
+                                    <th class="th-excel text-rose-900 bg-rose-50 border-rose-200"><i class="fa-solid fa-utensils mr-1"></i> Comidas</th>
+                                    <th class="th-excel text-rose-900 bg-rose-50 border-rose-200"><i class="fa-solid fa-cookie mr-1"></i> Oxxo</th>
+                                    <th class="th-excel bg-red-600 text-white font-extrabold border-l-4 border-white">GASTO TOTAL</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cuerpoTablaGastos" class="bg-white divide-y divide-gray-200"></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
-            <!-- PESTAÑA EN BLANCO: VENTAS CRM -->
+            <!-- PESTAÑA: VENTAS CRM -->
             <div id="vista-tabla-ventas-crm" class="hidden bg-white p-8 rounded-2xl shadow-xl border border-gray-200 min-h-[450px]">
                 <div class="flex items-center gap-3 border-b border-gray-100 pb-4 mb-6">
                     <div class="bg-green-100 p-3 rounded-xl text-green-700 text-xl"><i class="fa-solid fa-chart-line"></i></div>
@@ -374,7 +385,8 @@
 
         // --- SISTEMA UNIFICADO DE NAVEGACIÓN SPA ---
         function cambiarVista(vista) {
-            ['inicio', 'clientes', 'propiedades', 'servicios', 'gastos', 'operaciones', 'financieros', 'ventas-crm'].forEach(sec => {
+            // "gastos" ya no existe como pestaña independiente, se integró a "financieros"
+            ['inicio', 'clientes', 'propiedades', 'servicios', 'financieros', 'operaciones', 'ventas-crm'].forEach(sec => {
                 const btn = document.getElementById('nav-' + sec);
                 if(btn) btn.className = "border border-green-500/50 hover:bg-green-700 px-3 py-2 rounded-md text-sm font-medium transition-colors shadow-sm";
                 

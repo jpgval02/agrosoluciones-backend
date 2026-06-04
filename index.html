@@ -80,13 +80,23 @@
             
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
                 <div id="vista-form-clientes" class="bg-white p-6 rounded-2xl shadow-md border border-green-100">
-                    <h3 id="tituloFormCliente" class="text-xl font-bold text-gray-800 mb-6 flex items-center"><i class="fa-solid fa-user-plus text-green-600 mr-2 text-2xl"></i> Nuevo Cliente</h3>
+                    <h3 id="tituloFormCliente" class="text-xl font-bold text-gray-800 mb-6 flex items-center"><i class="fa-solid fa-user-plus text-green-600 mr-2 text-2xl"></i> Nuevo Registro</h3>
                     <form id="registroForm" class="space-y-4">
                         <input type="hidden" id="editClienteId">
                         <div class="grid grid-cols-2 gap-3"><input type="text" id="nombre" placeholder="Nombre(s)" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none"><input type="text" id="apellidos" placeholder="Apellidos" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none"></div>
                         <input type="email" id="email" placeholder="Correo Electrónico" class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
                         <div class="grid grid-cols-2 gap-3"><input type="text" id="telefono" placeholder="Teléfono" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none"><input type="text" id="rfc" placeholder="RFC" class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none uppercase"></div>
-                        <button type="submit" id="btnSubmitCliente" class="w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-[#4ade80] hover:bg-green-500 text-green-900 transition-colors shadow-sm"><i class="fa-solid fa-save mr-1"></i> Guardar Cliente</button>
+                        
+                        <div>
+                            <label class="text-[10px] text-gray-500 font-bold uppercase">Etapa del Embudo</label>
+                            <select id="estado_cliente" class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm font-bold text-gray-700 focus:ring-2 focus:ring-green-600 outline-none cursor-pointer">
+                                <option value="Prospecto" selected>Prospecto 🟡</option>
+                                <option value="Negociación">Negociación 🟠</option>
+                                <option value="Cliente">Cliente Real 🟢</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" id="btnSubmitCliente" class="w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-[#4ade80] hover:bg-green-500 text-green-900 transition-colors shadow-sm"><i class="fa-solid fa-save mr-1"></i> Guardar Registro</button>
                         <button type="button" id="btnCancelarCliente" onclick="limpiarFormCliente()" class="hidden w-full py-2 rounded-xl text-xs font-bold text-gray-600 bg-gray-200 hover:bg-gray-300 transition-colors">Cancelar Edición</button>
                     </form>
                 </div>
@@ -157,6 +167,7 @@
             </div>
 
             <div id="vista-tabla-clientes" class="hidden bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden"><div class="tabla-header px-6 py-4 flex flex-col md:flex-row md:justify-between items-center text-white gap-3"><h2 class="text-sm font-bold uppercase tracking-wider whitespace-nowrap"><i class="fa-solid fa-list mr-2"></i> Directorio de Clientes</h2><div class="relative w-full md:w-72"><div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><i class="fa-solid fa-search text-gray-400"></i></div><input type="text" id="buscadorClientes" onkeyup="filtrarClientes()" placeholder="Buscar..." class="w-full pl-10 pr-4 py-1.5 bg-white text-gray-800 rounded-full text-sm outline-none shadow-inner"></div><span id="contadorClientes" class="bg-white text-green-800 text-xs font-bold px-3 py-1 rounded-full shadow-sm whitespace-nowrap">0 REGISTRADOS</span></div><div class="overflow-x-auto custom-scrollbar"><table class="min-w-full divide-y divide-gray-100 text-sm"><thead class="bg-[#187547] text-white"><tr><th class="px-6 py-3 text-left text-xs font-semibold tracking-wider">CLIENTE</th><th class="px-6 py-3 text-left text-xs font-semibold tracking-wider">CONTACTO</th><th class="px-6 py-3 text-center text-xs font-semibold tracking-wider">ACCIONES</th></tr></thead><tbody id="cuerpoTabla" class="bg-white divide-y divide-gray-100"></tbody></table></div></div>
+            
             <div id="vista-tabla-propiedades" class="hidden bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden"><div class="tabla-header px-6 py-4 flex justify-between items-center text-white"><h2 class="text-sm font-bold uppercase tracking-wider"><i class="fa-solid fa-map mr-2"></i> Inventario de Parcelas</h2></div><div class="overflow-x-auto custom-scrollbar"><table class="min-w-full divide-y divide-gray-100 text-sm"><thead class="bg-[#187547] text-white"><tr><th class="px-6 py-3 text-left text-xs font-semibold tracking-wider">PROPIEDAD / PREDIO</th><th class="px-6 py-3 text-center text-xs font-semibold tracking-wider">CULTIVO</th><th class="px-6 py-3 text-center text-xs font-semibold tracking-wider">SUPERFICIE</th><th class="px-6 py-3 text-center text-xs font-semibold tracking-wider">ACCIONES</th></tr></thead><tbody id="cuerpoTablaPropiedades" class="bg-white divide-y divide-gray-100"></tbody></table></div></div>
             
             <div id="vista-tabla-servicios" class="hidden bg-white rounded-xl shadow-lg border border-gray-300 overflow-hidden">
@@ -281,7 +292,7 @@
             actualizarMetasCEO();
         }
 
-        // --- VELOCÍMETROS APEXCHARTS (DISEÑO VERDE UNIFORME #00E396) ---
+        // --- VELOCÍMETROS APEXCHARTS ---
         function crearVelocimetro(id, color, nombre) { return { series: [0], chart: { type: 'radialBar', height: 200, background: 'transparent' }, plotOptions: { radialBar: { startAngle: -90, endAngle: 90, track: { background: '#e7e7e7', strokeWidth: '97%' }, dataLabels: { name: { show: false }, value: { offsetY: -5, fontSize: '20px', fontWeight: 'bold', color: '#000000', formatter: function (val) { return val.toFixed(1) + "%"; } } } } }, colors: [color], labels: [nombre] }; }
         var chartVentas = new ApexCharts(document.querySelector("#velocimetro-ventas"), crearVelocimetro("#velocimetro-ventas", "#00E396", "Ventas")); chartVentas.render();
         var chartServicios = new ApexCharts(document.querySelector("#velocimetro-servicios"), crearVelocimetro("#velocimetro-servicios", "#00E396", "Servicios")); chartServicios.render();
@@ -299,16 +310,17 @@
                 const res = await fetch(API_URL + "/api/dashboard/" + mesActual); const datos = await res.json();
                 let mV = datos.metas.meta_ventas || 1, mS = datos.metas.meta_servicios || 1, mC = datos.metas.meta_clientes || 1, mP = datos.metas.meta_prospectos || 1, mVis = datos.metas.meta_prospectos_visitas || 1;
 
+                // ACTUALIZACIÓN DE VELOCÍMETROS DINÁMICOS CON LOS DATOS REALES FILTRADOS POR MES
                 chartVentas.updateSeries([Math.min((datos.reales.ventas / mV) * 100, 100)]);
                 chartServicios.updateSeries([Math.min((datos.reales.servicios / mS) * 100, 100)]);
                 chartClientes.updateSeries([Math.min((datos.reales.clientes / mC) * 100, 100)]);
-                chartProspectos.updateSeries([Math.min((0 / mP) * 100, 100)]);
+                chartProspectos.updateSeries([Math.min((datos.reales.prospectos / mP) * 100, 100)]);
                 chartVisitas.updateSeries([Math.min((0 / mVis) * 100, 100)]);
 
                 document.getElementById("texto-ventas-real").innerText = "$" + datos.reales.ventas.toLocaleString() + " / $" + parseFloat(datos.metas.meta_ventas || 0).toLocaleString();
                 document.getElementById("texto-servicios-real").innerText = datos.reales.servicios + " / " + (datos.metas.meta_servicios || 0);
                 document.getElementById("texto-clientes-real").innerText = datos.reales.clientes + " / " + (datos.metas.meta_clientes || 0);
-                document.getElementById("texto-prospectos-real").innerText = "0 / " + (datos.metas.meta_prospectos || 0);
+                document.getElementById("texto-prospectos-real").innerText = datos.reales.prospectos + " / " + (datos.metas.meta_prospectos || 0);
                 document.getElementById("texto-visitas-real").innerText = "0 / " + (datos.metas.meta_prospectos_visitas || 0);
 
                 document.getElementById('input_meta_ventas').value = datos.metas.meta_ventas || 0; document.getElementById('input_meta_servicios').value = datos.metas.meta_servicios || 0; document.getElementById('input_meta_clientes').value = datos.metas.meta_clientes || 0; document.getElementById('input_meta_prospectos').value = datos.metas.meta_prospectos || 0; document.getElementById('input_meta_visitas').value = datos.metas.meta_prospectos_visitas || 0;
@@ -336,21 +348,58 @@
         ['m_gas_unidad', 'm_gas_gen', 'm_sueldos', 'm_insumos', 'm_comidas', 'm_oxxo'].forEach(id => { document.getElementById(id).addEventListener('input', calcularTotalModal); });
         function confirmarDesgloseGastos() { let totalGasto = calcularTotalModal(); document.getElementById('h_gas_unidad').value = document.getElementById('m_gas_unidad').value || 0; document.getElementById('h_gas_gen').value = document.getElementById('m_gas_gen').value || 0; document.getElementById('h_sueldos').value = document.getElementById('m_sueldos').value || 0; document.getElementById('h_insumos').value = document.getElementById('m_insumos').value || 0; document.getElementById('h_comidas').value = document.getElementById('m_comidas').value || 0; document.getElementById('h_oxxo').value = document.getElementById('m_oxxo').value || 0; document.getElementById('gastos').value = totalGasto; cerrarModalGastos(); }
 
-        // --- CONTROL INTERNO ---
-        function renderizarTablaClientes(lista) { const cuerpo = document.getElementById('cuerpoTabla'); cuerpo.innerHTML = ''; document.getElementById('contadorClientes').textContent = `${lista.length} REGISTRADOS`; lista.forEach(c => { cuerpo.innerHTML += `<tr class="hover:bg-gray-50"><td class="px-6 py-4"><div class="flex items-center space-x-4"><div class="bg-green-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold shadow-sm"><i class="fa-solid fa-user"></i></div><div><p class="font-bold text-gray-800">${c.nombre} ${c.apellidos}</p><p class="text-[10px] text-gray-400 mt-1">RFC: ${c.rfc || 'S/N'}</p></div></div></td><td class="px-6 py-4"><p class="text-sm text-blue-600 font-medium"><i class="fa-solid fa-envelope mr-2"></i>${c.email || 'Sin correo'}</p><p class="text-sm text-gray-600 mt-1"><i class="fa-solid fa-phone text-green-600 mr-2"></i>${c.telefono}</p></td><td class="px-6 py-4 text-center whitespace-nowrap space-x-1"><button onclick="tabularEdicionCliente('${c.id}')" class="bg-amber-400 hover:bg-amber-500 text-white text-xs font-bold px-4 py-2 rounded-full shadow-sm"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="eliminarCliente('${c.id}')" class="bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-4 py-2 rounded-full shadow-sm"><i class="fa-solid fa-trash"></i></button></td></tr>`; }); }
+        // --- CONTROL DE CLIENTES CON BADGES CRM ---
+        function renderizarTablaClientes(lista) { 
+            const cuerpo = document.getElementById('cuerpoTabla'); cuerpo.innerHTML = ''; 
+            document.getElementById('contadorClientes').textContent = `${lista.length} REGISTRADOS`; 
+            lista.forEach(c => {
+                // Generar diseño visual del badge del embudo
+                let badge = '';
+                if(c.estado === 'Cliente') {
+                    badge = `<span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-300">Cliente Real 🟢</span>`;
+                } else if(c.estado === 'Negociación') {
+                    badge = `<span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-amber-300">Negociación 🟠</span>`;
+                } else {
+                    badge = `<span class="bg-blue-100 text-blue-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-blue-300">Prospecto 🟡</span>`;
+                }
+
+                cuerpo.innerHTML += `<tr class="hover:bg-gray-50"><td class="px-6 py-4"><div class="flex items-center space-x-4"><div class="bg-green-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold shadow-sm"><i class="fa-solid fa-user"></i></div><div><p class="font-bold text-gray-800">${c.nombre} ${c.apellidos}</p><p class="text-[10px] text-gray-400 mt-1 flex items-center gap-2">RFC: ${c.rfc || 'S/N'} | ${badge}</p></div></div></td><td class="px-6 py-4"><p class="text-sm text-blue-600 font-medium"><i class="fa-solid fa-envelope mr-2"></i>${c.email || 'Sin correo'}</p><p class="text-sm text-gray-600 mt-1"><i class="fa-solid fa-phone text-green-600 mr-2"></i>${c.telefono}</p></td><td class="px-6 py-4 text-center whitespace-nowrap space-x-1"><button onclick="tabularEdicionCliente('${c.id}')" class="bg-amber-400 hover:bg-amber-500 text-white text-xs font-bold px-4 py-2 rounded-full shadow-sm"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="eliminarCliente('${c.id}')" class="bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-4 py-2 rounded-full shadow-sm"><i class="fa-solid fa-trash"></i></button></td></tr>`; 
+            }); 
+        }
+        
         function filtrarClientes() { renderizarTablaClientes(memoriaClientes.filter(c => `${c.nombre} ${c.apellidos}`.toLowerCase().includes(document.getElementById('buscadorClientes').value.toLowerCase()))); }
         async function cargarClientes() { try { const res = await fetch(`${API_URL}/clientes/`); memoriaClientes = await res.json(); const sel = document.getElementById('selectCliente'); sel.innerHTML = '<option value="">-- Selecciona --</option>'; memoriaClientes.forEach(c => { sel.innerHTML += `<option value="${c.id}">${c.nombre} ${c.apellidos}</option>`; }); renderizarTablaClientes(memoriaClientes); } catch (e) {} }
-        document.getElementById('registroForm').addEventListener('submit', async function(e) { e.preventDefault(); const id = document.getElementById('editClienteId').value; const datos = { nombre: document.getElementById('nombre').value, apellidos: document.getElementById('apellidos').value, email: document.getElementById('email').value, telefono: document.getElementById('telefono').value, rfc: document.getElementById('rfc').value }; await fetch(id ? `${API_URL}/clientes/${id}` : `${API_URL}/clientes/`, { method: id ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos) }); limpiarFormCliente(); await inicializarPanel(); });
+        
+        document.getElementById('registroForm').addEventListener('submit', async function(e) { 
+            e.preventDefault(); const id = document.getElementById('editClienteId').value; 
+            const datos = { 
+                nombre: document.getElementById('nombre').value, apellidos: document.getElementById('apellidos').value, 
+                email: document.getElementById('email').value, telefono: document.getElementById('telefono').value, 
+                rfc: document.getElementById('rfc').value, estado: document.getElementById('estado_cliente').value 
+            }; 
+            await fetch(id ? `${API_URL}/clientes/${id}` : `${API_URL}/clientes/`, { method: id ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos) }); 
+            limpiarFormCliente(); await inicializarPanel(); 
+        });
+        
         async function eliminarCliente(id) { if(confirm("¿Eliminar productor?")) { await fetch(`${API_URL}/clientes/${id}`, { method: 'DELETE' }); await inicializarPanel(); } }
-        function tabularEdicionCliente(id) { const c = memoriaClientes.find(x => x.id === id); document.getElementById('editClienteId').value = c.id; document.getElementById('nombre').value = c.nombre; document.getElementById('apellidos').value = c.apellidos; document.getElementById('email').value = c.email; document.getElementById('telefono').value = c.telefono; document.getElementById('rfc').value = c.rfc; document.getElementById('tituloFormCliente').innerHTML = `<i class="fa-solid fa-pen text-amber-500 mr-2 text-2xl"></i> Editando Cliente`; document.getElementById('btnSubmitCliente').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-amber-500 hover:bg-amber-600 shadow-sm"; document.getElementById('btnCancelarCliente').classList.remove('hidden'); cambiarVista('inicio'); window.scrollTo({ top: document.getElementById('vista-form-clientes').offsetTop - 100, behavior: 'smooth' }); }
-        function limpiarFormCliente() { document.getElementById('registroForm').reset(); document.getElementById('editClienteId').value = ''; document.getElementById('tituloFormCliente').innerHTML = `<i class="fa-solid fa-user-plus text-green-600 mr-2 text-2xl"></i> Nuevo Cliente`; document.getElementById('btnSubmitCliente').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-[#4ade80] hover:bg-green-500 text-green-900 transition-colors shadow-sm"; document.getElementById('btnCancelarCliente').classList.add('hidden'); }
+        
+        function tabularEdicionCliente(id) { 
+            const c = memoriaClientes.find(x => x.id === id); 
+            document.getElementById('editClienteId').value = c.id; document.getElementById('nombre').value = c.nombre; document.getElementById('apellidos').value = c.apellidos; document.getElementById('email').value = c.email; document.getElementById('telefono').value = c.telefono; document.getElementById('rfc').value = c.rfc; 
+            document.getElementById('estado_cliente').value = c.estado || 'Prospecto'; // Cargar estado actual
+            document.getElementById('tituloFormCliente').innerHTML = `<i class="fa-solid fa-pen text-amber-500 mr-2 text-2xl"></i> Editando Registro`; document.getElementById('btnSubmitCliente').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-amber-500 hover:bg-amber-600 shadow-sm"; document.getElementById('btnCancelarCliente').classList.remove('hidden'); cambiarVista('inicio'); window.scrollTo({ top: document.getElementById('vista-form-clientes').offsetTop - 100, behavior: 'smooth' }); 
+        }
+        
+        function limpiarFormCliente() { document.getElementById('registroForm').reset(); document.getElementById('editClienteId').value = ''; document.getElementById('estado_cliente').value = 'Prospecto'; document.getElementById('tituloFormCliente').innerHTML = `<i class="fa-solid fa-user-plus text-green-600 mr-2 text-2xl"></i> Nuevo Registro`; document.getElementById('btnSubmitCliente').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-[#4ade80] hover:bg-green-500 text-green-900 transition-colors shadow-sm"; document.getElementById('btnCancelarCliente').classList.add('hidden'); }
 
+        // --- CONTROL DE PARCELAS ---
         async function cargarPropiedades() { try { const res = await fetch(`${API_URL}/propiedades/`); memoriaPropiedades = await res.json(); const cuerpo = document.getElementById('cuerpoTablaPropiedades'); cuerpo.innerHTML = ''; const sel = document.getElementById('selectPropiedad'); sel.innerHTML = '<option value="">-- Selecciona --</option>'; memoriaPropiedades.forEach(p => { const cl = memoriaClientes.find(c => c.id === p.cliente_id); const nD = cl ? `${cl.nombre} ${cl.apellidos}` : 'N/A'; cuerpo.innerHTML += `<tr><td class="px-6 py-4"><p class="font-bold text-sm">${p.nombre_propiedad}</p><p class="text-[11px] text-gray-500">${p.direccion || p.estado} - Prop: ${nD}</p></td><td class="px-6 py-4 text-center"><span class="bg-[#1b6b43] text-white px-3 py-1 rounded-full text-[10px] font-bold">${p.tipo_cultivo}</span></td><td class="px-6 py-4 text-center"><p class="text-xl font-extrabold">${p.superficie_has}</p></td><td class="px-6 py-4 text-center"><button onclick="ajustarEdicionPropiedad('${p.id}')" class="bg-amber-400 text-white text-xs px-4 py-2 rounded-full mr-1"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="eliminarPropiedad('${p.id}')" class="bg-rose-600 text-white text-xs px-4 py-2 rounded-full"><i class="fa-solid fa-trash"></i></button></td></tr>`; sel.innerHTML += `<option value="${p.id}">${nD} - ${p.nombre_propiedad}</option>`; }); } catch (e) {} }
         document.getElementById('propiedadForm').addEventListener('submit', async function(e) { e.preventDefault(); const id = document.getElementById('editPropiedadId').value; const datos = { cliente_id: document.getElementById('selectCliente').value, nombre_propiedad: document.getElementById('nombre_propiedad').value, direccion: document.getElementById('direccion').value, estado: document.getElementById('estado').value, tipo_cultivo: document.getElementById('tipo_cultivo').value, superficie_has: parseFloat(document.getElementById('superficie_has').value), sistema_riego: document.getElementById('sistema_riego').value, comentarios: '' }; await fetch(id ? `${API_URL}/propiedades/${id}` : `${API_URL}/propiedades/`, { method: id ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos) }); limpiarFormPropiedad(); await inicializarPanel(); });
         async function eliminarPropiedad(id) { if(confirm("¿Eliminar parcela?")) { await fetch(`${API_URL}/propiedades/${id}`, { method: 'DELETE' }); await inicializarPanel(); } }
         function ajustarEdicionPropiedad(id) { const p = memoriaPropiedades.find(x => x.id === id); document.getElementById('editPropiedadId').value = p.id; document.getElementById('selectCliente').value = p.cliente_id; document.getElementById('nombre_propiedad').value = p.nombre_propiedad; document.getElementById('tipo_cultivo').value = p.tipo_cultivo; document.getElementById('superficie_has').value = p.superficie_has; document.getElementById('sistema_riego').value = p.sistema_riego; document.getElementById('direccion').value = p.direccion; document.getElementById('estado').value = p.estado; document.getElementById('tituloFormPropiedad').innerHTML = `<i class="fa-solid fa-pen text-amber-500 mr-2 text-2xl"></i> Editando Parcela`; document.getElementById('btnSubmitPropiedad').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-amber-500 hover:bg-amber-600 shadow-sm"; document.getElementById('btnCancelarPropiedad').classList.remove('hidden'); cambiarVista('inicio'); window.scrollTo({ top: document.getElementById('vista-form-propiedades').offsetTop - 100, behavior: 'smooth' }); }
         function limpiarFormPropiedad() { document.getElementById('propiedadForm').reset(); document.getElementById('editPropiedadId').value = ''; document.getElementById('tituloFormPropiedad').innerHTML = `<i class="fa-solid fa-map-location-dot text-green-600 mr-2 text-2xl"></i> Registrar Parcela`; document.getElementById('btnSubmitPropiedad').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-[#4ade80] hover:bg-green-500 text-green-900 transition-colors shadow-sm"; document.getElementById('btnCancelarPropiedad').classList.add('hidden'); }
 
+        // --- CONTROL DE SERVICIOS Y VENTAS ---
         async function cargarServicios() { 
             try { 
                 const res = await fetch(`${API_URL}/servicios/`); memoriaServicios = await res.json(); 

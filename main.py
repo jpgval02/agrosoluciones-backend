@@ -32,6 +32,7 @@ class ClienteNuevo(BaseModel):
     email: str
     telefono: str
     rfc: str
+    estado: Optional[str] = "Prospecto"  # Campo del embudo CRM
 
 class PropiedadNueva(BaseModel):
     cliente_id: str  
@@ -55,7 +56,6 @@ class ServicioNuevo(BaseModel):
     fecha_seguimiento: Optional[str] = None
     no_factura: Optional[str] = None
     observaciones: Optional[str] = None
-    # GASTOS DESGLOSADOS
     gasto_gasolina_unidad: Optional[float] = 0.0
     gasto_gasolina_generador: Optional[float] = 0.0
     gasto_sueldos: Optional[float] = 0.0
@@ -144,11 +144,21 @@ async def eliminar_propiedad(propiedad_id: str):
         return {"mensaje": "Eliminado exitosamente"}
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
 
-# --- RUTAS DE SERVICIOS ---
+# --- RUTAS DE SERVICIOS (CON CAMBIO AUTOMÁTICO DE ESTADO CRM) ---
 @app.post("/servicios/")
 async def registrar_servicio(servicio: ServicioNuevo):
     try:
         respuesta = supabase.table('servicios_aplicacion').insert(servicio.dict()).execute()
+        
+        # TRANSICIÓN AUTOMÁTICA DEL EMBUDO: Si se genera venta, el prospecto pasa a ser Cliente Real
+        try:
+            prop_data = supabase.table('propiedades').select('cliente_id').eq('id', servicio.propiedad_id).execute()
+            if len(prop_data.data) > 0:
+                cl_id = prop_data.data[0]['cliente_id']
+                supabase.table('clientes').update({'estado': 'Cliente'}).eq('id', cl_id).execute()
+        except Exception:
+            pass
+
         return {"mensaje": "Guardado", "datos": respuesta.data[0]}
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
 
@@ -171,7 +181,7 @@ async def eliminar_servicio(servicio_id: str):
         return {"mensaje": "Eliminado exitosamente"}
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
 
-# --- RUTA DEL DASHBOARD ---
+# --- RUTA DEL DASHBOARD (CORREGIDA CON FILTRADO MENSUAL EXACTO) ---
 @app.get("/api/dashboard/{mes_anio}")
 async def obtener_dashboard(mes_anio: str):
     try:
@@ -183,14 +193,39 @@ async def obtener_dashboard(mes_anio: str):
 
         mes, anio = mes_anio.split("-")
         filtro_fecha = f"{anio}-{mes}" 
-        respuesta_servicios = supabase.table('servicios_aplicacion').select('costo_servicio', 'fecha_aplicacion').execute()
+        
+        # 1. Ventas e ingresos del mes
+        respuesta_servicios = supabase.table('servicios_aplicacion').select('costo_servicio', 'fecha_aplicacion', 'propiedad_id').execute()
         servicios_mes = [s for s in respuesta_servicios.data if s.get('fecha_aplicacion', '').startswith(filtro_fecha)]
         ventas_reales = sum(float(s.get('costo_servicio', 0)) for s in servicios_mes)
         servicios_reales = len(servicios_mes)
-        respuesta_clientes = supabase.table('clientes').select('id').execute()
-        clientes_reales = len(respuesta_clientes.data)
+        
+        # 2. Prospectos alcanzados (Registrados en este mes en específico)
+        respuesta_clientes = supabase.table('clientes').select('id', 'created_at').execute()
+        prospectos_mes = [c for c in respuesta_clientes.data if c.get('created_at', '').startswith(filtro_fecha)]
+        prospectos_reales = len(prospectos_mes)
 
-        return {"metas": metas, "reales": {"ventas": ventas_reales, "servicios": servicios_reales, "clientes": clientes_reales}}
+        # 3. Nuevos Clientes (Productores que cerraron una venta real en este mes en específico)
+        respuesta_propiedades = supabase.table('propiedades').select('id', 'cliente_id').execute()
+        mapa_propiedades = {p['id']: p['cliente_id'] for p in respuesta_propiedades.data}
+        
+        clientes_activos_mes = set()
+        for s in servicios_mes:
+            p_id = s.get('propiedad_id')
+            if p_id in mapa_propiedades:
+                clientes_activos_mes.add(mapa_propiedades[p_id])
+        clientes_reales = len(clientes_activos_mes)
+
+        return {
+            "metas": metas, 
+            "reales": {
+                "ventas": ventas_reales, 
+                "servicios": servicios_reales, 
+                "clientes": clientes_reales, 
+                "prospectos": prospectos_reales,
+                "visitas": 0
+            }
+        }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

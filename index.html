@@ -54,7 +54,7 @@
         </div>
 
         <div class="p-4 bg-[#022c22] text-center text-[10px] text-green-500 font-bold tracking-wider border-t border-green-800">
-            AGROSOLUCIONES AÉREAS v3.4
+            AGROSOLUCIONES AÉREAS v3.5
         </div>
     </div>
 
@@ -95,7 +95,6 @@
                 <button onclick="cambiarVista('clientes')" id="nav-clientes" class="border border-green-500/50 hover:bg-green-700 px-3 py-2 rounded-md text-sm font-medium transition-colors shadow-sm"><i class="fa-solid fa-users md:mr-1"></i> <span class="hidden md:inline">Clientes</span></button>
                 <button onclick="cambiarVista('propiedades')" id="nav-propiedades" class="border border-green-500/50 hover:bg-green-700 px-3 py-2 rounded-md text-sm font-medium transition-colors shadow-sm"><i class="fa-solid fa-map-location-dot md:mr-1"></i> <span class="hidden md:inline">Parcelas</span></button>
                 <button onclick="cambiarVista('servicios')" id="nav-servicios" class="border border-green-500/50 hover:bg-green-700 px-3 py-2 rounded-md text-sm font-medium transition-colors shadow-sm"><i class="fa-solid fa-chart-line md:mr-1"></i> <span class="hidden md:inline">Ventas 2026</span></button>
-                <button onclick="cambiarVista('financieros')" id="nav-financieros" class="border border-green-500/50 hover:bg-green-700 px-3 py-2 rounded-md text-sm font-medium transition-colors shadow-sm"><i class="fa-solid fa-wallet md:mr-1"></i> <span class="hidden md:inline">Finanzas</span></button>
                 <div class="h-6 w-px bg-green-600 mx-2 hidden md:block"></div>
                 <button onclick="cerrarSesion()" class="bg-red-600 hover:bg-red-500 px-3 py-2 rounded-md text-sm font-bold transition-colors shadow-sm border border-red-400" title="Cerrar Sesión"><i class="fa-solid fa-power-off"></i></button>
             </div>
@@ -385,7 +384,6 @@
 
         // --- SISTEMA UNIFICADO DE NAVEGACIÓN SPA ---
         function cambiarVista(vista) {
-            // "gastos" ya no existe como pestaña independiente, se integró a "financieros"
             ['inicio', 'clientes', 'propiedades', 'servicios', 'financieros', 'operaciones', 'ventas-crm'].forEach(sec => {
                 const btn = document.getElementById('nav-' + sec);
                 if(btn) btn.className = "border border-green-500/50 hover:bg-green-700 px-3 py-2 rounded-md text-sm font-medium transition-colors shadow-sm";

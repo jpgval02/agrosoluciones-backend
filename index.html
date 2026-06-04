@@ -37,37 +37,22 @@
             </button>
         </div>
         
-        <div class="flex-1 overflow-y-auto p-5 space-y-6">
-            <div class="border border-green-800 bg-green-950/40 rounded-xl p-4">
-                <h3 class="text-xs font-extrabold uppercase tracking-widest text-green-400 mb-3 flex items-center gap-2">
-                    <i class="fa-solid fa-gears text-sm"></i> Operaciones
-                </h3>
-                <div class="text-xs text-green-600/70 italic p-3 border border-dashed border-green-800/50 rounded-lg text-center">
-                    Espacio en blanco disponible para operaciones
-                </div>
-            </div>
+        <div class="flex-1 overflow-y-auto p-4 space-y-2">
+            <button onclick="cambiarVista('operaciones'); toggleSidebar();" class="w-full text-left px-4 py-3.5 hover:bg-green-800/60 rounded-xl transition-colors flex items-center gap-3 font-semibold text-sm tracking-wide group">
+                <div class="bg-green-900 group-hover:bg-green-700 p-2 rounded-lg transition-colors"><i class="fa-solid fa-gears text-green-400 w-5 text-center"></i></div> Operaciones
+            </button>
 
-            <div class="border border-green-800 bg-green-950/40 rounded-xl p-4">
-                <h3 class="text-xs font-extrabold uppercase tracking-widest text-green-400 mb-3 flex items-center gap-2">
-                    <i class="fa-solid fa-wallet text-sm"></i> Financieros
-                </h3>
-                <div class="text-xs text-green-600/70 italic p-3 border border-dashed border-green-800/50 rounded-lg text-center">
-                    Espacio en blanco disponible para finanzas
-                </div>
-            </div>
+            <button onclick="cambiarVista('financieros'); toggleSidebar();" class="w-full text-left px-4 py-3.5 hover:bg-green-800/60 rounded-xl transition-colors flex items-center gap-3 font-semibold text-sm tracking-wide group">
+                <div class="bg-green-900 group-hover:bg-green-700 p-2 rounded-lg transition-colors"><i class="fa-solid fa-wallet text-green-400 w-5 text-center"></i></div> Financieros
+            </button>
 
-            <div class="border border-green-800 bg-green-950/40 rounded-xl p-4">
-                <h3 class="text-xs font-extrabold uppercase tracking-widest text-green-400 mb-3 flex items-center gap-2">
-                    <i class="fa-solid fa-chart-line text-sm"></i> Ventas
-                </h3>
-                <div class="text-xs text-green-600/70 italic p-3 border border-dashed border-green-800/50 rounded-lg text-center">
-                    Espacio en blanco disponible para ventas
-                </div>
-            </div>
+            <button onclick="cambiarVista('ventas-crm'); toggleSidebar();" class="w-full text-left px-4 py-3.5 hover:bg-green-800/60 rounded-xl transition-colors flex items-center gap-3 font-semibold text-sm tracking-wide group">
+                <div class="bg-green-900 group-hover:bg-green-700 p-2 rounded-lg transition-colors"><i class="fa-solid fa-chart-line text-green-400 w-5 text-center"></i></div> Ventas
+            </button>
         </div>
 
         <div class="p-4 bg-[#022c22] text-center text-[10px] text-green-500 font-bold tracking-wider border-t border-green-800">
-            AGROSOLUCIONES AÉREAS v3.0
+            AGROSOLUCIONES AÉREAS v3.1
         </div>
     </div>
 
@@ -233,6 +218,43 @@
                 <div class="bg-rose-700 px-4 py-3 flex justify-between items-center text-white"><h2 class="text-sm font-bold uppercase tracking-wider"><i class="fa-solid fa-wallet border border-white/30 p-1.5 rounded bg-white/10 mr-2"></i> Reporte Detallado de Gastos por Servicio</h2></div>
                 <div class="overflow-x-auto custom-scrollbar max-h-[600px] relative"><table class="w-full divide-y divide-gray-200 text-sm border-collapse"><thead class="bg-gray-100 text-gray-700 sticky top-0 z-10 shadow-sm border-b-2 border-gray-300"><tr><th class="th-excel bg-gray-200">No. Control</th><th class="th-excel">Productor / Cliente</th><th class="th-excel">Cultivo</th><th class="th-excel text-rose-900 bg-rose-50 border-rose-200"><i class="fa-solid fa-gas-pump mr-1"></i> Gas. Unidad</th><th class="th-excel text-rose-900 bg-rose-50 border-rose-200"><i class="fa-solid fa-bolt mr-1"></i> Gas. Generador</th><th class="th-excel text-rose-900 bg-rose-50 border-rose-200"><i class="fa-solid fa-users mr-1"></i> Sueldos</th><th class="th-excel text-rose-900 bg-rose-50 border-rose-200"><i class="fa-solid fa-flask mr-1"></i> Insumos</th><th class="th-excel text-rose-900 bg-rose-50 border-rose-200"><i class="fa-solid fa-utensils mr-1"></i> Comidas</th><th class="th-excel text-rose-900 bg-rose-50 border-rose-200"><i class="fa-solid fa-cookie mr-1"></i> Oxxo</th><th class="th-excel bg-red-600 text-white font-extrabold border-l-4 border-white">GASTO TOTAL</th></tr></thead><tbody id="cuerpoTablaGastos" class="bg-white divide-y divide-gray-200"></tbody></table></div>
             </div>
+
+            <div id="vista-tabla-operaciones" class="hidden bg-white p-8 rounded-2xl shadow-xl border border-gray-200 min-h-[450px]">
+                <div class="flex items-center gap-3 border-b border-gray-100 pb-4 mb-6">
+                    <div class="bg-green-100 p-3 rounded-xl text-green-700 text-xl"><i class="fa-solid fa-gears"></i></div>
+                    <div><h2 class="text-xl font-bold text-gray-800">Módulo de Operaciones</h2><p class="text-xs text-gray-400 mt-0.5">Espacio en blanco listo para desarrollo</p></div>
+                </div>
+                <div class="flex flex-col items-center justify-center py-12 border border-dashed border-gray-200 rounded-xl bg-gray-50/50 text-center px-4">
+                    <div class="bg-white p-4 rounded-full shadow-sm text-gray-300 text-3xl mb-3"><i class="fa-solid fa-code"></i></div>
+                    <p class="text-sm font-bold text-gray-600">Lienzo Disponible</p>
+                    <p class="text-xs text-gray-400 max-w-sm mt-1">Aquí se renderizará el módulo operativo o la estructura de datos que me indiques en nuestra siguiente mejora.</p>
+                </div>
+            </div>
+
+            <div id="vista-tabla-financieros" class="hidden bg-white p-8 rounded-2xl shadow-xl border border-gray-200 min-h-[450px]">
+                <div class="flex items-center gap-3 border-b border-gray-100 pb-4 mb-6">
+                    <div class="bg-green-100 p-3 rounded-xl text-green-700 text-xl"><i class="fa-solid fa-wallet"></i></div>
+                    <div><h2 class="text-xl font-bold text-gray-800">Módulo Financiero</h2><p class="text-xs text-gray-400 mt-0.5">Espacio en blanco listo para desarrollo</p></div>
+                </div>
+                <div class="flex flex-col items-center justify-center py-12 border border-dashed border-gray-200 rounded-xl bg-gray-50/50 text-center px-4">
+                    <div class="bg-white p-4 rounded-full shadow-sm text-gray-300 text-3xl mb-3"><i class="fa-solid fa-money-bill-trend-up"></i></div>
+                    <p class="text-sm font-bold text-gray-600">Lienzo Disponible</p>
+                    <p class="text-xs text-gray-400 max-w-sm mt-1">Aquí se renderizará el módulo financiero, balances o reportes que me indiques en nuestra siguiente mejora.</p>
+                </div>
+            </div>
+
+            <div id="vista-tabla-ventas-crm" class="hidden bg-white p-8 rounded-2xl shadow-xl border border-gray-200 min-h-[450px]">
+                <div class="flex items-center gap-3 border-b border-gray-100 pb-4 mb-6">
+                    <div class="bg-green-100 p-3 rounded-xl text-green-700 text-xl"><i class="fa-solid fa-chart-line"></i></div>
+                    <div><h2 class="text-xl font-bold text-gray-800">Módulo de Ventas CRM</h2><p class="text-xs text-gray-400 mt-0.5">Espacio en blanco listo para desarrollo</p></div>
+                </div>
+                <div class="flex flex-col items-center justify-center py-12 border border-dashed border-gray-200 rounded-xl bg-gray-50/50 text-center px-4">
+                    <div class="bg-white p-4 rounded-full shadow-sm text-gray-300 text-3xl mb-3"><i class="fa-solid fa-diagram-project"></i></div>
+                    <p class="text-sm font-bold text-gray-600">Lienzo Disponible</p>
+                    <p class="text-xs text-gray-400 max-w-sm mt-1">Aquí se renderizará el embudo completo, prospectación o métricas comerciales que me indiques en nuestra siguiente mejora.</p>
+                </div>
+            </div>
+
         </div>
     </div> 
 
@@ -330,17 +352,29 @@
         function cerrarSesion() { window.location.reload(); }
         async function inicializarPanel() { await cargarClientes(); await cargarPropiedades(); await cargarServicios(); cambiarVista('inicio'); }
 
+        // --- SISTEMA UNIFICADO DE NAVEGACIÓN EN LA MISMA PESTAÑA (SPA) ---
         function cambiarVista(vista) {
-            ['inicio', 'clientes', 'propiedades', 'servicios', 'gastos'].forEach(sec => {
+            // Arreglo maestro con todos los módulos de la aplicación
+            ['inicio', 'clientes', 'propiedades', 'servicios', 'gastos', 'operaciones', 'financieros', 'ventas-crm'].forEach(sec => {
                 const btn = document.getElementById('nav-' + sec);
                 if(btn) btn.className = "border border-green-500/50 hover:bg-green-700 px-3 py-2 rounded-md text-sm font-medium transition-colors shadow-sm";
+                
+                // Ocultar todas las sub-vistas dinámicas
                 const tabla = document.getElementById('vista-tabla-' + sec);
                 if(tabla) { tabla.classList.add('hidden'); tabla.classList.remove('block'); }
             });
+            
             document.getElementById('vista-inicio').classList.add('hidden');
             document.getElementById('vista-tablas').classList.add('hidden');
-            if (vista === 'inicio') { document.getElementById('vista-inicio').classList.remove('hidden'); actualizarEstadisticasYMetas(); } 
-            else { document.getElementById('vista-tablas').classList.remove('hidden'); document.getElementById('vista-tabla-' + vista).classList.remove('hidden'); }
+            
+            if (vista === 'inicio') { 
+                document.getElementById('vista-inicio').classList.remove('hidden'); 
+                actualizarEstadisticasYMetas(); 
+            } else { 
+                document.getElementById('vista-tablas').classList.remove('hidden'); 
+                const targetTabla = document.getElementById('vista-tabla-' + vista);
+                if(targetTabla) { targetTabla.classList.remove('hidden'); targetTabla.classList.add('block'); }
+            }
         }
 
         function actualizarEstadisticasYMetas() {
@@ -496,7 +530,7 @@
         });
 
         async function eliminarServio(id) { if(confirm("¿Eliminar registro de vuelo?")) { await fetch(`${API_URL}/servicios/${id}`, { method: 'DELETE' }); await inicializarPanel(); } }
-        function prepararEdicionServicio(id) { const s = memoriaServicios.find(x => x.id === id); document.getElementById('editServioId').value = s.id; document.getElementById('selectPropiedad').value = s.propiedad_id; document.getElementById('fecha_aplicacion').value = s.fecha_aplicacion||''; document.getElementById('costo_servicio').value = s.costo_servicio||''; document.getElementById('no_cotizacion').value = s.no_cotizacion||''; document.getElementById('no_orden').value = s.no_orden||''; document.getElementById('gastos').value = s.gastos||''; document.getElementById('fecha_seguimiento').value = s.fecha_seguimiento||''; document.getElementById('no_factura').value = s.no_factura||''; document.getElementById('observaciones').value = s.observaciones||''; document.getElementById('h_gas_unidad').value = s.gasto_gasolina_unidad || 0; document.getElementById('h_gas_gen').value = s.gasto_gasolina_generador || 0; document.getElementById('h_sueldos').value = s.gasto_sueldos || 0; document.getElementById('h_insumos').value = s.gasto_insumos || 0; document.getElementById('h_comidas').value = s.gasto_comidas || 0; document.getElementById('h_oxxo').value = s.gasto_oxxo || 0; document.getElementById('tituloFormServio').innerHTML = `<i class="fa-solid fa-pen text-amber-500 mr-2 text-2xl"></i> Editando Venta`; document.getElementById('btnSubmitServicio').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-amber-500 hover:bg-amber-600 shadow-sm"; document.getElementById('btnCancelarServicio').classList.remove('hidden'); cambiarVista('inicio'); window.scrollTo({ top: document.getElementById('vista-form-servicios').offsetTop - 100, behavior: 'smooth' });}
+        function tabularEdicionServicio(id) { const s = memoriaServicios.find(x => x.id === id); document.getElementById('editServioId').value = s.id; document.getElementById('selectPropiedad').value = s.propiedad_id; document.getElementById('fecha_aplicacion').value = s.fecha_aplicacion||''; document.getElementById('costo_servicio').value = s.costo_servicio||''; document.getElementById('no_cotizacion').value = s.no_cotizacion||''; document.getElementById('no_orden').value = s.no_orden||''; document.getElementById('gastos').value = s.gastos||''; document.getElementById('fecha_seguimiento').value = s.fecha_seguimiento||''; document.getElementById('no_factura').value = s.no_factura||''; document.getElementById('observaciones').value = s.observaciones||''; document.getElementById('h_gas_unidad').value = s.gasto_gasolina_unidad || 0; document.getElementById('h_gas_gen').value = s.gasto_gasolina_generador || 0; document.getElementById('h_sueldos').value = s.gasto_sueldos || 0; document.getElementById('h_insumos').value = s.gasto_insumos || 0; document.getElementById('h_comidas').value = s.gasto_comidas || 0; document.getElementById('h_oxxo').value = s.gasto_oxxo || 0; document.getElementById('tituloFormServio').innerHTML = `<i class="fa-solid fa-pen text-amber-500 mr-2 text-2xl"></i> Editando Venta`; document.getElementById('btnSubmitServicio').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-amber-500 hover:bg-amber-600 shadow-sm"; document.getElementById('btnCancelarServicio').classList.remove('hidden'); cambiarVista('inicio'); window.scrollTo({ top: document.getElementById('vista-form-servicios').offsetTop - 100, behavior: 'smooth' });}
         function limpiarFormService() { document.getElementById('servicioForm').reset(); document.getElementById('editServioId').value = ''; ['h_gas_unidad', 'h_gas_gen', 'h_sueldos', 'h_insumos', 'h_comidas', 'h_oxxo'].forEach(id => document.getElementById(id).value = 0); document.getElementById('tituloFormServio').innerHTML = `<i class="fa-solid fa-file-invoice-dollar text-green-600 mr-2 text-2xl"></i> Registrar Venta`; document.getElementById('btnSubmitServicio').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-green-700 hover:bg-green-600 transition-colors shadow-sm"; document.getElementById('btnCancelarServicio').classList.add('hidden'); }
     </script>
 </body>

@@ -38,6 +38,10 @@
         </div>
         
         <div class="flex-1 overflow-y-auto p-4 space-y-2">
+            <button onclick="cambiarVista('inicio'); toggleSidebar();" class="w-full text-left px-4 py-3.5 hover:bg-green-800/60 rounded-xl transition-colors flex items-center gap-3 font-semibold text-sm tracking-wide group">
+                <div class="bg-green-900 group-hover:bg-green-700 p-2 rounded-lg transition-colors"><i class="fa-solid fa-house text-green-400 w-5 text-center"></i></div> Inicio
+            </button>
+
             <button onclick="cambiarVista('operaciones'); toggleSidebar();" class="w-full text-left px-4 py-3.5 hover:bg-green-800/60 rounded-xl transition-colors flex items-center gap-3 font-semibold text-sm tracking-wide group">
                 <div class="bg-green-900 group-hover:bg-green-700 p-2 rounded-lg transition-colors"><i class="fa-solid fa-gears text-green-400 w-5 text-center"></i></div> Operaciones
             </button>
@@ -52,7 +56,7 @@
         </div>
 
         <div class="p-4 bg-[#022c22] text-center text-[10px] text-green-500 font-bold tracking-wider border-t border-green-800">
-            AGROSOLUCIONES AÉREAS v3.1
+            AGROSOLUCIONES AÉREAS v3.2
         </div>
     </div>
 
@@ -352,14 +356,12 @@
         function cerrarSesion() { window.location.reload(); }
         async function inicializarPanel() { await cargarClientes(); await cargarPropiedades(); await cargarServicios(); cambiarVista('inicio'); }
 
-        // --- SISTEMA UNIFICADO DE NAVEGACIÓN EN LA MISMA PESTAÑA (SPA) ---
+        // --- SISTEMA UNIFICADO DE NAVEGACIÓN SPA ---
         function cambiarVista(vista) {
-            // Arreglo maestro con todos los módulos de la aplicación
             ['inicio', 'clientes', 'propiedades', 'servicios', 'gastos', 'operaciones', 'financieros', 'ventas-crm'].forEach(sec => {
                 const btn = document.getElementById('nav-' + sec);
                 if(btn) btn.className = "border border-green-500/50 hover:bg-green-700 px-3 py-2 rounded-md text-sm font-medium transition-colors shadow-sm";
                 
-                // Ocultar todas las sub-vistas dinámicas
                 const tabla = document.getElementById('vista-tabla-' + sec);
                 if(tabla) { tabla.classList.add('hidden'); tabla.classList.remove('block'); }
             });
@@ -530,7 +532,7 @@
         });
 
         async function eliminarServio(id) { if(confirm("¿Eliminar registro de vuelo?")) { await fetch(`${API_URL}/servicios/${id}`, { method: 'DELETE' }); await inicializarPanel(); } }
-        function tabularEdicionServicio(id) { const s = memoriaServicios.find(x => x.id === id); document.getElementById('editServioId').value = s.id; document.getElementById('selectPropiedad').value = s.propiedad_id; document.getElementById('fecha_aplicacion').value = s.fecha_aplicacion||''; document.getElementById('costo_servicio').value = s.costo_servicio||''; document.getElementById('no_cotizacion').value = s.no_cotizacion||''; document.getElementById('no_orden').value = s.no_orden||''; document.getElementById('gastos').value = s.gastos||''; document.getElementById('fecha_seguimiento').value = s.fecha_seguimiento||''; document.getElementById('no_factura').value = s.no_factura||''; document.getElementById('observaciones').value = s.observaciones||''; document.getElementById('h_gas_unidad').value = s.gasto_gasolina_unidad || 0; document.getElementById('h_gas_gen').value = s.gasto_gasolina_generador || 0; document.getElementById('h_sueldos').value = s.gasto_sueldos || 0; document.getElementById('h_insumos').value = s.gasto_insumos || 0; document.getElementById('h_comidas').value = s.gasto_comidas || 0; document.getElementById('h_oxxo').value = s.gasto_oxxo || 0; document.getElementById('tituloFormServio').innerHTML = `<i class="fa-solid fa-pen text-amber-500 mr-2 text-2xl"></i> Editando Venta`; document.getElementById('btnSubmitServicio').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-amber-500 hover:bg-amber-600 shadow-sm"; document.getElementById('btnCancelarServicio').classList.remove('hidden'); cambiarVista('inicio'); window.scrollTo({ top: document.getElementById('vista-form-servicios').offsetTop - 100, behavior: 'smooth' });}
+        function prepararEdicionServicio(id) { const s = memoriaServicios.find(x => x.id === id); document.getElementById('editServioId').value = s.id; document.getElementById('selectPropiedad').value = s.propiedad_id; document.getElementById('fecha_aplicacion').value = s.fecha_aplicacion||''; document.getElementById('costo_servicio').value = s.costo_servicio||''; document.getElementById('no_cotizacion').value = s.no_cotizacion||''; document.getElementById('no_orden').value = s.no_orden||''; document.getElementById('gastos').value = s.gastos||''; document.getElementById('fecha_seguimiento').value = s.fecha_seguimiento||''; document.getElementById('no_factura').value = s.no_factura||''; document.getElementById('observaciones').value = s.observaciones||''; document.getElementById('h_gas_unidad').value = s.gasto_gasolina_unidad || 0; document.getElementById('h_gas_gen').value = s.gasto_gasolina_generador || 0; document.getElementById('h_sueldos').value = s.gasto_sueldos || 0; document.getElementById('h_insumos').value = s.gasto_insumos || 0; document.getElementById('h_comidas').value = s.gasto_comidas || 0; document.getElementById('h_oxxo').value = s.gasto_oxxo || 0; document.getElementById('tituloFormServio').innerHTML = `<i class="fa-solid fa-pen text-amber-500 mr-2 text-2xl"></i> Editando Venta`; document.getElementById('btnSubmitServicio').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-amber-500 hover:bg-amber-600 shadow-sm"; document.getElementById('btnCancelarServicio').classList.remove('hidden'); cambiarVista('inicio'); window.scrollTo({ top: document.getElementById('vista-form-servicios').offsetTop - 100, behavior: 'smooth' });}
         function limpiarFormService() { document.getElementById('servicioForm').reset(); document.getElementById('editServioId').value = ''; ['h_gas_unidad', 'h_gas_gen', 'h_sueldos', 'h_insumos', 'h_comidas', 'h_oxxo'].forEach(id => document.getElementById(id).value = 0); document.getElementById('tituloFormServio').innerHTML = `<i class="fa-solid fa-file-invoice-dollar text-green-600 mr-2 text-2xl"></i> Registrar Venta`; document.getElementById('btnSubmitServicio').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-green-700 hover:bg-green-600 transition-colors shadow-sm"; document.getElementById('btnCancelarServicio').classList.add('hidden'); }
     </script>
 </body>

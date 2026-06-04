@@ -27,6 +27,53 @@
 </head>
 <body class="text-gray-800">
 
+    <div id="sidebar-menu" class="fixed inset-y-0 left-0 w-80 bg-[#064e3b] text-white transform -translate-x-full transition-transform duration-300 ease-in-out z-[100] shadow-2xl flex flex-col">
+        <div class="p-6 border-b border-green-800 flex justify-between items-center bg-[#022c22]">
+            <span class="font-extrabold text-lg tracking-wide flex items-center gap-2">
+                <i class="fa-solid fa-layer-group text-green-400"></i> MENÚ MÓDULOS
+            </span>
+            <button onclick="toggleSidebar()" class="text-gray-400 hover:text-white transition-colors">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+        </div>
+        
+        <div class="flex-1 overflow-y-auto p-5 space-y-6">
+            <div class="border border-green-800 bg-green-950/40 rounded-xl p-4">
+                <h3 class="text-xs font-extrabold uppercase tracking-widest text-green-400 mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-gears text-sm"></i> Operaciones
+                </h3>
+                <div class="text-xs text-green-600/70 italic p-3 border border-dashed border-green-800/50 rounded-lg text-center">
+                    Espacio en blanco disponible para operaciones
+                </div>
+            </div>
+
+            <div class="border border-green-800 bg-green-950/40 rounded-xl p-4">
+                <h3 class="text-xs font-extrabold uppercase tracking-widest text-green-400 mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-wallet text-sm"></i> Financieros
+                </h3>
+                <div class="text-xs text-green-600/70 italic p-3 border border-dashed border-green-800/50 rounded-lg text-center">
+                    Espacio en blanco disponible para finanzas
+                </div>
+            </div>
+
+            <div class="border border-green-800 bg-green-950/40 rounded-xl p-4">
+                <h3 class="text-xs font-extrabold uppercase tracking-widest text-green-400 mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-chart-line text-sm"></i> Ventas
+                </h3>
+                <div class="text-xs text-green-600/70 italic p-3 border border-dashed border-green-800/50 rounded-lg text-center">
+                    Espacio en blanco disponible para ventas
+                </div>
+            </div>
+        </div>
+
+        <div class="p-4 bg-[#022c22] text-center text-[10px] text-green-500 font-bold tracking-wider border-t border-green-800">
+            AGROSOLUCIONES AÉREAS v3.0
+        </div>
+    </div>
+
+    <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/60 hidden z-[90] transition-opacity duration-300"></div>
+
+
     <div id="login-container" class="min-h-screen flex items-center justify-center p-4">
         <div class="bg-white p-8 rounded-3xl shadow-xl border border-green-100 max-w-md w-full">
             <div class="text-center mb-8">
@@ -66,6 +113,13 @@
         </nav>
 
         <div id="vista-inicio" class="max-w-[1600px] mx-auto mt-8 px-6 block">
+            
+            <div class="mb-4">
+                <button onclick="toggleSidebar()" class="bg-green-700 hover:bg-green-600 text-white px-4 py-2.5 rounded-xl font-bold shadow-md transition-all flex items-center gap-2 text-sm tracking-wide">
+                    <i class="fa-solid fa-bars text-base"></i> Menú de Módulos
+                </button>
+            </div>
+
             <h2 class="text-2xl font-bold text-gray-800 mb-4 tracking-tight">Objetivos Operativos - Junio 2026</h2>
             
             <div class="dashboard-container">
@@ -228,6 +282,19 @@
         let memoriaClientes = [], memoriaPropiedades = [], memoriaServicios = [];
         let rolUsuario = 'trabajador'; 
 
+        // --- CONTROL DEL MENÚ LATERAL (SIDEBAR) ---
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar-menu');
+            const overlay = document.getElementById('sidebar-overlay');
+            if (sidebar.classList.contains('-translate-x-full')) {
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('hidden');
+            }
+        }
+
         document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const btn = document.getElementById('btnLogin');
@@ -310,7 +377,6 @@
                 const res = await fetch(API_URL + "/api/dashboard/" + mesActual); const datos = await res.json();
                 let mV = datos.metas.meta_ventas || 1, mS = datos.metas.meta_servicios || 1, mC = datos.metas.meta_clientes || 1, mP = datos.metas.meta_prospectos || 1, mVis = datos.metas.meta_prospectos_visitas || 1;
 
-                // ACTUALIZACIÓN DE VELOCÍMETROS DINÁMICOS CON LOS DATOS REALES FILTRADOS POR MES
                 chartVentas.updateSeries([Math.min((datos.reales.ventas / mV) * 100, 100)]);
                 chartServicios.updateSeries([Math.min((datos.reales.servicios / mS) * 100, 100)]);
                 chartClientes.updateSeries([Math.min((datos.reales.clientes / mC) * 100, 100)]);

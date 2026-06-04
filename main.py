@@ -181,7 +181,7 @@ async def eliminar_servicio(servicio_id: str):
         return {"mensaje": "Eliminado exitosamente"}
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
 
-# --- RUTA DEL DASHBOARD (CORREGIDA CON FILTRADO MENSUAL EXACTO) ---
+# --- RUTA DEL DASHBOARD (CON PARACAÍDAS CONTRA DATOS HUÉRFANOS) ---
 @app.get("/api/dashboard/{mes_anio}")
 async def obtener_dashboard(mes_anio: str):
     try:
@@ -194,25 +194,25 @@ async def obtener_dashboard(mes_anio: str):
         mes, anio = mes_anio.split("-")
         filtro_fecha = f"{anio}-{mes}" 
         
-        # 1. Ventas e ingresos del mes
+        # 1. Ventas e ingresos del mes (Con protección)
         respuesta_servicios = supabase.table('servicios_aplicacion').select('costo_servicio', 'fecha_aplicacion', 'propiedad_id').execute()
-        servicios_mes = [s for s in respuesta_servicios.data if s.get('fecha_aplicacion', '').startswith(filtro_fecha)]
-        ventas_reales = sum(float(s.get('costo_servicio', 0)) for s in servicios_mes)
+        servicios_mes = [s for s in respuesta_servicios.data if s.get('fecha_aplicacion') and s.get('fecha_aplicacion', '').startswith(filtro_fecha)]
+        ventas_reales = sum(float(s.get('costo_servicio') or 0) for s in servicios_mes)
         servicios_reales = len(servicios_mes)
         
-        # 2. Prospectos alcanzados (Registrados en este mes en específico)
+        # 2. Prospectos alcanzados
         respuesta_clientes = supabase.table('clientes').select('id', 'created_at').execute()
-        prospectos_mes = [c for c in respuesta_clientes.data if c.get('created_at', '').startswith(filtro_fecha)]
+        prospectos_mes = [c for c in respuesta_clientes.data if c.get('created_at') and c.get('created_at', '').startswith(filtro_fecha)]
         prospectos_reales = len(prospectos_mes)
 
-        # 3. Nuevos Clientes (Productores que cerraron una venta real en este mes en específico)
+        # 3. Nuevos Clientes (A prueba de fallos: ignora si la parcela o el cliente ya no existen)
         respuesta_propiedades = supabase.table('propiedades').select('id', 'cliente_id').execute()
-        mapa_propiedades = {p['id']: p['cliente_id'] for p in respuesta_propiedades.data}
+        mapa_propiedades = {p['id']: p.get('cliente_id') for p in respuesta_propiedades.data if p.get('cliente_id')}
         
         clientes_activos_mes = set()
         for s in servicios_mes:
             p_id = s.get('propiedad_id')
-            if p_id in mapa_propiedades:
+            if p_id and p_id in mapa_propiedades:
                 clientes_activos_mes.add(mapa_propiedades[p_id])
         clientes_reales = len(clientes_activos_mes)
 
@@ -227,6 +227,7 @@ async def obtener_dashboard(mes_anio: str):
             }
         }
     except Exception as e:
+        print(f"Error crítico en Dashboard: {str(e)}") 
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/api/metas/")

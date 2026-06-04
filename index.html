@@ -353,7 +353,6 @@
             const cuerpo = document.getElementById('cuerpoTabla'); cuerpo.innerHTML = ''; 
             document.getElementById('contadorClientes').textContent = `${lista.length} REGISTRADOS`; 
             lista.forEach(c => {
-                // Generar diseño visual del badge del embudo
                 let badge = '';
                 if(c.estado === 'Cliente') {
                     badge = `<span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-300">Cliente Real 🟢</span>`;
@@ -386,7 +385,7 @@
         function tabularEdicionCliente(id) { 
             const c = memoriaClientes.find(x => x.id === id); 
             document.getElementById('editClienteId').value = c.id; document.getElementById('nombre').value = c.nombre; document.getElementById('apellidos').value = c.apellidos; document.getElementById('email').value = c.email; document.getElementById('telefono').value = c.telefono; document.getElementById('rfc').value = c.rfc; 
-            document.getElementById('estado_cliente').value = c.estado || 'Prospecto'; // Cargar estado actual
+            document.getElementById('estado_cliente').value = c.estado || 'Prospecto'; 
             document.getElementById('tituloFormCliente').innerHTML = `<i class="fa-solid fa-pen text-amber-500 mr-2 text-2xl"></i> Editando Registro`; document.getElementById('btnSubmitCliente').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-amber-500 hover:bg-amber-600 shadow-sm"; document.getElementById('btnCancelarCliente').classList.remove('hidden'); cambiarVista('inicio'); window.scrollTo({ top: document.getElementById('vista-form-clientes').offsetTop - 100, behavior: 'smooth' }); 
         }
         

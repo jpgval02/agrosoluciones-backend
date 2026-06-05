@@ -70,6 +70,7 @@ class MetasMensuales(BaseModel):
     meta_clientes: int
     meta_prospectos: int
     meta_prospectos_visitas: Optional[int] = 0
+    visitas_reales: Optional[int] = 0 # <-- CAMPO AGREGADO PARA LAS VISITAS A CAMPO
 
 # --- RUTA DE LOGIN ---
 @app.post("/login/")
@@ -181,31 +182,55 @@ async def eliminar_servicio(servicio_id: str):
         return {"mensaje": "Eliminado exitosamente"}
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
 
-# --- RUTA DEL DASHBOARD (CON PARACAÍDAS CONTRA DATOS HUÉRFANOS) ---
+# --- NUEVA RUTA PARA REGISTRAR LAS VISITAS A CAMPO EN LA NUBE ---
+@app.post("/api/visitas/{mes_anio}")
+async def registrar_visita(mes_anio: str):
+    try:
+        # Buscar si el mes ya existe en la BD
+        existe = supabase.table('metas_mensuales').select('id, visitas_reales').eq('mes_anio', mes_anio).execute()
+        
+        if len(existe.data) > 0:
+            # Si existe, sacamos el número actual y le sumamos 1
+            visitas_actuales = existe.data[0].get('visitas_reales') or 0
+            nueva_cantidad = visitas_actuales + 1
+            supabase.table('metas_mensuales').update({"visitas_reales": nueva_cantidad}).eq('mes_anio', mes_anio).execute()
+        else:
+            # Si no existe, creamos el mes desde cero empezando en 1 visita
+            nueva_cantidad = 1
+            nueva_meta = {
+                "mes_anio": mes_anio,
+                "meta_ventas": 0, "meta_servicios": 0, "meta_clientes": 0,
+                "meta_prospectos": 0, "meta_prospectos_visitas": 0,
+                "visitas_reales": nueva_cantidad
+            }
+            supabase.table('metas_mensuales').insert(nueva_meta).execute()
+            
+        return {"mensaje": "Visita registrada en BD", "visitas_reales": nueva_cantidad}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+# --- RUTA DEL DASHBOARD ---
 @app.get("/api/dashboard/{mes_anio}")
 async def obtener_dashboard(mes_anio: str):
     try:
         respuesta_metas = supabase.table('metas_mensuales').select('*').eq('mes_anio', mes_anio).execute()
         if len(respuesta_metas.data) == 0:
-            metas = { "meta_ventas": 0, "meta_servicios": 0, "meta_clientes": 0, "meta_prospectos": 0, "meta_prospectos_visitas": 0 }
+            metas = { "meta_ventas": 0, "meta_servicios": 0, "meta_clientes": 0, "meta_prospectos": 0, "meta_prospectos_visitas": 0, "visitas_reales": 0 }
         else:
             metas = respuesta_metas.data[0]
 
         mes, anio = mes_anio.split("-")
         filtro_fecha = f"{anio}-{mes}" 
         
-        # 1. Ventas e ingresos del mes (Con protección)
         respuesta_servicios = supabase.table('servicios_aplicacion').select('costo_servicio', 'fecha_aplicacion', 'propiedad_id').execute()
         servicios_mes = [s for s in respuesta_servicios.data if s.get('fecha_aplicacion') and s.get('fecha_aplicacion', '').startswith(filtro_fecha)]
         ventas_reales = sum(float(s.get('costo_servicio') or 0) for s in servicios_mes)
         servicios_reales = len(servicios_mes)
         
-        # 2. Prospectos alcanzados
         respuesta_clientes = supabase.table('clientes').select('id', 'created_at').execute()
         prospectos_mes = [c for c in respuesta_clientes.data if c.get('created_at') and c.get('created_at', '').startswith(filtro_fecha)]
         prospectos_reales = len(prospectos_mes)
 
-        # 3. Nuevos Clientes (A prueba de fallos: ignora si la parcela o el cliente ya no existen)
         respuesta_propiedades = supabase.table('propiedades').select('id', 'cliente_id').execute()
         mapa_propiedades = {p['id']: p.get('cliente_id') for p in respuesta_propiedades.data if p.get('cliente_id')}
         
@@ -223,7 +248,7 @@ async def obtener_dashboard(mes_anio: str):
                 "servicios": servicios_reales, 
                 "clientes": clientes_reales, 
                 "prospectos": prospectos_reales,
-                "visitas": 0
+                "visitas": metas.get("visitas_reales", 0) # <-- LEYENDO EL DATO REAL DE LA BD
             }
         }
     except Exception as e:

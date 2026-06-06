@@ -53,7 +53,7 @@
         </div>
 
         <div class="p-4 bg-[#022c22] text-center text-[10px] text-green-500 font-bold tracking-wider border-t border-green-800">
-            AGROSOLUCIONES AÉREAS v4.2
+            AGROSOLUCIONES AÉREAS v4.5
         </div>
     </div>
 
@@ -81,19 +81,18 @@
     </div>
 
     <div id="dashboard-container" class="hidden pb-12">
-        
         <nav class="tabla-header text-white px-6 py-3 flex justify-between items-center shadow-md sticky top-0 z-50">
             <div class="flex items-center">
                 <img src="logo_alternativo.png" alt="Logo Agrosoluciones" class="h-12 w-auto object-contain drop-shadow-md">
                 <span id="badge-rol" class="ml-4 text-xs font-bold px-2 py-1 bg-green-800 rounded-md border border-green-600 tracking-wider"></span>
             </div>
             <div class="flex items-center">
-                <button onclick="cerrarSesion()" class="bg-red-600 hover:bg-red-500 px-3 py-2 rounded-md text-sm font-bold transition-colors shadow-sm border border-red-400" title="Cerrar Sesión"><i class="fa-solid fa-power-off"></i></button>
+                <button onclick="cerrarSesion()" class="bg-red-600 hover:bg-red-500 px-3 py-2 rounded-md text-sm font-bold transition-colors shadow-sm border border-red-400"><i class="fa-solid fa-power-off"></i></button>
             </div>
         </nav>
 
         <div class="max-w-[1600px] mx-auto mt-6 px-6">
-            <button onclick="toggleSidebar()" class="bg-[#187547] hover:bg-[#1b6b43] text-white px-5 py-2.5 rounded-xl font-bold shadow-md transition-all flex items-center gap-2 text-sm tracking-wide w-fit">
+            <button onclick="toggleSidebar()" class="bg-emerald-700 hover:bg-emerald-600 text-white px-5 py-2.5 rounded-xl font-bold shadow-md transition-all flex items-center gap-2 text-sm tracking-wide w-fit">
                 <i class="fa-solid fa-bars text-base"></i> Menú de Módulos
             </button>
         </div>
@@ -119,18 +118,9 @@
                         <div class="grid grid-cols-2 gap-3"><input type="text" id="nombre" placeholder="Nombre(s)" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none"><input type="text" id="apellidos" placeholder="Apellidos" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none"></div>
                         <input type="email" id="email" placeholder="Correo Electrónico" class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
                         <div class="grid grid-cols-2 gap-3"><input type="text" id="telefono" placeholder="Teléfono" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none"><input type="text" id="rfc" placeholder="RFC" class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none uppercase"></div>
-                        
-                        <div>
-                            <label class="text-[10px] text-gray-500 font-bold uppercase">Etapa del Embudo</label>
-                            <select id="estado_cliente" class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm font-bold text-gray-700 focus:ring-2 focus:ring-green-600 outline-none cursor-pointer">
-                                <option value="Prospecto" selected>Prospecto 🟡</option>
-                                <option value="Negociación">Negociación 🟠</option>
-                                <option value="Cliente">Cliente Real 🟢</option>
-                            </select>
-                        </div>
-
+                        <div><label class="text-[10px] text-gray-500 font-bold uppercase">Etapa del Embudo</label><select id="estado_cliente" class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm font-bold text-gray-700 cursor-pointer"><option value="Prospecto" selected>Prospecto 🟡</option><option value="Negociación">Negociación 🟠</option><option value="Cliente">Cliente Real 🟢</option></select></div>
                         <button type="submit" id="btnSubmitCliente" class="w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-[#4ade80] hover:bg-green-500 text-green-900 transition-colors shadow-sm"><i class="fa-solid fa-save mr-1"></i> Guardar Registro</button>
-                        <button type="button" id="btnCancelarCliente" onclick="limpiarFormCliente()" class="hidden w-full py-2 rounded-xl text-xs font-bold text-gray-600 bg-gray-200 hover:bg-gray-300 transition-colors">Cancelar Edición</button>
+                        <button type="button" id="btnCancelarCliente" onclick="limpiarFormCliente()" class="hidden w-full py-2 rounded-xl text-xs font-bold text-gray-600 bg-gray-200 hover:bg-gray-300">Cancelar Edición</button>
                     </form>
                 </div>
 
@@ -139,18 +129,11 @@
                     <form id="propiedadForm" class="space-y-4">
                         <input type="hidden" id="editPropiedadId">
                         <select id="selectCliente" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none"><option value="">-- Selecciona el Propietario --</option></select>
-                        <div class="grid grid-cols-2 gap-3">
-                            <input type="text" id="nombre_propiedad" placeholder="Nombre Rancho" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
-                            <input type="text" id="tipo_cultivo" placeholder="Cultivo (Ej. Maíz)" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
-                        </div>
-                        <div class="grid grid-cols-2 gap-3">
-                            <input type="number" step="0.01" id="superficie_has" placeholder="Hectáreas" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
-                            <input type="text" id="direccion" placeholder="Localidad (Predio)" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
-                        </div>
-                        <input type="text" id="estado" value="Veracruz" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
-                        
+                        <div class="grid grid-cols-2 gap-3"><input type="text" id="nombre_propiedad" placeholder="Nombre Rancho" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm"><input type="text" id="tipo_cultivo" placeholder="Cultivo (Ej. Maíz)" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm"></div>
+                        <div class="grid grid-cols-2 gap-3"><input type="number" step="0.01" id="superficie_has" placeholder="Hectáreas" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm"><input type="text" id="direccion" placeholder="Localidad (Predio)" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm"></div>
+                        <input type="text" id="estado" value="Veracruz" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
                         <button type="submit" id="btnSubmitPropiedad" class="w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-[#4ade80] hover:bg-green-500 text-green-900 transition-colors shadow-sm"><i class="fa-solid fa-save mr-1"></i> Guardar Parcela</button>
-                        <button type="button" id="btnCancelarPropiedad" onclick="limpiarFormPropiedad()" class="hidden w-full py-2 rounded-xl text-xs font-bold text-gray-600 bg-gray-200 hover:bg-gray-300 transition-colors">Cancelar Edición</button>
+                        <button type="button" id="btnCancelarPropiedad" onclick="limpiarFormPropiedad()" class="hidden w-full py-2 rounded-xl text-xs font-bold text-gray-600 bg-gray-200 hover:bg-gray-300">Cancelar Edición</button>
                     </form>
                 </div>
 
@@ -159,38 +142,40 @@
                     <form id="servicioForm" class="space-y-4">
                         <input type="hidden" id="editServioId">
                         
-                        <input type="hidden" id="h_gas_unidad" value="0">
-                        <input type="hidden" id="h_gas_gen" value="0">
-                        <input type="hidden" id="h_sueldos" value="0">
-                        <input type="hidden" id="h_insumos" value="0">
-                        <input type="hidden" id="h_comidas" value="0">
-                        <input type="hidden" id="h_oxxo" value="0">
+                        <input type="hidden" id="h_gas_unidad" value="0"><input type="hidden" id="h_gas_gen" value="0"><input type="hidden" id="h_sueldos" value="0"><input type="hidden" id="h_insumos" value="0"><input type="hidden" id="h_comidas" value="0"><input type="hidden" id="h_oxxo" value="0">
+                        
+                        <input type="hidden" id="h_ha_trabajadas" value="0"><input type="hidden" id="h_precio_por_ha" value="0"><input type="hidden" id="h_ingreso_viaticos" value="0"><input type="hidden" id="h_ingreso_suministros" value="0">
 
-                        <div><label class="text-[10px] text-gray-500 font-bold uppercase">Productor / Parcela</label>
-                        <select id="selectPropiedad" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none"><option value="">-- Selecciona --</option></select></div>
+                        <div><label class="text-[10px] text-gray-500 font-bold uppercase">Productor / Parcela</label><select id="selectPropiedad" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm"><option value="">-- Selecciona --</option></select></div>
                         <div class="grid grid-cols-2 gap-3">
-                            <div><label class="text-[10px] text-gray-500 font-bold uppercase">No. Cotización</label><input type="text" id="no_cotizacion" placeholder="Ej. C-001" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none"></div>
-                            <div><label class="text-[10px] text-gray-500 font-bold uppercase">No. Orden Serv.</label><input type="text" id="no_orden" placeholder="Ej. OS-001" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none"></div>
+                            <div><label class="text-[10px] text-gray-500 font-bold uppercase">No. Cotización</label><input type="text" id="no_cotizacion" placeholder="Ej. C-001" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 text-sm rounded-lg"></div>
+                            <div><label class="text-[10px] text-gray-500 font-bold uppercase">No. Orden Serv.</label><input type="text" id="no_orden" placeholder="Ej. OS-001" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 text-sm rounded-lg"></div>
                         </div>
                         <div class="grid grid-cols-2 gap-3">
-                            <div><label class="text-[10px] text-gray-500 font-bold uppercase">Fecha de Venta</label><input type="date" id="fecha_aplicacion" required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none text-gray-600"></div>
-                            <div><label class="text-[10px] text-gray-500 font-bold uppercase">Fecha Seguimiento</label><input type="date" id="fecha_seguimiento" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none text-gray-600"></div>
+                            <div><label class="text-[10px] text-gray-500 font-bold uppercase">Fecha de Venta</label><input type="date" id="fecha_aplicacion" required class="w-full px-3 py-2 bg-gray-50 border text-sm rounded-lg text-gray-600"></div>
+                            <div><label class="text-[10px] text-gray-500 font-bold uppercase">Fecha Seguimiento</label><input type="date" id="fecha_seguimiento" class="w-full px-3 py-2 bg-gray-50 border text-sm rounded-lg text-gray-600"></div>
                         </div>
                         <div class="grid grid-cols-2 gap-3 items-end">
-                            <div><label class="text-[10px] text-gray-500 font-bold uppercase">Ingresos ($)</label><input type="number" step="0.01" id="costo_servicio" required class="w-full px-3 py-2 bg-gray-50 border border-green-300 rounded-lg text-sm font-bold text-green-700 focus:ring-2 focus:ring-green-600 outline-none"></div>
                             <div>
-                                <label class="text-[10px] text-gray-500 font-bold uppercase">Gastos ($)</label>
+                                <label class="text-[10px] text-gray-500 font-bold uppercase">Ingresos Total ($)</label>
+                                <div class="flex items-center space-x-1">
+                                    <input type="number" id="costo_servicio" readonly placeholder="0.00" class="w-full px-3 py-2 bg-gray-100 border border-green-200 rounded-lg text-sm font-bold text-green-700 outline-none cursor-not-allowed">
+                                    <button type="button" onclick="abrirModalDesgloseIngresos()" class="bg-green-100 text-green-700 px-3 py-2 rounded-lg hover:bg-green-200 shadow-sm" title="Desglosar Ingresos"><i class="fa-solid fa-calculator"></i></button>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="text-[10px] text-gray-500 font-bold uppercase">Gastos Total ($)</label>
                                 <div class="flex items-center space-x-1">
                                     <input type="number" id="gastos" readonly placeholder="0.00" class="w-full px-3 py-2 bg-gray-100 border border-red-200 rounded-lg text-sm font-bold text-red-600 outline-none cursor-not-allowed">
                                     <button type="button" onclick="abrirModalDesgloseGastos()" class="bg-red-100 text-red-600 px-3 py-2 rounded-lg hover:bg-red-200 transition-colors shadow-sm" title="Desglosar Gastos"><i class="fa-solid fa-calculator"></i></button>
                                 </div>
                             </div>
                         </div>
-                        <div><label class="text-[10px] text-gray-500 font-bold uppercase">Observaciones</label><textarea id="observaciones" rows="1" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none"></textarea></div>
+                        <div><label class="text-[10px] text-gray-500 font-bold uppercase">Observaciones</label><textarea id="observaciones" rows="1" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm"></textarea></div>
                         <div class="hidden"><input type="text" id="no_factura" value="S/N"><select id="estado_cuenta"><option value="Cobrado">Cobrado</option></select><input type="number" id="satisfaccion" value="5"></div>
                         
                         <button type="submit" id="btnSubmitServicio" class="w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-green-700 hover:bg-green-600 transition-colors shadow-sm"><i class="fa-solid fa-save mr-1"></i> Guardar en BD</button>
-                        <button type="button" id="btnCancelarServicio" onclick="limpiarFormService()" class="hidden w-full py-2 rounded-xl text-xs font-bold text-gray-600 bg-gray-200 hover:bg-gray-300 transition-colors">Cancelar Edición</button>
+                        <button type="button" id="btnCancelarServicio" onclick="limpiarFormService()" class="hidden w-full py-2 rounded-xl text-xs font-bold text-gray-600 bg-gray-200 hover:bg-gray-300">Cancelar Edición</button>
                     </form>
                 </div>
             </div>
@@ -200,47 +185,50 @@
             <h2 class="text-3xl font-bold text-gray-800 mb-6" id="titulo-seccion-tablas">Base de Datos Operativa</h2>
 
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-200 flex items-center space-x-4"><div class="bg-indigo-100 w-12 h-12 rounded-full flex items-center justify-center text-indigo-600 shrink-0"><i class="fa-solid fa-calendar-days text-lg"></i></div><div class="w-full"><p class="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-1">Filtrar por Mes</p><select id="filtroMes" onchange="actualizarEstadisticasYMetas()" class="w-full bg-gray-50 border border-gray-200 rounded-lg text-sm font-bold text-gray-700 py-1.5 px-2 focus:ring-2 focus:ring-green-600 outline-none cursor-pointer"><option value="todos">Histórico Total</option><option value="01">Enero</option><option value="02">Febrero</option><option value="03">Marzo</option><option value="04">Abril</option><option value="05">Mayo</option><option value="06" selected>Junio</option><option value="07">Julio</option><option value="08">Agosto</option><option value="09">Septiembre</option><option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option></select></div></div>
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-200 flex items-center space-x-4"><div class="bg-indigo-100 w-12 h-12 rounded-full flex items-center justify-center text-indigo-600 shrink-0"><i class="fa-solid fa-calendar-days text-lg"></i></div><div class="w-full"><p class="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-1">Filtrar por Mes</p><select id="filtroMes" onchange="actualizarEstadisticasYMetas()" class="w-full bg-gray-50 border text-sm font-bold text-gray-700 py-1.5 px-2 outline-none cursor-pointer"><option value="todos">Histórico Total</option><option value="01">Enero</option><option value="02">Febrero</option><option value="03">Marzo</option><option value="04">Abril</option><option value="05">Mayo</option><option value="06" selected>Junio</option><option value="07">Julio</option><option value="08">Agosto</option><option value="09">Septiembre</option><option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option></select></div></div>
                 <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex items-center space-x-4"><div class="bg-yellow-100 w-12 h-12 rounded-full flex items-center justify-center text-yellow-600 shrink-0"><i class="fa-solid fa-ruler-combined text-lg"></i></div><div><p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Ha. Fumigadas</p><p id="stat-hectareas" class="text-2xl font-extrabold text-gray-800 leading-none mt-1">0</p></div></div>
                 <div class="bg-white p-4 rounded-2xl shadow-sm border border-green-200 flex items-center space-x-4"><div class="bg-green-100 w-12 h-12 rounded-full flex items-center justify-center text-green-600 shrink-0"><i class="fa-solid fa-arrow-trend-up text-lg"></i></div><div><p class="text-[10px] text-green-600/80 font-bold uppercase tracking-wider">Ingresos Mensuales</p><p id="stat-ingresos" class="text-2xl font-extrabold text-green-700 leading-none mt-1">$0</p></div></div>
                 
                 <div class="relative w-full h-full">
-                    <button id="btn-registrar-visita" onclick="registrarVisitaCampo()" class="hidden absolute -top-10 right-0 bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] font-bold py-1.5 px-3 rounded-lg shadow-md transition-all flex items-center gap-1.5 border border-emerald-400 z-10 whitespace-nowrap">
-                        <i class="fa-solid fa-map-location-dot"></i> Visita a Campo Realizada
-                    </button>
-                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-blue-200 flex items-center space-x-4 h-full">
-                        <div class="bg-blue-100 w-12 h-12 rounded-full flex items-center justify-center text-blue-600 shrink-0"><i class="fa-solid fa-sack-dollar text-lg"></i></div>
-                        <div><p class="text-[10px] text-blue-600/80 font-bold uppercase tracking-wider">Utilidad Neta</p><p id="stat-utilidad" class="text-2xl font-extrabold text-blue-700 leading-none mt-1">$0</p></div>
-                    </div>
+                    <button id="btn-registrar-visita" onclick="registrarVisitaCampo()" class="hidden absolute -top-10 right-0 bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] font-bold py-1.5 px-3 rounded-lg shadow-md transition-all flex items-center gap-1.5 border border-emerald-400 z-10 whitespace-nowrap"><i class="fa-solid fa-map-location-dot"></i> Visita a Campo Realizada</button>
+                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-blue-200 flex items-center space-x-4 h-full"><div class="bg-blue-100 w-12 h-12 rounded-full flex items-center justify-center text-blue-600 shrink-0"><i class="fa-solid fa-sack-dollar text-lg"></i></div><div><p class="text-[10px] text-blue-600/80 font-bold uppercase tracking-wider">Utilidad Neta</p><p id="stat-utilidad" class="text-2xl font-extrabold text-blue-700 leading-none mt-1">$0</p></div></div>
                 </div>
             </div>
 
             <div id="vista-tabla-operaciones" class="hidden bg-white p-8 rounded-2xl shadow-xl border border-gray-200 min-h-[450px]">
-                <div class="flex items-center gap-3 border-b border-gray-100 pb-4 mb-6">
-                    <div class="bg-green-100 p-3 rounded-xl text-green-700 text-xl"><i class="fa-solid fa-gears"></i></div>
-                    <div><h2 class="text-xl font-bold text-gray-800">Módulo de Operaciones</h2><p class="text-xs text-gray-400 mt-0.5">Espacio en blanco listo para desarrollo</p></div>
-                </div>
-                <div class="flex flex-col items-center justify-center py-12 border border-dashed border-gray-200 rounded-xl bg-gray-50/50 text-center px-4">
-                    <div class="bg-white p-4 rounded-full shadow-sm text-gray-300 text-3xl mb-3"><i class="fa-solid fa-code"></i></div>
-                    <p class="text-sm font-bold text-gray-600">Lienzo Disponible</p>
-                    <p class="text-xs text-gray-400 max-w-sm mt-1">Aquí se renderizará el módulo operativo o la estructura de datos que me indiques en nuestra siguiente mejora.</p>
-                </div>
+                <div class="flex items-center gap-3 border-b border-gray-100 pb-4 mb-6"><div class="bg-green-100 p-3 rounded-xl text-green-700 text-xl"><i class="fa-solid fa-gears"></i></div><div><h2 class="text-xl font-bold text-gray-800">Módulo de Operaciones</h2><p class="text-xs text-gray-400 mt-0.5">Espacio en blanco listo para desarrollo</p></div></div>
+                <div class="flex flex-col items-center justify-center py-12 border border-dashed border-gray-200 rounded-xl bg-gray-50/50 text-center px-4"><div class="bg-white p-4 rounded-full shadow-sm text-gray-300 text-3xl mb-3"><i class="fa-solid fa-code"></i></div><p class="text-sm font-bold text-gray-600">Lienzo Disponible</p></div>
             </div>
 
             <div id="vista-tabla-financieros" class="hidden bg-white p-6 md:p-8 rounded-2xl shadow-xl border border-gray-200 min-h-[450px]">
                 <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4 border-b border-gray-100 pb-4 mb-6">
-                    <div class="flex items-center gap-3">
-                        <div class="bg-rose-100 p-3 rounded-xl text-rose-700 text-xl"><i class="fa-solid fa-wallet"></i></div>
-                        <div><h2 class="text-xl font-bold text-gray-800">Módulo Financiero</h2><p class="text-xs text-gray-400 mt-0.5">Control y desglose detallado de gastos operativos</p></div>
-                    </div>
-                    <button type="button" class="bg-blue-700 hover:bg-blue-600 text-white px-5 py-2.5 rounded-xl font-bold shadow-md transition-all flex items-center gap-2 text-sm tracking-wide">
-                        <i class="fa-solid fa-file-invoice"></i> Sistema de Facturación
-                    </button>
+                    <div class="flex items-center gap-3"><div class="bg-rose-100 p-3 rounded-xl text-rose-700 text-xl"><i class="fa-solid fa-wallet"></i></div><div><h2 class="text-xl font-bold text-gray-800">Módulo Financiero</h2><p class="text-xs text-gray-400 mt-0.5">Auditoría completa de entradas y salidas de capital</p></div></div>
                 </div>
                 
+                <div class="bg-white rounded-xl shadow-md border border-emerald-200 overflow-hidden mb-8">
+                    <div class="bg-emerald-700 px-4 py-3 flex justify-between items-center text-white"><h2 class="text-sm font-bold uppercase tracking-wider"><i class="fa-solid fa-hand-holding-dollar border border-white/30 p-1.5 rounded bg-white/10 mr-2"></i> Reporte Detallado de Ingresos por Servicio</h2></div>
+                    <div class="overflow-x-auto custom-scrollbar max-h-[400px] relative">
+                        <table class="w-full divide-y divide-gray-200 text-sm border-collapse">
+                            <thead class="bg-gray-100 text-gray-700 sticky top-0 z-10 shadow-sm border-b-2 border-gray-300">
+                                <tr>
+                                    <th class="th-excel bg-gray-200">No. Control</th>
+                                    <th class="th-excel">Productor / Cliente</th>
+                                    <th class="th-excel">Cultivo</th>
+                                    <th class="th-excel text-emerald-900 bg-emerald-50 border-emerald-200"><i class="fa-solid fa-ruler-combined mr-1"></i> Ha. Trabajadas</th>
+                                    <th class="th-excel text-emerald-900 bg-emerald-50 border-emerald-200"><i class="fa-solid fa-dollar-sign mr-1"></i> Precio x Ha.</th>
+                                    <th class="th-excel text-emerald-900 bg-emerald-50 border-emerald-200"><i class="fa-solid fa-car mr-1"></i> Viáticos</th>
+                                    <th class="th-excel text-emerald-900 bg-emerald-50 border-emerald-200"><i class="fa-solid fa-box-open mr-1"></i> Suministros</th>
+                                    <th class="th-excel bg-emerald-600 text-white font-extrabold border-l-4 border-white">INGRESO TOTAL</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cuerpoTablaIngresos" class="bg-white divide-y divide-gray-200"></tbody>
+                        </table>
+                    </div>
+                </div>
+
                 <div class="bg-white rounded-xl shadow-md border border-rose-200 overflow-hidden">
                     <div class="bg-rose-700 px-4 py-3 flex justify-between items-center text-white"><h2 class="text-sm font-bold uppercase tracking-wider"><i class="fa-solid fa-file-invoice-dollar border border-white/30 p-1.5 rounded bg-white/10 mr-2"></i> Reporte Detallado de Gastos por Servicio</h2></div>
-                    <div class="overflow-x-auto custom-scrollbar max-h-[600px] relative">
+                    <div class="overflow-x-auto custom-scrollbar max-h-[400px] relative">
                         <table class="w-full divide-y divide-gray-200 text-sm border-collapse">
                             <thead class="bg-gray-100 text-gray-700 sticky top-0 z-10 shadow-sm border-b-2 border-gray-300">
                                 <tr>
@@ -272,43 +260,18 @@
                         </div>
                         <span id="contadorClientes" class="bg-white text-green-800 text-xs font-bold px-3 py-1 rounded-full shadow-sm whitespace-nowrap">0 REGISTRADOS</span>
                     </div>
-                    <div class="overflow-x-auto custom-scrollbar">
-                        <table class="min-w-full divide-y divide-gray-100 text-sm">
-                            <thead class="bg-[#187547] text-white">
-                                <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-semibold tracking-wider">CLIENTE</th>
-                                    <th class="px-6 py-3 text-left text-xs font-semibold tracking-wider">CONTACTO</th>
-                                    <th class="px-6 py-3 text-center text-xs font-semibold tracking-wider">ACCIONES</th>
-                                </tr>
-                            </thead>
-                            <tbody id="cuerpoTabla" class="bg-white divide-y divide-gray-100"></tbody>
-                        </table>
-                    </div>
+                    <div class="overflow-x-auto custom-scrollbar"><table class="min-w-full divide-y divide-gray-100 text-sm"><thead class="bg-[#187547] text-white"><tr><th class="px-6 py-3 text-left text-xs font-semibold tracking-wider">CLIENTE</th><th class="px-6 py-3 text-left text-xs font-semibold tracking-wider">CONTACTO</th><th class="px-6 py-3 text-center text-xs font-semibold tracking-wider">ACCIONES</th></tr></thead><tbody id="cuerpoTabla" class="bg-white divide-y divide-gray-100"></tbody></table></div>
                 </div>
                 
                 <div class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
-                    <div class="tabla-header px-6 py-4 flex justify-between items-center text-white">
-                        <h2 class="text-sm font-bold uppercase tracking-wider"><i class="fa-solid fa-map mr-2"></i> Inventario de Parcelas</h2>
-                    </div>
-                    <div class="overflow-x-auto custom-scrollbar">
-                        <table class="min-w-full divide-y divide-gray-100 text-sm">
-                            <thead class="bg-[#187547] text-white">
-                                <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-semibold tracking-wider">PROPIEDAD / PREDIO</th>
-                                    <th class="px-6 py-3 text-center text-xs font-semibold tracking-wider">CULTIVO</th>
-                                    <th class="px-6 py-3 text-center text-xs font-semibold tracking-wider">SUPERFICIE</th>
-                                    <th class="px-6 py-3 text-center text-xs font-semibold tracking-wider">ACCIONES</th>
-                                </tr>
-                            </thead>
-                            <tbody id="cuerpoTablaPropiedades" class="bg-white divide-y divide-gray-100"></tbody>
-                        </table>
-                    </div>
+                    <div class="tabla-header px-6 py-4 flex justify-between items-center text-white"><h2 class="text-sm font-bold uppercase tracking-wider"><i class="fa-solid fa-map mr-2"></i> Inventario de Parcelas</h2></div>
+                    <div class="overflow-x-auto custom-scrollbar"><table class="min-w-full divide-y divide-gray-100 text-sm"><thead class="bg-[#187547] text-white"><tr><th class="px-6 py-3 text-left text-xs font-semibold tracking-wider">PROPIEDAD / PREDIO</th><th class="px-6 py-3 text-center text-xs font-semibold tracking-wider">CULTIVO</th><th class="px-6 py-3 text-center text-xs font-semibold tracking-wider">SUPERFICIE</th><th class="px-6 py-3 text-center text-xs font-semibold tracking-wider">ACCIONES</th></tr></thead><tbody id="cuerpoTablaPropiedades" class="bg-white divide-y divide-gray-100"></tbody></table></div>
                 </div>
                 
                 <div class="bg-white rounded-xl shadow-lg border border-gray-300 overflow-hidden">
                     <div class="tabla-header px-4 py-3 flex justify-between items-center text-white">
                         <h2 class="text-sm font-bold uppercase tracking-wider"><i class="fa-solid fa-table border border-white/30 p-1.5 rounded bg-white/10 mr-2"></i> Base de Datos de Ventas 2026</h2>
-                        <button onclick="abrirModalMetas()" class="bg-white text-green-900 hover:bg-gray-100 px-4 py-1.5 rounded-md text-xs font-bold transition-colors shadow-sm flex items-center"><i class="fa-solid fa-gear mr-2"></i> Configurar Metas del Mes</button>
+                        <button onclick="abrirModalMetas()" class="bg-white text-green-900 hover:bg-gray-100 px-4 py-1.5 rounded-md text-xs font-bold transition-colors shadow-sm"><i class="fa-solid fa-gear mr-2"></i> Configurar Metas del Mes</button>
                     </div>
                     <div class="overflow-x-auto custom-scrollbar max-h-[600px] relative">
                         <table class="w-full divide-y divide-gray-200 text-sm border-collapse">
@@ -338,7 +301,6 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </div> 
 
@@ -347,39 +309,51 @@
             <div class="flex justify-between items-center mb-4"><h3 class="text-xl font-bold text-gray-800"><i class="fa-solid fa-bullseye text-red-500 mr-2"></i> Ajustar Objetivos</h3><button onclick="cerrarModalMetas()" class="text-gray-400 hover:text-red-500"><i class="fa-solid fa-xmark text-xl"></i></button></div>
             <form id="formMetas" class="space-y-4">
                 <input type="hidden" id="meta_mes_anio" value="06-2026">
-                <div><label class="block text-xs font-bold text-gray-500 uppercase">Meta Mensual de Ventas ($ MXN)</label><input type="number" id="input_meta_ventas" required class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg font-bold text-green-700 outline-none focus:ring-2 focus:ring-green-500"></div>
+                <div><label class="block text-xs font-bold text-gray-500 uppercase">Meta Mensual de Ventas ($)</label><input type="number" id="input_meta_ventas" required class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg font-bold text-green-700 outline-none"></div>
                 <div class="grid grid-cols-2 gap-4">
-                    <div><label class="block text-xs font-bold text-gray-500 uppercase">Vuelos Objetivo</label><input type="number" id="input_meta_servicios" required class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg font-bold outline-none focus:ring-2 focus:ring-green-500"></div>
-                    <div><label class="block text-xs font-bold text-gray-500 uppercase">Nuevos Clientes</label><input type="number" id="input_meta_clientes" required class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg font-bold outline-none focus:ring-2 focus:ring-green-500"></div>
+                    <div><label class="block text-xs font-bold text-gray-500 uppercase">Vuelos Objetivo</label><input type="number" id="input_meta_servicios" required class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg font-bold"></div>
+                    <div><label class="block text-xs font-bold text-gray-500 uppercase">Nuevos Clientes</label><input type="number" id="input_meta_clientes" required class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg font-bold"></div>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
-                    <div><label class="block text-xs font-bold text-gray-500 uppercase">Meta de Prospectos</label><input type="number" id="input_meta_prospectos" required class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg font-bold outline-none focus:ring-2 focus:ring-green-500"></div>
-                    <div><label class="block text-xs font-bold text-gray-500 uppercase">Meta Visitas Campo</label><input type="number" id="input_meta_visitas" required class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg font-bold outline-none focus:ring-2 focus:ring-green-500"></div>
+                    <div><label class="block text-xs font-bold text-gray-500 uppercase">Meta de Prospectos</label><input type="number" id="input_meta_prospectos" required class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg font-bold"></div>
+                    <div><label class="block text-xs font-bold text-gray-500 uppercase">Meta Visitas Campo</label><input type="number" id="input_meta_visitas" required class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg font-bold"></div>
                 </div>
-                <button type="submit" id="btnGuardarMetas" class="w-full mt-4 py-3 bg-gray-900 hover:bg-black text-white font-bold rounded-lg transition-colors shadow-md">Guardar en Base de Datos</button>
+                <button type="submit" id="btnGuardarMetas" class="w-full mt-4 py-3 bg-gray-900 hover:bg-black text-white font-bold rounded-lg shadow-md">Guardar en Base de Datos</button>
             </form>
+        </div>
+    </div>
+
+    <div id="modal-ingresos" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 p-4">
+        <div class="bg-white p-6 rounded-2xl shadow-2xl w-full max-w-sm border border-emerald-200">
+            <div class="flex justify-between items-center mb-4 border-b border-gray-100 pb-2">
+                <h3 class="text-lg font-bold text-gray-800"><i class="fa-solid fa-calculator text-emerald-600 mr-2"></i> Desglose de Ingresos</h3>
+                <button onclick="cerrarModalIngresos()" class="text-gray-400 hover:text-red-500"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <div class="space-y-3">
+                <div class="flex justify-between items-center"><label class="text-xs font-bold text-gray-600 uppercase"><i class="fa-solid fa-ruler-combined w-5 text-gray-400"></i> Ha. Trabajadas</label><input type="number" step="0.01" id="m_ha_trabajadas" class="w-32 px-2 py-1 bg-gray-50 border border-gray-300 rounded text-right font-bold text-emerald-600 outline-none focus:ring-1 focus:ring-emerald-500"></div>
+                <div class="flex justify-between items-center"><label class="text-xs font-bold text-gray-600 uppercase"><i class="fa-solid fa-dollar-sign w-5 text-gray-400"></i> Precio x Ha.</label><input type="number" step="0.01" id="m_precio_por_ha" class="w-32 px-2 py-1 bg-gray-50 border border-gray-300 rounded text-right font-bold text-emerald-600 outline-none focus:ring-1 focus:ring-emerald-500"></div>
+                <div class="flex justify-between items-center border-b border-dashed border-gray-200 pb-2 text-xs font-semibold text-gray-500"><label>Subtotal Fumigación</label><span id="m_subtotal_fumigacion">$0.00</span></div>
+                <div class="flex justify-between items-center"><label class="text-xs font-bold text-gray-600 uppercase"><i class="fa-solid fa-car w-5 text-gray-400"></i> Viáticos Cobrados</label><input type="number" step="0.01" id="m_ingreso_viaticos" class="w-32 px-2 py-1 bg-gray-50 border border-gray-300 rounded text-right font-bold text-emerald-600 outline-none focus:ring-1 focus:ring-emerald-500"></div>
+                <div class="flex justify-between items-center"><label class="text-xs font-bold text-gray-600 uppercase"><i class="fa-solid fa-box-open w-5 text-gray-400"></i> Venta Suministros</label><input type="number" step="0.01" id="m_ingreso_suministros" class="w-32 px-2 py-1 bg-gray-50 border border-gray-300 rounded text-right font-bold text-emerald-600 outline-none focus:ring-1 focus:ring-emerald-500"></div>
+                <div class="flex justify-between items-center mt-4 pt-3 border-t border-gray-200"><label class="text-sm font-extrabold text-gray-800 uppercase">Suma Total</label><span id="m_total_ingresos_display" class="text-xl font-extrabold text-emerald-600">$0.00</span></div>
+            </div>
+            <button type="button" onclick="confirmarDesgloseIngresos()" class="w-full mt-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg transition-colors shadow-md"><i class="fa-solid fa-check mr-1"></i> Confirmar e Inyectar</button>
         </div>
     </div>
 
     <div id="modal-gastos" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 p-4">
         <div class="bg-white p-6 rounded-2xl shadow-2xl w-full max-w-sm border border-red-200">
-            <div class="flex justify-between items-center mb-4 border-b border-gray-100 pb-2">
-                <h3 class="text-lg font-bold text-gray-800"><i class="fa-solid fa-calculator text-red-500 mr-2"></i> Desglose de Gastos</h3>
-                <button onclick="cerrarModalGastos()" class="text-gray-400 hover:text-red-500"><i class="fa-solid fa-xmark text-xl"></i></button>
-            </div>
+            <div class="flex justify-between items-center mb-4 border-b border-gray-100 pb-2"><h3 class="text-lg font-bold text-gray-800"><i class="fa-solid fa-calculator text-red-500 mr-2"></i> Desglose de Gastos</h3><button onclick="cerrarModalGastos()" class="text-gray-400 hover:text-red-500"><i class="fa-solid fa-xmark text-xl"></i></button></div>
             <div class="space-y-3">
-                <div class="flex justify-between items-center"><label class="text-xs font-bold text-gray-600 uppercase"><i class="fa-solid fa-gas-pump w-5 text-gray-400"></i> Gasolina Unidad</label><input type="number" step="0.01" id="m_gas_unidad" class="w-32 px-2 py-1 bg-gray-50 border border-gray-300 rounded text-right font-bold text-red-600 outline-none focus:ring-1 focus:ring-red-500"></div>
-                <div class="flex justify-between items-center"><label class="text-xs font-bold text-gray-600 uppercase"><i class="fa-solid fa-bolt w-5 text-gray-400"></i> Gasolina Gen.</label><input type="number" step="0.01" id="m_gas_gen" class="w-32 px-2 py-1 bg-gray-50 border border-gray-300 rounded text-right font-bold text-red-600 outline-none focus:ring-1 focus:ring-red-500"></div>
-                <div class="flex justify-between items-center"><label class="text-xs font-bold text-gray-600 uppercase"><i class="fa-solid fa-users w-5 text-gray-400"></i> Sueldos</label><input type="number" step="0.01" id="m_sueldos" class="w-32 px-2 py-1 bg-gray-50 border border-gray-300 rounded text-right font-bold text-red-600 outline-none focus:ring-1 focus:ring-red-500"></div>
-                <div class="flex justify-between items-center"><label class="text-xs font-bold text-gray-600 uppercase"><i class="fa-solid fa-flask w-5 text-gray-400"></i> Insumos</label><input type="number" step="0.01" id="m_insumos" class="w-32 px-2 py-1 bg-gray-50 border border-gray-300 rounded text-right font-bold text-red-600 outline-none focus:ring-1 focus:ring-red-500"></div>
-                <div class="flex justify-between items-center"><label class="text-xs font-bold text-gray-600 uppercase"><i class="fa-solid fa-utensils w-5 text-gray-400"></i> Comidas</label><input type="number" step="0.01" id="m_comidas" class="w-32 px-2 py-1 bg-gray-50 border border-gray-300 rounded text-right font-bold text-red-600 outline-none focus:ring-1 focus:ring-red-500"></div>
-                <div class="flex justify-between items-center"><label class="text-xs font-bold text-gray-600 uppercase"><i class="fa-solid fa-cookie w-5 text-gray-400"></i> Oxxo</label><input type="number" step="0.01" id="m_oxxo" class="w-32 px-2 py-1 bg-gray-50 border border-gray-300 rounded text-right font-bold text-red-600 outline-none focus:ring-1 focus:ring-red-500"></div>
-                <div class="flex justify-between items-center mt-4 pt-3 border-t border-gray-200">
-                    <label class="text-sm font-extrabold text-gray-800 uppercase">Suma Total</label>
-                    <span id="m_total_display" class="text-xl font-extrabold text-red-600">$0.00</span>
-                </div>
+                <div class="flex justify-between items-center"><label class="text-xs font-bold text-gray-600 uppercase"><i class="fa-solid fa-gas-pump w-5 text-gray-400"></i> Gasolina Unidad</label><input type="number" step="0.01" id="m_gas_unidad" class="w-32 px-2 py-1 bg-gray-50 border border-gray-300 text-right font-bold text-red-600 outline-none"></div>
+                <div class="flex justify-between items-center"><label class="text-xs font-bold text-gray-600 uppercase"><i class="fa-solid fa-bolt w-5 text-gray-400"></i> Gasolina Gen.</label><input type="number" step="0.01" id="m_gas_gen" class="w-32 px-2 py-1 bg-gray-50 border border-gray-300 text-right font-bold text-red-600 outline-none"></div>
+                <div class="flex justify-between items-center"><label class="text-xs font-bold text-gray-600 uppercase"><i class="fa-solid fa-users w-5 text-gray-400"></i> Sueldos</label><input type="number" step="0.01" id="m_sueldos" class="w-32 px-2 py-1 bg-gray-50 border border-gray-300 text-right font-bold text-red-600 outline-none"></div>
+                <div class="flex justify-between items-center"><label class="text-xs font-bold text-gray-600 uppercase"><i class="fa-solid fa-flask w-5 text-gray-400"></i> Insumos</label><input type="number" step="0.01" id="m_insumos" class="w-32 px-2 py-1 bg-gray-50 border border-gray-300 text-right font-bold text-red-600 outline-none"></div>
+                <div class="flex justify-between items-center"><label class="text-xs font-bold text-gray-600 uppercase"><i class="fa-solid fa-utensils w-5 text-gray-400"></i> Comidas</label><input type="number" step="0.01" id="m_comidas" class="w-32 px-2 py-1 bg-gray-50 border border-gray-300 text-right font-bold text-red-600 outline-none"></div>
+                <div class="flex justify-between items-center"><label class="text-xs font-bold text-gray-600 uppercase"><i class="fa-solid fa-cookie w-5 text-gray-400"></i> Oxxo</label><input type="number" step="0.01" id="m_oxxo" class="w-32 px-2 py-1 bg-gray-50 border border-gray-300 text-right font-bold text-red-600 outline-none"></div>
+                <div class="flex justify-between items-center mt-4 pt-3 border-t border-gray-200"><label class="text-sm font-extrabold text-gray-800 uppercase">Suma Total</label><span id="m_total_display" class="text-xl font-extrabold text-red-600">$0.00</span></div>
             </div>
-            <button type="button" onclick="confirmarDesgloseGastos()" class="w-full mt-5 py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition-colors shadow-md"><i class="fa-solid fa-check mr-1"></i> Confirmar y Sumar</button>
+            <button type="button" onclick="confirmarDesgloseGastos()" class="w-full mt-5 py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg shadow-md"><i class="fa-solid fa-check mr-1"></i> Confirmar y Sumar</button>
         </div>
     </div>
 
@@ -389,23 +363,28 @@
         let rolUsuario = 'trabajador'; 
         let visitasCampoRealizadas = 0; 
 
-        // --- CONTROL DEL MENÚ LATERAL (SIDEBAR) ---
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar-menu');
             const overlay = document.getElementById('sidebar-overlay');
-            if (sidebar.classList.contains('-translate-x-full')) {
-                sidebar.classList.remove('-translate-x-full');
-                overlay.classList.remove('hidden');
-            } else {
-                sidebar.classList.add('-translate-x-full');
-                overlay.classList.add('hidden');
-            }
+            if (sidebar.classList.contains('-translate-x-full')) { sidebar.classList.remove('-translate-x-full'); overlay.classList.remove('hidden'); } 
+            else { sidebar.classList.add('-translate-x-full'); overlay.classList.add('hidden'); }
         }
+
+        // Auto-sugerencia de hectáreas al cambiar de parcela en el formulario
+        document.getElementById('selectPropiedad').addEventListener('change', function() {
+            const pId = this.value;
+            if(pId) {
+                const prop = memoriaPropiedades.find(x => x.id === pId);
+                if(prop) {
+                    document.getElementById('h_ha_trabajadas').value = prop.superficie_has || 0;
+                    document.getElementById('m_ha_trabajadas').value = prop.superficie_has || 0;
+                }
+            }
+        });
 
         document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            const btn = document.getElementById('btnLogin');
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Cargando BD...'; btn.disabled = true; 
+            const btn = document.getElementById('btnLogin'); btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Cargando BD...'; btn.disabled = true; 
             try {
                 const res = await fetch(`${API_URL}/login/`, {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -424,12 +403,10 @@
                             badge.className = "ml-4 text-xs font-bold px-2 py-1 bg-green-950 text-green-300 rounded-md border border-green-600 tracking-wider";
                         }
                     }
-                    document.getElementById('login-container').classList.add('hidden');
-                    document.getElementById('dashboard-container').classList.remove('hidden');
+                    document.getElementById('login-container').classList.add('hidden'); document.getElementById('dashboard-container').classList.remove('hidden');
                     await inicializarPanel(); 
                 } else {
-                    document.getElementById('loginError').textContent = "Correo o contraseña incorrectos."; document.getElementById('loginError').classList.remove('hidden');
-                    btn.innerHTML = '<i class="fa-solid fa-right-to-bracket mr-2"></i> Iniciar Sesión'; btn.disabled = false;
+                    document.getElementById('loginError').textContent = "Correo o contraseña incorrectos."; document.getElementById('loginError').classList.remove('hidden'); btn.innerHTML = 'Iniciar Sesión'; btn.disabled = false;
                 }
             } catch (error) { alert("Error de conexión"); btn.innerHTML = 'Iniciar Sesión'; btn.disabled = false; }
         });
@@ -437,85 +414,41 @@
         function cerrarSesion() { window.location.reload(); }
         async function inicializarPanel() { await cargarClientes(); await cargarPropiedades(); await cargarServicios(); cambiarVista('inicio'); }
 
-        // --- SISTEMA UNIFICADO DE NAVEGACIÓN SPA ---
         function cambiarVista(vista) {
             ['inicio', 'financieros', 'operaciones', 'ventas-crm'].forEach(sec => {
-                const btn = document.getElementById('nav-' + sec);
-                if(btn) btn.className = "border border-green-500/50 hover:bg-green-700 px-3 py-2 rounded-md text-sm font-medium transition-colors shadow-sm";
-                
                 const tabla = document.getElementById('vista-tabla-' + sec);
                 if(tabla) { tabla.classList.add('hidden'); tabla.classList.remove('block'); }
             });
-            
-            document.getElementById('vista-inicio').classList.add('hidden');
-            document.getElementById('vista-tablas').classList.add('hidden');
+            document.getElementById('vista-inicio').classList.add('hidden'); document.getElementById('vista-tablas').classList.add('hidden');
             
             const btnVisita = document.getElementById('btn-registrar-visita');
-            if(btnVisita) {
-                if (vista === 'ventas-crm') {
-                    btnVisita.classList.remove('hidden');
-                } else {
-                    btnVisita.classList.add('hidden');
-                }
-            }
+            if(btnVisita) { if (vista === 'ventas-crm') btnVisita.classList.remove('hidden'); else btnVisita.classList.add('hidden'); }
             
-            if (vista === 'inicio') { 
-                document.getElementById('vista-inicio').classList.remove('hidden'); 
-                actualizarEstadisticasYMetas(); 
-            } else { 
-                document.getElementById('vista-tablas').classList.remove('hidden'); 
-                const targetTabla = document.getElementById('vista-tabla-' + vista);
-                if(targetTabla) { targetTabla.classList.remove('hidden'); targetTabla.classList.add('block'); }
-            }
+            if (vista === 'inicio') { document.getElementById('vista-inicio').classList.remove('hidden'); actualizarEstadisticasYMetas(); } 
+            else { document.getElementById('vista-tablas').classList.remove('hidden'); const targetTabla = document.getElementById('vista-tabla-' + vista); if(targetTabla) { targetTabla.classList.remove('hidden'); targetTabla.classList.add('block'); } }
         }
 
-        // --- FUNCIÓN PARA REGISTRAR VISITA A CAMPO EN EL BACKEND ---
         async function registrarVisitaCampo() {
-            let mesBusqueda = document.getElementById('filtroMes').value;
-            if(mesBusqueda === 'todos') mesBusqueda = "06"; 
+            let mesBusqueda = document.getElementById('filtroMes').value; if(mesBusqueda === 'todos') mesBusqueda = "06"; 
             const mesActual = `${mesBusqueda}-2026`;
-            
-            const btn = document.getElementById('btn-registrar-visita');
-            const textoOriginal = btn.innerHTML;
-            
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Guardando en Nube...';
-            btn.disabled = true;
-
+            const btn = document.getElementById('btn-registrar-visita'); const textoOriginal = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Guardando en Nube...'; btn.disabled = true;
             try {
-                // Hacemos un POST a la nueva ruta en Python
                 const res = await fetch(`${API_URL}/api/visitas/${mesActual}`, { method: 'POST' });
                 if(res.ok) {
-                    const data = await res.json();
-                    visitasCampoRealizadas = data.visitas_reales; 
-                    
-                    actualizarMetasCEO(); 
-                    
-                    btn.innerHTML = '<i class="fa-solid fa-check"></i> ¡Registrada!';
-                    btn.classList.replace('bg-emerald-600', 'bg-blue-600');
-                    btn.classList.replace('border-emerald-400', 'border-blue-400');
-                    
-                    setTimeout(() => {
-                        btn.innerHTML = textoOriginal;
-                        btn.classList.replace('bg-blue-600', 'bg-emerald-600');
-                        btn.classList.replace('border-blue-400', 'border-emerald-400');
-                        btn.disabled = false;
-                    }, 1500);
+                    const data = await res.json(); visitasCampoRealizadas = data.visitas_reales; actualizarMetasCEO(); 
+                    btn.innerHTML = '<i class="fa-solid fa-check"></i> ¡Registrada!'; btn.classList.replace('bg-emerald-600', 'bg-blue-600'); btn.classList.replace('border-emerald-400', 'border-blue-400');
+                    setTimeout(() => { btn.innerHTML = textoOriginal; btn.classList.replace('bg-blue-600', 'bg-emerald-600'); btn.classList.replace('border-blue-400', 'border-emerald-400'); btn.disabled = false; }, 1500);
                 }
-            } catch(e) {
-                alert("Error al guardar la visita en la nube.");
-                btn.innerHTML = textoOriginal;
-                btn.disabled = false;
-            }
+            } catch(e) { alert("Error al guardar la visita"); btn.innerHTML = textoOriginal; btn.disabled = false; }
         }
 
         function actualizarEstadisticasYMetas() {
             const mesSeleccionado = document.getElementById('filtroMes').value;
-            let serviciosFiltrados = memoriaServicios;
-            if (mesSeleccionado !== 'todos') { serviciosFiltrados = memoriaServicios.filter(s => s.fecha_aplicacion && s.fecha_aplicacion.split('-')[1] === mesSeleccionado); }
+            let serviciosFiltrados = memoriaServicios; if (mesSeleccionado !== 'todos') { serviciosFiltrados = memoriaServicios.filter(s => s.fecha_aplicacion && s.fecha_aplicacion.split('-')[1] === mesSeleccionado); }
             let totalHaFumigadas = 0; let totalIngresos = 0; let totalGastos = 0;
             serviciosFiltrados.forEach(s => {
-                let prop = memoriaPropiedades.find(p => p.id === s.propiedad_id);
-                if(prop) totalHaFumigadas += (prop.superficie_has || 0);
+                let prop = memoriaPropiedades.find(p => p.id === s.propiedad_id); if(prop) totalHaFumigadas += (s.ha_trabajadas || prop.superficie_has || 0);
                 totalIngresos += (s.costo_servicio || 0); totalGastos += (s.gastos || 0); 
             });
             document.getElementById('stat-hectareas').textContent = totalHaFumigadas.toFixed(2);
@@ -524,7 +457,7 @@
             actualizarMetasCEO();
         }
 
-        // --- VELOCÍMETROS APEXCHARTS ---
+        // --- VELOCÍMETROS ---
         function crearVelocimetro(id, color, nombre) { return { series: [0], chart: { type: 'radialBar', height: 200, background: 'transparent' }, plotOptions: { radialBar: { startAngle: -90, endAngle: 90, track: { background: '#e7e7e7', strokeWidth: '97%' }, dataLabels: { name: { show: false }, value: { offsetY: -5, fontSize: '20px', fontWeight: 'bold', color: '#000000', formatter: function (val) { return val.toFixed(1) + "%"; } } } } }, colors: [color], labels: [nombre] }; }
         var chartVentas = new ApexCharts(document.querySelector("#velocimetro-ventas"), crearVelocimetro("#velocimetro-ventas", "#00E396", "Ventas")); chartVentas.render();
         var chartServicios = new ApexCharts(document.querySelector("#velocimetro-servicios"), crearVelocimetro("#velocimetro-servicios", "#00E396", "Servicios")); chartServicios.render();
@@ -534,32 +467,13 @@
 
         async function actualizarMetasCEO() {
             try {
-                let mesBusqueda = document.getElementById('filtroMes').value;
-                if(mesBusqueda === 'todos') mesBusqueda = "06"; 
-                const mesActual = `${mesBusqueda}-2026`;
-                document.getElementById('meta_mes_anio').value = mesActual;
-
+                let mesBusqueda = document.getElementById('filtroMes').value; if(mesBusqueda === 'todos') mesBusqueda = "06"; 
+                const mesActual = `${mesBusqueda}-2026`; document.getElementById('meta_mes_anio').value = mesActual;
                 const res = await fetch(API_URL + "/api/dashboard/" + mesActual); const datos = await res.json();
-                
-                // AHORA TOMA LAS VISITAS DIRECTO DE LA VARIABLE REALES DEL BACKEND
                 visitasCampoRealizadas = datos.reales.visitas || 0; 
-
                 let mV = datos.metas.meta_ventas || 1, mS = datos.metas.meta_servicios || 1, mC = datos.metas.meta_clientes || 1, mP = datos.metas.meta_prospectos || 1, mVis = datos.metas.meta_prospectos_visitas || 1;
-
-                chartVentas.updateSeries([Math.min((datos.reales.ventas / mV) * 100, 100)]);
-                chartServicios.updateSeries([Math.min((datos.reales.servicios / mS) * 100, 100)]);
-                chartClientes.updateSeries([Math.min((datos.reales.clientes / mC) * 100, 100)]);
-                chartProspectos.updateSeries([Math.min((datos.reales.prospectos / mP) * 100, 100)]);
-                
-                chartVisitas.updateSeries([Math.min((visitasCampoRealizadas / mVis) * 100, 100)]);
-
-                document.getElementById("texto-ventas-real").innerText = "$" + datos.reales.ventas.toLocaleString() + " / $" + parseFloat(datos.metas.meta_ventas || 0).toLocaleString();
-                document.getElementById("texto-servicios-real").innerText = datos.reales.servicios + " / " + (datos.metas.meta_servicios || 0);
-                document.getElementById("texto-clientes-real").innerText = datos.reales.clientes + " / " + (datos.metas.meta_clientes || 0);
-                document.getElementById("texto-prospectos-real").innerText = datos.reales.prospectos + " / " + (datos.metas.meta_prospectos || 0);
-                
-                document.getElementById("texto-visitas-real").innerText = visitasCampoRealizadas + " / " + (datos.metas.meta_prospectos_visitas || 0);
-
+                chartVentas.updateSeries([Math.min((datos.reales.ventas / mV) * 100, 100)]); chartServicios.updateSeries([Math.min((datos.reales.servicios / mS) * 100, 100)]); chartClientes.updateSeries([Math.min((datos.reales.clientes / mC) * 100, 100)]); chartProspectos.updateSeries([Math.min((datos.reales.prospectos / mP) * 100, 100)]); chartVisitas.updateSeries([Math.min((visitasCampoRealizadas / mVis) * 100, 100)]);
+                document.getElementById("texto-ventas-real").innerText = "$" + datos.reales.ventas.toLocaleString() + " / $" + parseFloat(datos.metas.meta_ventas || 0).toLocaleString(); document.getElementById("texto-servicios-real").innerText = datos.reales.servicios + " / " + (datos.metas.meta_servicios || 0); document.getElementById("texto-clientes-real").innerText = datos.reales.clientes + " / " + (datos.metas.meta_clientes || 0); document.getElementById("texto-prospectos-real").innerText = datos.reales.prospectos + " / " + (datos.metas.meta_prospectos || 0); document.getElementById("texto-visitas-real").innerText = visitasCampoRealizadas + " / " + (datos.metas.meta_prospectos_visitas || 0);
                 document.getElementById('input_meta_ventas').value = datos.metas.meta_ventas || 0; document.getElementById('input_meta_servicios').value = datos.metas.meta_servicios || 0; document.getElementById('input_meta_clientes').value = datos.metas.meta_clientes || 0; document.getElementById('input_meta_prospectos').value = datos.metas.meta_prospectos || 0; document.getElementById('input_meta_visitas').value = datos.metas.meta_prospectos_visitas || 0;
             } catch (error) {}
         }
@@ -567,16 +481,40 @@
         
         document.getElementById('formMetas').addEventListener('submit', async function(e) { 
             e.preventDefault(); document.getElementById('btnGuardarMetas').innerText = "Guardando..."; 
-            const datosMeta = { 
-                mes_anio: document.getElementById('meta_mes_anio').value, 
-                meta_ventas: parseFloat(document.getElementById('input_meta_ventas').value), 
-                meta_servicios: parseInt(document.getElementById('input_meta_servicios').value), 
-                meta_clientes: parseInt(document.getElementById('input_meta_clientes').value), 
-                meta_prospectos: parseInt(document.getElementById('input_meta_prospectos').value),
-                meta_prospectos_visitas: parseInt(document.getElementById('input_meta_visitas').value)
-            }; 
+            const datosMeta = { mes_anio: document.getElementById('meta_mes_anio').value, meta_ventas: parseFloat(document.getElementById('input_meta_ventas').value), meta_servicios: parseInt(document.getElementById('input_meta_servicios').value), meta_clientes: parseInt(document.getElementById('input_meta_clientes').value), meta_prospectos: parseInt(document.getElementById('input_meta_prospectos').value), meta_prospectos_visitas: parseInt(document.getElementById('input_meta_visitas').value) }; 
             try { await fetch(API_URL + "/api/metas/", { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datosMeta) }); cerrarModalMetas(); document.getElementById('btnGuardarMetas').innerText = "Guardar en Base de Datos"; actualizarMetasCEO(); } catch (error) { document.getElementById('btnGuardarMetas').innerText = "Guardar en Base de Datos"; } 
         });
+
+        // --- CALCULADORA DE INGRESOS (INTERACTIVA) ---
+        function abrirModalDesgloseIngresos() {
+            document.getElementById('m_ha_trabajadas').value = document.getElementById('h_ha_trabajadas').value || 0;
+            document.getElementById('m_precio_por_ha').value = document.getElementById('h_precio_por_ha').value || 0;
+            document.getElementById('m_ingreso_viaticos').value = document.getElementById('h_ingreso_viaticos').value || 0;
+            document.getElementById('m_ingreso_suministros').value = document.getElementById('h_ingreso_suministros').value || 0;
+            calcularTotalModalIngresos(); document.getElementById('modal-ingresos').classList.remove('hidden');
+        }
+        function cerrarModalIngresos() { document.getElementById('modal-ingresos').classList.add('hidden'); }
+        function calcularTotalModalIngresos() {
+            let ha = parseFloat(document.getElementById('m_ha_trabajadas').value) || 0;
+            let precio = parseFloat(document.getElementById('m_precio_por_ha').value) || 0;
+            let subtotalFumi = ha * precio;
+            let viaticos = parseFloat(document.getElementById('m_ingreso_viaticos').value) || 0;
+            let suministros = parseFloat(document.getElementById('m_ingreso_suministros').value) || 0;
+            
+            document.getElementById('m_subtotal_fumigacion').innerText = "$" + subtotalFumi.toLocaleString('es-MX', {minimumFractionDigits: 2});
+            let total = subtotalFumi + viaticos + suministros;
+            document.getElementById('m_total_ingresos_display').innerText = "$" + total.toLocaleString('es-MX', {minimumFractionDigits: 2});
+            return total;
+        }
+        ['m_ha_trabajadas', 'm_precio_por_ha', 'm_ingreso_viaticos', 'm_ingreso_suministros'].forEach(id => { document.getElementById(id).addEventListener('input', calcularTotalModalIngresos); });
+        function confirmarDesgloseIngresos() {
+            let totalIngreso = calcularTotalModalIngresos();
+            document.getElementById('h_ha_trabajadas').value = document.getElementById('m_ha_trabajadas').value || 0;
+            document.getElementById('h_precio_por_ha').value = document.getElementById('m_precio_por_ha').value || 0;
+            document.getElementById('h_ingreso_viaticos').value = document.getElementById('m_ingreso_viaticos').value || 0;
+            document.getElementById('h_ingreso_suministros').value = document.getElementById('m_ingreso_suministros').value || 0;
+            document.getElementById('costo_servicio').value = totalIngreso; cerrarModalIngresos();
+        }
 
         // --- CALCULADORA DE GASTOS ---
         function abrirModalDesgloseGastos() { document.getElementById('m_gas_unidad').value = document.getElementById('h_gas_unidad').value || 0; document.getElementById('m_gas_gen').value = document.getElementById('h_gas_gen').value || 0; document.getElementById('m_sueldos').value = document.getElementById('h_sueldos').value || 0; document.getElementById('m_insumos').value = document.getElementById('h_insumos').value || 0; document.getElementById('m_comidas').value = document.getElementById('h_comidas').value || 0; document.getElementById('m_oxxo').value = document.getElementById('h_oxxo').value || 0; calcularTotalModal(); document.getElementById('modal-gastos').classList.remove('hidden'); }
@@ -585,123 +523,83 @@
         ['m_gas_unidad', 'm_gas_gen', 'm_sueldos', 'm_insumos', 'm_comidas', 'm_oxxo'].forEach(id => { document.getElementById(id).addEventListener('input', calcularTotalModal); });
         function confirmarDesgloseGastos() { let totalGasto = calcularTotalModal(); document.getElementById('h_gas_unidad').value = document.getElementById('m_gas_unidad').value || 0; document.getElementById('h_gas_gen').value = document.getElementById('m_gas_gen').value || 0; document.getElementById('h_sueldos').value = document.getElementById('m_sueldos').value || 0; document.getElementById('h_insumos').value = document.getElementById('m_insumos').value || 0; document.getElementById('h_comidas').value = document.getElementById('m_comidas').value || 0; document.getElementById('h_oxxo').value = document.getElementById('m_oxxo').value || 0; document.getElementById('gastos').value = totalGasto; cerrarModalGastos(); }
 
-        // --- CONTROL DE CLIENTES CON BADGES CRM ---
+        // --- CLIENTES ---
         function renderizarTablaClientes(lista) { 
-            const cuerpo = document.getElementById('cuerpoTabla'); cuerpo.innerHTML = ''; 
-            document.getElementById('contadorClientes').textContent = `${lista.length} REGISTRADOS`; 
+            const cuerpo = document.getElementById('cuerpoTabla'); cuerpo.innerHTML = ''; document.getElementById('contadorClientes').textContent = `${lista.length} REGISTRADOS`; 
             lista.forEach(c => {
-                let badge = '';
-                if(c.estado === 'Cliente') {
-                    badge = `<span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-300">Cliente Real 🟢</span>`;
-                } else if(c.estado === 'Negociación') {
-                    badge = `<span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-amber-300">Negociación 🟠</span>`;
-                } else {
-                    badge = `<span class="bg-blue-100 text-blue-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-blue-300">Prospecto 🟡</span>`;
-                }
-
-                cuerpo.innerHTML += `<tr class="hover:bg-gray-50"><td class="px-6 py-4"><div class="flex items-center space-x-4"><div class="bg-green-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold shadow-sm"><i class="fa-solid fa-user"></i></div><div><p class="font-bold text-gray-800">${c.nombre} ${c.apellidos}</p><p class="text-[10px] text-gray-400 mt-1 flex items-center gap-2">RFC: ${c.rfc || 'S/N'} | ${badge}</p></div></div></td><td class="px-6 py-4"><p class="text-sm text-blue-600 font-medium"><i class="fa-solid fa-envelope mr-2"></i>${c.email || 'Sin correo'}</p><p class="text-sm text-gray-600 mt-1"><i class="fa-solid fa-phone text-green-600 mr-2"></i>${c.telefono}</p></td><td class="px-6 py-4 text-center whitespace-nowrap space-x-1"><button onclick="tabularEdicionCliente('${c.id}')" class="bg-amber-400 hover:bg-amber-500 text-white text-xs font-bold px-4 py-2 rounded-full shadow-sm"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="eliminarCliente('${c.id}')" class="bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-4 py-2 rounded-full shadow-sm"><i class="fa-solid fa-trash"></i></button></td></tr>`; 
+                let badge = c.estado === 'Cliente' ? `<span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-300">Cliente Real 🟢</span>` : (c.estado === 'Negociación' ? `<span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-amber-300">Negociación 🟠</span>` : `<span class="bg-blue-100 text-blue-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-blue-300">Prospecto 🟡</span>`);
+                cuerpo.innerHTML += `<tr class="hover:bg-gray-50"><td class="px-6 py-4"><div class="flex items-center space-x-4"><div class="bg-green-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold shadow-sm"><i class="fa-solid fa-user"></i></div><div><p class="font-bold text-gray-800">${c.nombre} ${c.apellidos}</p><p class="text-[10px] text-gray-400 mt-1">RFC: ${c.rfc || 'S/N'} | ${badge}</p></div></div></td><td class="px-6 py-4"><p class="text-sm text-blue-600 font-medium"><i class="fa-solid fa-envelope mr-2"></i>${c.email || 'Sin correo'}</p><p class="text-sm text-gray-600 mt-1"><i class="fa-solid fa-phone text-green-600 mr-2"></i>${c.telefono}</p></td><td class="px-6 py-4 text-center whitespace-nowrap space-x-1"><button onclick="tabularEdicionCliente('${c.id}')" class="bg-amber-400 text-white text-xs px-4 py-2 rounded-full shadow-sm"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="eliminarCliente('${c.id}')" class="bg-rose-600 text-white text-xs px-4 py-2 rounded-full shadow-sm"><i class="fa-solid fa-trash"></i></button></td></tr>`; 
             }); 
         }
-        
         function filtrarClientes() { renderizarTablaClientes(memoriaClientes.filter(c => `${c.nombre} ${c.apellidos}`.toLowerCase().includes(document.getElementById('buscadorClientes').value.toLowerCase()))); }
         async function cargarClientes() { try { const res = await fetch(`${API_URL}/clientes/`); memoriaClientes = await res.json(); const sel = document.getElementById('selectCliente'); sel.innerHTML = '<option value="">-- Selecciona --</option>'; memoriaClientes.forEach(c => { sel.innerHTML += `<option value="${c.id}">${c.nombre} ${c.apellidos}</option>`; }); renderizarTablaClientes(memoriaClientes); } catch (e) {} }
-        
-        document.getElementById('registroForm').addEventListener('submit', async function(e) { 
-            e.preventDefault(); const id = document.getElementById('editClienteId').value; 
-            const datos = { 
-                nombre: document.getElementById('nombre').value, apellidos: document.getElementById('apellidos').value, 
-                email: document.getElementById('email').value, telefono: document.getElementById('telefono').value, 
-                rfc: document.getElementById('rfc').value, estado: document.getElementById('estado_cliente').value 
-            }; 
-            await fetch(id ? `${API_URL}/clientes/${id}` : `${API_URL}/clientes/`, { method: id ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos) }); 
-            limpiarFormCliente(); await inicializarPanel(); 
-        });
-        
+        document.getElementById('registroForm').addEventListener('submit', async function(e) { e.preventDefault(); const id = document.getElementById('editClienteId').value; const datos = { nombre: document.getElementById('nombre').value, apellidos: document.getElementById('apellidos').value, email: document.getElementById('email').value, telefono: document.getElementById('telefono').value, rfc: document.getElementById('rfc').value, estado: document.getElementById('estado_cliente').value }; await fetch(id ? `${API_URL}/clientes/${id}` : `${API_URL}/clientes/`, { method: id ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos) }); limpiarFormCliente(); await inicializarPanel(); });
         async function eliminarCliente(id) { if(confirm("¿Eliminar productor?")) { await fetch(`${API_URL}/clientes/${id}`, { method: 'DELETE' }); await inicializarPanel(); } }
-        
-        function tabularEdicionCliente(id) { 
-            const c = memoriaClientes.find(x => x.id === id); 
-            document.getElementById('editClienteId').value = c.id; document.getElementById('nombre').value = c.nombre; document.getElementById('apellidos').value = c.apellidos; document.getElementById('email').value = c.email; document.getElementById('telefono').value = c.telefono; document.getElementById('rfc').value = c.rfc; 
-            document.getElementById('estado_cliente').value = c.estado || 'Prospecto'; 
-            document.getElementById('tituloFormCliente').innerHTML = `<i class="fa-solid fa-pen text-amber-500 mr-2 text-2xl"></i> Editando Registro`; document.getElementById('btnSubmitCliente').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-amber-500 hover:bg-amber-600 shadow-sm"; document.getElementById('btnCancelarCliente').classList.remove('hidden'); cambiarVista('inicio'); window.scrollTo({ top: document.getElementById('vista-form-clientes').offsetTop - 100, behavior: 'smooth' }); 
-        }
-        
-        function limpiarFormCliente() { document.getElementById('registroForm').reset(); document.getElementById('editClienteId').value = ''; document.getElementById('estado_cliente').value = 'Prospecto'; document.getElementById('tituloFormCliente').innerHTML = `<i class="fa-solid fa-user-plus text-green-600 mr-2 text-2xl"></i> Nuevo Registro`; document.getElementById('btnSubmitCliente').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-[#4ade80] hover:bg-green-500 text-green-900 transition-colors shadow-sm"; document.getElementById('btnCancelarCliente').classList.add('hidden'); }
+        function tabularEdicionCliente(id) { const c = memoriaClientes.find(x => x.id === id); document.getElementById('editClienteId').value = c.id; document.getElementById('nombre').value = c.nombre; document.getElementById('apellidos').value = c.apellidos; document.getElementById('email').value = c.email; document.getElementById('telefono').value = c.telefono; document.getElementById('rfc').value = c.rfc; document.getElementById('estado_cliente').value = c.estado || 'Prospecto'; document.getElementById('tituloFormCliente').innerHTML = `<i class="fa-solid fa-pen text-amber-500 mr-2 text-2xl"></i> Editando Registro`; document.getElementById('btnSubmitCliente').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-amber-500"; document.getElementById('btnCancelarCliente').classList.remove('hidden'); cambiarVista('inicio'); }
+        function limpiarFormCliente() { document.getElementById('registroForm').reset(); document.getElementById('editClienteId').value = ''; document.getElementById('estado_cliente').value = 'Prospecto'; document.getElementById('tituloFormCliente').innerHTML = `<i class="fa-solid fa-user-plus text-green-600 mr-2 text-2xl"></i> Nuevo Registro`; document.getElementById('btnSubmitCliente').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-[#4ade80]"; document.getElementById('btnCancelarCliente').classList.add('hidden'); }
 
-        // --- CONTROL DE PARCELAS ---
-        async function cargarPropiedades() { try { const res = await fetch(`${API_URL}/propiedades/`); memoriaPropiedades = await res.json(); const cuerpo = document.getElementById('cuerpoTablaPropiedades'); cuerpo.innerHTML = ''; const sel = document.getElementById('selectPropiedad'); sel.innerHTML = '<option value="">-- Selecciona --</option>'; memoriaPropiedades.forEach(p => { const cl = memoriaClientes.find(c => c.id === p.cliente_id); const nD = cl ? `${cl.nombre} ${cl.apellidos}` : 'N/A'; cuerpo.innerHTML += `<tr><td class="px-6 py-4"><p class="font-bold text-sm">${p.nombre_propiedad}</p><p class="text-[11px] text-gray-500">${p.direccion || p.estado} - Prop: ${nD}</p></td><td class="px-6 py-4 text-center"><span class="bg-[#1b6b43] text-white px-3 py-1 rounded-full text-[10px] font-bold">${p.tipo_cultivo}</span></td><td class="px-6 py-4 text-center"><p class="text-xl font-extrabold">${p.superficie_has}</p></td><td class="px-6 py-4 text-center"><button onclick="ajustarEdicionPropiedad('${p.id}')" class="bg-amber-400 text-white text-xs px-4 py-2 rounded-full mr-1"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="eliminarPropiedad('${p.id}')" class="bg-rose-600 text-white text-xs px-4 py-2 rounded-full"><i class="fa-solid fa-trash"></i></button></td></tr>`; sel.innerHTML += `<option value="${p.id}">${nD} - ${p.nombre_propiedad}</option>`; }); } catch (e) {} }
-        
-        document.getElementById('propiedadForm').addEventListener('submit', async function(e) { 
-            e.preventDefault(); 
-            const id = document.getElementById('editPropiedadId').value; 
-            const datos = { 
-                cliente_id: document.getElementById('selectCliente').value, 
-                nombre_propiedad: document.getElementById('nombre_propiedad').value, 
-                direccion: document.getElementById('direccion').value, 
-                estado: document.getElementById('estado').value, 
-                tipo_cultivo: document.getElementById('tipo_cultivo').value, 
-                superficie_has: parseFloat(document.getElementById('superficie_has').value), 
-                sistema_riego: 'N/A', 
-                comentarios: '' 
-            }; 
-            await fetch(id ? `${API_URL}/propiedades/${id}` : `${API_URL}/propiedades/`, { method: id ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos) }); 
-            limpiarFormPropiedad(); await inicializarPanel(); 
-        });
-        
+        // --- PARCELAS ---
+        async function cargarPropiedades() { try { const res = await fetch(`${API_URL}/propiedades/`); memoriaPropiedades = await res.json(); const cuerpo = document.getElementById('cuerpoTablaPropiedades'); cuerpo.innerHTML = ''; const sel = document.getElementById('selectPropiedad'); sel.innerHTML = '<option value="">-- Selecciona --</option>'; memoriaPropiedades.forEach(p => { const cl = memoriaClientes.find(c => c.id === p.cliente_id); const nD = cl ? `${cl.nombre} ${cl.apellidos}` : 'N/A'; cuerpo.innerHTML += `<tr><td class="px-6 py-4"><p class="font-bold text-sm">${p.nombre_propiedad}</p><p class="text-[11px] text-gray-500">${p.direccion} - Prop: ${nD}</p></td><td class="px-6 py-4 text-center"><span class="bg-[#1b6b43] text-white px-3 py-1 rounded-full text-[10px] font-bold">${p.tipo_cultivo}</span></td><td class="px-6 py-4 text-center"><p class="text-xl font-extrabold">${p.superficie_has}</p></td><td class="px-6 py-4 text-center"><button onclick="ajustarEdicionPropiedad('${p.id}')" class="bg-amber-400 text-white text-xs px-4 py-2 rounded-full mr-1"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="eliminarPropiedad('${p.id}')" class="bg-rose-600 text-white text-xs px-4 py-2 rounded-full"><i class="fa-solid fa-trash"></i></button></td></tr>`; sel.innerHTML += `<option value="${p.id}">${nD} - ${p.nombre_propiedad}</option>`; }); } catch (e) {} }
+        document.getElementById('propiedadForm').addEventListener('submit', async function(e) { e.preventDefault(); const id = document.getElementById('editPropiedadId').value; const datos = { cliente_id: document.getElementById('selectCliente').value, nombre_propiedad: document.getElementById('nombre_propiedad').value, direccion: document.getElementById('direccion').value, estado: document.getElementById('estado').value, tipo_cultivo: document.getElementById('tipo_cultivo').value, superficie_has: parseFloat(document.getElementById('superficie_has').value), sistema_riego: 'N/A', comentarios: '' }; await fetch(id ? `${API_URL}/propiedades/${id}` : `${API_URL}/propiedades/`, { method: id ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos) }); limpiarFormPropiedad(); await inicializarPanel(); });
         async function eliminarPropiedad(id) { if(confirm("¿Eliminar parcela?")) { await fetch(`${API_URL}/propiedades/${id}`, { method: 'DELETE' }); await inicializarPanel(); } }
-        
-        function ajustarEdicionPropiedad(id) { 
-            const p = memoriaPropiedades.find(x => x.id === id); 
-            document.getElementById('editPropiedadId').value = p.id; 
-            document.getElementById('selectCliente').value = p.cliente_id; 
-            document.getElementById('nombre_propiedad').value = p.nombre_propiedad; 
-            document.getElementById('tipo_cultivo').value = p.tipo_cultivo; 
-            document.getElementById('superficie_has').value = p.superficie_has; 
-            document.getElementById('direccion').value = p.direccion; 
-            document.getElementById('estado').value = p.estado; 
-            document.getElementById('tituloFormPropiedad').innerHTML = `<i class="fa-solid fa-pen text-amber-500 mr-2 text-2xl"></i> Editando Parcela`; 
-            document.getElementById('btnSubmitPropiedad').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-amber-500 hover:bg-amber-600 shadow-sm"; 
-            document.getElementById('btnCancelarPropiedad').classList.remove('hidden'); 
-            cambiarVista('inicio'); 
-            window.scrollTo({ top: document.getElementById('vista-form-propiedades').offsetTop - 100, behavior: 'smooth' }); 
-        }
-        
-        function limpiarFormPropiedad() { document.getElementById('propiedadForm').reset(); document.getElementById('editPropiedadId').value = ''; document.getElementById('tituloFormPropiedad').innerHTML = `<i class="fa-solid fa-map-location-dot text-green-600 mr-2 text-2xl"></i> Registrar Parcela`; document.getElementById('btnSubmitPropiedad').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-[#4ade80] hover:bg-green-500 text-green-900 transition-colors shadow-sm"; document.getElementById('btnCancelarPropiedad').classList.add('hidden'); }
+        function ajustarEdicionPropiedad(id) { const p = memoriaPropiedades.find(x => x.id === id); document.getElementById('editPropiedadId').value = p.id; document.getElementById('selectCliente').value = p.cliente_id; document.getElementById('nombre_propiedad').value = p.nombre_propiedad; document.getElementById('tipo_cultivo').value = p.tipo_cultivo; document.getElementById('superficie_has').value = p.superficie_has; document.getElementById('direccion').value = p.direccion; document.getElementById('estado').value = p.estado; document.getElementById('tituloFormPropiedad').innerHTML = `<i class="fa-solid fa-pen text-amber-500 mr-2 text-2xl"></i> Editando Parcela`; document.getElementById('btnSubmitPropiedad').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-amber-500"; document.getElementById('btnCancelarPropiedad').classList.remove('hidden'); cambiarVista('inicio'); }
+        function limpiarFormPropiedad() { document.getElementById('propiedadForm').reset(); document.getElementById('editPropiedadId').value = ''; document.getElementById('tituloFormPropiedad').innerHTML = `<i class="fa-solid fa-map-location-dot text-green-600 mr-2 text-2xl"></i> Registrar Parcela`; document.getElementById('btnSubmitPropiedad').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-[#4ade80]"; document.getElementById('btnCancelarPropiedad').classList.add('hidden'); }
 
-        // --- CONTROL DE SERVICIOS Y VENTAS ---
+        // --- VENTAS Y REPORTES FINANCIEROS ---
         async function cargarServicios() { 
             try { 
                 const res = await fetch(`${API_URL}/servicios/`); memoriaServicios = await res.json(); 
                 const cuerpoVentas = document.getElementById('cuerpoTablaServicios'); cuerpoVentas.innerHTML = ''; 
                 const cuerpoGastos = document.getElementById('cuerpoTablaGastos'); cuerpoGastos.innerHTML = ''; 
+                const cuerpoIngresos = document.getElementById('cuerpoTablaIngresos'); cuerpoIngresos.innerHTML = ''; 
+
                 memoriaServicios.forEach(s => { 
                     const pr = memoriaPropiedades.find(p => p.id === s.propiedad_id); const cl = pr ? memoriaClientes.find(c => c.id === pr.cliente_id) : null; 
                     let noControl = s.id ? String(s.id).substring(0,6).toUpperCase() : 'S/N';
-                    let nomProd = cl ? cl.nombre + " " + cl.apellidos : 'N/A'; let totalGasto = s.gastos || 0;
-                    cuerpoVentas.innerHTML += `<tr><td class="td-excel bg-gray-50">${noControl}</td><td class="td-excel">${cl?cl.nombre:'N/A'}</td><td class="td-excel">${cl?cl.apellidos:'N/A'}</td><td class="td-excel">${cl?cl.telefono:'N/A'}</td><td class="td-excel">${pr?pr.tipo_cultivo:'N/A'}</td><td class="td-excel text-center">${pr?pr.superficie_has:'0'}</td><td class="td-excel">${pr?pr.direccion:'N/A'}</td><td class="td-excel">${s.no_cotizacion||'S/N'}</td><td class="td-excel">${s.no_orden||'S/N'}</td><td class="td-excel">${s.fecha_aplicacion||'S/N'}</td><td class="td-excel text-right text-green-700 font-bold">$${(s.costo_servicio||0).toLocaleString()}</td><td class="td-excel text-right text-red-600 font-bold">$${totalGasto.toLocaleString()}</td><td class="td-excel text-right text-blue-700 font-bold">$${((s.costo_servicio||0)-totalGasto).toLocaleString()}</td><td class="td-excel text-center">${s.fecha_seguimiento||'S/N'}</td><td class="td-excel text-center">${s.no_factura||'S/N'}</td><td class="td-excel max-w-[150px] truncate">${s.observaciones||''}</td><td class="td-excel text-center space-x-2"><button onclick="prepararEdicionServicio('${s.id}')" class="text-amber-500"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="eliminarServio('${s.id}')" class="text-rose-500"><i class="fa-solid fa-trash"></i></button></td></tr>`; 
-                    cuerpoGastos.innerHTML += `<tr class="hover:bg-rose-50 transition-colors"><td class="td-excel font-bold text-gray-500">${noControl}</td><td class="td-excel font-semibold">${nomProd}</td><td class="td-excel text-gray-600">${pr?pr.tipo_cultivo:'N/A'}</td><td class="td-excel text-right text-rose-600 font-medium">$${(s.gasto_gasolina_unidad||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600 font-medium">$${(s.gasto_gasolina_generador||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600 font-medium">$${(s.gasto_sueldos||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600 font-medium">$${(s.gasto_insumos||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600 font-medium">$${(s.gasto_comidas||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600 font-medium">$${(s.gasto_oxxo||0).toLocaleString()}</td><td class="td-excel text-right text-red-700 font-extrabold bg-red-50 border-l border-red-200">$${totalGasto.toLocaleString()}</td></tr>`;
+                    let nomProd = cl ? cl.nombre + " " + cl.apellidos : 'N/A'; 
+                    let totalGasto = s.gastos || 0; let totalIngreso = s.costo_servicio || 0;
+                    
+                    // RENDER BASE DE DATOS DE VENTAS
+                    cuerpoVentas.innerHTML += `<tr><td class="td-excel bg-gray-50">${noControl}</td><td class="td-excel">${cl?cl.nombre:'N/A'}</td><td class="td-excel">${cl?cl.apellidos:'N/A'}</td><td class="td-excel">${cl?cl.telefono:'N/A'}</td><td class="td-excel">${pr?pr.tipo_cultivo:'N/A'}</td><td class="td-excel text-center">${s.ha_trabajadas || (pr?pr.superficie_has:'0')}</td><td class="td-excel">${pr?pr.direccion:'N/A'}</td><td class="td-excel">${s.no_cotizacion||'S/N'}</td><td class="td-excel">${s.no_orden||'S/N'}</td><td class="td-excel">${s.fecha_aplicacion||'S/N'}</td><td class="td-excel text-right text-green-700 font-bold">$${totalIngreso.toLocaleString()}</td><td class="td-excel text-right text-red-600 font-bold">$${totalGasto.toLocaleString()}</td><td class="td-excel text-right text-blue-700 font-bold">$${(totalIngreso-totalGasto).toLocaleString()}</td><td class="td-excel text-center">${s.fecha_seguimiento||'S/N'}</td><td class="td-excel text-center">${s.no_factura||'S/N'}</td><td class="td-excel max-w-[150px] truncate">${s.observaciones||''}</td><td class="td-excel text-center space-x-2"><button onclick="prepararEdicionServicio('${s.id}')" class="text-amber-500"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="eliminarServio('${s.id}')" class="text-rose-500"><i class="fa-solid fa-trash"></i></button></td></tr>`; 
+                    
+                    // RENDER TABLA DE INGRESOS DETALLADA (NUEVA)
+                    cuerpoIngresos.innerHTML += `<tr class="hover:bg-emerald-50"><td class="td-excel font-bold text-gray-500">${noControl}</td><td class="td-excel font-semibold">${nomProd}</td><td class="td-excel text-gray-600">${pr?pr.tipo_cultivo:'N/A'}</td><td class="td-excel text-center font-bold">${s.ha_trabajadas||0} Ha</td><td class="td-excel text-right">$${(s.precio_por_ha||0).toLocaleString()}</td><td class="td-excel text-right text-emerald-600">$${(s.ingreso_viaticos||0).toLocaleString()}</td><td class="td-excel text-right text-emerald-600">$${(s.ingreso_suministros||0).toLocaleString()}</td><td class="td-excel text-right text-emerald-700 font-extrabold bg-emerald-50 border-l border-emerald-200">$${totalIngreso.toLocaleString()}</td></tr>`;
+
+                    // RENDER TABLA DE GASTOS
+                    cuerpoGastos.innerHTML += `<tr class="hover:bg-rose-50"><td class="td-excel font-bold text-gray-500">${noControl}</td><td class="td-excel font-semibold">${nomProd}</td><td class="td-excel text-gray-600">${pr?pr.tipo_cultivo:'N/A'}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_gasolina_unidad||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_gasolina_generador||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_sueldos||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_insumos||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_comidas||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_oxxo||0).toLocaleString()}</td><td class="td-excel text-right text-red-700 font-extrabold bg-red-50 border-l border-red-200">$${totalGasto.toLocaleString()}</td></tr>`;
                 }); 
             } catch (e) {} 
         }
 
         document.getElementById('servicioForm').addEventListener('submit', async function(e) { 
-            e.preventDefault(); 
-            const id = document.getElementById('editServioId').value;
+            e.preventDefault(); const id = document.getElementById('editServioId').value;
             const datos = { 
                 propiedad_id: document.getElementById('selectPropiedad').value, fecha_aplicacion: document.getElementById('fecha_aplicacion').value, 
                 costo_servicio: parseFloat(document.getElementById('costo_servicio').value || 0), estado_cuenta: 'Cobrado', satisfaccion: 5,
                 no_cotizacion: document.getElementById('no_cotizacion').value, no_orden: document.getElementById('no_orden').value,
                 gastos: parseFloat(document.getElementById('gastos').value || 0), fecha_seguimiento: document.getElementById('fecha_seguimiento').value,
                 no_factura: document.getElementById('no_factura').value, observaciones: document.getElementById('observaciones').value,
-                gasto_gasolina_unidad: parseFloat(document.getElementById('h_gas_unidad').value || 0), gasto_gasolina_generador: parseFloat(document.getElementById('h_gas_gen').value || 0), gasto_sueldos: parseFloat(document.getElementById('h_sueldos').value || 0), gasto_insumos: parseFloat(document.getElementById('h_insumos').value || 0), gasto_comidas: parseFloat(document.getElementById('h_comidas').value || 0), gasto_oxxo: parseFloat(document.getElementById('h_oxxo').value || 0)
+                gasto_gasolina_unidad: parseFloat(document.getElementById('h_gas_unidad').value || 0), gasto_gasolina_generador: parseFloat(document.getElementById('h_gas_gen').value || 0), gasto_sueldos: parseFloat(document.getElementById('h_sueldos').value || 0), gasto_insumos: parseFloat(document.getElementById('h_insumos').value || 0), gasto_comidas: parseFloat(document.getElementById('h_comidas').value || 0), gasto_oxxo: parseFloat(document.getElementById('h_oxxo').value || 0),
+                ha_trabajadas: parseFloat(document.getElementById('h_ha_trabajadas').value || 0), precio_por_ha: parseFloat(document.getElementById('h_precio_por_ha').value || 0), ingreso_viaticos: parseFloat(document.getElementById('h_ingreso_viaticos').value || 0), ingreso_suministros: parseFloat(document.getElementById('h_ingreso_suministros').value || 0)
             }; 
             await fetch(id ? `${API_URL}/servicios/${id}` : `${API_URL}/servicios/`, { method: id ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos) }); 
             limpiarFormService(); await inicializarPanel(); 
         });
 
-        async function eliminarServio(id) { if(confirm("¿Eliminar registro de vuelo?")) { await fetch(`${API_URL}/servicios/${id}`, { method: 'DELETE' }); await inicializarPanel(); } }
-        function prepararEdicionServicio(id) { const s = memoriaServicios.find(x => x.id === id); document.getElementById('editServioId').value = s.id; document.getElementById('selectPropiedad').value = s.propiedad_id; document.getElementById('fecha_aplicacion').value = s.fecha_aplicacion||''; document.getElementById('costo_servicio').value = s.costo_servicio||''; document.getElementById('no_cotizacion').value = s.no_cotizacion||''; document.getElementById('no_orden').value = s.no_orden||''; document.getElementById('gastos').value = s.gastos||''; document.getElementById('fecha_seguimiento').value = s.fecha_seguimiento||''; document.getElementById('no_factura').value = s.no_factura||''; document.getElementById('observaciones').value = s.observaciones||''; document.getElementById('h_gas_unidad').value = s.gasto_gasolina_unidad || 0; document.getElementById('h_gas_gen').value = s.gasto_gasolina_generador || 0; document.getElementById('h_sueldos').value = s.gasto_sueldos || 0; document.getElementById('h_insumos').value = s.gasto_insumos || 0; document.getElementById('h_comidas').value = s.gasto_comidas || 0; document.getElementById('h_oxxo').value = s.gasto_oxxo || 0; document.getElementById('tituloFormServio').innerHTML = `<i class="fa-solid fa-pen text-amber-500 mr-2 text-2xl"></i> Editando Venta`; document.getElementById('btnSubmitServicio').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-amber-500 hover:bg-amber-600 shadow-sm"; document.getElementById('btnCancelarServicio').classList.remove('hidden'); cambiarVista('inicio'); window.scrollTo({ top: document.getElementById('vista-form-servicios').offsetTop - 100, behavior: 'smooth' });}
-        function limpiarFormService() { document.getElementById('servicioForm').reset(); document.getElementById('editServioId').value = ''; ['h_gas_unidad', 'h_gas_gen', 'h_sueldos', 'h_insumos', 'h_comidas', 'h_oxxo'].forEach(id => document.getElementById(id).value = 0); document.getElementById('tituloFormServio').innerHTML = `<i class="fa-solid fa-file-invoice-dollar text-green-600 mr-2 text-2xl"></i> Registrar Venta`; document.getElementById('btnSubmitServicio').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-green-700 hover:bg-green-600 transition-colors shadow-sm"; document.getElementById('btnCancelarServicio').classList.add('hidden'); }
+        async function eliminarServio(id) { if(confirm("¿Eliminar registro?")) { await fetch(`${API_URL}/servicios/${id}`, { method: 'DELETE' }); await inicializarPanel(); } }
+        
+        function prepararEdicionServicio(id) { 
+            const s = memoriaServicios.find(x => x.id === id); document.getElementById('editServioId').value = s.id; document.getElementById('selectPropiedad').value = s.propiedad_id; document.getElementById('fecha_aplicacion').value = s.fecha_aplicacion||''; document.getElementById('costo_servicio').value = s.costo_servicio||''; document.getElementById('no_cotizacion').value = s.no_cotizacion||''; document.getElementById('no_orden').value = s.no_orden||''; document.getElementById('gastos').value = s.gastos||''; document.getElementById('fecha_seguimiento').value = s.fecha_seguimiento||''; document.getElementById('no_factura').value = s.no_factura||''; document.getElementById('observaciones').value = s.observaciones||''; 
+            document.getElementById('h_gas_unidad').value = s.gasto_gasolina_unidad || 0; document.getElementById('h_gas_gen').value = s.gasto_gasolina_generador || 0; document.getElementById('h_sueldos').value = s.gasto_sueldos || 0; document.getElementById('h_insumos').value = s.gasto_insumos || 0; document.getElementById('h_comidas').value = s.gasto_comidas || 0; document.getElementById('h_oxxo').value = s.gasto_oxxo || 0;
+            document.getElementById('h_ha_trabajadas').value = s.ha_trabajadas || 0; document.getElementById('h_precio_por_ha').value = s.precio_por_ha || 0; document.getElementById('h_ingreso_viaticos').value = s.ingreso_viaticos || 0; document.getElementById('h_ingreso_suministros').value = s.ingreso_suministros || 0;
+            document.getElementById('tituloFormServio').innerHTML = `<i class="fa-solid fa-pen text-amber-500 mr-2 text-2xl"></i> Editando Venta`; cambiarVista('inicio'); 
+        }
+        
+        function limpiarFormService() { 
+            document.getElementById('servicioForm').reset(); document.getElementById('editServioId').value = ''; 
+            ['h_gas_unidad', 'h_gas_gen', 'h_sueldos', 'h_insumos', 'h_comidas', 'h_oxxo', 'h_ha_trabajadas', 'h_precio_por_ha', 'h_ingreso_viaticos', 'h_ingreso_suministros'].forEach(id => document.getElementById(id).value = 0); 
+            document.getElementById('tituloFormServio').innerHTML = `<i class="fa-solid fa-file-invoice-dollar text-green-600 mr-2 text-2xl"></i> Registrar Venta`; 
+        }
     </script>
 </body>
 </html>

@@ -32,7 +32,7 @@ class ClienteNuevo(BaseModel):
     email: str
     telefono: str
     rfc: str
-    estado: Optional[str] = "Prospecto"  # Campo del embudo CRM
+    estado: Optional[str] = "Prospecto"
 
 class PropiedadNueva(BaseModel):
     cliente_id: str  
@@ -62,6 +62,11 @@ class ServicioNuevo(BaseModel):
     gasto_insumos: Optional[float] = 0.0
     gasto_comidas: Optional[float] = 0.0
     gasto_oxxo: Optional[float] = 0.0
+    # --- NUEVOS CAMPOS DE INGRESO DETALLADO ---
+    ha_trabajadas: Optional[float] = 0.0
+    precio_por_ha: Optional[float] = 0.0
+    ingreso_viaticos: Optional[float] = 0.0
+    ingreso_suministros: Optional[float] = 0.0
 
 class MetasMensuales(BaseModel):
     mes_anio: str
@@ -70,7 +75,7 @@ class MetasMensuales(BaseModel):
     meta_clientes: int
     meta_prospectos: int
     meta_prospectos_visitas: Optional[int] = 0
-    visitas_reales: Optional[int] = 0 # <-- CAMPO AGREGADO PARA LAS VISITAS A CAMPO
+    visitas_reales: Optional[int] = 0
 
 # --- RUTA DE LOGIN ---
 @app.post("/login/")
@@ -145,13 +150,11 @@ async def eliminar_propiedad(propiedad_id: str):
         return {"mensaje": "Eliminado exitosamente"}
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
 
-# --- RUTAS DE SERVICIOS (CON CAMBIO AUTOMÁTICO DE ESTADO CRM) ---
+# --- RUTAS DE SERVICIOS ---
 @app.post("/servicios/")
 async def registrar_servicio(servicio: ServicioNuevo):
     try:
         respuesta = supabase.table('servicios_aplicacion').insert(servicio.dict()).execute()
-        
-        # TRANSICIÓN AUTOMÁTICA DEL EMBUDO: Si se genera venta, el prospecto pasa a ser Cliente Real
         try:
             prop_data = supabase.table('propiedades').select('cliente_id').eq('id', servicio.propiedad_id).execute()
             if len(prop_data.data) > 0:
@@ -159,7 +162,6 @@ async def registrar_servicio(servicio: ServicioNuevo):
                 supabase.table('clientes').update({'estado': 'Cliente'}).eq('id', cl_id).execute()
         except Exception:
             pass
-
         return {"mensaje": "Guardado", "datos": respuesta.data[0]}
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
 
@@ -182,32 +184,23 @@ async def eliminar_servicio(servicio_id: str):
         return {"mensaje": "Eliminado exitosamente"}
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
 
-# --- NUEVA RUTA PARA REGISTRAR LAS VISITAS A CAMPO EN LA NUBE ---
+# --- RUTA PARA VISITAS ---
 @app.post("/api/visitas/{mes_anio}")
 async def registrar_visita(mes_anio: str):
     try:
-        # Buscar si el mes ya existe en la BD
         existe = supabase.table('metas_mensuales').select('id, visitas_reales').eq('mes_anio', mes_anio).execute()
-        
         if len(existe.data) > 0:
-            # Si existe, sacamos el número actual y le sumamos 1
             visitas_actuales = existe.data[0].get('visitas_reales') or 0
             nueva_cantidad = visitas_actuales + 1
             supabase.table('metas_mensuales').update({"visitas_reales": nueva_cantidad}).eq('mes_anio', mes_anio).execute()
         else:
-            # Si no existe, creamos el mes desde cero empezando en 1 visita
             nueva_cantidad = 1
             nueva_meta = {
-                "mes_anio": mes_anio,
-                "meta_ventas": 0, "meta_servicios": 0, "meta_clientes": 0,
-                "meta_prospectos": 0, "meta_prospectos_visitas": 0,
-                "visitas_reales": nueva_cantidad
+                "mes_anio": mes_anio, "meta_ventas": 0, "meta_servicios": 0, "meta_clientes": 0, "meta_prospectos": 0, "meta_prospectos_visitas": 0, "visitas_reales": nueva_cantidad
             }
             supabase.table('metas_mensuales').insert(nueva_meta).execute()
-            
         return {"mensaje": "Visita registrada en BD", "visitas_reales": nueva_cantidad}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    except Exception as e: raise HTTPException(status_code=500, detail=str(e))
 
 # --- RUTA DEL DASHBOARD ---
 @app.get("/api/dashboard/{mes_anio}")
@@ -244,16 +237,10 @@ async def obtener_dashboard(mes_anio: str):
         return {
             "metas": metas, 
             "reales": {
-                "ventas": ventas_reales, 
-                "servicios": servicios_reales, 
-                "clientes": clientes_reales, 
-                "prospectos": prospectos_reales,
-                "visitas": metas.get("visitas_reales", 0) # <-- LEYENDO EL DATO REAL DE LA BD
+                "ventas": ventas_reales, "servicios": servicios_reales, "clientes": clientes_reales, "prospectos": prospectos_reales, "visitas": metas.get("visitas_reales", 0)
             }
         }
-    except Exception as e:
-        print(f"Error crítico en Dashboard: {str(e)}") 
-        raise HTTPException(status_code=500, detail=str(e))
+    except Exception as e: raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/api/metas/")
 async def guardar_metas(metas: MetasMensuales):
@@ -264,5 +251,4 @@ async def guardar_metas(metas: MetasMensuales):
         else:
             respuesta = supabase.table('metas_mensuales').insert(metas.dict()).execute()
         return {"mensaje": "Metas guardadas correctamente"}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    except Exception as e: raise HTTPException(status_code=500, detail=str(e))

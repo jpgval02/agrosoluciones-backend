@@ -337,7 +337,7 @@
                 <div class="flex justify-between items-center"><label class="text-xs font-bold text-gray-600 uppercase"><i class="fa-solid fa-box-open w-5 text-gray-400"></i> Venta Suministros</label><input type="number" step="0.01" id="m_ingreso_suministros" class="w-32 px-2 py-1 bg-gray-50 border border-gray-300 rounded text-right font-bold text-emerald-600 outline-none focus:ring-1 focus:ring-emerald-500"></div>
                 <div class="flex justify-between items-center mt-4 pt-3 border-t border-gray-200"><label class="text-sm font-extrabold text-gray-800 uppercase">Suma Total</label><span id="m_total_ingresos_display" class="text-xl font-extrabold text-emerald-600">$0.00</span></div>
             </div>
-            <button type="button" onclick="confirmarDesgloseIngresos()" class="w-full mt-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg transition-colors shadow-md"><i class="fa-solid fa-check mr-1"></i> Confirmar e Inyectar</button>
+            <button type="button" onclick="confirmarDesgloseIngresos()" class="w-full mt-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg transition-colors shadow-md"><i class="fa-solid fa-check mr-1"></i> Confirmar</button>
         </div>
     </div>
 
@@ -591,7 +591,6 @@
         function tabularEdicionCliente(id) { const c = memoriaClientes.find(x => x.id === id); document.getElementById('editClienteId').value = c.id; document.getElementById('nombre').value = c.nombre; document.getElementById('apellidos').value = c.apellidos; document.getElementById('email').value = c.email; document.getElementById('telefono').value = c.telefono; document.getElementById('rfc').value = c.rfc; document.getElementById('estado_cliente').value = c.estado || 'Prospecto'; document.getElementById('tituloFormCliente').innerHTML = `<i class="fa-solid fa-pen text-amber-500 mr-2 text-2xl"></i> Editando Registro`; document.getElementById('btnSubmitCliente').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-amber-500"; document.getElementById('btnCancelarCliente').classList.remove('hidden'); cambiarVista('inicio'); }
         function limpiarFormCliente() { document.getElementById('registroForm').reset(); document.getElementById('editClienteId').value = ''; document.getElementById('estado_cliente').value = 'Prospecto'; document.getElementById('tituloFormCliente').innerHTML = `<i class="fa-solid fa-user-plus text-green-600 mr-2 text-2xl"></i> Nuevo Registro`; document.getElementById('btnSubmitCliente').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-[#4ade80]"; document.getElementById('btnCancelarCliente').classList.add('hidden'); }
 
-        // --- PARCELAS ---
         async function cargarPropiedades() { try { const res = await fetch(`${API_URL}/propiedades/`); memoriaPropiedades = await res.json(); const cuerpo = document.getElementById('cuerpoTablaPropiedades'); cuerpo.innerHTML = ''; const sel = document.getElementById('selectPropiedad'); sel.innerHTML = '<option value="">-- Selecciona --</option>'; memoriaPropiedades.forEach(p => { const cl = memoriaClientes.find(c => c.id === p.cliente_id); const nD = cl ? `${cl.nombre} ${cl.apellidos}` : 'N/A'; cuerpo.innerHTML += `<tr><td class="px-6 py-4"><p class="font-bold text-sm">${p.nombre_propiedad}</p><p class="text-[11px] text-gray-500">${p.direccion} - Prop: ${nD}</p></td><td class="px-6 py-4 text-center"><span class="bg-[#1b6b43] text-white px-3 py-1 rounded-full text-[10px] font-bold">${p.tipo_cultivo}</span></td><td class="px-6 py-4 text-center"><p class="text-xl font-extrabold">${p.superficie_has}</p></td><td class="px-6 py-4 text-center"><button onclick="ajustarEdicionPropiedad('${p.id}')" class="bg-amber-400 text-white text-xs px-4 py-2 rounded-full mr-1"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="eliminarPropiedad('${p.id}')" class="bg-rose-600 text-white text-xs px-4 py-2 rounded-full"><i class="fa-solid fa-trash"></i></button></td></tr>`; sel.innerHTML += `<option value="${p.id}">${nD} - ${p.nombre_propiedad}</option>`; }); } catch (e) {} }
         document.getElementById('propiedadForm').addEventListener('submit', async function(e) { e.preventDefault(); const id = document.getElementById('editPropiedadId').value; const datos = { cliente_id: document.getElementById('selectCliente').value, nombre_propiedad: document.getElementById('nombre_propiedad').value, direccion: document.getElementById('direccion').value, estado: document.getElementById('estado').value, tipo_cultivo: document.getElementById('tipo_cultivo').value, superficie_has: parseFloat(document.getElementById('superficie_has').value), sistema_riego: 'N/A', comentarios: '' }; await fetch(id ? `${API_URL}/propiedades/${id}` : `${API_URL}/propiedades/`, { method: id ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos) }); limpiarFormPropiedad(); await inicializarPanel(); });
         async function eliminarPropiedad(id) { if(confirm("¿Eliminar parcela?")) { await fetch(`${API_URL}/propiedades/${id}`, { method: 'DELETE' }); await inicializarPanel(); } }
@@ -612,7 +611,7 @@
                     let nomProd = cl ? cl.nombre + " " + cl.apellidos : 'N/A'; 
                     let totalGasto = s.gastos || 0; let totalIngreso = s.costo_servicio || 0;
                     
-                    // RENDER BASE DE DATOS DE VENTAS (AQUÍ ESTÁ LA NUEVA LUPA DETALLADA)
+                    // RENDER BASE DE DATOS DE VENTAS
                     cuerpoVentas.innerHTML += `<tr><td class="td-excel bg-gray-50">${noControl}</td><td class="td-excel">${cl?cl.nombre:'N/A'}</td><td class="td-excel">${cl?cl.apellidos:'N/A'}</td><td class="td-excel">${cl?cl.telefono:'N/A'}</td><td class="td-excel">${pr?pr.tipo_cultivo:'N/A'}</td><td class="td-excel text-center">${s.ha_trabajadas || (pr?pr.superficie_has:'0')}</td><td class="td-excel">${pr?pr.direccion:'N/A'}</td><td class="td-excel">${s.no_cotizacion||'S/N'}</td><td class="td-excel">${s.no_orden||'S/N'}</td><td class="td-excel">${s.fecha_aplicacion||'S/N'}</td><td class="td-excel text-right text-green-700 font-bold">$${totalIngreso.toLocaleString()}</td><td class="td-excel text-right text-red-600 font-bold">$${totalGasto.toLocaleString()}</td><td class="td-excel text-right text-blue-700 font-bold">$${(totalIngreso-totalGasto).toLocaleString()}</td><td class="td-excel text-center">${s.fecha_seguimiento||'S/N'}</td><td class="td-excel text-center">${s.no_factura||'S/N'}</td><td class="td-excel max-w-[150px] truncate">${s.observaciones||''}</td><td class="td-excel text-center space-x-2">
                         <button onclick="verDetalleServicio('${s.id}')" class="text-blue-500 hover:text-blue-700 bg-blue-50 px-2 py-1 rounded shadow-sm" title="Ver Detalles"><i class="fa-solid fa-magnifying-glass"></i></button>
                         <button onclick="prepararEdicionServicio('${s.id}')" class="text-amber-500 hover:text-amber-700 bg-amber-50 px-2 py-1 rounded shadow-sm" title="Editar"><i class="fa-solid fa-pen-to-square"></i></button>
@@ -645,6 +644,36 @@
 
         async function eliminarServio(id) { if(confirm("¿Eliminar registro?")) { await fetch(`${API_URL}/servicios/${id}`, { method: 'DELETE' }); await inicializarPanel(); } }
         
+        function abrirModalDesgloseIngresos() {
+            document.getElementById('m_ha_trabajadas').value = document.getElementById('h_ha_trabajadas').value || 0;
+            document.getElementById('m_precio_por_ha').value = document.getElementById('h_precio_por_ha').value || 0;
+            document.getElementById('m_ingreso_viaticos').value = document.getElementById('h_ingreso_viaticos').value || 0;
+            document.getElementById('m_ingreso_suministros').value = document.getElementById('h_ingreso_suministros').value || 0;
+            calcularTotalModalIngresos(); document.getElementById('modal-ingresos').classList.remove('hidden');
+        }
+        function cerrarModalIngresos() { document.getElementById('modal-ingresos').classList.add('hidden'); }
+        function calcularTotalModalIngresos() {
+            let ha = parseFloat(document.getElementById('m_ha_trabajadas').value) || 0;
+            let precio = parseFloat(document.getElementById('m_precio_por_ha').value) || 0;
+            let subtotalFumi = ha * precio;
+            let viaticos = parseFloat(document.getElementById('m_ingreso_viaticos').value) || 0;
+            let suministros = parseFloat(document.getElementById('m_ingreso_suministros').value) || 0;
+            
+            document.getElementById('m_subtotal_fumigacion').innerText = "$" + subtotalFumi.toLocaleString('es-MX', {minimumFractionDigits: 2});
+            let total = subtotalFumi + viaticos + suministros;
+            document.getElementById('m_total_ingresos_display').innerText = "$" + total.toLocaleString('es-MX', {minimumFractionDigits: 2});
+            return total;
+        }
+        ['m_ha_trabajadas', 'm_precio_por_ha', 'm_ingreso_viaticos', 'm_ingreso_suministros'].forEach(id => { document.getElementById(id).addEventListener('input', calcularTotalModalIngresos); });
+        function confirmarDesgloseIngresos() {
+            let totalIngreso = calcularTotalModalIngresos();
+            document.getElementById('h_ha_trabajadas').value = document.getElementById('m_ha_trabajadas').value || 0;
+            document.getElementById('h_precio_por_ha').value = document.getElementById('m_precio_por_ha').value || 0;
+            document.getElementById('h_ingreso_viaticos').value = document.getElementById('m_ingreso_viaticos').value || 0;
+            document.getElementById('h_ingreso_suministros').value = document.getElementById('m_ingreso_suministros').value || 0;
+            document.getElementById('costo_servicio').value = totalIngreso; cerrarModalIngresos();
+        }
+
         function prepararEdicionServicio(id) { 
             const s = memoriaServicios.find(x => x.id === id); document.getElementById('editServioId').value = s.id; document.getElementById('selectPropiedad').value = s.propiedad_id; document.getElementById('fecha_aplicacion').value = s.fecha_aplicacion||''; document.getElementById('costo_servicio').value = s.costo_servicio||''; document.getElementById('no_cotizacion').value = s.no_cotizacion||''; document.getElementById('no_orden').value = s.no_orden||''; document.getElementById('gastos').value = s.gastos||''; document.getElementById('fecha_seguimiento').value = s.fecha_seguimiento||''; document.getElementById('no_factura').value = s.no_factura||''; document.getElementById('observaciones').value = s.observaciones||''; 
             document.getElementById('h_gas_unidad').value = s.gasto_gasolina_unidad || 0; document.getElementById('h_gas_gen').value = s.gasto_gasolina_generador || 0; document.getElementById('h_sueldos').value = s.gasto_sueldos || 0; document.getElementById('h_insumos').value = s.gasto_insumos || 0; document.getElementById('h_comidas').value = s.gasto_comidas || 0; document.getElementById('h_oxxo').value = s.gasto_oxxo || 0;

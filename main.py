@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from typing import Optional, List
+from typing import Optional
 from supabase import create_client, Client
 import os
 from dotenv import load_dotenv
@@ -154,7 +154,7 @@ async def eliminar_propiedad(propiedad_id: str):
 @app.post("/servicios/")
 async def registrar_servicio(servicio: ServicioNuevo):
     try:
-        respuesta = supabase.table('servicios_application').insert(servicio.dict()).execute()
+        respuesta = supabase.table('servicios_aplicacion').insert(servicio.dict()).execute()
         try:
             prop_data = supabase.table('propiedades').select('cliente_id').eq('id', servicio.propiedad_id).execute()
             if len(prop_data.data) > 0:
@@ -167,20 +167,20 @@ async def registrar_servicio(servicio: ServicioNuevo):
 
 @app.get("/servicios/")
 async def obtener_servicios():
-    respuesta = supabase.table('servicios_application').select("*").execute()
+    respuesta = supabase.table('servicios_aplicacion').select("*").execute()
     return respuesta.data
 
 @app.put("/servicios/{servicio_id}")
 async def actualizar_servicio(servicio_id: str, servicio: ServicioNuevo):
     try:
-        respuesta = supabase.table('servicios_application').update(servicio.dict()).eq('id', servicio_id).execute()
+        respuesta = supabase.table('servicios_aplicacion').update(servicio.dict()).eq('id', servicio_id).execute()
         return {"mensaje": "Actualizado", "datos": respuesta.data[0]}
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
 
 @app.delete("/servicios/{servicio_id}")
 async def eliminar_servicio(servicio_id: str):
     try:
-        supabase.table('servicios_application').delete().eq('id', servicio_id).execute()
+        supabase.table('servicios_aplicacion').delete().eq('id', servicio_id).execute()
         return {"mensaje": "Eliminado exitosamente"}
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
 
@@ -215,7 +215,7 @@ async def obtener_dashboard(mes_anio: str):
         mes, anio = mes_anio.split("-")
         filtro_fecha = f"{anio}-{mes}" 
         
-        respuesta_servicios = supabase.table('servicios_application').select('costo_servicio', 'fecha_aplicacion', 'propiedad_id').execute()
+        respuesta_servicios = supabase.table('servicios_aplicacion').select('costo_servicio', 'fecha_aplicacion', 'propiedad_id').execute()
         servicios_mes = [s for s in respuesta_servicios.data if s.get('fecha_aplicacion') and s.get('fecha_aplicacion', '').startswith(filtro_fecha)]
         ventas_reales = sum(float(s.get('costo_servicio') or 0) for s in servicios_mes)
         servicios_reales = len(servicios_mes)

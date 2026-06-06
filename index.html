@@ -111,14 +111,27 @@
             <h2 class="text-2xl font-bold text-gray-800 mt-10 mb-6 tracking-tight">Panel de Captura Rápida</h2>
             
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+                
                 <div id="vista-form-clientes" class="bg-white p-6 rounded-2xl shadow-md border border-green-100">
                     <h3 id="tituloFormCliente" class="text-xl font-bold text-gray-800 mb-6 flex items-center"><i class="fa-solid fa-user-plus text-green-600 mr-2 text-2xl"></i> Nuevo Registro</h3>
                     <form id="registroForm" class="space-y-4">
                         <input type="hidden" id="editClienteId">
-                        <div class="grid grid-cols-2 gap-3"><input type="text" id="nombre" placeholder="Nombre(s)" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none"><input type="text" id="apellidos" placeholder="Apellidos" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none"></div>
-                        <input type="email" id="email" placeholder="Correo Electrónico" class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
-                        <div class="grid grid-cols-2 gap-3"><input type="text" id="telefono" placeholder="Teléfono" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none"><input type="text" id="rfc" placeholder="RFC" class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none uppercase"></div>
-                        <div><label class="text-[10px] text-gray-500 font-bold uppercase">Etapa del Embudo</label><select id="estado_cliente" class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm font-bold text-gray-700 cursor-pointer"><option value="Prospecto" selected>Prospecto 🟡</option><option value="Negociación">Negociación 🟠</option><option value="Cliente">Cliente Real 🟢</option></select></div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <input type="text" id="nombre" placeholder="Nombre(s)" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
+                            <input type="text" id="apellidos" placeholder="Apellidos" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <input type="text" id="no_cliente" placeholder="No. Cliente (Ej. 10)" required class="w-full px-4 py-2 bg-emerald-50 border border-emerald-200 rounded-lg text-sm focus:ring-2 focus:ring-emerald-600 outline-none font-bold text-emerald-800 placeholder-emerald-400 shadow-inner">
+                            <input type="email" id="email" placeholder="Correo Electrónico" class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <input type="text" id="telefono" placeholder="Teléfono" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
+                            <input type="text" id="rfc" placeholder="RFC" class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none uppercase">
+                        </div>
+                        <div>
+                            <label class="text-[10px] text-gray-500 font-bold uppercase">Etapa del Embudo</label>
+                            <select id="estado_cliente" class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm font-bold text-gray-700 cursor-pointer"><option value="Prospecto" selected>Prospecto 🟡</option><option value="Negociación">Negociación 🟠</option><option value="Cliente">Cliente Real 🟢</option></select>
+                        </div>
                         <button type="submit" id="btnSubmitCliente" class="w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-[#4ade80] hover:bg-green-500 text-green-900 transition-colors shadow-sm"><i class="fa-solid fa-save mr-1"></i> Guardar Registro</button>
                         <button type="button" id="btnCancelarCliente" onclick="limpiarFormCliente()" class="hidden w-full py-2 rounded-xl text-xs font-bold text-gray-600 bg-gray-200 hover:bg-gray-300">Cancelar Edición</button>
                     </form>
@@ -143,7 +156,6 @@
                         <input type="hidden" id="editServioId">
                         
                         <input type="hidden" id="h_gas_unidad" value="0"><input type="hidden" id="h_gas_gen" value="0"><input type="hidden" id="h_sueldos" value="0"><input type="hidden" id="h_insumos" value="0"><input type="hidden" id="h_comidas" value="0"><input type="hidden" id="h_oxxo" value="0">
-                        
                         <input type="hidden" id="h_ha_trabajadas" value="0"><input type="hidden" id="h_precio_por_ha" value="0"><input type="hidden" id="h_ingreso_viaticos" value="0"><input type="hidden" id="h_ingreso_suministros" value="0">
 
                         <div><label class="text-[10px] text-gray-500 font-bold uppercase">Productor / Parcela</label><select id="selectPropiedad" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm"><option value="">-- Selecciona --</option></select></div>
@@ -196,8 +208,8 @@
             </div>
 
             <div id="vista-tabla-operaciones" class="hidden bg-white p-8 rounded-2xl shadow-xl border border-gray-200 min-h-[450px]">
-                <div class="flex items-center gap-3 border-b border-gray-100 pb-4 mb-6"><div class="bg-green-100 p-3 rounded-xl text-green-700 text-xl"><i class="fa-solid fa-gears"></i></div><div><h2 class="text-xl font-bold text-gray-800">Módulo de Operaciones</h2><p class="text-xs text-gray-400 mt-0.5">Espacio en blanco listo para desarrollo</p></div></div>
-                <div class="flex flex-col items-center justify-center py-12 border border-dashed border-gray-200 rounded-xl bg-gray-50/50 text-center px-4"><div class="bg-white p-4 rounded-full shadow-sm text-gray-300 text-3xl mb-3"><i class="fa-solid fa-code"></i></div><p class="text-sm font-bold text-gray-600">Lienzo Disponible</p></div>
+                <div class="flex items-center gap-3 border-b border-gray-100 pb-4 mb-6"><div class="bg-green-100 p-3 rounded-xl text-green-700 text-xl"><i class="fa-solid fa-gears"></i></div><div><h2 class="text-xl font-bold text-gray-800">Módulo de Operaciones</h2><p class="text-xs text-gray-400 mt-0.5">Lienzo operativo disponible para desarrollo</p></div></div>
+                <div class="flex flex-col items-center justify-center py-12 border border-dashed border-gray-200 rounded-xl bg-gray-50/50 text-center px-4"><div class="bg-white p-4 rounded-full shadow-sm text-gray-300 text-3xl mb-3"><i class="fa-solid fa-code"></i></div><p class="text-sm font-bold text-gray-600">Módulo Listo</p></div>
             </div>
 
             <div id="vista-tabla-financieros" class="hidden bg-white p-6 md:p-8 rounded-2xl shadow-xl border border-gray-200 min-h-[450px]">
@@ -365,7 +377,7 @@
             </div>
             <div class="p-6 overflow-y-auto custom-scrollbar bg-gray-50/50">
                 <div class="grid grid-cols-3 gap-4 mb-6">
-                    <div class="bg-white p-3 rounded-xl border border-gray-100 shadow-sm"><p class="text-[10px] text-gray-400 font-bold uppercase mb-1">No. Control / ID</p><p id="det_id" class="font-bold text-gray-800 text-sm">---</p></div>
+                    <div class="bg-white p-3 rounded-xl border border-gray-100 shadow-sm"><p class="text-[10px] text-gray-400 font-bold uppercase mb-1">No. Control (Cliente)</p><p id="det_id" class="font-bold text-emerald-700 text-base">---</p></div>
                     <div class="bg-white p-3 rounded-xl border border-gray-100 shadow-sm"><p class="text-[10px] text-gray-400 font-bold uppercase mb-1">Fecha de Vuelo</p><p id="det_fecha" class="font-bold text-blue-700 text-sm">---</p></div>
                     <div class="bg-white p-3 rounded-xl border border-gray-100 shadow-sm"><p class="text-[10px] text-gray-400 font-bold uppercase mb-1">No. Orden / Cotización</p><p id="det_orden" class="font-bold text-gray-800 text-sm">---</p></div>
                 </div>
@@ -437,7 +449,7 @@
 
         document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            const btn = document.getElementById('btnLogin'); btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Cargando BD...'; btn.disabled = true; 
+            const btn = document.getElementById('btnLogin'); btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Cargando...'; btn.disabled = true; 
             try {
                 const res = await fetch(`${API_URL}/login/`, {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -449,10 +461,10 @@
                     const badge = document.getElementById('badge-rol');
                     if(badge) {
                         if(rolUsuario === 'admin') {
-                            badge.innerHTML = '<i class="fa-solid fa-crown mr-1 text-amber-400"></i> ADMIN VIP';
+                            badge.innerHTML = '<i class="fa-solid fa-crown mr-1 text-amber-400"></i> ADMIN';
                             badge.className = "ml-4 text-xs font-bold px-2 py-1 bg-amber-950 text-amber-400 rounded-md border border-amber-600 tracking-wider";
                         } else {
-                            badge.innerHTML = '<i class="fa-solid fa-user-gear mr-1 text-green-300"></i> PERSONAL';
+                            badge.innerHTML = '<i class="fa-solid fa-user-gear mr-1 text-green-300"></i> OPERADOR';
                             badge.className = "ml-4 text-xs font-bold px-2 py-1 bg-green-950 text-green-300 rounded-md border border-green-600 tracking-wider";
                         }
                     }
@@ -470,13 +482,11 @@
         function cambiarVista(vista) {
             ['inicio', 'financieros', 'operaciones', 'ventas-crm'].forEach(sec => {
                 const tabla = document.getElementById('vista-tabla-' + sec);
-                if(tabla) { tabla.classList.add('hidden'); tabla.classList.remove('block'); }
+                if(tabla) { tabla.classList.add('hidden'); targetTabla.classList.remove('block'); }
             });
             document.getElementById('vista-inicio').classList.add('hidden'); document.getElementById('vista-tablas').classList.add('hidden');
-            
             const btnVisita = document.getElementById('btn-registrar-visita');
             if(btnVisita) { if (vista === 'ventas-crm') btnVisita.classList.remove('hidden'); else btnVisita.classList.add('hidden'); }
-            
             if (vista === 'inicio') { document.getElementById('vista-inicio').classList.remove('hidden'); actualizarEstadisticasYMetas(); } 
             else { document.getElementById('vista-tablas').classList.remove('hidden'); const targetTabla = document.getElementById('vista-tabla-' + vista); if(targetTabla) { targetTabla.classList.remove('hidden'); targetTabla.classList.add('block'); } }
         }
@@ -484,16 +494,16 @@
         async function registrarVisitaCampo() {
             let mesBusqueda = document.getElementById('filtroMes').value; if(mesBusqueda === 'todos') mesBusqueda = "06"; 
             const mesActual = `${mesBusqueda}-2026`;
-            const btn = document.getElementById('btn-registrar-visita'); const textoOriginal = btn.innerHTML;
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Guardando en Nube...'; btn.disabled = true;
+            const btn = document.getElementById('btn-registrar-visita'); const txt = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Guardando...'; btn.disabled = true;
             try {
                 const res = await fetch(`${API_URL}/api/visitas/${mesActual}`, { method: 'POST' });
                 if(res.ok) {
                     const data = await res.json(); visitasCampoRealizadas = data.visitas_reales; actualizarMetasCEO(); 
-                    btn.innerHTML = '<i class="fa-solid fa-check"></i> ¡Registrada!'; btn.classList.replace('bg-emerald-600', 'bg-blue-600'); btn.classList.replace('border-emerald-400', 'border-blue-400');
-                    setTimeout(() => { btn.innerHTML = textoOriginal; btn.classList.replace('bg-blue-600', 'bg-emerald-600'); btn.classList.replace('border-blue-400', 'border-emerald-400'); btn.disabled = false; }, 1500);
+                    btn.innerHTML = '<i class="fa-solid fa-check"></i> ¡Registrada!';
+                    setTimeout(() => { btn.innerHTML = txt; btn.disabled = false; }, 1500);
                 }
-            } catch(e) { alert("Error al guardar la visita"); btn.innerHTML = textoOriginal; btn.disabled = false; }
+            } catch(e) { btn.innerHTML = txt; btn.disabled = false; }
         }
 
         function actualizarEstadisticasYMetas() {
@@ -527,77 +537,25 @@
                 let mV = datos.metas.meta_ventas || 1, mS = datos.metas.meta_servicios || 1, mC = datos.metas.meta_clientes || 1, mP = datos.metas.meta_prospectos || 1, mVis = datos.metas.meta_prospectos_visitas || 1;
                 chartVentas.updateSeries([Math.min((datos.reales.ventas / mV) * 100, 100)]); chartServicios.updateSeries([Math.min((datos.reales.servicios / mS) * 100, 100)]); chartClientes.updateSeries([Math.min((datos.reales.clientes / mC) * 100, 100)]); chartProspectos.updateSeries([Math.min((datos.reales.prospectos / mP) * 100, 100)]); chartVisitas.updateSeries([Math.min((visitasCampoRealizadas / mVis) * 100, 100)]);
                 document.getElementById("texto-ventas-real").innerText = "$" + datos.reales.ventas.toLocaleString() + " / $" + parseFloat(datos.metas.meta_ventas || 0).toLocaleString(); document.getElementById("texto-servicios-real").innerText = datos.reales.servicios + " / " + (datos.metas.meta_servicios || 0); document.getElementById("texto-clientes-real").innerText = datos.reales.clientes + " / " + (datos.metas.meta_clientes || 0); document.getElementById("texto-prospectos-real").innerText = datos.reales.prospectos + " / " + (datos.metas.meta_prospectos || 0); document.getElementById("texto-visitas-real").innerText = visitasCampoRealizadas + " / " + (datos.metas.meta_prospectos_visitas || 0);
-                document.getElementById('input_meta_ventas').value = datos.metas.meta_ventas || 0; document.getElementById('input_meta_servicios').value = datos.metas.meta_servicios || 0; document.getElementById('input_meta_clientes').value = datos.metas.meta_clientes || 0; document.getElementById('input_meta_prospectos').value = datos.metas.meta_prospectos || 0; document.getElementById('input_meta_visitas').value = datos.metas.meta_prospectos_visitas || 0;
             } catch (error) {}
         }
-        function abrirModalMetas() { document.getElementById('modal-metas').classList.remove('hidden'); } function cerrarModalMetas() { document.getElementById('modal-metas').classList.add('hidden'); }
-        
-        document.getElementById('formMetas').addEventListener('submit', async function(e) { 
-            e.preventDefault(); document.getElementById('btnGuardarMetas').innerText = "Guardando..."; 
-            const datosMeta = { mes_anio: document.getElementById('meta_mes_anio').value, meta_ventas: parseFloat(document.getElementById('input_meta_ventas').value), meta_servicios: parseInt(document.getElementById('input_meta_servicios').value), meta_clientes: parseInt(document.getElementById('input_meta_clientes').value), meta_prospectos: parseInt(document.getElementById('input_meta_prospectos').value), meta_prospectos_visitas: parseInt(document.getElementById('input_meta_visitas').value) }; 
-            try { await fetch(API_URL + "/api/metas/", { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datosMeta) }); cerrarModalMetas(); document.getElementById('btnGuardarMetas').innerText = "Guardar en Base de Datos"; actualizarMetasCEO(); } catch (error) { document.getElementById('btnGuardarMetas').innerText = "Guardar en Base de Datos"; } 
-        });
 
-        // --- CALCULADORA DE INGRESOS ---
-        function abrirModalDesgloseIngresos() {
-            document.getElementById('m_ha_trabajadas').value = document.getElementById('h_ha_trabajadas').value || 0;
-            document.getElementById('m_precio_por_ha').value = document.getElementById('h_precio_por_ha').value || 0;
-            document.getElementById('m_ingreso_viaticos').value = document.getElementById('h_ingreso_viaticos').value || 0;
-            document.getElementById('m_ingreso_suministros').value = document.getElementById('h_ingreso_suministros').value || 0;
-            calcularTotalModalIngresos(); document.getElementById('modal-ingresos').classList.remove('hidden');
-        }
-        function cerrarModalIngresos() { document.getElementById('modal-ingresos').classList.add('hidden'); }
-        function calcularTotalModalIngresos() {
-            let ha = parseFloat(document.getElementById('m_ha_trabajadas').value) || 0;
-            let precio = parseFloat(document.getElementById('m_precio_por_ha').value) || 0;
-            let subtotalFumi = ha * precio;
-            let viaticos = parseFloat(document.getElementById('m_ingreso_viaticos').value) || 0;
-            let suministros = parseFloat(document.getElementById('m_ingreso_suministros').value) || 0;
-            
-            document.getElementById('m_subtotal_fumigacion').innerText = "$" + subtotalFumi.toLocaleString('es-MX', {minimumFractionDigits: 2});
-            let total = subtotalFumi + viaticos + suministros;
-            document.getElementById('m_total_ingresos_display').innerText = "$" + total.toLocaleString('es-MX', {minimumFractionDigits: 2});
-            return total;
-        }
-        ['m_ha_trabajadas', 'm_precio_por_ha', 'm_ingreso_viaticos', 'm_ingreso_suministros'].forEach(id => { document.getElementById(id).addEventListener('input', calcularTotalModalIngresos); });
-        function confirmarDesgloseIngresos() {
-            let totalIngreso = calcularTotalModalIngresos();
-            document.getElementById('h_ha_trabajadas').value = document.getElementById('m_ha_trabajadas').value || 0;
-            document.getElementById('h_precio_por_ha').value = document.getElementById('m_precio_por_ha').value || 0;
-            document.getElementById('h_ingreso_viaticos').value = document.getElementById('m_ingreso_viaticos').value || 0;
-            document.getElementById('h_ingreso_suministros').value = document.getElementById('m_ingreso_suministros').value || 0;
-            document.getElementById('costo_servicio').value = totalIngreso; cerrarModalIngresos();
-        }
-
-        // --- CALCULADORA DE GASTOS ---
-        function abrirModalDesgloseGastos() { document.getElementById('m_gas_unidad').value = document.getElementById('h_gas_unidad').value || 0; document.getElementById('m_gas_gen').value = document.getElementById('h_gas_gen').value || 0; document.getElementById('m_sueldos').value = document.getElementById('h_sueldos').value || 0; document.getElementById('m_insumos').value = document.getElementById('h_insumos').value || 0; document.getElementById('m_comidas').value = document.getElementById('h_comidas').value || 0; document.getElementById('m_oxxo').value = document.getElementById('h_oxxo').value || 0; calcularTotalModal(); document.getElementById('modal-gastos').classList.remove('hidden'); }
-        function cerrarModalGastos() { document.getElementById('modal-gastos').classList.add('hidden'); }
-        function calcularTotalModal() { let total = (parseFloat(document.getElementById('m_gas_unidad').value) || 0) + (parseFloat(document.getElementById('m_gas_gen').value) || 0) + (parseFloat(document.getElementById('m_sueldos').value) || 0) + (parseFloat(document.getElementById('m_insumos').value) || 0) + (parseFloat(document.getElementById('m_comidas').value) || 0) + (parseFloat(document.getElementById('m_oxxo').value) || 0); document.getElementById('m_total_display').innerText = "$" + total.toLocaleString('es-MX', {minimumFractionDigits: 2}); return total; }
-        ['m_gas_unidad', 'm_gas_gen', 'm_sueldos', 'm_insumos', 'm_comidas', 'm_oxxo'].forEach(id => { document.getElementById(id).addEventListener('input', calcularTotalModal); });
-        function confirmarDesgloseGastos() { let totalGasto = calcularTotalModal(); document.getElementById('h_gas_unidad').value = document.getElementById('m_gas_unidad').value || 0; document.getElementById('h_gas_gen').value = document.getElementById('m_gas_gen').value || 0; document.getElementById('h_sueldos').value = document.getElementById('m_sueldos').value || 0; document.getElementById('h_insumos').value = document.getElementById('m_insumos').value || 0; document.getElementById('h_comidas').value = document.getElementById('m_comidas').value || 0; document.getElementById('h_oxxo').value = document.getElementById('m_oxxo').value || 0; document.getElementById('gastos').value = totalGasto; cerrarModalGastos(); }
-
-        // --- CLIENTES ---
+        // --- CLIENTES CON NO_CLIENTE MANUAL ---
         function renderizarTablaClientes(lista) { 
-            const cuerpo = document.getElementById('cuerpoTabla'); cuerpo.innerHTML = ''; document.getElementById('contadorClientes').textContent = `${lista.length} REGISTRADOS`; 
+            const cuerpo = document.getElementById('cuerpoTabla'); cuerpo.innerHTML = ''; 
             lista.forEach(c => {
-                let badge = c.estado === 'Cliente' ? `<span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-300">Cliente Real 🟢</span>` : (c.estado === 'Negociación' ? `<span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-amber-300">Negociación 🟠</span>` : `<span class="bg-blue-100 text-blue-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-blue-300">Prospecto 🟡</span>`);
-                cuerpo.innerHTML += `<tr class="hover:bg-gray-50"><td class="px-6 py-4"><div class="flex items-center space-x-4"><div class="bg-green-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold shadow-sm"><i class="fa-solid fa-user"></i></div><div><p class="font-bold text-gray-800">${c.nombre} ${c.apellidos}</p><p class="text-[10px] text-gray-400 mt-1">RFC: ${c.rfc || 'S/N'} | ${badge}</p></div></div></td><td class="px-6 py-4"><p class="text-sm text-blue-600 font-medium"><i class="fa-solid fa-envelope mr-2"></i>${c.email || 'Sin correo'}</p><p class="text-sm text-gray-600 mt-1"><i class="fa-solid fa-phone text-green-600 mr-2"></i>${c.telefono}</p></td><td class="px-6 py-4 text-center whitespace-nowrap space-x-1"><button onclick="tabularEdicionCliente('${c.id}')" class="bg-amber-400 text-white text-xs px-4 py-2 rounded-full shadow-sm"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="eliminarCliente('${c.id}')" class="bg-rose-600 text-white text-xs px-4 py-2 rounded-full shadow-sm"><i class="fa-solid fa-trash"></i></button></td></tr>`; 
+                let badge = c.estado === 'Cliente' ? `<span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-300">Cliente Real 🟢</span>` : `<span class="bg-blue-100 text-blue-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-blue-300">Prospecto 🟡</span>`;
+                let folioCliente = c.no_cliente ? `<span class="text-emerald-700 font-extrabold mr-1">[${c.no_cliente}]</span>` : '';
+                cuerpo.innerHTML += `<tr class="hover:bg-gray-50"><td class="px-6 py-4"><div class="flex items-center space-x-4"><div class="bg-green-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold"><i class="fa-solid fa-user"></i></div><div><p class="font-bold text-gray-800">${folioCliente}${c.nombre} ${c.apellidos}</p><p class="text-[10px] text-gray-400 mt-1">RFC: ${c.rfc || 'S/N'} | ${badge}</p></div></div></td><td class="px-6 py-4"><p class="text-sm text-blue-600 font-medium">${c.email || 'Sin correo'}</p><p class="text-sm text-gray-600 mt-1">${c.telefono}</p></td><td class="px-6 py-4 text-center whitespace-nowrap space-x-1"><button onclick="tabularEdicionCliente('${c.id}')" class="bg-amber-400 text-white text-xs px-4 py-2 rounded-full"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="eliminarCliente('${c.id}')" class="bg-rose-600 text-white text-xs px-4 py-2 rounded-full"><i class="fa-solid fa-trash"></i></button></td></tr>`; 
             }); 
         }
-        function filtrarClientes() { renderizarTablaClientes(memoriaClientes.filter(c => `${c.nombre} ${c.apellidos}`.toLowerCase().includes(document.getElementById('buscadorClientes').value.toLowerCase()))); }
+        function filtrarClientes() { renderizarTablaClientes(memoriaClientes.filter(c => `${c.nombre} ${c.apellidos} ${c.no_cliente}`.toLowerCase().includes(document.getElementById('buscadorClientes').value.toLowerCase()))); }
         async function cargarClientes() { try { const res = await fetch(`${API_URL}/clientes/`); memoriaClientes = await res.json(); const sel = document.getElementById('selectCliente'); sel.innerHTML = '<option value="">-- Selecciona --</option>'; memoriaClientes.forEach(c => { sel.innerHTML += `<option value="${c.id}">${c.nombre} ${c.apellidos}</option>`; }); renderizarTablaClientes(memoriaClientes); } catch (e) {} }
-        document.getElementById('registroForm').addEventListener('submit', async function(e) { e.preventDefault(); const id = document.getElementById('editClienteId').value; const datos = { nombre: document.getElementById('nombre').value, apellidos: document.getElementById('apellidos').value, email: document.getElementById('email').value, telefono: document.getElementById('telefono').value, rfc: document.getElementById('rfc').value, estado: document.getElementById('estado_cliente').value }; await fetch(id ? `${API_URL}/clientes/${id}` : `${API_URL}/clientes/`, { method: id ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos) }); limpiarFormCliente(); await inicializarPanel(); });
-        async function eliminarCliente(id) { if(confirm("¿Eliminar productor?")) { await fetch(`${API_URL}/clientes/${id}`, { method: 'DELETE' }); await inicializarPanel(); } }
-        function tabularEdicionCliente(id) { const c = memoriaClientes.find(x => x.id === id); document.getElementById('editClienteId').value = c.id; document.getElementById('nombre').value = c.nombre; document.getElementById('apellidos').value = c.apellidos; document.getElementById('email').value = c.email; document.getElementById('telefono').value = c.telefono; document.getElementById('rfc').value = c.rfc; document.getElementById('estado_cliente').value = c.estado || 'Prospecto'; document.getElementById('tituloFormCliente').innerHTML = `<i class="fa-solid fa-pen text-amber-500 mr-2 text-2xl"></i> Editando Registro`; document.getElementById('btnSubmitCliente').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-amber-500"; document.getElementById('btnCancelarCliente').classList.remove('hidden'); cambiarVista('inicio'); }
-        function limpiarFormCliente() { document.getElementById('registroForm').reset(); document.getElementById('editClienteId').value = ''; document.getElementById('estado_cliente').value = 'Prospecto'; document.getElementById('tituloFormCliente').innerHTML = `<i class="fa-solid fa-user-plus text-green-600 mr-2 text-2xl"></i> Nuevo Registro`; document.getElementById('btnSubmitCliente').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-[#4ade80]"; document.getElementById('btnCancelarCliente').classList.add('hidden'); }
+        
+        // --- PARCELAS ---
+        async function cargarPropiedades() { try { const res = await fetch(`${API_URL}/propiedades/`); memoriaPropiedades = await res.json(); const cuerpo = document.getElementById('cuerpoTablaPropiedades'); cuerpo.innerHTML = ''; const sel = document.getElementById('selectPropiedad'); sel.innerHTML = '<option value="">-- Selecciona --</option>'; memoriaPropiedades.forEach(p => { const cl = memoriaClientes.find(c => c.id === p.cliente_id); const nD = cl ? `${cl.nombre} ${cl.apellidos}` : 'N/A'; cuerpo.innerHTML += `<tr><td class="px-6 py-4"><p class="font-bold text-sm">${p.nombre_propiedad}</p><p class="text-[11px] text-gray-500">${p.direccion} - Prop: ${nD}</p></td><td class="px-6 py-4 text-center"><span class="bg-[#1b6b43] text-white px-3 py-1 rounded-full text-[10px] font-bold">${p.tipo_cultivo}</span></td><td class="px-6 py-4 text-center"><p class="text-xl font-extrabold">${p.superficie_has}</p></td></tr>`; sel.innerHTML += `<option value="${p.id}">${nD} - ${p.nombre_propiedad}</option>`; }); } catch (e) {} }
 
-        async function cargarPropiedades() { try { const res = await fetch(`${API_URL}/propiedades/`); memoriaPropiedades = await res.json(); const cuerpo = document.getElementById('cuerpoTablaPropiedades'); cuerpo.innerHTML = ''; const sel = document.getElementById('selectPropiedad'); sel.innerHTML = '<option value="">-- Selecciona --</option>'; memoriaPropiedades.forEach(p => { const cl = memoriaClientes.find(c => c.id === p.cliente_id); const nD = cl ? `${cl.nombre} ${cl.apellidos}` : 'N/A'; cuerpo.innerHTML += `<tr><td class="px-6 py-4"><p class="font-bold text-sm">${p.nombre_propiedad}</p><p class="text-[11px] text-gray-500">${p.direccion} - Prop: ${nD}</p></td><td class="px-6 py-4 text-center"><span class="bg-[#1b6b43] text-white px-3 py-1 rounded-full text-[10px] font-bold">${p.tipo_cultivo}</span></td><td class="px-6 py-4 text-center"><p class="text-xl font-extrabold">${p.superficie_has}</p></td><td class="px-6 py-4 text-center"><button onclick="ajustarEdicionPropiedad('${p.id}')" class="bg-amber-400 text-white text-xs px-4 py-2 rounded-full mr-1"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="eliminarPropiedad('${p.id}')" class="bg-rose-600 text-white text-xs px-4 py-2 rounded-full"><i class="fa-solid fa-trash"></i></button></td></tr>`; sel.innerHTML += `<option value="${p.id}">${nD} - ${p.nombre_propiedad}</option>`; }); } catch (e) {} }
-        document.getElementById('propiedadForm').addEventListener('submit', async function(e) { e.preventDefault(); const id = document.getElementById('editPropiedadId').value; const datos = { cliente_id: document.getElementById('selectCliente').value, nombre_propiedad: document.getElementById('nombre_propiedad').value, direccion: document.getElementById('direccion').value, estado: document.getElementById('estado').value, tipo_cultivo: document.getElementById('tipo_cultivo').value, superficie_has: parseFloat(document.getElementById('superficie_has').value), sistema_riego: 'N/A', comentarios: '' }; await fetch(id ? `${API_URL}/propiedades/${id}` : `${API_URL}/propiedades/`, { method: id ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos) }); limpiarFormPropiedad(); await inicializarPanel(); });
-        async function eliminarPropiedad(id) { if(confirm("¿Eliminar parcela?")) { await fetch(`${API_URL}/propiedades/${id}`, { method: 'DELETE' }); await inicializarPanel(); } }
-        function ajustarEdicionPropiedad(id) { const p = memoriaPropiedades.find(x => x.id === id); document.getElementById('editPropiedadId').value = p.id; document.getElementById('selectCliente').value = p.cliente_id; document.getElementById('nombre_propiedad').value = p.nombre_propiedad; document.getElementById('tipo_cultivo').value = p.tipo_cultivo; document.getElementById('superficie_has').value = p.superficie_has; document.getElementById('direccion').value = p.direccion; document.getElementById('estado').value = p.estado; document.getElementById('tituloFormPropiedad').innerHTML = `<i class="fa-solid fa-pen text-amber-500 mr-2 text-2xl"></i> Editando Parcela`; document.getElementById('btnSubmitPropiedad').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-amber-500"; document.getElementById('btnCancelarPropiedad').classList.remove('hidden'); cambiarVista('inicio'); }
-        function limpiarFormPropiedad() { document.getElementById('propiedadForm').reset(); document.getElementById('editPropiedadId').value = ''; document.getElementById('tituloFormPropiedad').innerHTML = `<i class="fa-solid fa-map-location-dot text-green-600 mr-2 text-2xl"></i> Registrar Parcela`; document.getElementById('btnSubmitPropiedad').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-[#4ade80]"; document.getElementById('btnCancelarPropiedad').classList.add('hidden'); }
-
-        // --- VENTAS Y REPORTES ---
+        // --- VENTAS Y DETALLES (HEREDADO POR CLIENTE AUTOMÁTICAMENTE) ---
         async function cargarServicios() { 
             try { 
                 const res = await fetch(`${API_URL}/servicios/`); memoriaServicios = await res.json(); 
@@ -606,106 +564,39 @@
                 const cuerpoIngresos = document.getElementById('cuerpoTablaIngresos'); cuerpoIngresos.innerHTML = ''; 
 
                 memoriaServicios.forEach(s => { 
-                    const pr = memoriaPropiedades.find(p => p.id === s.propiedad_id); const cl = pr ? memoriaClientes.find(c => c.id === pr.cliente_id) : null; 
+                    const pr = memoriaPropiedades.find(p => p.id === s.propiedad_id); 
+                    const cl = pr ? memoriaClientes.find(c => c.id === pr.cliente_id) : null; 
                     
-                    // MODIFICACIÓN CRÍTICA: Priorizar no_orden para el número de control visual en todas las tablas
-                    let noControl = s.no_orden ? s.no_orden : (s.id ? String(s.id).substring(0,6).toUpperCase() : 'S/N');
+                    // LÓGICA DE CONTROL EMPRESARIAL: El No. Control hereda el No. Cliente directamente
+                    let noControl = (cl && cl.no_cliente) ? cl.no_cliente : (s.id ? String(s.id).substring(0,6).toUpperCase() : 'S/N');
                     let nomProd = cl ? cl.nombre + " " + cl.apellidos : 'N/A'; 
                     let totalGasto = s.gastos || 0; let totalIngreso = s.costo_servicio || 0;
                     
-                    // RENDER BASE DE DATOS DE VENTAS
-                    cuerpoVentas.innerHTML += `<tr><td class="td-excel bg-gray-50">${noControl}</td><td class="td-excel">${cl?cl.nombre:'N/A'}</td><td class="td-excel">${cl?cl.apellidos:'N/A'}</td><td class="td-excel">${cl?cl.telefono:'N/A'}</td><td class="td-excel">${pr?pr.tipo_cultivo:'N/A'}</td><td class="td-excel text-center">${s.ha_trabajadas || (pr?pr.superficie_has:'0')}</td><td class="td-excel">${pr?pr.direccion:'N/A'}</td><td class="td-excel">${s.no_cotizacion||'S/N'}</td><td class="td-excel">${s.no_orden||'S/N'}</td><td class="td-excel">${s.fecha_aplicacion||'S/N'}</td><td class="td-excel text-right text-green-700 font-bold">$${totalIngreso.toLocaleString()}</td><td class="td-excel text-right text-red-600 font-bold">$${totalGasto.toLocaleString()}</td><td class="td-excel text-right text-blue-700 font-bold">$${(totalIngreso-totalGasto).toLocaleString()}</td><td class="td-excel text-center">${s.fecha_seguimiento||'S/N'}</td><td class="td-excel text-center">${s.no_factura||'S/N'}</td><td class="td-excel max-w-[150px] truncate">${s.observaciones||''}</td><td class="td-excel text-center space-x-2">
-                        <button onclick="verDetalleServicio('${s.id}')" class="text-blue-500 hover:text-blue-700 bg-blue-50 px-2 py-1 rounded shadow-sm" title="Ver Detalles"><i class="fa-solid fa-magnifying-glass"></i></button>
-                        <button onclick="prepararEdicionServicio('${s.id}')" class="text-amber-500 hover:text-amber-700 bg-amber-50 px-2 py-1 rounded shadow-sm" title="Editar"><i class="fa-solid fa-pen-to-square"></i></button>
-                        <button onclick="eliminarServio('${s.id}')" class="text-rose-500 hover:text-rose-700 bg-rose-50 px-2 py-1 rounded shadow-sm" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
+                    cuerpoVentas.innerHTML += `<tr><td class="td-excel bg-gray-50 font-extrabold text-emerald-800">${noControl}</td><td class="td-excel">${cl?cl.nombre:'N/A'}</td><td class="td-excel">${cl?cl.apellidos:'N/A'}</td><td class="td-excel">${cl?cl.telefono:'N/A'}</td><td class="td-excel">${pr?pr.tipo_cultivo:'N/A'}</td><td class="td-excel text-center">${s.ha_trabajadas || (pr?pr.superficie_has:'0')}</td><td class="td-excel">${pr?pr.direccion:'N/A'}</td><td class="td-excel">${s.no_cotizacion||'S/N'}</td><td class="td-excel">${s.no_orden||'S/N'}</td><td class="td-excel">${s.fecha_aplicacion||'S/N'}</td><td class="td-excel text-right text-green-700 font-bold">$${totalIngreso.toLocaleString()}</td><td class="td-excel text-right text-red-600 font-bold">$${totalGasto.toLocaleString()}</td><td class="td-excel text-right text-blue-700 font-bold">$${(totalIngreso-totalGasto).toLocaleString()}</td><td class="td-excel text-center">${s.fecha_seguimiento||'S/N'}</td><td class="td-excel text-center">${s.no_factura||'S/N'}</td><td class="td-excel max-w-[150px] truncate">${s.observaciones||''}</td><td class="td-excel text-center space-x-2">
+                        <button onclick="verDetalleServicio('${s.id}')" class="text-blue-500 bg-blue-50 px-2 py-1 rounded shadow-sm"><i class="fa-solid fa-magnifying-glass"></i></button>
+                        <button onclick="prepararEdicionServicio('${s.id}')" class="text-amber-500"><i class="fa-solid fa-pen-to-square"></i></button>
+                        <button onclick="eliminarServio('${s.id}')" class="text-rose-500"><i class="fa-solid fa-trash"></i></button>
                     </td></tr>`; 
                     
-                    // RENDER TABLA DE INGRESOS
-                    cuerpoIngresos.innerHTML += `<tr class="hover:bg-emerald-50"><td class="td-excel font-bold text-gray-500">${noControl}</td><td class="td-excel font-semibold">${nomProd}</td><td class="td-excel text-gray-600">${pr?pr.tipo_cultivo:'N/A'}</td><td class="td-excel text-center font-bold">${s.ha_trabajadas||0} Ha</td><td class="td-excel text-right">$${(s.precio_por_ha||0).toLocaleString()}</td><td class="td-excel text-right text-emerald-600">$${(s.ingreso_viaticos||0).toLocaleString()}</td><td class="td-excel text-right text-emerald-600">$${(s.ingreso_suministros||0).toLocaleString()}</td><td class="td-excel text-right text-emerald-700 font-extrabold bg-emerald-50 border-l border-emerald-200">$${totalIngreso.toLocaleString()}</td></tr>`;
+                    cuerpoIngresos.innerHTML += `<tr class="hover:bg-emerald-50"><td class="td-excel font-bold text-emerald-800">${noControl}</td><td class="td-excel font-semibold">${nomProd}</td><td class="td-excel text-gray-600">${pr?pr.tipo_cultivo:'N/A'}</td><td class="td-excel text-center font-bold">${s.ha_trabajadas||0} Ha</td><td class="td-excel text-right">$${(s.precio_por_ha||0).toLocaleString()}</td><td class="td-excel text-right text-emerald-600">$${(s.ingreso_viaticos||0).toLocaleString()}</td><td class="td-excel text-right text-emerald-600">$${(s.ingreso_suministros||0).toLocaleString()}</td><td class="td-excel text-right text-emerald-700 font-extrabold bg-emerald-50 border-l border-emerald-200">$${totalIngreso.toLocaleString()}</td></tr>`;
 
-                    // RENDER TABLA DE GASTOS
-                    cuerpoGastos.innerHTML += `<tr class="hover:bg-rose-50"><td class="td-excel font-bold text-gray-500">${noControl}</td><td class="td-excel font-semibold">${nomProd}</td><td class="td-excel text-gray-600">${pr?pr.tipo_cultivo:'N/A'}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_gasolina_unidad||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_gasolina_generador||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_sueldos||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_insumos||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_comidas||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_oxxo||0).toLocaleString()}</td><td class="td-excel text-right text-red-700 font-extrabold bg-red-50 border-l border-red-200">$${totalGasto.toLocaleString()}</td></tr>`;
+                    cuerpoGastos.innerHTML += `<tr class="hover:bg-rose-50"><td class="td-excel font-bold text-emerald-800">${noControl}</td><td class="td-excel font-semibold">${nomProd}</td><td class="td-excel text-gray-600">${pr?pr.tipo_cultivo:'N/A'}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_gasolina_unidad||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_gasolina_generador||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_sueldos||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_insumos||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_comidas||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_oxxo||0).toLocaleString()}</td><td class="td-excel text-right text-red-700 font-extrabold bg-red-50 border-l border-red-200">$${totalGasto.toLocaleString()}</td></tr>`;
                 }); 
             } catch (e) {} 
         }
 
-        document.getElementById('servicioForm').addEventListener('submit', async function(e) { 
-            e.preventDefault(); const id = document.getElementById('editServioId').value;
-            const datos = { 
-                propiedad_id: document.getElementById('selectPropiedad').value, fecha_aplicacion: document.getElementById('fecha_aplicacion').value, 
-                costo_servicio: parseFloat(document.getElementById('costo_servicio').value || 0), estado_cuenta: 'Cobrado', satisfaccion: 5,
-                no_cotizacion: document.getElementById('no_cotizacion').value, no_orden: document.getElementById('no_orden').value,
-                gastos: parseFloat(document.getElementById('gastos').value || 0), fecha_seguimiento: document.getElementById('fecha_seguimiento').value,
-                no_factura: document.getElementById('no_factura').value, observaciones: document.getElementById('observaciones').value,
-                gasto_gasolina_unidad: parseFloat(document.getElementById('h_gas_unidad').value || 0), gasto_gasolina_generador: parseFloat(document.getElementById('h_gas_gen').value || 0), gasto_sueldos: parseFloat(document.getElementById('h_sueldos').value || 0), gasto_insumos: parseFloat(document.getElementById('h_insumos').value || 0), gasto_comidas: parseFloat(document.getElementById('h_comidas').value || 0), gasto_oxxo: parseFloat(document.getElementById('h_oxxo').value || 0),
-                ha_trabajadas: parseFloat(document.getElementById('h_ha_trabajadas').value || 0), precio_por_ha: parseFloat(document.getElementById('h_precio_por_ha').value || 0), ingreso_viaticos: parseFloat(document.getElementById('h_ingreso_viaticos').value || 0), ingreso_suministros: parseFloat(document.getElementById('h_ingreso_suministros').value || 0)
-            }; 
-            await fetch(id ? `${API_URL}/servicios/${id}` : `${API_URL}/servicios/`, { method: id ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos) }); 
-            limpiarFormService(); await inicializarPanel(); 
-        });
-
-        async function eliminarServio(id) { if(confirm("¿Eliminar registro?")) { await fetch(`${API_URL}/servicios/${id}`, { method: 'DELETE' }); await inicializarPanel(); } }
-        
-        function abrirModalDesgloseIngresos() {
-            document.getElementById('m_ha_trabajadas').value = document.getElementById('h_ha_trabajadas').value || 0;
-            document.getElementById('m_precio_por_ha').value = document.getElementById('h_precio_por_ha').value || 0;
-            document.getElementById('m_ingreso_viaticos').value = document.getElementById('h_ingreso_viaticos').value || 0;
-            document.getElementById('m_ingreso_suministros').value = document.getElementById('h_ingreso_suministros').value || 0;
-            calcularTotalModalIngresos(); document.getElementById('modal-ingresos').classList.remove('hidden');
-        }
-        function cerrarModalIngresos() { document.getElementById('modal-ingresos').classList.add('hidden'); }
-        function calcularTotalModalIngresos() {
-            let ha = parseFloat(document.getElementById('m_ha_trabajadas').value) || 0;
-            let precio = parseFloat(document.getElementById('m_precio_por_ha').value) || 0;
-            let subtotalFumi = ha * precio;
-            let viaticos = parseFloat(document.getElementById('m_ingreso_viaticos').value) || 0;
-            let suministros = parseFloat(document.getElementById('m_ingreso_suministros').value) || 0;
-            
-            document.getElementById('m_subtotal_fumigacion').innerText = "$" + subtotalFumi.toLocaleString('es-MX', {minimumFractionDigits: 2});
-            let total = subtotalFumi + viaticos + suministros;
-            document.getElementById('m_total_ingresos_display').innerText = "$" + total.toLocaleString('es-MX', {minimumFractionDigits: 2});
-            return total;
-        }
-        ['m_ha_trabajadas', 'm_precio_por_ha', 'm_ingreso_viaticos', 'm_ingreso_suministros'].forEach(id => { document.getElementById(id).addEventListener('input', calcularTotalModalIngresos); });
-        function confirmarDesgloseIngresos() {
-            let totalIngreso = calcularTotalModalIngresos();
-            document.getElementById('h_ha_trabajadas').value = document.getElementById('m_ha_trabajadas').value || 0;
-            document.getElementById('h_precio_por_ha').value = document.getElementById('m_precio_por_ha').value || 0;
-            document.getElementById('h_ingreso_viaticos').value = document.getElementById('m_ingreso_viaticos').value || 0;
-            document.getElementById('h_ingreso_suministros').value = document.getElementById('m_ingreso_suministros').value || 0;
-            document.getElementById('costo_servicio').value = totalIngreso; cerrarModalIngresos();
-        }
-
-        function confirmarDesgloseGastos() { let totalGasto = calcularTotalModal(); document.getElementById('h_gas_unidad').value = document.getElementById('m_gas_unidad').value || 0; document.getElementById('h_gas_gen').value = document.getElementById('m_gas_gen').value || 0; document.getElementById('h_sueldos').value = document.getElementById('m_sueldos').value || 0; document.getElementById('h_insumos').value = document.getElementById('m_insumos').value || 0; document.getElementById('h_comidas').value = document.getElementById('m_comidas').value || 0; document.getElementById('h_oxxo').value = document.getElementById('m_oxxo').value || 0; document.getElementById('gastos').value = totalGasto; cerrarModalGastos(); }
-
-        function prepararEdicionServicio(id) { 
-            const s = memoriaServicios.find(x => x.id === id); document.getElementById('editServioId').value = s.id; document.getElementById('selectPropiedad').value = s.propiedad_id; document.getElementById('fecha_aplicacion').value = s.fecha_aplicacion||''; document.getElementById('costo_servicio').value = s.costo_servicio||''; document.getElementById('no_cotizacion').value = s.no_cotizacion||''; document.getElementById('no_orden').value = s.no_orden||''; document.getElementById('gastos').value = s.gastos||''; document.getElementById('fecha_seguimiento').value = s.fecha_seguimiento||''; document.getElementById('no_factura').value = s.no_factura||''; document.getElementById('observaciones').value = s.observaciones||''; 
-            document.getElementById('h_gas_unidad').value = s.gasto_gasolina_unidad || 0; document.getElementById('h_gas_gen').value = s.gasto_gasolina_generador || 0; document.getElementById('h_sueldos').value = s.gasto_sueldos || 0; document.getElementById('h_insumos').value = s.gasto_insumos || 0; document.getElementById('h_comidas').value = s.gasto_comidas || 0; document.getElementById('h_oxxo').value = s.gasto_oxxo || 0;
-            document.getElementById('h_ha_trabajadas').value = s.ha_trabajadas || 0; document.getElementById('h_precio_por_ha').value = s.precio_por_ha || 0; document.getElementById('h_ingreso_viaticos').value = s.ingreso_viaticos || 0; document.getElementById('h_ingreso_suministros').value = s.ingreso_suministros || 0;
-            document.getElementById('tituloFormServio').innerHTML = `<i class="fa-solid fa-pen text-amber-500 mr-2 text-2xl"></i> Editando Venta`; cambiarVista('inicio'); 
-        }
-        
-        function limpiarFormService() { 
-            document.getElementById('servicioForm').reset(); document.getElementById('editServioId').value = ''; 
-            ['h_gas_unidad', 'h_gas_gen', 'h_sueldos', 'h_insumos', 'h_comidas', 'h_oxxo', 'h_ha_trabajadas', 'h_precio_por_ha', 'h_ingreso_viaticos', 'h_ingreso_suministros'].forEach(id => document.getElementById(id).value = 0); 
-            document.getElementById('tituloFormServio').innerHTML = `<i class="fa-solid fa-file-invoice-dollar text-green-600 mr-2 text-2xl"></i> Registrar Venta`; 
-        }
-
-        // --- LÓGICA DE LA LUPA DE DETALLES ---
         function verDetalleServicio(id) {
             const s = memoriaServicios.find(x => x.id === id);
             const pr = memoriaPropiedades.find(p => p.id === s.propiedad_id);
             const cl = pr ? memoriaClientes.find(c => c.id === pr.cliente_id) : null;
             
-            // MODIFICACIÓN CRÍTICA: Mostrar no_orden en el folio del recibo flotante de la lupa
-            document.getElementById('det_id').innerText = s.no_orden ? s.no_orden : (s.id ? String(s.id).substring(0,6).toUpperCase() : 'S/N');
+            document.getElementById('det_id').innerText = (cl && cl.no_cliente) ? cl.no_cliente : (s.id ? String(s.id).substring(0,6).toUpperCase() : 'S/N');
             document.getElementById('det_fecha').innerText = s.fecha_aplicacion || 'No definida';
             document.getElementById('det_orden').innerText = (s.no_orden || 'S/N') + " / " + (s.no_cotizacion || 'S/N');
-            
-            document.getElementById('det_cliente').innerText = cl ? `${cl.nombre} ${cl.apellidos}` : 'Cliente Eliminado';
+            document.getElementById('det_cliente').innerText = cl ? `${cl.nombre} ${cl.apellidos}` : 'Cliente Inexistente';
             document.getElementById('det_contacto').innerText = cl ? `Tel: ${cl.telefono} | RFC: ${cl.rfc || 'S/N'}` : '';
-            document.getElementById('det_parcela').innerText = pr ? pr.nombre_propiedad : 'Parcela Eliminada';
-            document.getElementById('det_cultivo').innerText = pr ? `${pr.tipo_cultivo} - Ubicada en: ${pr.direccion}` : '';
+            document.getElementById('det_parcela').innerText = pr ? pr.nombre_propiedad : 'Parcela Inexistente';
+            document.getElementById('det_cultivo').innerText = pr ? `${pr.tipo_cultivo} - ${pr.direccion}` : '';
             
             let ha = s.ha_trabajadas || (pr ? pr.superficie_has : 0);
             let sub_fumi = ha * (s.precio_por_ha || 0);
@@ -725,11 +616,10 @@
 
             let utilidad = (s.costo_servicio || 0) - (s.gastos || 0);
             document.getElementById('det_utilidad').innerText = "$" + utilidad.toLocaleString('es-MX', {minimumFractionDigits: 2});
-            document.getElementById('det_obs').innerText = s.observaciones || 'Sin observaciones registradas en este servicio.';
+            document.getElementById('det_obs').innerText = s.observaciones || 'Sin notas.';
 
             document.getElementById('modal-detalle').classList.remove('hidden');
         }
-        
         function cerrarModalDetalle() { document.getElementById('modal-detalle').classList.add('hidden'); }
     </script>
 </body>

@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from typing import Optional  
+from typing import Optional, List
 from supabase import create_client, Client
 import os
 from dotenv import load_dotenv
@@ -11,7 +11,7 @@ url: str = os.environ.get("SUPABASE_URL")
 key: str = os.environ.get("SUPABASE_KEY")
 supabase: Client = create_client(url, key)
 
-app = FastAPI()
+app = FastAPI(title="API Operativa - Agrosoluciones Aéreas")
 
 app.add_middleware(
     CORSMiddleware,
@@ -33,6 +33,7 @@ class ClienteNuevo(BaseModel):
     telefono: str
     rfc: str
     estado: Optional[str] = "Prospecto"
+    no_cliente: Optional[str] = None  # Folio único asignado al productor
 
 class PropiedadNueva(BaseModel):
     cliente_id: str  
@@ -62,7 +63,6 @@ class ServicioNuevo(BaseModel):
     gasto_insumos: Optional[float] = 0.0
     gasto_comidas: Optional[float] = 0.0
     gasto_oxxo: Optional[float] = 0.0
-    # --- NUEVOS CAMPOS DE INGRESO DETALLADO ---
     ha_trabajadas: Optional[float] = 0.0
     precio_por_ha: Optional[float] = 0.0
     ingreso_viaticos: Optional[float] = 0.0
@@ -90,10 +90,10 @@ async def iniciar_sesion(credenciales: Credenciales):
             datos_rol = supabase.table('roles').select('rol').eq('email', credenciales.email).execute()
             if len(datos_rol.data) > 0:
                 rol_usuario = datos_rol.data[0]['rol']
-        except Exception as e:
+        except Exception:
             pass
         return {"mensaje": "Acceso concedido", "rol": rol_usuario}
-    except Exception as e:
+    except Exception:
         raise HTTPException(status_code=401, detail="Correo o contraseña incorrectos")
 
 # --- RUTAS DE CLIENTES ---
@@ -154,7 +154,7 @@ async def eliminar_propiedad(propiedad_id: str):
 @app.post("/servicios/")
 async def registrar_servicio(servicio: ServicioNuevo):
     try:
-        respuesta = supabase.table('servicios_aplicacion').insert(servicio.dict()).execute()
+        respuesta = supabase.table('servicios_application').insert(servicio.dict()).execute()
         try:
             prop_data = supabase.table('propiedades').select('cliente_id').eq('id', servicio.propiedad_id).execute()
             if len(prop_data.data) > 0:
@@ -167,20 +167,20 @@ async def registrar_servicio(servicio: ServicioNuevo):
 
 @app.get("/servicios/")
 async def obtener_servicios():
-    respuesta = supabase.table('servicios_aplicacion').select("*").execute()
+    respuesta = supabase.table('servicios_application').select("*").execute()
     return respuesta.data
 
 @app.put("/servicios/{servicio_id}")
 async def actualizar_servicio(servicio_id: str, servicio: ServicioNuevo):
     try:
-        respuesta = supabase.table('servicios_aplicacion').update(servicio.dict()).eq('id', servicio_id).execute()
+        respuesta = supabase.table('servicios_application').update(servicio.dict()).eq('id', servicio_id).execute()
         return {"mensaje": "Actualizado", "datos": respuesta.data[0]}
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
 
 @app.delete("/servicios/{servicio_id}")
 async def eliminar_servicio(servicio_id: str):
     try:
-        supabase.table('servicios_aplicacion').delete().eq('id', servicio_id).execute()
+        supabase.table('servicios_application').delete().eq('id', servicio_id).execute()
         return {"mensaje": "Eliminado exitosamente"}
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
 
@@ -215,7 +215,7 @@ async def obtener_dashboard(mes_anio: str):
         mes, anio = mes_anio.split("-")
         filtro_fecha = f"{anio}-{mes}" 
         
-        respuesta_servicios = supabase.table('servicios_aplicacion').select('costo_servicio', 'fecha_aplicacion', 'propiedad_id').execute()
+        respuesta_servicios = supabase.table('servicios_application').select('costo_servicio', 'fecha_aplicacion', 'propiedad_id').execute()
         servicios_mes = [s for s in respuesta_servicios.data if s.get('fecha_aplicacion') and s.get('fecha_aplicacion', '').startswith(filtro_fecha)]
         ventas_reales = sum(float(s.get('costo_servicio') or 0) for s in servicios_mes)
         servicios_reales = len(servicios_mes)
@@ -247,8 +247,8 @@ async def guardar_metas(metas: MetasMensuales):
     try:
         existe = supabase.table('metas_mensuales').select('id').eq('mes_anio', metas.mes_anio).execute()
         if len(existe.data) > 0:
-            respuesta = supabase.table('metas_mensuales').update(metas.dict()).eq('mes_anio', metas.mes_anio).execute()
+            supabase.table('metas_mensuales').update(metas.dict()).eq('mes_anio', metas.mes_anio).execute()
         else:
-            respuesta = supabase.table('metas_mensuales').insert(metas.dict()).execute()
+            supabase.table('metas_mensuales').insert(metas.dict()).execute()
         return {"mensaje": "Metas guardadas correctamente"}
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))

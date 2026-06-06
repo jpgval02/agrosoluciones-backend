@@ -607,7 +607,9 @@
 
                 memoriaServicios.forEach(s => { 
                     const pr = memoriaPropiedades.find(p => p.id === s.propiedad_id); const cl = pr ? memoriaClientes.find(c => c.id === pr.cliente_id) : null; 
-                    let noControl = s.id ? String(s.id).substring(0,6).toUpperCase() : 'S/N';
+                    
+                    // MODIFICACIÓN CRÍTICA: Priorizar no_orden para el número de control visual en todas las tablas
+                    let noControl = s.no_orden ? s.no_orden : (s.id ? String(s.id).substring(0,6).toUpperCase() : 'S/N');
                     let nomProd = cl ? cl.nombre + " " + cl.apellidos : 'N/A'; 
                     let totalGasto = s.gastos || 0; let totalIngreso = s.costo_servicio || 0;
                     
@@ -674,6 +676,8 @@
             document.getElementById('costo_servicio').value = totalIngreso; cerrarModalIngresos();
         }
 
+        function confirmarDesgloseGastos() { let totalGasto = calcularTotalModal(); document.getElementById('h_gas_unidad').value = document.getElementById('m_gas_unidad').value || 0; document.getElementById('h_gas_gen').value = document.getElementById('m_gas_gen').value || 0; document.getElementById('h_sueldos').value = document.getElementById('m_sueldos').value || 0; document.getElementById('h_insumos').value = document.getElementById('m_insumos').value || 0; document.getElementById('h_comidas').value = document.getElementById('m_comidas').value || 0; document.getElementById('h_oxxo').value = document.getElementById('m_oxxo').value || 0; document.getElementById('gastos').value = totalGasto; cerrarModalGastos(); }
+
         function prepararEdicionServicio(id) { 
             const s = memoriaServicios.find(x => x.id === id); document.getElementById('editServioId').value = s.id; document.getElementById('selectPropiedad').value = s.propiedad_id; document.getElementById('fecha_aplicacion').value = s.fecha_aplicacion||''; document.getElementById('costo_servicio').value = s.costo_servicio||''; document.getElementById('no_cotizacion').value = s.no_cotizacion||''; document.getElementById('no_orden').value = s.no_orden||''; document.getElementById('gastos').value = s.gastos||''; document.getElementById('fecha_seguimiento').value = s.fecha_seguimiento||''; document.getElementById('no_factura').value = s.no_factura||''; document.getElementById('observaciones').value = s.observaciones||''; 
             document.getElementById('h_gas_unidad').value = s.gasto_gasolina_unidad || 0; document.getElementById('h_gas_gen').value = s.gasto_gasolina_generador || 0; document.getElementById('h_sueldos').value = s.gasto_sueldos || 0; document.getElementById('h_insumos').value = s.gasto_insumos || 0; document.getElementById('h_comidas').value = s.gasto_comidas || 0; document.getElementById('h_oxxo').value = s.gasto_oxxo || 0;
@@ -693,7 +697,8 @@
             const pr = memoriaPropiedades.find(p => p.id === s.propiedad_id);
             const cl = pr ? memoriaClientes.find(c => c.id === pr.cliente_id) : null;
             
-            document.getElementById('det_id').innerText = s.id ? String(s.id).substring(0,6).toUpperCase() : 'S/N';
+            // MODIFICACIÓN CRÍTICA: Mostrar no_orden en el folio del recibo flotante de la lupa
+            document.getElementById('det_id').innerText = s.no_orden ? s.no_orden : (s.id ? String(s.id).substring(0,6).toUpperCase() : 'S/N');
             document.getElementById('det_fecha').innerText = s.fecha_aplicacion || 'No definida';
             document.getElementById('det_orden').innerText = (s.no_orden || 'S/N') + " / " + (s.no_cotizacion || 'S/N');
             

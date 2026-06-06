@@ -357,6 +357,60 @@
         </div>
     </div>
 
+    <div id="modal-detalle" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl border border-gray-200 overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="bg-[#064e3b] px-6 py-4 flex justify-between items-center text-white shadow-md z-10">
+                <h3 class="text-lg font-bold tracking-wide flex items-center"><i class="fa-solid fa-magnifying-glass text-green-400 mr-3"></i> Detalle de Operación en Campo</h3>
+                <button onclick="cerrarModalDetalle()" class="text-gray-300 hover:text-white transition-colors"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <div class="p-6 overflow-y-auto custom-scrollbar bg-gray-50/50">
+                <div class="grid grid-cols-3 gap-4 mb-6">
+                    <div class="bg-white p-3 rounded-xl border border-gray-100 shadow-sm"><p class="text-[10px] text-gray-400 font-bold uppercase mb-1">No. Control / ID</p><p id="det_id" class="font-bold text-gray-800 text-sm">---</p></div>
+                    <div class="bg-white p-3 rounded-xl border border-gray-100 shadow-sm"><p class="text-[10px] text-gray-400 font-bold uppercase mb-1">Fecha de Vuelo</p><p id="det_fecha" class="font-bold text-blue-700 text-sm">---</p></div>
+                    <div class="bg-white p-3 rounded-xl border border-gray-100 shadow-sm"><p class="text-[10px] text-gray-400 font-bold uppercase mb-1">No. Orden / Cotización</p><p id="det_orden" class="font-bold text-gray-800 text-sm">---</p></div>
+                </div>
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm border-l-4 border-l-blue-500">
+                        <h4 class="text-xs font-extrabold text-gray-500 uppercase mb-2 flex items-center"><i class="fa-solid fa-user text-blue-500 w-5"></i> Datos del Productor</h4>
+                        <p id="det_cliente" class="font-bold text-gray-800 text-base">---</p>
+                        <p id="det_contacto" class="text-xs text-gray-500 mt-1">---</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm border-l-4 border-l-amber-500">
+                        <h4 class="text-xs font-extrabold text-gray-500 uppercase mb-2 flex items-center"><i class="fa-solid fa-map-location-dot text-amber-500 w-5"></i> Ubicación y Cultivo</h4>
+                        <p id="det_parcela" class="font-bold text-gray-800 text-base">---</p>
+                        <p id="det_cultivo" class="text-xs text-gray-500 mt-1">---</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div class="bg-emerald-50/50 p-4 rounded-xl border border-emerald-100">
+                        <h4 class="text-xs font-extrabold text-emerald-700 uppercase mb-3 border-b border-emerald-200 pb-2"><i class="fa-solid fa-arrow-trend-up mr-1"></i> Desglose de Ingresos</h4>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex justify-between text-gray-600"><span class="text-xs">Fumigación (<span id="det_ha">0</span> Ha)</span><span id="det_sub_fumi" class="font-medium">$0.00</span></div>
+                            <div class="flex justify-between text-gray-600"><span class="text-xs">Viáticos Cobrados</span><span id="det_in_viat" class="font-medium">$0.00</span></div>
+                            <div class="flex justify-between text-gray-600"><span class="text-xs">Suministros</span><span id="det_in_sumi" class="font-medium">$0.00</span></div>
+                            <div class="flex justify-between pt-2 border-t border-emerald-200 mt-2"><span class="font-bold text-emerald-800 text-xs uppercase">Total Cobrado</span><span id="det_in_total" class="font-extrabold text-emerald-700">$0.00</span></div>
+                        </div>
+                    </div>
+                    <div class="bg-rose-50/50 p-4 rounded-xl border border-rose-100">
+                        <h4 class="text-xs font-extrabold text-rose-700 uppercase mb-3 border-b border-rose-200 pb-2"><i class="fa-solid fa-arrow-trend-down mr-1"></i> Desglose Operativo</h4>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex justify-between text-gray-600"><span class="text-xs">Gasolinas (Unidad + Gen)</span><span id="det_gasolinas" class="font-medium">$0.00</span></div>
+                            <div class="flex justify-between text-gray-600"><span class="text-xs">Sueldos</span><span id="det_sueldos" class="font-medium">$0.00</span></div>
+                            <div class="flex justify-between text-gray-600"><span class="text-xs">Insumos aplicados</span><span id="det_out_insumos" class="font-medium">$0.00</span></div>
+                            <div class="flex justify-between text-gray-600"><span class="text-xs">Alimentos (Comidas + Oxxo)</span><span id="det_alimentos" class="font-medium">$0.00</span></div>
+                            <div class="flex justify-between pt-2 border-t border-rose-200 mt-2"><span class="font-bold text-rose-800 text-xs uppercase">Costo Total</span><span id="det_out_total" class="font-extrabold text-rose-700">$0.00</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-blue-600 text-white p-4 rounded-xl shadow-md flex justify-between items-center mb-4">
+                    <div><p class="text-xs text-blue-200 font-bold uppercase tracking-wider">Utilidad Neta del Vuelo</p><p class="text-[10px] text-blue-300 mt-0.5">Ingresos Totales - Gastos Operativos</p></div>
+                    <div id="det_utilidad" class="text-3xl font-extrabold tracking-tight">$0.00</div>
+                </div>
+                <div class="bg-white p-3 rounded-xl border border-gray-200"><p class="text-[10px] text-gray-400 font-bold uppercase mb-1">Notas / Observaciones</p><p id="det_obs" class="text-sm text-gray-700 italic">---</p></div>
+            </div>
+        </div>
+    </div>
+
     <script>
         const API_URL = "https://agrosoluciones-backend.onrender.com";
         let memoriaClientes = [], memoriaPropiedades = [], memoriaServicios = [];
@@ -370,7 +424,6 @@
             else { sidebar.classList.add('-translate-x-full'); overlay.classList.add('hidden'); }
         }
 
-        // Auto-sugerencia de hectáreas al cambiar de parcela en el formulario
         document.getElementById('selectPropiedad').addEventListener('change', function() {
             const pId = this.value;
             if(pId) {
@@ -485,7 +538,7 @@
             try { await fetch(API_URL + "/api/metas/", { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datosMeta) }); cerrarModalMetas(); document.getElementById('btnGuardarMetas').innerText = "Guardar en Base de Datos"; actualizarMetasCEO(); } catch (error) { document.getElementById('btnGuardarMetas').innerText = "Guardar en Base de Datos"; } 
         });
 
-        // --- CALCULADORA DE INGRESOS (INTERACTIVA) ---
+        // --- CALCULADORA DE INGRESOS ---
         function abrirModalDesgloseIngresos() {
             document.getElementById('m_ha_trabajadas').value = document.getElementById('h_ha_trabajadas').value || 0;
             document.getElementById('m_precio_por_ha').value = document.getElementById('h_precio_por_ha').value || 0;
@@ -545,7 +598,7 @@
         function ajustarEdicionPropiedad(id) { const p = memoriaPropiedades.find(x => x.id === id); document.getElementById('editPropiedadId').value = p.id; document.getElementById('selectCliente').value = p.cliente_id; document.getElementById('nombre_propiedad').value = p.nombre_propiedad; document.getElementById('tipo_cultivo').value = p.tipo_cultivo; document.getElementById('superficie_has').value = p.superficie_has; document.getElementById('direccion').value = p.direccion; document.getElementById('estado').value = p.estado; document.getElementById('tituloFormPropiedad').innerHTML = `<i class="fa-solid fa-pen text-amber-500 mr-2 text-2xl"></i> Editando Parcela`; document.getElementById('btnSubmitPropiedad').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-amber-500"; document.getElementById('btnCancelarPropiedad').classList.remove('hidden'); cambiarVista('inicio'); }
         function limpiarFormPropiedad() { document.getElementById('propiedadForm').reset(); document.getElementById('editPropiedadId').value = ''; document.getElementById('tituloFormPropiedad').innerHTML = `<i class="fa-solid fa-map-location-dot text-green-600 mr-2 text-2xl"></i> Registrar Parcela`; document.getElementById('btnSubmitPropiedad').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-[#4ade80]"; document.getElementById('btnCancelarPropiedad').classList.add('hidden'); }
 
-        // --- VENTAS Y REPORTES FINANCIEROS ---
+        // --- VENTAS Y REPORTES ---
         async function cargarServicios() { 
             try { 
                 const res = await fetch(`${API_URL}/servicios/`); memoriaServicios = await res.json(); 
@@ -559,10 +612,14 @@
                     let nomProd = cl ? cl.nombre + " " + cl.apellidos : 'N/A'; 
                     let totalGasto = s.gastos || 0; let totalIngreso = s.costo_servicio || 0;
                     
-                    // RENDER BASE DE DATOS DE VENTAS
-                    cuerpoVentas.innerHTML += `<tr><td class="td-excel bg-gray-50">${noControl}</td><td class="td-excel">${cl?cl.nombre:'N/A'}</td><td class="td-excel">${cl?cl.apellidos:'N/A'}</td><td class="td-excel">${cl?cl.telefono:'N/A'}</td><td class="td-excel">${pr?pr.tipo_cultivo:'N/A'}</td><td class="td-excel text-center">${s.ha_trabajadas || (pr?pr.superficie_has:'0')}</td><td class="td-excel">${pr?pr.direccion:'N/A'}</td><td class="td-excel">${s.no_cotizacion||'S/N'}</td><td class="td-excel">${s.no_orden||'S/N'}</td><td class="td-excel">${s.fecha_aplicacion||'S/N'}</td><td class="td-excel text-right text-green-700 font-bold">$${totalIngreso.toLocaleString()}</td><td class="td-excel text-right text-red-600 font-bold">$${totalGasto.toLocaleString()}</td><td class="td-excel text-right text-blue-700 font-bold">$${(totalIngreso-totalGasto).toLocaleString()}</td><td class="td-excel text-center">${s.fecha_seguimiento||'S/N'}</td><td class="td-excel text-center">${s.no_factura||'S/N'}</td><td class="td-excel max-w-[150px] truncate">${s.observaciones||''}</td><td class="td-excel text-center space-x-2"><button onclick="prepararEdicionServicio('${s.id}')" class="text-amber-500"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="eliminarServio('${s.id}')" class="text-rose-500"><i class="fa-solid fa-trash"></i></button></td></tr>`; 
+                    // RENDER BASE DE DATOS DE VENTAS (AQUÍ ESTÁ LA NUEVA LUPA DETALLADA)
+                    cuerpoVentas.innerHTML += `<tr><td class="td-excel bg-gray-50">${noControl}</td><td class="td-excel">${cl?cl.nombre:'N/A'}</td><td class="td-excel">${cl?cl.apellidos:'N/A'}</td><td class="td-excel">${cl?cl.telefono:'N/A'}</td><td class="td-excel">${pr?pr.tipo_cultivo:'N/A'}</td><td class="td-excel text-center">${s.ha_trabajadas || (pr?pr.superficie_has:'0')}</td><td class="td-excel">${pr?pr.direccion:'N/A'}</td><td class="td-excel">${s.no_cotizacion||'S/N'}</td><td class="td-excel">${s.no_orden||'S/N'}</td><td class="td-excel">${s.fecha_aplicacion||'S/N'}</td><td class="td-excel text-right text-green-700 font-bold">$${totalIngreso.toLocaleString()}</td><td class="td-excel text-right text-red-600 font-bold">$${totalGasto.toLocaleString()}</td><td class="td-excel text-right text-blue-700 font-bold">$${(totalIngreso-totalGasto).toLocaleString()}</td><td class="td-excel text-center">${s.fecha_seguimiento||'S/N'}</td><td class="td-excel text-center">${s.no_factura||'S/N'}</td><td class="td-excel max-w-[150px] truncate">${s.observaciones||''}</td><td class="td-excel text-center space-x-2">
+                        <button onclick="verDetalleServicio('${s.id}')" class="text-blue-500 hover:text-blue-700 bg-blue-50 px-2 py-1 rounded shadow-sm" title="Ver Detalles"><i class="fa-solid fa-magnifying-glass"></i></button>
+                        <button onclick="prepararEdicionServicio('${s.id}')" class="text-amber-500 hover:text-amber-700 bg-amber-50 px-2 py-1 rounded shadow-sm" title="Editar"><i class="fa-solid fa-pen-to-square"></i></button>
+                        <button onclick="eliminarServio('${s.id}')" class="text-rose-500 hover:text-rose-700 bg-rose-50 px-2 py-1 rounded shadow-sm" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
+                    </td></tr>`; 
                     
-                    // RENDER TABLA DE INGRESOS DETALLADA (NUEVA)
+                    // RENDER TABLA DE INGRESOS
                     cuerpoIngresos.innerHTML += `<tr class="hover:bg-emerald-50"><td class="td-excel font-bold text-gray-500">${noControl}</td><td class="td-excel font-semibold">${nomProd}</td><td class="td-excel text-gray-600">${pr?pr.tipo_cultivo:'N/A'}</td><td class="td-excel text-center font-bold">${s.ha_trabajadas||0} Ha</td><td class="td-excel text-right">$${(s.precio_por_ha||0).toLocaleString()}</td><td class="td-excel text-right text-emerald-600">$${(s.ingreso_viaticos||0).toLocaleString()}</td><td class="td-excel text-right text-emerald-600">$${(s.ingreso_suministros||0).toLocaleString()}</td><td class="td-excel text-right text-emerald-700 font-extrabold bg-emerald-50 border-l border-emerald-200">$${totalIngreso.toLocaleString()}</td></tr>`;
 
                     // RENDER TABLA DE GASTOS
@@ -600,6 +657,46 @@
             ['h_gas_unidad', 'h_gas_gen', 'h_sueldos', 'h_insumos', 'h_comidas', 'h_oxxo', 'h_ha_trabajadas', 'h_precio_por_ha', 'h_ingreso_viaticos', 'h_ingreso_suministros'].forEach(id => document.getElementById(id).value = 0); 
             document.getElementById('tituloFormServio').innerHTML = `<i class="fa-solid fa-file-invoice-dollar text-green-600 mr-2 text-2xl"></i> Registrar Venta`; 
         }
+
+        // --- LÓGICA DE LA LUPA DE DETALLES ---
+        function verDetalleServicio(id) {
+            const s = memoriaServicios.find(x => x.id === id);
+            const pr = memoriaPropiedades.find(p => p.id === s.propiedad_id);
+            const cl = pr ? memoriaClientes.find(c => c.id === pr.cliente_id) : null;
+            
+            document.getElementById('det_id').innerText = s.id ? String(s.id).substring(0,6).toUpperCase() : 'S/N';
+            document.getElementById('det_fecha').innerText = s.fecha_aplicacion || 'No definida';
+            document.getElementById('det_orden').innerText = (s.no_orden || 'S/N') + " / " + (s.no_cotizacion || 'S/N');
+            
+            document.getElementById('det_cliente').innerText = cl ? `${cl.nombre} ${cl.apellidos}` : 'Cliente Eliminado';
+            document.getElementById('det_contacto').innerText = cl ? `Tel: ${cl.telefono} | RFC: ${cl.rfc || 'S/N'}` : '';
+            document.getElementById('det_parcela').innerText = pr ? pr.nombre_propiedad : 'Parcela Eliminada';
+            document.getElementById('det_cultivo').innerText = pr ? `${pr.tipo_cultivo} - Ubicada en: ${pr.direccion}` : '';
+            
+            let ha = s.ha_trabajadas || (pr ? pr.superficie_has : 0);
+            let sub_fumi = ha * (s.precio_por_ha || 0);
+            document.getElementById('det_ha').innerText = ha;
+            document.getElementById('det_sub_fumi').innerText = "$" + sub_fumi.toLocaleString('es-MX', {minimumFractionDigits: 2});
+            document.getElementById('det_in_viat').innerText = "$" + (s.ingreso_viaticos || 0).toLocaleString('es-MX', {minimumFractionDigits: 2});
+            document.getElementById('det_in_sumi').innerText = "$" + (s.ingreso_suministros || 0).toLocaleString('es-MX', {minimumFractionDigits: 2});
+            document.getElementById('det_in_total').innerText = "$" + (s.costo_servicio || 0).toLocaleString('es-MX', {minimumFractionDigits: 2});
+
+            let gasolinas = (s.gasto_gasolina_unidad || 0) + (s.gasto_gasolina_generador || 0);
+            let alimentos = (s.gasto_comidas || 0) + (s.gasto_oxxo || 0);
+            document.getElementById('det_gasolinas').innerText = "$" + gasolinas.toLocaleString('es-MX', {minimumFractionDigits: 2});
+            document.getElementById('det_sueldos').innerText = "$" + (s.gasto_sueldos || 0).toLocaleString('es-MX', {minimumFractionDigits: 2});
+            document.getElementById('det_out_insumos').innerText = "$" + (s.gasto_insumos || 0).toLocaleString('es-MX', {minimumFractionDigits: 2});
+            document.getElementById('det_alimentos').innerText = "$" + alimentos.toLocaleString('es-MX', {minimumFractionDigits: 2});
+            document.getElementById('det_out_total').innerText = "$" + (s.gastos || 0).toLocaleString('es-MX', {minimumFractionDigits: 2});
+
+            let utilidad = (s.costo_servicio || 0) - (s.gastos || 0);
+            document.getElementById('det_utilidad').innerText = "$" + utilidad.toLocaleString('es-MX', {minimumFractionDigits: 2});
+            document.getElementById('det_obs').innerText = s.observaciones || 'Sin observaciones registradas en este servicio.';
+
+            document.getElementById('modal-detalle').classList.remove('hidden');
+        }
+        
+        function cerrarModalDetalle() { document.getElementById('modal-detalle').classList.add('hidden'); }
     </script>
 </body>
 </html>

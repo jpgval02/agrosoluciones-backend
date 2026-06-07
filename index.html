@@ -27,7 +27,6 @@
 </head>
 <body class="text-gray-800">
 
-    <!-- MENÚ LATERAL DESPLEGABLE -->
     <div id="sidebar-menu" class="fixed inset-y-0 left-0 w-80 bg-[#064e3b] text-white transform -translate-x-full transition-transform duration-300 ease-in-out z-[100] shadow-2xl flex flex-col">
         <div class="p-6 border-b border-green-800 flex justify-between items-center bg-[#022c22]">
             <span class="font-extrabold text-lg tracking-wide flex items-center gap-2">
@@ -60,7 +59,6 @@
 
     <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/60 hidden z-[90] transition-opacity duration-300"></div>
 
-    <!-- CONTENEDOR DE LOGIN -->
     <div id="login-container" class="min-h-screen flex items-center justify-center p-4">
         <div class="bg-white p-8 rounded-3xl shadow-xl border border-green-100 max-w-md w-full">
             <div class="text-center mb-8">
@@ -82,7 +80,6 @@
         </div>
     </div>
 
-    <!-- PANEL PRINCIPAL -->
     <div id="dashboard-container" class="hidden pb-12">
         <nav class="tabla-header text-white px-6 py-3 flex justify-between items-center shadow-md sticky top-0 z-50">
             <div class="flex items-center">
@@ -100,7 +97,6 @@
             </button>
         </div>
 
-        <!-- PANTALLA 1: INICIO -->
         <div id="vista-inicio" class="max-w-[1600px] mx-auto mt-6 px-6 block">
             <h2 class="text-2xl font-bold text-gray-800 mb-4 tracking-tight">Objetivos Operativos - Junio 2026</h2>
             
@@ -116,7 +112,6 @@
             
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
                 
-                <!-- Form Clientes (CON CAJÓN NO. CLIENTE MANUAL) -->
                 <div id="vista-form-clientes" class="bg-white p-6 rounded-2xl shadow-md border border-green-100">
                     <h3 id="tituloFormCliente" class="text-xl font-bold text-gray-800 mb-6 flex items-center"><i class="fa-solid fa-user-plus text-green-600 mr-2 text-2xl"></i> Nuevo Registro</h3>
                     <form id="registroForm" class="space-y-4">
@@ -142,7 +137,6 @@
                     </form>
                 </div>
 
-                <!-- Form Parcelas -->
                 <div id="vista-form-propiedades" class="bg-white p-6 rounded-2xl shadow-md border border-green-100">
                     <h3 id="tituloFormPropiedad" class="text-xl font-bold text-gray-800 mb-6 flex items-center"><i class="fa-solid fa-map-location-dot text-green-600 mr-2 text-2xl"></i> Registrar Parcela</h3>
                     <form id="propiedadForm" class="space-y-4">
@@ -156,7 +150,6 @@
                     </form>
                 </div>
 
-                <!-- Form Ventas -->
                 <div id="vista-form-servicios" class="bg-white p-6 rounded-2xl shadow-md border border-green-100">
                     <h3 id="tituloFormServio" class="text-xl font-bold text-gray-800 mb-6 flex items-center"><i class="fa-solid fa-file-invoice-dollar text-green-600 mr-2 text-2xl"></i> Registrar Venta</h3>
                     <form id="servicioForm" class="space-y-4">
@@ -200,7 +193,6 @@
             </div>
         </div>
 
-        <!-- PANTALLA 2: MÓDULOS -->
         <div id="vista-tablas" class="hidden max-w-[1600px] mx-auto mt-6 px-6 pb-12">
             <h2 class="text-3xl font-bold text-gray-800 mb-6" id="titulo-seccion-tablas">Base de Datos Operativa</h2>
 
@@ -215,19 +207,16 @@
                 </div>
             </div>
 
-            <!-- MÓDULO: OPERACIONES -->
             <div id="vista-tabla-operaciones" class="hidden bg-white p-8 rounded-2xl shadow-xl border border-gray-200 min-h-[450px]">
                 <div class="flex items-center gap-3 border-b border-gray-100 pb-4 mb-6"><div class="bg-green-100 p-3 rounded-xl text-green-700 text-xl"><i class="fa-solid fa-gears"></i></div><div><h2 class="text-xl font-bold text-gray-800">Módulo de Operaciones</h2><p class="text-xs text-gray-400 mt-0.5">Lienzo operativo disponible para desarrollo</p></div></div>
                 <div class="flex flex-col items-center justify-center py-12 border border-dashed border-gray-200 rounded-xl bg-gray-50/50 text-center px-4"><div class="bg-white p-4 rounded-full shadow-sm text-gray-300 text-3xl mb-3"><i class="fa-solid fa-code"></i></div><p class="text-sm font-bold text-gray-600">Módulo Listo</p></div>
             </div>
 
-            <!-- MÓDULO: FINANCIEROS -->
             <div id="vista-tabla-financieros" class="hidden bg-white p-6 md:p-8 rounded-2xl shadow-xl border border-gray-200 min-h-[450px]">
                 <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4 border-b border-gray-100 pb-4 mb-6">
                     <div class="flex items-center gap-3"><div class="bg-rose-100 p-3 rounded-xl text-rose-700 text-xl"><i class="fa-solid fa-wallet"></i></div><div><h2 class="text-xl font-bold text-gray-800">Módulo Financiero</h2><p class="text-xs text-gray-400 mt-0.5">Auditoría completa de entradas y salidas de capital</p></div></div>
                 </div>
                 
-                <!-- TABLA DE INGRESOS -->
                 <div class="bg-white rounded-xl shadow-md border border-emerald-200 overflow-hidden mb-8">
                     <div class="bg-emerald-700 px-4 py-3 flex justify-between items-center text-white"><h2 class="text-sm font-bold uppercase tracking-wider"><i class="fa-solid fa-hand-holding-dollar border border-white/30 p-1.5 rounded bg-white/10 mr-2"></i> Reporte Detallado de Ingresos por Servicio</h2></div>
                     <div class="overflow-x-auto custom-scrollbar max-h-[400px] relative">
@@ -249,7 +238,6 @@
                     </div>
                 </div>
 
-                <!-- TABLA DE GASTOS -->
                 <div class="bg-white rounded-xl shadow-md border border-rose-200 overflow-hidden">
                     <div class="bg-rose-700 px-4 py-3 flex justify-between items-center text-white"><h2 class="text-sm font-bold uppercase tracking-wider"><i class="fa-solid fa-file-invoice-dollar border border-white/30 p-1.5 rounded bg-white/10 mr-2"></i> Reporte Detallado de Gastos por Servicio</h2></div>
                     <div class="overflow-x-auto custom-scrollbar max-h-[400px] relative">
@@ -274,7 +262,6 @@
                 </div>
             </div>
 
-            <!-- MÓDULO: VENTAS CRM -->
             <div id="vista-tabla-ventas-crm" class="hidden space-y-10">
                 <div class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
                     <div class="tabla-header px-6 py-4 flex flex-col md:flex-row md:justify-between items-center text-white gap-3">
@@ -329,7 +316,6 @@
         </div>
     </div> 
 
-    <!-- MODAL METAS -->
     <div id="modal-metas" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 p-4">
         <div class="bg-white p-6 rounded-2xl shadow-2xl w-full max-w-md border border-gray-200">
             <div class="flex justify-between items-center mb-4"><h3 class="text-xl font-bold text-gray-800"><i class="fa-solid fa-bullseye text-red-500 mr-2"></i> Ajustar Objetivos</h3><button onclick="cerrarModalMetas()" class="text-gray-400 hover:text-red-500"><i class="fa-solid fa-xmark text-xl"></i></button></div>
@@ -349,7 +335,6 @@
         </div>
     </div>
 
-    <!-- MODAL CALCULADORA DE INGRESOS (BOTÓN CONFIRMAR) -->
     <div id="modal-ingresos" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 p-4">
         <div class="bg-white p-6 rounded-2xl shadow-2xl w-full max-w-sm border border-emerald-200">
             <div class="flex justify-between items-center mb-4 border-b border-gray-100 pb-2">
@@ -368,7 +353,6 @@
         </div>
     </div>
 
-    <!-- MODAL CALCULADORA DE GASTOS -->
     <div id="modal-gastos" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 p-4">
         <div class="bg-white p-6 rounded-2xl shadow-2xl w-full max-w-sm border border-red-200">
             <div class="flex justify-between items-center mb-4 border-b border-gray-100 pb-2"><h3 class="text-lg font-bold text-gray-800"><i class="fa-solid fa-calculator text-red-500 mr-2"></i> Desglose de Gastos</h3><button onclick="cerrarModalGastos()" class="text-gray-400 hover:text-red-500"><i class="fa-solid fa-xmark text-xl"></i></button></div>
@@ -385,7 +369,6 @@
         </div>
     </div>
 
-    <!-- MODAL FICHA TÉCNICA DEL SERVICIO (LUPA CON CONTROL POR CLIENTE) -->
     <div id="modal-detalle" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 p-4">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl border border-gray-200 overflow-hidden flex flex-col max-h-[90vh]">
             <div class="bg-[#064e3b] px-6 py-4 flex justify-between items-center text-white shadow-md z-10">
@@ -496,7 +479,7 @@
         function cerrarSesion() { window.location.reload(); }
         async function inicializarPanel() { await cargarClientes(); await cargarPropiedades(); await cargarServicios(); cambiarVista('inicio'); }
 
-        // --- SOLUCIÓN DEL TYPO: AHORA SÍ CAMBIA DE PANTALLA SIN CHOCAR ---
+        // --- CORRECCIÓN DE LA FUNCIÓN DE CAMBIO DE PANTALLA ---
         function cambiarVista(vista) {
             ['inicio', 'financieros', 'operaciones', 'ventas-crm'].forEach(sec => {
                 const tabla = document.getElementById('vista-tabla-' + sec);
@@ -558,7 +541,7 @@
             } catch (error) {}
         }
 
-        // --- CLIENTES CON NO_CLIENTE MANUAL ---
+        // --- CLIENTES ---
         function renderizarTablaClientes(lista) { 
             const cuerpo = document.getElementById('cuerpoTabla'); cuerpo.innerHTML = ''; 
             lista.forEach(c => {
@@ -610,7 +593,7 @@
         function ajustarEdicionPropiedad(id) { const p = memoriaPropiedades.find(x => x.id === id); document.getElementById('editPropiedadId').value = p.id; document.getElementById('selectCliente').value = p.cliente_id; document.getElementById('nombre_propiedad').value = p.nombre_propiedad; document.getElementById('tipo_cultivo').value = p.tipo_cultivo; document.getElementById('superficie_has').value = p.superficie_has; document.getElementById('direccion').value = p.direccion; document.getElementById('estado').value = p.estado; document.getElementById('tituloFormPropiedad').innerHTML = `<i class="fa-solid fa-pen text-amber-500 mr-2 text-2xl"></i> Editando Parcela`; document.getElementById('btnSubmitPropiedad').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-amber-500"; document.getElementById('btnCancelarPropiedad').classList.remove('hidden'); cambiarVista('inicio'); }
         function limpiarFormPropiedad() { document.getElementById('propiedadForm').reset(); document.getElementById('editPropiedadId').value = ''; document.getElementById('tituloFormPropiedad').innerHTML = `<i class="fa-solid fa-map-location-dot text-green-600 mr-2 text-2xl"></i> Registrar Parcela`; document.getElementById('btnSubmitPropiedad').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-[#4ade80]"; document.getElementById('btnCancelarPropiedad').classList.add('hidden'); }
 
-        // --- VENTAS Y DETALLES (HEREDADO POR CLIENTE AUTOMÁTICAMENTE) ---
+        // --- VENTAS Y DETALLES (NO. CONTROL POR CLIENTE AUTOMÁTICO) ---
         async function cargarServicios() { 
             try { 
                 const res = await fetch(`${API_URL}/servicios/`); memoriaServicios = await res.json(); 
@@ -637,72 +620,6 @@
                     cuerpoGastos.innerHTML += `<tr class="hover:bg-rose-50"><td class="td-excel font-bold text-emerald-800">${noControl}</td><td class="td-excel font-semibold">${nomProd}</td><td class="td-excel text-gray-600">${pr?pr.tipo_cultivo:'N/A'}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_gasolina_unidad||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_gasolina_generador||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_sueldos||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_insumos||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_comidas||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_oxxo||0).toLocaleString()}</td><td class="td-excel text-right text-red-700 font-extrabold bg-red-50 border-l border-red-200">$${totalGasto.toLocaleString()}</td></tr>`;
                 }); 
             } catch (e) {} 
-        }
-
-        document.getElementById('servicioForm').addEventListener('submit', async function(e) { 
-            e.preventDefault(); const id = document.getElementById('editServioId').value;
-            const datos = { 
-                propiedad_id: document.getElementById('selectPropiedad').value, fecha_aplicacion: document.getElementById('fecha_aplicacion').value, 
-                costo_servicio: parseFloat(document.getElementById('costo_servicio').value || 0), estado_cuenta: 'Cobrado', satisfaccion: 5,
-                no_cotizacion: document.getElementById('no_cotizacion').value, no_orden: document.getElementById('no_orden').value,
-                gastos: parseFloat(document.getElementById('gastos').value || 0), fecha_seguimiento: document.getElementById('fecha_seguimiento').value,
-                no_factura: document.getElementById('no_factura').value, observaciones: document.getElementById('observaciones').value,
-                gasto_gasolina_unidad: parseFloat(document.getElementById('h_gas_unidad').value || 0), gasto_gasolina_generador: parseFloat(document.getElementById('h_gas_gen').value || 0), gasto_sueldos: parseFloat(document.getElementById('h_sueldos').value || 0), gasto_insumos: parseFloat(document.getElementById('h_insumos').value || 0), gasto_comidas: parseFloat(document.getElementById('h_comidas').value || 0), gasto_oxxo: parseFloat(document.getElementById('h_oxxo').value || 0),
-                ha_trabajadas: parseFloat(document.getElementById('h_ha_trabajadas').value || 0), precio_por_ha: parseFloat(document.getElementById('h_precio_por_ha').value || 0), ingreso_viaticos: parseFloat(document.getElementById('h_ingreso_viaticos').value || 0), ingreso_suministros: parseFloat(document.getElementById('h_ingreso_suministros').value || 0)
-            }; 
-            await fetch(id ? `${API_URL}/servicios/${id}` : `${API_URL}/servicios/`, { method: id ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos) }); 
-            limpiarFormService(); await inicializarPanel(); 
-        });
-
-        async function eliminarServio(id) { if(confirm("¿Eliminar registro?")) { await fetch(`${API_URL}/servicios/${id}`, { method: 'DELETE' }); await inicializarPanel(); } }
-        
-        function abrirModalDesgloseIngresos() {
-            document.getElementById('m_ha_trabajadas').value = document.getElementById('h_ha_trabajadas').value || 0;
-            document.getElementById('m_precio_por_ha').value = document.getElementById('h_precio_por_ha').value || 0;
-            document.getElementById('m_ingreso_viaticos').value = document.getElementById('h_ingreso_viaticos').value || 0;
-            document.getElementById('m_ingreso_suministros').value = document.getElementById('h_ingreso_suministros').value || 0;
-            calcularTotalModalIngresos(); document.getElementById('modal-ingresos').classList.remove('hidden');
-        }
-        function cerrarModalIngresos() { document.getElementById('modal-ingresos').classList.add('hidden'); }
-        function calcularTotalModalIngresos() {
-            let ha = parseFloat(document.getElementById('m_ha_trabajadas').value) || 0;
-            let precio = parseFloat(document.getElementById('m_precio_por_ha').value) || 0;
-            let subtotalFumi = ha * precio;
-            let viaticos = parseFloat(document.getElementById('m_ingreso_viaticos').value) || 0;
-            let suministros = parseFloat(document.getElementById('m_ingreso_suministros').value) || 0;
-            
-            document.getElementById('m_subtotal_fumigacion').innerText = "$" + subtotalFumi.toLocaleString('es-MX', {minimumFractionDigits: 2});
-            let total = subtotalFumi + viaticos + suministros;
-            document.getElementById('m_total_ingresos_display').innerText = "$" + total.toLocaleString('es-MX', {minimumFractionDigits: 2});
-            return total;
-        }
-        ['m_ha_trabajadas', 'm_precio_por_ha', 'm_ingreso_viaticos', 'm_ingreso_suministros'].forEach(id => { document.getElementById(id).addEventListener('input', calcularTotalModalIngresos); });
-        function confirmarDesgloseIngresos() {
-            let totalIngreso = calcularTotalModalIngresos();
-            document.getElementById('h_ha_trabajadas').value = document.getElementById('m_ha_trabajadas').value || 0;
-            document.getElementById('h_precio_por_ha').value = document.getElementById('m_precio_por_ha').value || 0;
-            document.getElementById('h_ingreso_viaticos').value = document.getElementById('m_ingreso_viaticos').value || 0;
-            document.getElementById('h_ingreso_suministros').value = document.getElementById('m_ingreso_suministros').value || 0;
-            document.getElementById('costo_servicio').value = totalIngreso; cerrarModalIngresos();
-        }
-
-        function abrirModalDesgloseGastos() { document.getElementById('m_gas_unidad').value = document.getElementById('h_gas_unidad').value || 0; document.getElementById('m_gas_gen').value = document.getElementById('h_gas_gen').value || 0; document.getElementById('m_sueldos').value = document.getElementById('h_sueldos').value || 0; document.getElementById('m_insumos').value = document.getElementById('h_insumos').value || 0; document.getElementById('m_comidas').value = document.getElementById('h_comidas').value || 0; document.getElementById('m_oxxo').value = document.getElementById('h_oxxo').value || 0; calcularTotalModal(); document.getElementById('modal-gastos').classList.remove('hidden'); }
-        function cerrarModalGastos() { document.getElementById('modal-gastos').classList.add('hidden'); }
-        function calcularTotalModal() { let total = (parseFloat(document.getElementById('m_gas_unidad').value) || 0) + (parseFloat(document.getElementById('m_gas_gen').value) || 0) + (parseFloat(document.getElementById('m_sueldos').value) || 0) + (parseFloat(document.getElementById('m_insumos').value) || 0) + (parseFloat(document.getElementById('m_comidas').value) || 0) + (parseFloat(document.getElementById('m_oxxo').value) || 0); document.getElementById('m_total_display').innerText = "$" + total.toLocaleString('es-MX', {minimumFractionDigits: 2}); return total; }
-        ['m_gas_unidad', 'm_gas_gen', 'm_sueldos', 'm_insumos', 'm_comidas', 'm_oxxo'].forEach(id => { document.getElementById(id).addEventListener('input', calcularTotalModal); });
-        function confirmarDesgloseGastos() { let totalGasto = calcularTotalModal(); document.getElementById('h_gas_unidad').value = document.getElementById('m_gas_unidad').value || 0; document.getElementById('h_gas_gen').value = document.getElementById('m_gas_gen').value || 0; document.getElementById('h_sueldos').value = document.getElementById('m_sueldos').value || 0; document.getElementById('h_insumos').value = document.getElementById('m_insumos').value || 0; document.getElementById('h_comidas').value = document.getElementById('m_comidas').value || 0; document.getElementById('h_oxxo').value = document.getElementById('m_oxxo').value || 0; document.getElementById('gastos').value = totalGasto; cerrarModalGastos(); }
-
-        function prepararEdicionServicio(id) { 
-            const s = memoriaServicios.find(x => x.id === id); document.getElementById('editServioId').value = s.id; document.getElementById('selectPropiedad').value = s.propiedad_id; document.getElementById('fecha_aplicacion').value = s.fecha_aplicacion||''; document.getElementById('costo_servicio').value = s.costo_servicio||''; document.getElementById('no_cotizacion').value = s.no_cotizacion||''; document.getElementById('no_orden').value = s.no_orden||''; document.getElementById('gastos').value = s.gastos||''; document.getElementById('fecha_seguimiento').value = s.fecha_seguimiento||''; document.getElementById('no_factura').value = s.no_factura||''; document.getElementById('observaciones').value = s.observaciones||''; 
-            document.getElementById('h_gas_unidad').value = s.gasto_gasolina_unidad || 0; document.getElementById('h_gas_gen').value = s.gasto_gasolina_generador || 0; document.getElementById('h_sueldos').value = s.gasto_sueldos || 0; document.getElementById('h_insumos').value = s.gasto_insumos || 0; document.getElementById('h_comidas').value = s.gasto_comidas || 0; document.getElementById('h_oxxo').value = s.gasto_oxxo || 0;
-            document.getElementById('h_ha_trabajadas').value = s.ha_trabajadas || 0; document.getElementById('h_precio_por_ha').value = s.precio_por_ha || 0; document.getElementById('h_ingreso_viaticos').value = s.ingreso_viaticos || 0; document.getElementById('h_ingreso_suministros').value = s.ingreso_suministros || 0;
-            document.getElementById('tituloFormServio').innerHTML = `<i class="fa-solid fa-pen text-amber-500 mr-2 text-2xl"></i> Editando Venta`; cambiarVista('inicio'); 
-        }
-        
-        function limpiarFormService() { 
-            document.getElementById('servicioForm').reset(); document.getElementById('editServioId').value = ''; 
-            ['h_gas_unidad', 'h_gas_gen', 'h_sueldos', 'h_insumos', 'h_comidas', 'h_oxxo', 'h_ha_trabajadas', 'h_precio_por_ha', 'h_ingreso_viaticos', 'h_ingreso_suministros'].forEach(id => document.getElementById(id).value = 0); 
-            document.getElementById('tituloFormServio').innerHTML = `<i class="fa-solid fa-file-invoice-dollar text-green-600 mr-2 text-2xl"></i> Registrar Venta`; 
         }
 
         // --- LÓGICA DE LA LUPA DE DETALLES ---

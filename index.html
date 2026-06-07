@@ -157,8 +157,7 @@
                         
                         <input type="hidden" id="h_gas_unidad" value="0"><input type="hidden" id="h_gas_gen" value="0"><input type="hidden" id="h_sueldos" value="0"><input type="hidden" id="h_insumos" value="0"><input type="hidden" id="h_comidas" value="0"><input type="hidden" id="h_oxxo" value="0">
                         <input type="hidden" id="h_ha_trabajadas" value="0"><input type="hidden" id="h_precio_por_ha" value="0"><input type="hidden" id="h_ingreso_viaticos" value="0"><input type="hidden" id="h_ingreso_suministros" value="0">
-
-                        <div><label class="text-[10px] text-gray-500 font-bold uppercase">Productor / Parcela</label><select id="selectPropiedad" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm"><option value="">-- Selecciona --</option></select></div>
+                        <input type="hidden" id="h_metodo_pago" value="Efectivo"> <div><label class="text-[10px] text-gray-500 font-bold uppercase">Productor / Parcela</label><select id="selectPropiedad" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm"><option value="">-- Selecciona --</option></select></div>
                         <div class="grid grid-cols-2 gap-3">
                             <div><label class="text-[10px] text-gray-500 font-bold uppercase">No. Cotización</label><input type="text" id="no_cotizacion" placeholder="Ej. C-001" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 text-sm rounded-lg"></div>
                             <div><label class="text-[10px] text-gray-500 font-bold uppercase">No. Orden Serv.</label><input type="text" id="no_orden" placeholder="Ej. OS-001" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 text-sm rounded-lg"></div>
@@ -342,11 +341,20 @@
                 <button onclick="cerrarModalIngresos()" class="text-gray-400 hover:text-red-500"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
             <div class="space-y-3">
-                <div class="flex justify-between items-center"><label class="text-xs font-bold text-gray-600 uppercase"><i class="fa-solid fa-ruler-combined w-5 text-gray-400"></i> Ha. Trabajadas</label><input type="number" step="0.01" id="m_ha_trabajadas" class="w-32 px-2 py-1 bg-gray-50 border border-gray-300 rounded text-right font-bold text-emerald-600 outline-none focus:ring-1 focus:ring-emerald-500"></div>
-                <div class="flex justify-between items-center"><label class="text-xs font-bold text-gray-600 uppercase"><i class="fa-solid fa-dollar-sign w-5 text-gray-400"></i> Precio x Ha.</label><input type="number" step="0.01" id="m_precio_por_ha" class="w-32 px-2 py-1 bg-gray-50 border border-gray-300 rounded text-right font-bold text-emerald-600 outline-none focus:ring-1 focus:ring-emerald-500"></div>
+                <div class="flex justify-between items-center"><label class="text-xs font-bold text-gray-600 uppercase"><i class="fa-solid fa-ruler-combined w-5 text-gray-400"></i> Ha. Trabajadas</label><input type="number" step="0.01" id="m_ha_trabajadas" class="w-32 px-2 py-1 bg-gray-50 border border-gray-300 rounded text-right font-bold text-emerald-600 outline-none"></div>
+                <div class="flex justify-between items-center"><label class="text-xs font-bold text-gray-600 uppercase"><i class="fa-solid fa-dollar-sign w-5 text-gray-400"></i> Precio x Ha.</label><input type="number" step="0.01" id="m_precio_por_ha" class="w-32 px-2 py-1 bg-gray-50 border border-gray-300 rounded text-right font-bold text-emerald-600 outline-none"></div>
                 <div class="flex justify-between items-center border-b border-dashed border-gray-200 pb-2 text-xs font-semibold text-gray-500"><label>Subtotal Fumigación</label><span id="m_subtotal_fumigacion">$0.00</span></div>
-                <div class="flex justify-between items-center"><label class="text-xs font-bold text-gray-600 uppercase"><i class="fa-solid fa-car w-5 text-gray-400"></i> Viáticos Cobrados</label><input type="number" step="0.01" id="m_ingreso_viaticos" class="w-32 px-2 py-1 bg-gray-50 border border-gray-300 rounded text-right font-bold text-emerald-600 outline-none focus:ring-1 focus:ring-emerald-500"></div>
-                <div class="flex justify-between items-center"><label class="text-xs font-bold text-gray-600 uppercase"><i class="fa-solid fa-box-open w-5 text-gray-400"></i> Venta Suministros</label><input type="number" step="0.01" id="m_ingreso_suministros" class="w-32 px-2 py-1 bg-gray-50 border border-gray-300 rounded text-right font-bold text-emerald-600 outline-none focus:ring-1 focus:ring-emerald-500"></div>
+                <div class="flex justify-between items-center"><label class="text-xs font-bold text-gray-600 uppercase"><i class="fa-solid fa-car w-5 text-gray-400"></i> Viáticos Cobrados</label><input type="number" step="0.01" id="m_ingreso_viaticos" class="w-32 px-2 py-1 bg-gray-50 border border-gray-300 rounded text-right font-bold text-emerald-600 outline-none"></div>
+                <div class="flex justify-between items-center"><label class="text-xs font-bold text-gray-600 uppercase"><i class="fa-solid fa-box-open w-5 text-gray-400"></i> Venta Suministros</label><input type="number" step="0.01" id="m_ingreso_suministros" class="w-32 px-2 py-1 bg-gray-50 border border-gray-300 rounded text-right font-bold text-emerald-600 outline-none"></div>
+                
+                <div class="pt-2 border-t border-dashed border-gray-200">
+                    <label class="text-[10px] font-extrabold text-gray-500 uppercase block mb-2 tracking-wider">Forma de Cobro Realizada</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button type="button" id="btn_pago_efectivo" onclick="seleccionarMetodoPago('Efectivo')" class="py-2 text-xs font-bold rounded-lg border bg-emerald-50 border-emerald-500 text-emerald-700 flex items-center justify-center gap-1 w-full transition-all shadow-sm"><i class="fa-solid fa-money-bill-wave"></i> Efectivo</button>
+                        <button type="button" id="btn_pago_transferencia" onclick="seleccionarMetodoPago('Transferencia')" class="py-2 text-xs font-bold rounded-lg border bg-gray-50 border-gray-200 text-gray-600 flex items-center justify-center gap-1 w-full transition-all"><i class="fa-solid fa-building-columns"></i> Transferencia</button>
+                    </div>
+                </div>
+
                 <div class="flex justify-between items-center mt-4 pt-3 border-t border-gray-200"><label class="text-sm font-extrabold text-gray-800 uppercase">Suma Total</label><span id="m_total_ingresos_display" class="text-xl font-extrabold text-emerald-600">$0.00</span></div>
             </div>
             <button type="button" onclick="confirmarDesgloseIngresos()" class="w-full mt-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg transition-colors shadow-md"><i class="fa-solid fa-check mr-1"></i> Confirmar</button>
@@ -415,10 +423,10 @@
                     </div>
                 </div>
                 <div class="bg-blue-600 text-white p-4 rounded-xl shadow-md flex justify-between items-center mb-4">
-                    <div><p class="text-xs text-blue-200 font-bold uppercase tracking-wider">Utilidad Neta del Vuelo</p><p class="text-[10px] text-blue-300 mt-0.5">Ingresos Totales - Gastos Operativos</p></div>
+                    <div><p class="text-xs text-blue-200 font-bold uppercase tracking-wider">Utilidad Neta (Cobro vía <span id="det_metodo_txt">---</span>)</p><p class="text-[10px] text-blue-300 mt-0.5">Ingresos Totales - Gastos Operativos</p></div>
                     <div id="det_utilidad" class="text-3xl font-extrabold tracking-tight">$0.00</div>
                 </div>
-                <div class="bg-white p-3 rounded-xl border border-gray-200"><p class="text-[10px] text-gray-400 font-bold uppercase mb-1">Notas / Observaciones</p><p id="det_obs" class="text-sm text-gray-700 italic">---</p></div>
+                <div class="bg-white p-3 rounded-xl border border-gray-200"><p class="text-[10px] text-gray-400 font-bold uppercase mb-1">Notes / Observaciones</p><p id="det_obs" class="text-sm text-gray-700 italic">---</p></div>
             </div>
         </div>
     </div>
@@ -428,6 +436,7 @@
         let memoriaClientes = [], memoriaPropiedades = [], memoriaServicios = [];
         let rolUsuario = 'trabajador'; 
         let visitasCampoRealizadas = 0; 
+        let metodoPagoSeleccionado = 'Efectivo'; // Estado de la calculadora
 
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar-menu');
@@ -544,7 +553,7 @@
         function renderizarTablaClientes(lista) { 
             const cuerpo = document.getElementById('cuerpoTabla'); cuerpo.innerHTML = ''; document.getElementById('contadorClientes').textContent = `${lista.length} REGISTRADOS`;
             lista.forEach(c => {
-                let badge = c.estado === 'Cliente' ? `<span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-300">Cliente Real 🟢</span>` : (c.estado === 'Negociación' ? `<span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-amber-300">Negociación 🟠</span>` : `<span class="bg-blue-100 text-blue-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-blue-300">Prospecto 🟡</span>`);
+                let badge = c.estado === 'Cliente' ? `<span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-300">Cliente Real 🟢</span>` : `<span class="bg-blue-100 text-blue-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-blue-300">Prospecto 🟡</span>`;
                 let folioCliente = c.no_cliente ? `<span class="text-emerald-700 font-extrabold mr-1">[${c.no_cliente}]</span>` : '';
                 cuerpo.innerHTML += `<tr class="hover:bg-gray-50"><td class="px-6 py-4"><div class="flex items-center space-x-4"><div class="bg-green-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold"><i class="fa-solid fa-user"></i></div><div><p class="font-bold text-gray-800">${folioCliente}${c.nombre} ${c.apellidos}</p><p class="text-[10px] text-gray-400 mt-1">RFC: ${c.rfc || 'S/N'} | ${badge}</p></div></div></td><td class="px-6 py-4"><p class="text-sm text-blue-600 font-medium">${c.email || 'Sin correo'}</p><p class="text-sm text-gray-600 mt-1">${c.telefono}</p></td><td class="px-6 py-4 text-center whitespace-nowrap space-x-1"><button onclick="tabularEdicionCliente('${c.id}')" class="bg-amber-400 text-white text-xs px-4 py-2 rounded-full"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="eliminarCliente('${c.id}')" class="bg-rose-600 text-white text-xs px-4 py-2 rounded-full"><i class="fa-solid fa-trash"></i></button></td></tr>`; 
             }); 
@@ -587,10 +596,6 @@
 
         // --- PARCELAS ---
         async function cargarPropiedades() { try { const res = await fetch(`${API_URL}/propiedades/`); memoriaPropiedades = await res.json(); const cuerpo = document.getElementById('cuerpoTablaPropiedades'); cuerpo.innerHTML = ''; const sel = document.getElementById('selectPropiedad'); sel.innerHTML = '<option value="">-- Selecciona --</option>'; memoriaPropiedades.forEach(p => { const cl = memoriaClientes.find(c => c.id === p.cliente_id); const nD = cl ? `${cl.nombre} ${cl.apellidos}` : 'N/A'; cuerpo.innerHTML += `<tr><td class="px-6 py-4"><p class="font-bold text-sm">${p.nombre_propiedad}</p><p class="text-[11px] text-gray-500">${p.direccion} - Prop: ${nD}</p></td><td class="px-6 py-4 text-center"><span class="bg-[#1b6b43] text-white px-3 py-1 rounded-full text-[10px] font-bold">${p.tipo_cultivo}</span></td><td class="px-6 py-4 text-center"><p class="text-xl font-extrabold">${p.superficie_has}</p></td><td class="px-6 py-4 text-center"><button onclick="ajustarEdicionPropiedad('${p.id}')" class="bg-amber-400 text-white text-xs px-4 py-2 rounded-full mr-1"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="eliminarPropiedad('${p.id}')" class="bg-rose-600 text-white text-xs px-4 py-2 rounded-full"><i class="fa-solid fa-trash"></i></button></td></tr>`; sel.innerHTML += `<option value="${p.id}">${nD} - ${p.nombre_propiedad}</option>`; }); } catch (e) {} }
-        document.getElementById('propiedadForm').addEventListener('submit', async function(e) { e.preventDefault(); const id = document.getElementById('editPropiedadId').value; const datos = { cliente_id: document.getElementById('selectCliente').value, nombre_propiedad: document.getElementById('nombre_propiedad').value, direccion: document.getElementById('direccion').value, estado: document.getElementById('estado').value, tipo_cultivo: document.getElementById('tipo_cultivo').value, superficie_has: parseFloat(document.getElementById('superficie_has').value), sistema_riego: 'N/A', comentarios: '' }; await fetch(id ? `${API_URL}/propiedades/${id}` : `${API_URL}/propiedades/`, { method: id ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos) }); limpiarFormPropiedad(); await inicializarPanel(); });
-        async function eliminarPropiedad(id) { if(confirm("¿Eliminar parcela?")) { await fetch(`${API_URL}/propiedades/${id}`, { method: 'DELETE' }); await inicializarPanel(); } }
-        function ajustarEdicionPropiedad(id) { const p = memoriaPropiedades.find(x => x.id === id); document.getElementById('editPropiedadId').value = p.id; document.getElementById('selectCliente').value = p.cliente_id; document.getElementById('nombre_propiedad').value = p.nombre_propiedad; document.getElementById('tipo_cultivo').value = p.tipo_cultivo; document.getElementById('superficie_has').value = p.superficie_has; document.getElementById('direccion').value = p.direccion; document.getElementById('estado').value = p.estado; document.getElementById('tituloFormPropiedad').innerHTML = `<i class="fa-solid fa-pen text-amber-500 mr-2 text-2xl"></i> Editando Parcela`; document.getElementById('btnSubmitPropiedad').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-amber-500"; document.getElementById('btnCancelarPropiedad').classList.remove('hidden'); cambiarVista('inicio'); }
-        function limpiarFormPropiedad() { document.getElementById('propiedadForm').reset(); document.getElementById('editPropiedadId').value = ''; document.getElementById('tituloFormPropiedad').innerHTML = `<i class="fa-solid fa-map-location-dot text-green-600 mr-2 text-2xl"></i> Registrar Parcela`; document.getElementById('btnSubmitPropiedad').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-[#4ade80]"; document.getElementById('btnCancelarPropiedad').classList.add('hidden'); }
 
         // --- VENTAS Y DETALLES ---
         async function cargarServicios() { 
@@ -608,13 +613,18 @@
                     let nomProd = cl ? cl.nombre + " " + cl.apellidos : 'N/A'; 
                     let totalGasto = s.gastos || 0; let totalIngreso = s.costo_servicio || 0;
                     
+                    // AGREGADO: Distintivo visual del método de pago en la tabla de ingresos
+                    let badgePago = s.metodo_pago === 'Transferencia' 
+                        ? `<span class="ml-2 text-[9px] font-extrabold text-blue-600 bg-blue-50 px-1 rounded border border-blue-200 uppercase tracking-tight">SPEI</span>`
+                        : `<span class="ml-2 text-[9px] font-extrabold text-emerald-600 bg-emerald-50 px-1 rounded border border-emerald-200 uppercase tracking-tight">EFEC</span>`;
+
                     cuerpoVentas.innerHTML += `<tr><td class="td-excel bg-gray-50 font-extrabold text-emerald-800">${noControl}</td><td class="td-excel">${cl?cl.nombre:'N/A'}</td><td class="td-excel">${cl?cl.apellidos:'N/A'}</td><td class="td-excel">${cl?cl.telefono:'N/A'}</td><td class="td-excel">${pr?pr.tipo_cultivo:'N/A'}</td><td class="td-excel text-center">${s.ha_trabajadas || (pr?pr.superficie_has:'0')}</td><td class="td-excel">${pr?pr.direccion:'N/A'}</td><td class="td-excel">${s.no_cotizacion||'S/N'}</td><td class="td-excel">${s.no_orden||'S/N'}</td><td class="td-excel">${s.fecha_aplicacion||'S/N'}</td><td class="td-excel text-right text-green-700 font-bold">$${totalIngreso.toLocaleString()}</td><td class="td-excel text-right text-red-600 font-bold">$${totalGasto.toLocaleString()}</td><td class="td-excel text-right text-blue-700 font-bold">$${(totalIngreso-totalGasto).toLocaleString()}</td><td class="td-excel text-center">${s.fecha_seguimiento||'S/N'}</td><td class="td-excel text-center">${s.no_factura||'S/N'}</td><td class="td-excel max-w-[150px] truncate">${s.observaciones||''}</td><td class="td-excel text-center space-x-2">
                         <button onclick="verDetalleServicio('${s.id}')" class="text-blue-500 bg-blue-50 px-2 py-1 rounded shadow-sm"><i class="fa-solid fa-magnifying-glass"></i></button>
                         <button onclick="prepararEdicionServicio('${s.id}')" class="text-amber-500"><i class="fa-solid fa-pen-to-square"></i></button>
                         <button onclick="eliminarServio('${s.id}')" class="text-rose-500"><i class="fa-solid fa-trash"></i></button>
                     </td></tr>`; 
                     
-                    cuerpoIngresos.innerHTML += `<tr class="hover:bg-emerald-50"><td class="td-excel font-bold text-emerald-800">${noControl}</td><td class="td-excel font-semibold">${nomProd}</td><td class="td-excel text-gray-600">${pr?pr.tipo_cultivo:'N/A'}</td><td class="td-excel text-center font-bold">${s.ha_trabajadas||0} Ha</td><td class="td-excel text-right">$${(s.precio_por_ha||0).toLocaleString()}</td><td class="td-excel text-right text-emerald-600">$${(s.ingreso_viaticos||0).toLocaleString()}</td><td class="td-excel text-right text-emerald-600">$${(s.ingreso_suministros||0).toLocaleString()}</td><td class="td-excel text-right text-emerald-700 font-extrabold bg-emerald-50 border-l border-emerald-200">$${totalIngreso.toLocaleString()}</td></tr>`;
+                    cuerpoIngresos.innerHTML += `<tr class="hover:bg-emerald-50"><td class="td-excel font-bold text-emerald-800">${noControl}</td><td class="td-excel font-semibold">${nomProd}</td><td class="td-excel text-gray-600">${pr?pr.tipo_cultivo:'N/A'}</td><td class="td-excel text-center font-bold">${s.ha_trabajadas||0} Ha</td><td class="td-excel text-right">$${(s.precio_por_ha||0).toLocaleString()}</td><td class="td-excel text-right text-emerald-600">$${(s.ingreso_viaticos||0).toLocaleString()}</td><td class="td-excel text-right text-emerald-600">$${(s.ingreso_suministros||0).toLocaleString()}</td><td class="td-excel text-right text-emerald-700 font-extrabold bg-emerald-50 border-l border-emerald-200 flex items-center justify-end">$${totalIngreso.toLocaleString()}${badgePago}</td></tr>`;
 
                     cuerpoGastos.innerHTML += `<tr class="hover:bg-rose-50"><td class="td-excel font-bold text-emerald-800">${noControl}</td><td class="td-excel font-semibold">${nomProd}</td><td class="td-excel text-gray-600">${pr?pr.tipo_cultivo:'N/A'}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_gasolina_unidad||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_gasolina_generador||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_sueldos||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_insumos||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_comidas||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_oxxo||0).toLocaleString()}</td><td class="td-excel text-right text-red-700 font-extrabold bg-red-50 border-l border-red-200">$${totalGasto.toLocaleString()}</td></tr>`;
                 }); 
@@ -630,27 +640,87 @@
                 gastos: parseFloat(document.getElementById('gastos').value || 0), fecha_seguimiento: document.getElementById('fecha_seguimiento').value,
                 no_factura: document.getElementById('no_factura').value, observaciones: document.getElementById('observaciones').value,
                 gasto_gasolina_unidad: parseFloat(document.getElementById('h_gas_unidad').value || 0), gasto_gasolina_generador: parseFloat(document.getElementById('h_gas_gen').value || 0), gasto_sueldos: parseFloat(document.getElementById('h_sueldos').value || 0), gasto_insumos: parseFloat(document.getElementById('h_insumos').value || 0), gasto_comidas: parseFloat(document.getElementById('h_comidas').value || 0), gasto_oxxo: parseFloat(document.getElementById('h_oxxo').value || 0),
-                ha_trabajadas: parseFloat(document.getElementById('h_ha_trabajadas').value || 0), precio_por_ha: parseFloat(document.getElementById('h_precio_por_ha').value || 0), ingreso_viaticos: parseFloat(document.getElementById('h_ingreso_viaticos').value || 0), ingreso_suministros: parseFloat(document.getElementById('h_ingreso_suministros').value || 0)
+                ha_trabajadas: parseFloat(document.getElementById('h_ha_trabajadas').value || 0), precio_por_ha: parseFloat(document.getElementById('h_precio_por_ha').value || 0), ingreso_viaticos: parseFloat(document.getElementById('h_ingreso_viaticos').value || 0), ingreso_suministros: parseFloat(document.getElementById('h_ingreso_suministros').value || 0),
+                metodo_pago: document.getElementById('h_metodo_pago').value // Inyección del método de pago elegido
             }; 
             await fetch(id ? `${API_URL}/servicios/${id}` : `${API_URL}/servicios/`, { method: id ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos) }); 
             limpiarFormService(); await inicializarPanel(); 
         });
 
         async function eliminarServio(id) { if(confirm("¿Eliminar registro?")) { await fetch(`${API_URL}/servicios/${id}`, { method: 'DELETE' }); await inicializarPanel(); } }
-        
+
+        // --- INTERACCION INTERNA DEL SELECTOR DE METODO DE PAGO ---
+        function seleccionarMetodoPago(metodo) {
+            metodoPagoSeleccionado = metodo;
+            const btnEf = document.getElementById('btn_pago_efectivo');
+            const btnTr = document.getElementById('btn_pago_transferencia');
+            if (metodo === 'Efectivo') {
+                btnEf.className = "py-2 text-xs font-bold rounded-lg border bg-emerald-50 border-emerald-500 text-emerald-700 flex items-center justify-center gap-1 w-full transition-all shadow-sm";
+                btnTr.className = "py-2 text-xs font-bold rounded-lg border bg-gray-50 border-gray-200 text-gray-600 flex items-center justify-center gap-1 w-full transition-all";
+            } else {
+                btnEf.className = "py-2 text-xs font-bold rounded-lg border bg-gray-50 border-gray-200 text-gray-600 flex items-center justify-center gap-1 w-full transition-all";
+                btnTr.className = "py-2 text-xs font-bold rounded-lg border bg-blue-50 border-blue-500 text-blue-700 flex items-center justify-center gap-1 w-full transition-all shadow-sm";
+            }
+        }
+
+        // --- CALCULADORA DE INGRESOS ---
+        function abrirModalDesgloseIngresos() {
+            document.getElementById('m_ha_trabajadas').value = document.getElementById('h_ha_trabajadas').value || 0;
+            document.getElementById('m_precio_por_ha').value = document.getElementById('h_precio_por_ha').value || 0;
+            document.getElementById('m_ingreso_viaticos').value = document.getElementById('h_ingreso_viaticos').value || 0;
+            document.getElementById('m_ingreso_suministros').value = document.getElementById('h_ingreso_suministros').value || 0;
+            seleccionarMetodoPago(document.getElementById('h_metodo_pago').value || 'Efectivo');
+            calcularTotalModalIngresos(); document.getElementById('modal-ingresos').classList.remove('hidden');
+        }
+        function cerrarModalIngresos() { document.getElementById('modal-ingresos').classList.add('hidden'); }
+        function calcularTotalModalIngresos() {
+            let ha = parseFloat(document.getElementById('m_ha_trabajadas').value) || 0;
+            let precio = parseFloat(document.getElementById('m_precio_por_ha').value) || 0;
+            let subtotalFumi = ha * precio;
+            let viaticos = parseFloat(document.getElementById('m_ingreso_viaticos').value) || 0;
+            let suministros = parseFloat(document.getElementById('m_ingreso_suministros').value) || 0;
+            
+            document.getElementById('m_subtotal_fumigacion').innerText = "$" + subtotalFumi.toLocaleString('es-MX', {minimumFractionDigits: 2});
+            let total = subtotalFumi + viaticos + suministros;
+            document.getElementById('m_total_ingresos_display').innerText = "$" + total.toLocaleString('es-MX', {minimumFractionDigits: 2});
+            return total;
+        }
+        ['m_ha_trabajadas', 'm_precio_por_ha', 'm_ingreso_viaticos', 'm_ingreso_suministros'].forEach(id => { 
+            let el = document.getElementById(id); if(el) el.addEventListener('input', calcularTotalModalIngresos); 
+        });
+        function confirmarDesgloseIngresos() {
+            let totalIngreso = calcularTotalModalIngresos();
+            document.getElementById('h_ha_trabajadas').value = document.getElementById('m_ha_trabajadas').value || 0;
+            document.getElementById('h_precio_por_ha').value = document.getElementById('m_precio_por_ha').value || 0;
+            document.getElementById('h_ingreso_viaticos').value = document.getElementById('m_ingreso_viaticos').value || 0;
+            document.getElementById('h_ingreso_suministros').value = document.getElementById('m_ingreso_suministros').value || 0;
+            document.getElementById('h_metodo_pago').value = metodoPagoSeleccionado; // Anclaje final
+            document.getElementById('costo_servicio').value = totalIngreso; cerrarModalIngresos();
+        }
+
+        // --- CALCULADORA DE GASTOS ---
+        function abrirModalDesgloseGastos() { document.getElementById('m_gas_unidad').value = document.getElementById('h_gas_unidad').value || 0; document.getElementById('m_gas_gen').value = document.getElementById('h_gas_gen').value || 0; document.getElementById('m_sueldos').value = document.getElementById('h_sueldos').value || 0; document.getElementById('m_insumos').value = document.getElementById('h_insumos').value || 0; document.getElementById('m_comidas').value = document.getElementById('h_comidas').value || 0; document.getElementById('m_oxxo').value = document.getElementById('h_oxxo').value || 0; calcularTotalModal(); document.getElementById('modal-gastos').classList.remove('hidden'); }
+        function cerrarModalGastos() { document.getElementById('modal-gastos').classList.add('hidden'); }
+        function calcularTotalModal() { let total = (parseFloat(document.getElementById('m_gas_unidad').value) || 0) + (parseFloat(document.getElementById('m_gas_gen').value) || 0) + (parseFloat(document.getElementById('m_sueldos').value) || 0) + (parseFloat(document.getElementById('m_insumos').value) || 0) + (parseFloat(document.getElementById('m_comidas').value) || 0) + (parseFloat(document.getElementById('m_oxxo').value) || 0); document.getElementById('m_total_display').innerText = "$" + total.toLocaleString('es-MX', {minimumFractionDigits: 2}); return total; }
+        ['m_gas_unidad', 'm_gas_gen', 'm_sueldos', 'm_insumos', 'm_comidas', 'm_oxxo'].forEach(id => { let el = document.getElementById(id); if(el) el.addEventListener('input', calcularTotalModal); });
+        function confirmarDesgloseGastos() { let totalGasto = calcularTotalModal(); document.getElementById('h_gas_unidad').value = document.getElementById('m_gas_unidad').value || 0; document.getElementById('h_gas_gen').value = document.getElementById('m_gas_gen').value || 0; document.getElementById('h_sueldos').value = document.getElementById('m_sueldos').value || 0; document.getElementById('h_insumos').value = document.getElementById('m_insumos').value || 0; document.getElementById('h_comidas').value = document.getElementById('m_comidas').value || 0; document.getElementById('h_oxxo').value = document.getElementById('m_oxxo').value || 0; document.getElementById('gastos').value = totalGasto; cerrarModalGastos(); }
+
         function prepararEdicionServicio(id) { 
             const s = memoriaServicios.find(x => x.id === id); document.getElementById('editServioId').value = s.id; document.getElementById('selectPropiedad').value = s.propiedad_id; document.getElementById('fecha_aplicacion').value = s.fecha_aplicacion||''; document.getElementById('costo_servicio').value = s.costo_servicio||''; document.getElementById('no_cotizacion').value = s.no_cotizacion||''; document.getElementById('no_orden').value = s.no_orden||''; document.getElementById('gastos').value = s.gastos||''; document.getElementById('fecha_seguimiento').value = s.fecha_seguimiento||''; document.getElementById('no_factura').value = s.no_factura||''; document.getElementById('observaciones').value = s.observaciones||''; 
             document.getElementById('h_gas_unidad').value = s.gasto_gasolina_unidad || 0; document.getElementById('h_gas_gen').value = s.gasto_gasolina_generador || 0; document.getElementById('h_sueldos').value = s.gasto_sueldos || 0; document.getElementById('h_insumos').value = s.gasto_insumos || 0; document.getElementById('h_comidas').value = s.gasto_comidas || 0; document.getElementById('h_oxxo').value = s.gasto_oxxo || 0;
             document.getElementById('h_ha_trabajadas').value = s.ha_trabajadas || 0; document.getElementById('h_precio_por_ha').value = s.precio_por_ha || 0; document.getElementById('h_ingreso_viaticos').value = s.ingreso_viaticos || 0; document.getElementById('h_ingreso_suministros').value = s.ingreso_suministros || 0;
+            document.getElementById('h_metodo_pago').value = s.metodo_pago || 'Efectivo';
             document.getElementById('tituloFormServio').innerHTML = `<i class="fa-solid fa-pen text-amber-500 mr-2 text-2xl"></i> Editando Venta`; cambiarVista('inicio'); 
         }
         
         function limpiarFormService() { 
             document.getElementById('servicioForm').reset(); document.getElementById('editServioId').value = ''; 
             ['h_gas_unidad', 'h_gas_gen', 'h_sueldos', 'h_insumos', 'h_comidas', 'h_oxxo', 'h_ha_trabajadas', 'h_precio_por_ha', 'h_ingreso_viaticos', 'h_ingreso_suministros'].forEach(id => document.getElementById(id).value = 0); 
+            document.getElementById('h_metodo_pago').value = 'Efectivo';
             document.getElementById('tituloFormServio').innerHTML = `<i class="fa-solid fa-file-invoice-dollar text-green-600 mr-2 text-2xl"></i> Registrar Venta`; 
         }
 
+        // --- LÓGICA DE LA LUPA DE DETALLES ---
         function verDetalleServicio(id) {
             const s = memoriaServicios.find(x => x.id === id);
             const pr = memoriaPropiedades.find(p => p.id === s.propiedad_id);
@@ -683,74 +753,11 @@
             let utilidad = (s.costo_servicio || 0) - (s.gastos || 0);
             document.getElementById('det_utilidad').innerText = "$" + utilidad.toLocaleString('es-MX', {minimumFractionDigits: 2});
             document.getElementById('det_obs').innerText = s.observaciones || 'Sin notas.';
+            document.getElementById('det_metodo_txt').innerText = s.metodo_pago || 'Efectivo'; // Imprime el método en el banner
 
             document.getElementById('modal-detalle').classList.remove('hidden');
         }
         function cerrarModalDetalle() { document.getElementById('modal-detalle').classList.add('hidden'); }
-
-        // --- FUNCIONES RESTAURADAS PARA LAS CALCULADORAS (INGRESOS Y GASTOS) ---
-        function abrirModalDesgloseIngresos() {
-            document.getElementById('m_ha_trabajadas').value = document.getElementById('h_ha_trabajadas').value || 0;
-            document.getElementById('m_precio_por_ha').value = document.getElementById('h_precio_por_ha').value || 0;
-            document.getElementById('m_ingreso_viaticos').value = document.getElementById('h_ingreso_viaticos').value || 0;
-            document.getElementById('m_ingreso_suministros').value = document.getElementById('h_ingreso_suministros').value || 0;
-            calcularTotalModalIngresos(); document.getElementById('modal-ingresos').classList.remove('hidden');
-        }
-        function cerrarModalIngresos() { document.getElementById('modal-ingresos').classList.add('hidden'); }
-        function calcularTotalModalIngresos() {
-            let ha = parseFloat(document.getElementById('m_ha_trabajadas').value) || 0;
-            let precio = parseFloat(document.getElementById('m_precio_por_ha').value) || 0;
-            let subtotalFumi = ha * precio;
-            let viaticos = parseFloat(document.getElementById('m_ingreso_viaticos').value) || 0;
-            let suministros = parseFloat(document.getElementById('m_ingreso_suministros').value) || 0;
-            
-            document.getElementById('m_subtotal_fumigacion').innerText = "$" + subtotalFumi.toLocaleString('es-MX', {minimumFractionDigits: 2});
-            let total = subtotalFumi + viaticos + suministros;
-            document.getElementById('m_total_ingresos_display').innerText = "$" + total.toLocaleString('es-MX', {minimumFractionDigits: 2});
-            return total;
-        }
-        ['m_ha_trabajadas', 'm_precio_por_ha', 'm_ingreso_viaticos', 'm_ingreso_suministros'].forEach(id => { 
-            let el = document.getElementById(id);
-            if(el) el.addEventListener('input', calcularTotalModalIngresos); 
-        });
-        function confirmarDesgloseIngresos() {
-            let totalIngreso = calcularTotalModalIngresos();
-            document.getElementById('h_ha_trabajadas').value = document.getElementById('m_ha_trabajadas').value || 0;
-            document.getElementById('h_precio_por_ha').value = document.getElementById('m_precio_por_ha').value || 0;
-            document.getElementById('h_ingreso_viaticos').value = document.getElementById('m_ingreso_viaticos').value || 0;
-            document.getElementById('h_ingreso_suministros').value = document.getElementById('m_ingreso_suministros').value || 0;
-            document.getElementById('costo_servicio').value = totalIngreso; cerrarModalIngresos();
-        }
-
-        function abrirModalDesgloseGastos() { 
-            document.getElementById('m_gas_unidad').value = document.getElementById('h_gas_unidad').value || 0; 
-            document.getElementById('m_gas_gen').value = document.getElementById('h_gas_gen').value || 0; 
-            document.getElementById('m_sueldos').value = document.getElementById('h_sueldos').value || 0; 
-            document.getElementById('m_insumos').value = document.getElementById('h_insumos').value || 0; 
-            document.getElementById('m_comidas').value = document.getElementById('h_comidas').value || 0; 
-            document.getElementById('m_oxxo').value = document.getElementById('h_oxxo').value || 0; 
-            calcularTotalModal(); 
-            document.getElementById('modal-gastos').classList.remove('hidden'); 
-        }
-        function cerrarModalGastos() { document.getElementById('modal-gastos').classList.add('hidden'); }
-        function calcularTotalModal() { 
-            let total = (parseFloat(document.getElementById('m_gas_unidad').value) || 0) + (parseFloat(document.getElementById('m_gas_gen').value) || 0) + (parseFloat(document.getElementById('m_sueldos').value) || 0) + (parseFloat(document.getElementById('m_insumos').value) || 0) + (parseFloat(document.getElementById('m_comidas').value) || 0) + (parseFloat(document.getElementById('m_oxxo').value) || 0); 
-            document.getElementById('m_total_display').innerText = "$" + total.toLocaleString('es-MX', {minimumFractionDigits: 2}); return total; 
-        }
-        ['m_gas_unidad', 'm_gas_gen', 'm_sueldos', 'm_insumos', 'm_comidas', 'm_oxxo'].forEach(id => { 
-            let el = document.getElementById(id);
-            if(el) el.addEventListener('input', calcularTotalModal); 
-        });
-        function confirmarDesgloseGastos() { 
-            let totalGasto = calcularTotalModal(); 
-            document.getElementById('h_gas_unidad').value = document.getElementById('m_gas_unidad').value || 0; 
-            document.getElementById('h_gas_gen').value = document.getElementById('m_gas_gen').value || 0; 
-            document.getElementById('h_sueldos').value = document.getElementById('m_sueldos').value || 0; 
-            document.getElementById('h_insumos').value = document.getElementById('m_insumos').value || 0; 
-            document.getElementById('h_comidas').value = document.getElementById('m_comidas').value || 0; 
-            document.getElementById('h_oxxo').value = document.getElementById('m_oxxo').value || 0; 
-            document.getElementById('gastos').value = totalGasto; cerrarModalGastos(); 
-        }
     </script>
 </body>
 </html>

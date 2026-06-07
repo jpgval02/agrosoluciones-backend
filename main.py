@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
 from supabase import create_client, Client
 import os
 from dotenv import load_dotenv
@@ -33,7 +33,7 @@ class ClienteNuevo(BaseModel):
     telefono: str
     rfc: str
     estado: Optional[str] = "Prospecto"
-    no_cliente: Optional[str] = None  # Folio único asignado al productor
+    no_cliente: Optional[str] = None
 
 class PropiedadNueva(BaseModel):
     cliente_id: str  
@@ -67,6 +67,7 @@ class ServicioNuevo(BaseModel):
     precio_por_ha: Optional[float] = 0.0
     ingreso_viaticos: Optional[float] = 0.0
     ingreso_suministros: Optional[float] = 0.0
+    metodo_pago: Optional[str] = "Efectivo" # Variable añadida para el control de flujo
 
 class MetasMensuales(BaseModel):
     mes_anio: str
@@ -150,7 +151,7 @@ async def eliminar_propiedad(propiedad_id: str):
         return {"mensaje": "Eliminado exitosamente"}
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
 
-# --- RUTAS DE SERVICIOS ---
+# --- RUTAS DE SERVICIOS (CON CAMPO ACTUALIZADO) ---
 @app.post("/servicios/")
 async def registrar_servicio(servicio: ServicioNuevo):
     try:

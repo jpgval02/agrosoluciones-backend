@@ -479,7 +479,6 @@
         function cerrarSesion() { window.location.reload(); }
         async function inicializarPanel() { await cargarClientes(); await cargarPropiedades(); await cargarServicios(); cambiarVista('inicio'); }
 
-        // --- CORRECCIÓN DE LA FUNCIÓN DE CAMBIO DE PANTALLA ---
         function cambiarVista(vista) {
             ['inicio', 'financieros', 'operaciones', 'ventas-crm'].forEach(sec => {
                 const tabla = document.getElementById('vista-tabla-' + sec);
@@ -543,9 +542,9 @@
 
         // --- CLIENTES ---
         function renderizarTablaClientes(lista) { 
-            const cuerpo = document.getElementById('cuerpoTabla'); cuerpo.innerHTML = ''; 
+            const cuerpo = document.getElementById('cuerpoTabla'); cuerpo.innerHTML = ''; document.getElementById('contadorClientes').textContent = `${lista.length} REGISTRADOS`;
             lista.forEach(c => {
-                let badge = c.estado === 'Cliente' ? `<span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-300">Cliente Real 🟢</span>` : `<span class="bg-blue-100 text-blue-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-blue-300">Prospecto 🟡</span>`;
+                let badge = c.estado === 'Cliente' ? `<span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-300">Cliente Real 🟢</span>` : (c.estado === 'Negociación' ? `<span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-amber-300">Negociación 🟠</span>` : `<span class="bg-blue-100 text-blue-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-blue-300">Prospecto 🟡</span>`);
                 let folioCliente = c.no_cliente ? `<span class="text-emerald-700 font-extrabold mr-1">[${c.no_cliente}]</span>` : '';
                 cuerpo.innerHTML += `<tr class="hover:bg-gray-50"><td class="px-6 py-4"><div class="flex items-center space-x-4"><div class="bg-green-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold"><i class="fa-solid fa-user"></i></div><div><p class="font-bold text-gray-800">${folioCliente}${c.nombre} ${c.apellidos}</p><p class="text-[10px] text-gray-400 mt-1">RFC: ${c.rfc || 'S/N'} | ${badge}</p></div></div></td><td class="px-6 py-4"><p class="text-sm text-blue-600 font-medium">${c.email || 'Sin correo'}</p><p class="text-sm text-gray-600 mt-1">${c.telefono}</p></td><td class="px-6 py-4 text-center whitespace-nowrap space-x-1"><button onclick="tabularEdicionCliente('${c.id}')" class="bg-amber-400 text-white text-xs px-4 py-2 rounded-full"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="eliminarCliente('${c.id}')" class="bg-rose-600 text-white text-xs px-4 py-2 rounded-full"><i class="fa-solid fa-trash"></i></button></td></tr>`; 
             }); 
@@ -593,7 +592,7 @@
         function ajustarEdicionPropiedad(id) { const p = memoriaPropiedades.find(x => x.id === id); document.getElementById('editPropiedadId').value = p.id; document.getElementById('selectCliente').value = p.cliente_id; document.getElementById('nombre_propiedad').value = p.nombre_propiedad; document.getElementById('tipo_cultivo').value = p.tipo_cultivo; document.getElementById('superficie_has').value = p.superficie_has; document.getElementById('direccion').value = p.direccion; document.getElementById('estado').value = p.estado; document.getElementById('tituloFormPropiedad').innerHTML = `<i class="fa-solid fa-pen text-amber-500 mr-2 text-2xl"></i> Editando Parcela`; document.getElementById('btnSubmitPropiedad').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-amber-500"; document.getElementById('btnCancelarPropiedad').classList.remove('hidden'); cambiarVista('inicio'); }
         function limpiarFormPropiedad() { document.getElementById('propiedadForm').reset(); document.getElementById('editPropiedadId').value = ''; document.getElementById('tituloFormPropiedad').innerHTML = `<i class="fa-solid fa-map-location-dot text-green-600 mr-2 text-2xl"></i> Registrar Parcela`; document.getElementById('btnSubmitPropiedad').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-[#4ade80]"; document.getElementById('btnCancelarPropiedad').classList.add('hidden'); }
 
-        // --- VENTAS Y DETALLES (NO. CONTROL POR CLIENTE AUTOMÁTICO) ---
+        // --- VENTAS Y DETALLES ---
         async function cargarServicios() { 
             try { 
                 const res = await fetch(`${API_URL}/servicios/`); memoriaServicios = await res.json(); 
@@ -622,7 +621,36 @@
             } catch (e) {} 
         }
 
-        // --- LÓGICA DE LA LUPA DE DETALLES ---
+        document.getElementById('servicioForm').addEventListener('submit', async function(e) { 
+            e.preventDefault(); const id = document.getElementById('editServioId').value;
+            const datos = { 
+                propiedad_id: document.getElementById('selectPropiedad').value, fecha_aplicacion: document.getElementById('fecha_aplicacion').value, 
+                costo_servicio: parseFloat(document.getElementById('costo_servicio').value || 0), estado_cuenta: 'Cobrado', satisfaccion: 5,
+                no_cotizacion: document.getElementById('no_cotizacion').value, no_orden: document.getElementById('no_orden').value,
+                gastos: parseFloat(document.getElementById('gastos').value || 0), fecha_seguimiento: document.getElementById('fecha_seguimiento').value,
+                no_factura: document.getElementById('no_factura').value, observaciones: document.getElementById('observaciones').value,
+                gasto_gasolina_unidad: parseFloat(document.getElementById('h_gas_unidad').value || 0), gasto_gasolina_generador: parseFloat(document.getElementById('h_gas_gen').value || 0), gasto_sueldos: parseFloat(document.getElementById('h_sueldos').value || 0), gasto_insumos: parseFloat(document.getElementById('h_insumos').value || 0), gasto_comidas: parseFloat(document.getElementById('h_comidas').value || 0), gasto_oxxo: parseFloat(document.getElementById('h_oxxo').value || 0),
+                ha_trabajadas: parseFloat(document.getElementById('h_ha_trabajadas').value || 0), precio_por_ha: parseFloat(document.getElementById('h_precio_por_ha').value || 0), ingreso_viaticos: parseFloat(document.getElementById('h_ingreso_viaticos').value || 0), ingreso_suministros: parseFloat(document.getElementById('h_ingreso_suministros').value || 0)
+            }; 
+            await fetch(id ? `${API_URL}/servicios/${id}` : `${API_URL}/servicios/`, { method: id ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos) }); 
+            limpiarFormService(); await inicializarPanel(); 
+        });
+
+        async function eliminarServio(id) { if(confirm("¿Eliminar registro?")) { await fetch(`${API_URL}/servicios/${id}`, { method: 'DELETE' }); await inicializarPanel(); } }
+        
+        function prepararEdicionServicio(id) { 
+            const s = memoriaServicios.find(x => x.id === id); document.getElementById('editServioId').value = s.id; document.getElementById('selectPropiedad').value = s.propiedad_id; document.getElementById('fecha_aplicacion').value = s.fecha_aplicacion||''; document.getElementById('costo_servicio').value = s.costo_servicio||''; document.getElementById('no_cotizacion').value = s.no_cotizacion||''; document.getElementById('no_orden').value = s.no_orden||''; document.getElementById('gastos').value = s.gastos||''; document.getElementById('fecha_seguimiento').value = s.fecha_seguimiento||''; document.getElementById('no_factura').value = s.no_factura||''; document.getElementById('observaciones').value = s.observaciones||''; 
+            document.getElementById('h_gas_unidad').value = s.gasto_gasolina_unidad || 0; document.getElementById('h_gas_gen').value = s.gasto_gasolina_generador || 0; document.getElementById('h_sueldos').value = s.gasto_sueldos || 0; document.getElementById('h_insumos').value = s.gasto_insumos || 0; document.getElementById('h_comidas').value = s.gasto_comidas || 0; document.getElementById('h_oxxo').value = s.gasto_oxxo || 0;
+            document.getElementById('h_ha_trabajadas').value = s.ha_trabajadas || 0; document.getElementById('h_precio_por_ha').value = s.precio_por_ha || 0; document.getElementById('h_ingreso_viaticos').value = s.ingreso_viaticos || 0; document.getElementById('h_ingreso_suministros').value = s.ingreso_suministros || 0;
+            document.getElementById('tituloFormServio').innerHTML = `<i class="fa-solid fa-pen text-amber-500 mr-2 text-2xl"></i> Editando Venta`; cambiarVista('inicio'); 
+        }
+        
+        function limpiarFormService() { 
+            document.getElementById('servicioForm').reset(); document.getElementById('editServioId').value = ''; 
+            ['h_gas_unidad', 'h_gas_gen', 'h_sueldos', 'h_insumos', 'h_comidas', 'h_oxxo', 'h_ha_trabajadas', 'h_precio_por_ha', 'h_ingreso_viaticos', 'h_ingreso_suministros'].forEach(id => document.getElementById(id).value = 0); 
+            document.getElementById('tituloFormServio').innerHTML = `<i class="fa-solid fa-file-invoice-dollar text-green-600 mr-2 text-2xl"></i> Registrar Venta`; 
+        }
+
         function verDetalleServicio(id) {
             const s = memoriaServicios.find(x => x.id === id);
             const pr = memoriaPropiedades.find(p => p.id === s.propiedad_id);
@@ -659,6 +687,70 @@
             document.getElementById('modal-detalle').classList.remove('hidden');
         }
         function cerrarModalDetalle() { document.getElementById('modal-detalle').classList.add('hidden'); }
+
+        // --- FUNCIONES RESTAURADAS PARA LAS CALCULADORAS (INGRESOS Y GASTOS) ---
+        function abrirModalDesgloseIngresos() {
+            document.getElementById('m_ha_trabajadas').value = document.getElementById('h_ha_trabajadas').value || 0;
+            document.getElementById('m_precio_por_ha').value = document.getElementById('h_precio_por_ha').value || 0;
+            document.getElementById('m_ingreso_viaticos').value = document.getElementById('h_ingreso_viaticos').value || 0;
+            document.getElementById('m_ingreso_suministros').value = document.getElementById('h_ingreso_suministros').value || 0;
+            calcularTotalModalIngresos(); document.getElementById('modal-ingresos').classList.remove('hidden');
+        }
+        function cerrarModalIngresos() { document.getElementById('modal-ingresos').classList.add('hidden'); }
+        function calcularTotalModalIngresos() {
+            let ha = parseFloat(document.getElementById('m_ha_trabajadas').value) || 0;
+            let precio = parseFloat(document.getElementById('m_precio_por_ha').value) || 0;
+            let subtotalFumi = ha * precio;
+            let viaticos = parseFloat(document.getElementById('m_ingreso_viaticos').value) || 0;
+            let suministros = parseFloat(document.getElementById('m_ingreso_suministros').value) || 0;
+            
+            document.getElementById('m_subtotal_fumigacion').innerText = "$" + subtotalFumi.toLocaleString('es-MX', {minimumFractionDigits: 2});
+            let total = subtotalFumi + viaticos + suministros;
+            document.getElementById('m_total_ingresos_display').innerText = "$" + total.toLocaleString('es-MX', {minimumFractionDigits: 2});
+            return total;
+        }
+        ['m_ha_trabajadas', 'm_precio_por_ha', 'm_ingreso_viaticos', 'm_ingreso_suministros'].forEach(id => { 
+            let el = document.getElementById(id);
+            if(el) el.addEventListener('input', calcularTotalModalIngresos); 
+        });
+        function confirmarDesgloseIngresos() {
+            let totalIngreso = calcularTotalModalIngresos();
+            document.getElementById('h_ha_trabajadas').value = document.getElementById('m_ha_trabajadas').value || 0;
+            document.getElementById('h_precio_por_ha').value = document.getElementById('m_precio_por_ha').value || 0;
+            document.getElementById('h_ingreso_viaticos').value = document.getElementById('m_ingreso_viaticos').value || 0;
+            document.getElementById('h_ingreso_suministros').value = document.getElementById('m_ingreso_suministros').value || 0;
+            document.getElementById('costo_servicio').value = totalIngreso; cerrarModalIngresos();
+        }
+
+        function abrirModalDesgloseGastos() { 
+            document.getElementById('m_gas_unidad').value = document.getElementById('h_gas_unidad').value || 0; 
+            document.getElementById('m_gas_gen').value = document.getElementById('h_gas_gen').value || 0; 
+            document.getElementById('m_sueldos').value = document.getElementById('h_sueldos').value || 0; 
+            document.getElementById('m_insumos').value = document.getElementById('h_insumos').value || 0; 
+            document.getElementById('m_comidas').value = document.getElementById('h_comidas').value || 0; 
+            document.getElementById('m_oxxo').value = document.getElementById('h_oxxo').value || 0; 
+            calcularTotalModal(); 
+            document.getElementById('modal-gastos').classList.remove('hidden'); 
+        }
+        function cerrarModalGastos() { document.getElementById('modal-gastos').classList.add('hidden'); }
+        function calcularTotalModal() { 
+            let total = (parseFloat(document.getElementById('m_gas_unidad').value) || 0) + (parseFloat(document.getElementById('m_gas_gen').value) || 0) + (parseFloat(document.getElementById('m_sueldos').value) || 0) + (parseFloat(document.getElementById('m_insumos').value) || 0) + (parseFloat(document.getElementById('m_comidas').value) || 0) + (parseFloat(document.getElementById('m_oxxo').value) || 0); 
+            document.getElementById('m_total_display').innerText = "$" + total.toLocaleString('es-MX', {minimumFractionDigits: 2}); return total; 
+        }
+        ['m_gas_unidad', 'm_gas_gen', 'm_sueldos', 'm_insumos', 'm_comidas', 'm_oxxo'].forEach(id => { 
+            let el = document.getElementById(id);
+            if(el) el.addEventListener('input', calcularTotalModal); 
+        });
+        function confirmarDesgloseGastos() { 
+            let totalGasto = calcularTotalModal(); 
+            document.getElementById('h_gas_unidad').value = document.getElementById('m_gas_unidad').value || 0; 
+            document.getElementById('h_gas_gen').value = document.getElementById('m_gas_gen').value || 0; 
+            document.getElementById('h_sueldos').value = document.getElementById('m_sueldos').value || 0; 
+            document.getElementById('h_insumos').value = document.getElementById('m_insumos').value || 0; 
+            document.getElementById('h_comidas').value = document.getElementById('m_comidas').value || 0; 
+            document.getElementById('h_oxxo').value = document.getElementById('m_oxxo').value || 0; 
+            document.getElementById('gastos').value = totalGasto; cerrarModalGastos(); 
+        }
     </script>
 </body>
 </html>

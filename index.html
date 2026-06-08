@@ -121,7 +121,7 @@
                             <input type="text" id="apellidos" placeholder="Apellidos" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
                         </div>
                         <div class="grid grid-cols-2 gap-3">
-                            <input type="text" id="no_cliente" placeholder="No. Cliente (Ej. 10)" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
+                            <input type="text" id="no_cliente" placeholder="No. Cliente (Ej. C-010)" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
                             <input type="email" id="email" placeholder="Correo Electrónico" class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
                         </div>
                         <div class="grid grid-cols-2 gap-3">
@@ -157,7 +157,9 @@
                         
                         <input type="hidden" id="h_gas_unidad" value="0"><input type="hidden" id="h_gas_gen" value="0"><input type="hidden" id="h_sueldos" value="0"><input type="hidden" id="h_insumos" value="0"><input type="hidden" id="h_comidas" value="0"><input type="hidden" id="h_oxxo" value="0">
                         <input type="hidden" id="h_ha_trabajadas" value="0"><input type="hidden" id="h_precio_por_ha" value="0"><input type="hidden" id="h_ingreso_viaticos" value="0"><input type="hidden" id="h_ingreso_suministros" value="0">
-                        <input type="hidden" id="h_metodo_pago" value="Efectivo"> <div><label class="text-[10px] text-gray-500 font-bold uppercase">Productor / Parcela</label><select id="selectPropiedad" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm"><option value="">-- Selecciona --</option></select></div>
+                        <input type="hidden" id="h_metodo_pago" value="Efectivo">
+
+                        <div><label class="text-[10px] text-gray-500 font-bold uppercase">Productor / Parcela</label><select id="selectPropiedad" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm"><option value="">-- Selecciona --</option></select></div>
                         <div class="grid grid-cols-2 gap-3">
                             <div><label class="text-[10px] text-gray-500 font-bold uppercase">No. Cotización</label><input type="text" id="no_cotizacion" placeholder="Ej. C-001" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 text-sm rounded-lg"></div>
                             <div><label class="text-[10px] text-gray-500 font-bold uppercase">No. Orden Serv.</label><input type="text" id="no_orden" placeholder="Ej. OS-001" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 text-sm rounded-lg"></div>
@@ -426,7 +428,7 @@
                     <div><p class="text-xs text-blue-200 font-bold uppercase tracking-wider">Utilidad Neta (Cobro vía <span id="det_metodo_txt">---</span>)</p><p class="text-[10px] text-blue-300 mt-0.5">Ingresos Totales - Gastos Operativos</p></div>
                     <div id="det_utilidad" class="text-3xl font-extrabold tracking-tight">$0.00</div>
                 </div>
-                <div class="bg-white p-3 rounded-xl border border-gray-200"><p class="text-[10px] text-gray-400 font-bold uppercase mb-1">Notes / Observaciones</p><p id="det_obs" class="text-sm text-gray-700 italic">---</p></div>
+                <div class="bg-white p-3 rounded-xl border border-gray-200"><p class="text-[10px] text-gray-400 font-bold uppercase mb-1">Notas / Observaciones</p><p id="det_obs" class="text-sm text-gray-700 italic">---</p></div>
             </div>
         </div>
     </div>
@@ -436,7 +438,7 @@
         let memoriaClientes = [], memoriaPropiedades = [], memoriaServicios = [];
         let rolUsuario = 'trabajador'; 
         let visitasCampoRealizadas = 0; 
-        let metodoPagoSeleccionado = 'Efectivo'; // Estado de la calculadora
+        let metodoPagoSeleccionado = 'Efectivo';
 
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar-menu');
@@ -595,7 +597,49 @@
         }
 
         // --- PARCELAS ---
-        async function cargarPropiedades() { try { const res = await fetch(`${API_URL}/propiedades/`); memoriaPropiedades = await res.json(); const cuerpo = document.getElementById('cuerpoTablaPropiedades'); cuerpo.innerHTML = ''; const sel = document.getElementById('selectPropiedad'); sel.innerHTML = '<option value="">-- Selecciona --</option>'; memoriaPropiedades.forEach(p => { const cl = memoriaClientes.find(c => c.id === p.cliente_id); const nD = cl ? `${cl.nombre} ${cl.apellidos}` : 'N/A'; cuerpo.innerHTML += `<tr><td class="px-6 py-4"><p class="font-bold text-sm">${p.nombre_propiedad}</p><p class="text-[11px] text-gray-500">${p.direccion} - Prop: ${nD}</p></td><td class="px-6 py-4 text-center"><span class="bg-[#1b6b43] text-white px-3 py-1 rounded-full text-[10px] font-bold">${p.tipo_cultivo}</span></td><td class="px-6 py-4 text-center"><p class="text-xl font-extrabold">${p.superficie_has}</p></td><td class="px-6 py-4 text-center"><button onclick="ajustarEdicionPropiedad('${p.id}')" class="bg-amber-400 text-white text-xs px-4 py-2 rounded-full mr-1"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="eliminarPropiedad('${p.id}')" class="bg-rose-600 text-white text-xs px-4 py-2 rounded-full"><i class="fa-solid fa-trash"></i></button></td></tr>`; sel.innerHTML += `<option value="${p.id}">${nD} - ${p.nombre_propiedad}</option>`; }); } catch (e) {} }
+        async function cargarPropiedades() { 
+            try { 
+                const res = await fetch(`${API_URL}/propiedades/`); memoriaPropiedades = await res.json(); 
+                const cuerpo = document.getElementById('cuerpoTablaPropiedades'); cuerpo.innerHTML = ''; 
+                const sel = document.getElementById('selectPropiedad'); sel.innerHTML = '<option value="">-- Selecciona --</option>'; 
+                memoriaPropiedades.forEach(p => { 
+                    const cl = memoriaClientes.find(c => c.id === p.cliente_id); const nD = cl ? `${cl.nombre} ${cl.apellidos}` : 'N/A'; 
+                    cuerpo.innerHTML += `<tr><td class="px-6 py-4"><p class="font-bold text-sm">${p.nombre_propiedad}</p><p class="text-[11px] text-gray-500">${p.direccion} - Prop: ${nD}</p></td><td class="px-6 py-4 text-center"><span class="bg-[#1b6b43] text-white px-3 py-1 rounded-full text-[10px] font-bold">${p.tipo_cultivo}</span></td><td class="px-6 py-4 text-center"><p class="text-xl font-extrabold">${p.superficie_has}</p></td><td class="px-6 py-4 text-center"><button onclick="ajustarEdicionPropiedad('${p.id}')" class="bg-amber-400 text-white text-xs px-4 py-2 rounded-full mr-1"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="eliminarPropiedad('${p.id}')" class="bg-rose-600 text-white text-xs px-4 py-2 rounded-full"><i class="fa-solid fa-trash"></i></button></td></tr>`; 
+                    sel.innerHTML += `<option value="${p.id}">${nD} - ${p.nombre_propiedad}</option>`; 
+                }); 
+            } catch (e) {} 
+        }
+        
+        document.getElementById('propiedadForm').addEventListener('submit', async function(e) { 
+            e.preventDefault(); const id = document.getElementById('editPropiedadId').value; 
+            const datos = { 
+                cliente_id: document.getElementById('selectCliente').value, nombre_propiedad: document.getElementById('nombre_propiedad').value, 
+                direccion: document.getElementById('direccion').value, estado: document.getElementById('estado').value, 
+                tipo_cultivo: document.getElementById('tipo_cultivo').value, superficie_has: parseFloat(document.getElementById('superficie_has').value), 
+                sistema_riego: 'N/A', comentarios: '' 
+            }; 
+            await fetch(id ? `${API_URL}/propiedades/${id}` : `${API_URL}/propiedades/`, { method: id ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos) }); 
+            limpiarFormPropiedad(); await inicializarPanel(); 
+        });
+        
+        async function eliminarPropiedad(id) { if(confirm("¿Eliminar parcela?")) { await fetch(`${API_URL}/propiedades/${id}`, { method: 'DELETE' }); await inicializarPanel(); } }
+        
+        function ajustarEdicionPropiedad(id) { 
+            const p = memoriaPropiedades.find(x => x.id === id); document.getElementById('editPropiedadId').value = p.id; 
+            document.getElementById('selectCliente').value = p.cliente_id; document.getElementById('nombre_propiedad').value = p.nombre_propiedad; 
+            document.getElementById('tipo_cultivo').value = p.tipo_cultivo; document.getElementById('superficie_has').value = p.superficie_has; 
+            document.getElementById('direccion').value = p.direccion; document.getElementById('estado').value = p.estado; 
+            document.getElementById('tituloFormPropiedad').innerHTML = `<i class="fa-solid fa-pen text-amber-500 mr-2 text-2xl"></i> Editando Parcela`; 
+            document.getElementById('btnSubmitPropiedad').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-amber-500"; 
+            document.getElementById('btnCancelarPropiedad').classList.remove('hidden'); cambiarVista('inicio'); 
+        }
+        
+        function limpiarFormPropiedad() { 
+            document.getElementById('propiedadForm').reset(); document.getElementById('editPropiedadId').value = ''; 
+            document.getElementById('tituloFormPropiedad').innerHTML = `<i class="fa-solid fa-map-location-dot text-green-600 mr-2 text-2xl"></i> Registrar Parcela`; 
+            document.getElementById('btnSubmitPropiedad').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-[#4ade80]"; 
+            document.getElementById('btnCancelarPropiedad').classList.add('hidden'); 
+        }
 
         // --- VENTAS Y DETALLES ---
         async function cargarServicios() { 
@@ -613,7 +657,6 @@
                     let nomProd = cl ? cl.nombre + " " + cl.apellidos : 'N/A'; 
                     let totalGasto = s.gastos || 0; let totalIngreso = s.costo_servicio || 0;
                     
-                    // AGREGADO: Distintivo visual del método de pago en la tabla de ingresos
                     let badgePago = s.metodo_pago === 'Transferencia' 
                         ? `<span class="ml-2 text-[9px] font-extrabold text-blue-600 bg-blue-50 px-1 rounded border border-blue-200 uppercase tracking-tight">SPEI</span>`
                         : `<span class="ml-2 text-[9px] font-extrabold text-emerald-600 bg-emerald-50 px-1 rounded border border-emerald-200 uppercase tracking-tight">EFEC</span>`;
@@ -641,7 +684,7 @@
                 no_factura: document.getElementById('no_factura').value, observaciones: document.getElementById('observaciones').value,
                 gasto_gasolina_unidad: parseFloat(document.getElementById('h_gas_unidad').value || 0), gasto_gasolina_generador: parseFloat(document.getElementById('h_gas_gen').value || 0), gasto_sueldos: parseFloat(document.getElementById('h_sueldos').value || 0), gasto_insumos: parseFloat(document.getElementById('h_insumos').value || 0), gasto_comidas: parseFloat(document.getElementById('h_comidas').value || 0), gasto_oxxo: parseFloat(document.getElementById('h_oxxo').value || 0),
                 ha_trabajadas: parseFloat(document.getElementById('h_ha_trabajadas').value || 0), precio_por_ha: parseFloat(document.getElementById('h_precio_por_ha').value || 0), ingreso_viaticos: parseFloat(document.getElementById('h_ingreso_viaticos').value || 0), ingreso_suministros: parseFloat(document.getElementById('h_ingreso_suministros').value || 0),
-                metodo_pago: document.getElementById('h_metodo_pago').value // Inyección del método de pago elegido
+                metodo_pago: document.getElementById('h_metodo_pago').value 
             }; 
             await fetch(id ? `${API_URL}/servicios/${id}` : `${API_URL}/servicios/`, { method: id ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos) }); 
             limpiarFormService(); await inicializarPanel(); 
@@ -649,7 +692,6 @@
 
         async function eliminarServio(id) { if(confirm("¿Eliminar registro?")) { await fetch(`${API_URL}/servicios/${id}`, { method: 'DELETE' }); await inicializarPanel(); } }
 
-        // --- INTERACCION INTERNA DEL SELECTOR DE METODO DE PAGO ---
         function seleccionarMetodoPago(metodo) {
             metodoPagoSeleccionado = metodo;
             const btnEf = document.getElementById('btn_pago_efectivo');
@@ -694,7 +736,7 @@
             document.getElementById('h_precio_por_ha').value = document.getElementById('m_precio_por_ha').value || 0;
             document.getElementById('h_ingreso_viaticos').value = document.getElementById('m_ingreso_viaticos').value || 0;
             document.getElementById('h_ingreso_suministros').value = document.getElementById('m_ingreso_suministros').value || 0;
-            document.getElementById('h_metodo_pago').value = metodoPagoSeleccionado; // Anclaje final
+            document.getElementById('h_metodo_pago').value = metodoPagoSeleccionado; 
             document.getElementById('costo_servicio').value = totalIngreso; cerrarModalIngresos();
         }
 
@@ -753,7 +795,7 @@
             let utilidad = (s.costo_servicio || 0) - (s.gastos || 0);
             document.getElementById('det_utilidad').innerText = "$" + utilidad.toLocaleString('es-MX', {minimumFractionDigits: 2});
             document.getElementById('det_obs').innerText = s.observaciones || 'Sin notas.';
-            document.getElementById('det_metodo_txt').innerText = s.metodo_pago || 'Efectivo'; // Imprime el método en el banner
+            document.getElementById('det_metodo_txt').innerText = s.metodo_pago || 'Efectivo'; 
 
             document.getElementById('modal-detalle').classList.remove('hidden');
         }

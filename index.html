@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Sistema Operativo - Agrosoluciones Aéreas</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -27,14 +27,13 @@
 </head>
 <body class="text-gray-800">
 
-    <!-- MENÚ LATERAL DESPLEGABLE (SIDEBAR) -->
-    <div id="sidebar-menu" class="fixed inset-y-0 left-0 w-80 bg-[#064e3b] text-white transform -translate-x-full transition-transform duration-300 ease-in-out z-[100] shadow-2xl flex flex-col">
+    <div id="sidebar-menu" class="fixed inset-y-0 left-0 w-72 md:w-80 bg-[#064e3b] text-white transform -translate-x-full transition-transform duration-300 ease-in-out z-[100] shadow-2xl flex flex-col">
         <div class="p-6 border-b border-green-800 flex justify-between items-center bg-[#022c22]">
             <span class="font-extrabold text-lg tracking-wide flex items-center gap-2">
-                <i class="fa-solid fa-layer-group text-green-400"></i> MENÚ MÓDULOS
+                <i class="fa-solid fa-layer-group text-green-400"></i> MÓDULOS
             </span>
             <button onclick="toggleSidebar()" class="text-gray-400 hover:text-white transition-colors">
-                <i class="fa-solid fa-xmark text-xl"></i>
+                <i class="fa-solid fa-xmark text-2xl"></i>
             </button>
         </div>
         
@@ -60,11 +59,10 @@
 
     <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/60 hidden z-[90] transition-opacity duration-300"></div>
 
-    <!-- CONTENEDOR DE LOGIN -->
     <div id="login-container" class="min-h-screen flex items-center justify-center p-4">
-        <div class="bg-white p-8 rounded-3xl shadow-xl border border-green-100 max-w-md w-full">
+        <div class="bg-white p-6 md:p-8 rounded-3xl shadow-xl border border-green-100 max-w-md w-full">
             <div class="text-center mb-8">
-                <img src="logo_nuevo.jpeg" alt="Logo Agrosoluciones" class="h-24 w-auto object-contain mx-auto mb-4">
+                <img src="logo_nuevo.jpeg" alt="Logo Agrosoluciones" class="h-20 md:h-24 w-auto object-contain mx-auto mb-4">
                 <p class="text-sm text-gray-500 mt-1 font-medium">Portal Operativo Privado</p>
             </div>
             <form id="loginForm" class="space-y-5">
@@ -82,27 +80,25 @@
         </div>
     </div>
 
-    <!-- PANEL PRINCIPAL -->
     <div id="dashboard-container" class="hidden pb-12">
-        <nav class="tabla-header text-white px-6 py-3 flex justify-between items-center shadow-md sticky top-0 z-50">
+        <nav class="tabla-header text-white px-4 md:px-6 py-3 flex justify-between items-center shadow-md sticky top-0 z-50">
             <div class="flex items-center">
-                <img src="logo_alternativo.png" alt="Logo Agrosoluciones" class="h-12 w-auto object-contain drop-shadow-md">
-                <span id="badge-rol" class="ml-4 text-xs font-bold px-2 py-1 bg-green-800 rounded-md border border-green-600 tracking-wider"></span>
+                <img src="logo_alternativo.png" alt="Logo Agrosoluciones" class="h-8 md:h-12 w-auto object-contain drop-shadow-md">
+                <span id="badge-rol" class="hidden md:inline-block ml-4 text-xs font-bold px-2 py-1 bg-green-800 rounded-md border border-green-600 tracking-wider"></span>
             </div>
             <div class="flex items-center">
                 <button onclick="cerrarSesion()" class="bg-red-600 hover:bg-red-500 px-3 py-2 rounded-md text-sm font-bold transition-colors shadow-sm border border-red-400"><i class="fa-solid fa-power-off"></i></button>
             </div>
         </nav>
 
-        <div class="max-w-[1600px] mx-auto mt-6 px-6">
-            <button onclick="toggleSidebar()" class="bg-emerald-700 hover:bg-emerald-600 text-white px-5 py-2.5 rounded-xl font-bold shadow-md transition-all flex items-center gap-2 text-sm tracking-wide w-fit">
+        <div class="max-w-[1600px] mx-auto mt-4 md:mt-6 px-4 md:px-6">
+            <button onclick="toggleSidebar()" class="bg-emerald-700 hover:bg-emerald-600 text-white px-5 py-2.5 rounded-xl font-bold shadow-md transition-all flex items-center gap-2 text-sm tracking-wide w-full md:w-fit justify-center md:justify-start">
                 <i class="fa-solid fa-bars text-base"></i> Menú de Módulos
             </button>
         </div>
 
-        <!-- PANTALLA 1: INICIO -->
-        <div id="vista-inicio" class="max-w-[1600px] mx-auto mt-6 px-6 block">
-            <h2 class="text-2xl font-bold text-gray-800 mb-4 tracking-tight">Objetivos Operativos - Junio 2026</h2>
+        <div id="vista-inicio" class="max-w-[1600px] mx-auto mt-6 px-4 md:px-6 block">
+            <h2 class="text-xl md:text-2xl font-bold text-gray-800 mb-4 tracking-tight">Objetivos Operativos - Junio 2026</h2>
             
             <div class="dashboard-container">
                 <div class="kpi-card"><div class="kpi-title">Ventas vs Meta</div><div id="velocimetro-ventas"></div><div class="kpi-text-real" id="texto-ventas-real">$0 / $0</div></div>
@@ -112,24 +108,21 @@
                 <div class="kpi-card"><div class="kpi-title">Visitas a Campo</div><div id="velocimetro-visitas"></div><div class="kpi-text-real" id="texto-visitas-real">0 / 0</div></div>
             </div>
 
-            <h2 class="text-2xl font-bold text-gray-800 mt-10 mb-6 tracking-tight">Panel de Captura Rápida</h2>
+            <h2 class="text-xl md:text-2xl font-bold text-gray-800 mt-10 mb-6 tracking-tight">Panel de Captura Rápida</h2>
             
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
                 
-                <!-- Form Clientes (SIN CAMPO DE CORREO Y REACOMODADO) -->
-                <div id="vista-form-clientes" class="bg-white p-6 rounded-2xl shadow-md border border-green-100">
-                    <h3 id="tituloFormCliente" class="text-xl font-bold text-gray-800 mb-6 flex items-center"><i class="fa-solid fa-user-plus text-green-600 mr-2 text-2xl"></i> Nuevo Registro</h3>
+                <div id="vista-form-clientes" class="bg-white p-5 md:p-6 rounded-2xl shadow-md border border-green-100">
+                    <h3 id="tituloFormCliente" class="text-lg md:text-xl font-bold text-gray-800 mb-5 flex items-center"><i class="fa-solid fa-user-plus text-green-600 mr-2 text-xl md:text-2xl"></i> Nuevo Registro</h3>
                     <form id="registroForm" class="space-y-4">
                         <input type="hidden" id="editClienteId">
-                        
-                        <!-- Correo Oculto para no romper la Base de Datos -->
                         <input type="hidden" id="email" value="">
 
-                        <div class="grid grid-cols-2 gap-3">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                             <input type="text" id="nombre" placeholder="Nombre(s)" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
                             <input type="text" id="apellidos" placeholder="Apellidos" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
                         </div>
-                        <div class="grid grid-cols-2 gap-3">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                             <input type="text" id="no_cliente" placeholder="No. Cliente (Ej. C-010)" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
                             <input type="text" id="telefono" placeholder="Teléfono" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
                         </div>
@@ -145,41 +138,41 @@
                     </form>
                 </div>
 
-                <!-- Form Parcelas -->
-                <div id="vista-form-propiedades" class="bg-white p-6 rounded-2xl shadow-md border border-green-100">
-                    <h3 id="tituloFormPropiedad" class="text-xl font-bold text-gray-800 mb-6 flex items-center"><i class="fa-solid fa-map-location-dot text-green-600 mr-2 text-2xl"></i> Registrar Parcela</h3>
+                <div id="vista-form-propiedades" class="bg-white p-5 md:p-6 rounded-2xl shadow-md border border-green-100">
+                    <h3 id="tituloFormPropiedad" class="text-lg md:text-xl font-bold text-gray-800 mb-5 flex items-center"><i class="fa-solid fa-map-location-dot text-green-600 mr-2 text-xl md:text-2xl"></i> Registrar Parcela</h3>
                     <form id="propiedadForm" class="space-y-4">
                         <input type="hidden" id="editPropiedadId">
                         <select id="selectCliente" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none"><option value="">-- Selecciona el Propietario --</option></select>
-                        <div class="grid grid-cols-2 gap-3"><input type="text" id="nombre_propiedad" placeholder="Nombre Rancho" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm"><input type="text" id="tipo_cultivo" placeholder="Cultivo (Ej. Maíz)" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm"></div>
-                        <div class="grid grid-cols-2 gap-3"><input type="number" step="0.01" id="superficie_has" placeholder="Hectáreas" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm"><input type="text" id="direccion" placeholder="Localidad (Predio)" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm"></div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3"><input type="text" id="nombre_propiedad" placeholder="Nombre Rancho" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm"><input type="text" id="tipo_cultivo" placeholder="Cultivo (Ej. Maíz)" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm"></div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3"><input type="number" step="0.01" id="superficie_has" placeholder="Hectáreas" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm"><input type="text" id="direccion" placeholder="Localidad (Predio)" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm"></div>
                         <input type="text" id="estado" value="Veracruz" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
                         <button type="submit" id="btnSubmitPropiedad" class="w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-[#4ade80] hover:bg-green-500 text-green-900 transition-colors shadow-sm"><i class="fa-solid fa-save mr-1"></i> Guardar Parcela</button>
                         <button type="button" id="btnCancelarPropiedad" onclick="limpiarFormPropiedad()" class="hidden w-full py-2 rounded-xl text-xs font-bold text-gray-600 bg-gray-200 hover:bg-gray-300">Cancelar Edición</button>
                     </form>
                 </div>
 
-                <!-- Form Ventas -->
-                <div id="vista-form-servicios" class="bg-white p-6 rounded-2xl shadow-md border border-green-100">
-                    <h3 id="tituloFormServio" class="text-xl font-bold text-gray-800 mb-6 flex items-center"><i class="fa-solid fa-file-invoice-dollar text-green-600 mr-2 text-2xl"></i> Registrar Venta</h3>
+                <div id="vista-form-servicios" class="bg-white p-5 md:p-6 rounded-2xl shadow-md border border-green-100">
+                    <h3 id="tituloFormServio" class="text-lg md:text-xl font-bold text-gray-800 mb-5 flex items-center"><i class="fa-solid fa-file-invoice-dollar text-green-600 mr-2 text-xl md:text-2xl"></i> Registrar Venta</h3>
                     <form id="servicioForm" class="space-y-4">
                         <input type="hidden" id="editServioId">
                         
-                        <!-- Controles Ocultos -->
                         <input type="hidden" id="h_gas_unidad" value="0"><input type="hidden" id="h_gas_gen" value="0"><input type="hidden" id="h_sueldos" value="0"><input type="hidden" id="h_insumos" value="0"><input type="hidden" id="h_comidas" value="0"><input type="hidden" id="h_oxxo" value="0">
                         <input type="hidden" id="h_ha_trabajadas" value="0"><input type="hidden" id="h_precio_por_ha" value="0"><input type="hidden" id="h_ingreso_viaticos" value="0"><input type="hidden" id="h_ingreso_suministros" value="0">
                         <input type="hidden" id="h_metodo_pago" value="Efectivo">
 
                         <div><label class="text-[10px] text-gray-500 font-bold uppercase">Productor / Parcela</label><select id="selectPropiedad" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm"><option value="">-- Selecciona --</option></select></div>
-                        <div class="grid grid-cols-2 gap-3">
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                             <div><label class="text-[10px] text-gray-500 font-bold uppercase">No. Cotización</label><input type="text" id="no_cotizacion" placeholder="Ej. C-001" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 text-sm rounded-lg"></div>
                             <div><label class="text-[10px] text-gray-500 font-bold uppercase">No. Orden Serv.</label><input type="text" id="no_orden" placeholder="Ej. OS-001" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 text-sm rounded-lg"></div>
                         </div>
-                        <div class="grid grid-cols-2 gap-3">
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                             <div><label class="text-[10px] text-gray-500 font-bold uppercase">Fecha de Venta</label><input type="date" id="fecha_aplicacion" required class="w-full px-3 py-2 bg-gray-50 border text-sm rounded-lg text-gray-600"></div>
                             <div><label class="text-[10px] text-gray-500 font-bold uppercase">Fecha Seguimiento</label><input type="date" id="fecha_seguimiento" class="w-full px-3 py-2 bg-gray-50 border text-sm rounded-lg text-gray-600"></div>
                         </div>
-                        <div class="grid grid-cols-2 gap-3 items-end">
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 items-end">
                             <div>
                                 <label class="text-[10px] text-gray-500 font-bold uppercase">Ingresos Total ($)</label>
                                 <div class="flex items-center space-x-1">
@@ -205,36 +198,32 @@
             </div>
         </div>
 
-        <!-- PANTALLA 2: CONTENEDOR DE REPORTES -->
-        <div id="vista-tablas" class="hidden max-w-[1600px] mx-auto mt-6 px-6 pb-12">
-            <h2 class="text-3xl font-bold text-gray-800 mb-6" id="titulo-seccion-tablas">Base de Datos Operativa</h2>
+        <div id="vista-tablas" class="hidden max-w-[1600px] mx-auto mt-6 px-4 md:px-6 pb-12">
+            <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-6" id="titulo-seccion-tablas">Base de Datos Operativa</h2>
 
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                 <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-200 flex items-center space-x-4"><div class="bg-indigo-100 w-12 h-12 rounded-full flex items-center justify-center text-indigo-600 shrink-0"><i class="fa-solid fa-calendar-days text-lg"></i></div><div class="w-full"><p class="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-1">Filtrar por Mes</p><select id="filtroMes" onchange="actualizarEstadisticasYMetas()" class="w-full bg-gray-50 border text-sm font-bold text-gray-700 py-1.5 px-2 outline-none cursor-pointer"><option value="todos">Histórico Total</option><option value="01">Enero</option><option value="02">Febrero</option><option value="03">Marzo</option><option value="04">Abril</option><option value="05">Mayo</option><option value="06" selected>Junio</option><option value="07">Julio</option><option value="08">Agosto</option><option value="09">Septiembre</option><option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option></select></div></div>
                 <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex items-center space-x-4"><div class="bg-yellow-100 w-12 h-12 rounded-full flex items-center justify-center text-yellow-600 shrink-0"><i class="fa-solid fa-ruler-combined text-lg"></i></div><div><p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Ha. Fumigadas</p><p id="stat-hectareas" class="text-2xl font-extrabold text-gray-800 leading-none mt-1">0</p></div></div>
                 <div class="bg-white p-4 rounded-2xl shadow-sm border border-green-200 flex items-center space-x-4"><div class="bg-green-100 w-12 h-12 rounded-full flex items-center justify-center text-green-600 shrink-0"><i class="fa-solid fa-arrow-trend-up text-lg"></i></div><div><p class="text-[10px] text-green-600/80 font-bold uppercase tracking-wider">Ingresos Mensuales</p><p id="stat-ingresos" class="text-2xl font-extrabold text-green-700 leading-none mt-1">$0</p></div></div>
                 
                 <div class="relative w-full h-full">
-                    <button id="btn-registrar-visita" onclick="registrarVisitaCampo()" class="hidden absolute -top-10 right-0 bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] font-bold py-1.5 px-3 rounded-lg shadow-md transition-all flex items-center gap-1.5 border border-emerald-400 z-10 whitespace-nowrap"><i class="fa-solid fa-map-location-dot"></i> Visita a Campo Realizada</button>
+                    <button id="btn-registrar-visita" onclick="registrarVisitaCampo()" class="hidden absolute -top-10 right-0 bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] font-bold py-1.5 px-3 rounded-lg shadow-md transition-all flex items-center gap-1.5 border border-emerald-400 z-10 whitespace-nowrap"><i class="fa-solid fa-map-location-dot"></i> Visita Realizada</button>
                     <div class="bg-white p-4 rounded-2xl shadow-sm border border-blue-200 flex items-center space-x-4 h-full"><div class="bg-blue-100 w-12 h-12 rounded-full flex items-center justify-center text-blue-600 shrink-0"><i class="fa-solid fa-sack-dollar text-lg"></i></div><div><p class="text-[10px] text-blue-600/80 font-bold uppercase tracking-wider">Utilidad Neta</p><p id="stat-utilidad" class="text-2xl font-extrabold text-blue-700 leading-none mt-1">$0</p></div></div>
                 </div>
             </div>
 
-            <!-- MÓDULO: OPERACIONES -->
-            <div id="vista-tabla-operaciones" class="hidden bg-white p-8 rounded-2xl shadow-xl border border-gray-200 min-h-[450px]">
-                <div class="flex items-center gap-3 border-b border-gray-100 pb-4 mb-6"><div class="bg-green-100 p-3 rounded-xl text-green-700 text-xl"><i class="fa-solid fa-gears"></i></div><div><h2 class="text-xl font-bold text-gray-800">Módulo de Operaciones</h2><p class="text-xs text-gray-400 mt-0.5">Lienzo operativo disponible para desarrollo</p></div></div>
+            <div id="vista-tabla-operaciones" class="hidden bg-white p-4 md:p-8 rounded-2xl shadow-xl border border-gray-200 min-h-[450px]">
+                <div class="flex items-center gap-3 border-b border-gray-100 pb-4 mb-6"><div class="bg-green-100 p-3 rounded-xl text-green-700 text-xl"><i class="fa-solid fa-gears"></i></div><div><h2 class="text-lg md:text-xl font-bold text-gray-800">Módulo de Operaciones</h2><p class="text-[10px] md:text-xs text-gray-400 mt-0.5">Lienzo operativo disponible para desarrollo</p></div></div>
                 <div class="flex flex-col items-center justify-center py-12 border border-dashed border-gray-200 rounded-xl bg-gray-50/50 text-center px-4"><div class="bg-white p-4 rounded-full shadow-sm text-gray-300 text-3xl mb-3"><i class="fa-solid fa-code"></i></div><p class="text-sm font-bold text-gray-600">Módulo Listo</p></div>
             </div>
 
-            <!-- MÓDULO: FINANCIEROS -->
-            <div id="vista-tabla-financieros" class="hidden bg-white p-6 md:p-8 rounded-2xl shadow-xl border border-gray-200 min-h-[450px]">
+            <div id="vista-tabla-financieros" class="hidden bg-white p-4 md:p-8 rounded-2xl shadow-xl border border-gray-200 min-h-[450px]">
                 <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4 border-b border-gray-100 pb-4 mb-6">
-                    <div class="flex items-center gap-3"><div class="bg-rose-100 p-3 rounded-xl text-rose-700 text-xl"><i class="fa-solid fa-wallet"></i></div><div><h2 class="text-xl font-bold text-gray-800">Módulo Financiero</h2><p class="text-xs text-gray-400 mt-0.5">Auditoría completa de entradas y salidas de capital</p></div></div>
+                    <div class="flex items-center gap-3"><div class="bg-rose-100 p-3 rounded-xl text-rose-700 text-xl"><i class="fa-solid fa-wallet"></i></div><div><h2 class="text-lg md:text-xl font-bold text-gray-800">Módulo Financiero</h2><p class="text-[10px] md:text-xs text-gray-400 mt-0.5">Auditoría completa de entradas y salidas</p></div></div>
                 </div>
                 
-                <!-- TABLA DE INGRESOS -->
                 <div class="bg-white rounded-xl shadow-md border border-emerald-200 overflow-hidden mb-8">
-                    <div class="bg-emerald-700 px-4 py-3 flex justify-between items-center text-white"><h2 class="text-sm font-bold uppercase tracking-wider"><i class="fa-solid fa-hand-holding-dollar border border-white/30 p-1.5 rounded bg-white/10 mr-2"></i> Reporte Detallado de Ingresos por Servicio</h2></div>
+                    <div class="bg-emerald-700 px-4 py-3 flex justify-between items-center text-white"><h2 class="text-xs md:text-sm font-bold uppercase tracking-wider"><i class="fa-solid fa-hand-holding-dollar border border-white/30 p-1.5 rounded bg-white/10 mr-2"></i> Ingresos por Servicio</h2></div>
                     <div class="overflow-x-auto custom-scrollbar max-h-[400px] relative">
                         <table class="w-full divide-y divide-gray-200 text-sm border-collapse">
                             <thead class="bg-gray-100 text-gray-700 sticky top-0 z-10 shadow-sm border-b-2 border-gray-300">
@@ -242,7 +231,7 @@
                                     <th class="th-excel bg-gray-200">No. Control</th>
                                     <th class="th-excel">Productor / Cliente</th>
                                     <th class="th-excel">Cultivo</th>
-                                    <th class="th-excel text-emerald-900 bg-emerald-50 border-emerald-200"><i class="fa-solid fa-ruler-combined mr-1"></i> Ha. Trabajadas</th>
+                                    <th class="th-excel text-emerald-900 bg-emerald-50 border-emerald-200"><i class="fa-solid fa-ruler-combined mr-1"></i> Ha.</th>
                                     <th class="th-excel text-emerald-900 bg-emerald-50 border-emerald-200"><i class="fa-solid fa-dollar-sign mr-1"></i> Precio x Ha.</th>
                                     <th class="th-excel text-emerald-900 bg-emerald-50 border-emerald-200"><i class="fa-solid fa-car mr-1"></i> Viáticos</th>
                                     <th class="th-excel text-emerald-900 bg-emerald-50 border-emerald-200"><i class="fa-solid fa-box-open mr-1"></i> Suministros</th>
@@ -254,9 +243,8 @@
                     </div>
                 </div>
 
-                <!-- TABLA DE GASTOS -->
                 <div class="bg-white rounded-xl shadow-md border border-rose-200 overflow-hidden">
-                    <div class="bg-rose-700 px-4 py-3 flex justify-between items-center text-white"><h2 class="text-sm font-bold uppercase tracking-wider"><i class="fa-solid fa-file-invoice-dollar border border-white/30 p-1.5 rounded bg-white/10 mr-2"></i> Reporte Detallado de Gastos por Servicio</h2></div>
+                    <div class="bg-rose-700 px-4 py-3 flex justify-between items-center text-white"><h2 class="text-xs md:text-sm font-bold uppercase tracking-wider"><i class="fa-solid fa-file-invoice-dollar border border-white/30 p-1.5 rounded bg-white/10 mr-2"></i> Gastos por Servicio</h2></div>
                     <div class="overflow-x-auto custom-scrollbar max-h-[400px] relative">
                         <table class="w-full divide-y divide-gray-200 text-sm border-collapse">
                             <thead class="bg-gray-100 text-gray-700 sticky top-0 z-10 shadow-sm border-b-2 border-gray-300">
@@ -279,29 +267,28 @@
                 </div>
             </div>
 
-            <!-- MÓDULO: VENTAS CRM -->
             <div id="vista-tabla-ventas-crm" class="hidden space-y-10">
                 <div class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
-                    <div class="tabla-header px-6 py-4 flex flex-col md:flex-row md:justify-between items-center text-white gap-3">
-                        <h2 class="text-sm font-bold uppercase tracking-wider whitespace-nowrap"><i class="fa-solid fa-list mr-2"></i> Directorio de Clientes</h2>
+                    <div class="tabla-header px-4 md:px-6 py-4 flex flex-col md:flex-row md:justify-between items-center text-white gap-3">
+                        <h2 class="text-xs md:text-sm font-bold uppercase tracking-wider whitespace-nowrap"><i class="fa-solid fa-list mr-2"></i> Directorio Clientes</h2>
                         <div class="relative w-full md:w-72">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><i class="fa-solid fa-search text-gray-400"></i></div>
                             <input type="text" id="buscadorClientes" onkeyup="filtrarClientes()" placeholder="Buscar..." class="w-full pl-10 pr-4 py-1.5 bg-white text-gray-800 rounded-full text-sm outline-none shadow-inner">
                         </div>
-                        <span id="contadorClientes" class="bg-white text-green-800 text-xs font-bold px-3 py-1 rounded-full shadow-sm whitespace-nowrap">0 REGISTRADOS</span>
+                        <span id="contadorClientes" class="bg-white text-green-800 text-xs font-bold px-3 py-1 rounded-full shadow-sm whitespace-nowrap hidden md:inline-block">0 REGISTRADOS</span>
                     </div>
                     <div class="overflow-x-auto custom-scrollbar"><table class="min-w-full divide-y divide-gray-100 text-sm"><thead class="bg-[#187547] text-white"><tr><th class="px-6 py-3 text-left text-xs font-semibold tracking-wider">CLIENTE</th><th class="px-6 py-3 text-left text-xs font-semibold tracking-wider">TELÉFONO DE CONTACTO</th><th class="px-6 py-3 text-center text-xs font-semibold tracking-wider">ACCIONES</th></tr></thead><tbody id="cuerpoTabla" class="bg-white divide-y divide-gray-100"></tbody></table></div>
                 </div>
                 
                 <div class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
-                    <div class="tabla-header px-6 py-4 flex justify-between items-center text-white"><h2 class="text-sm font-bold uppercase tracking-wider"><i class="fa-solid fa-map mr-2"></i> Inventario de Parcelas</h2></div>
+                    <div class="tabla-header px-4 md:px-6 py-4 flex justify-between items-center text-white"><h2 class="text-xs md:text-sm font-bold uppercase tracking-wider"><i class="fa-solid fa-map mr-2"></i> Inventario Parcelas</h2></div>
                     <div class="overflow-x-auto custom-scrollbar"><table class="min-w-full divide-y divide-gray-100 text-sm"><thead class="bg-[#187547] text-white"><tr><th class="px-6 py-3 text-left text-xs font-semibold tracking-wider">PROPIEDAD / PREDIO</th><th class="px-6 py-3 text-center text-xs font-semibold tracking-wider">CULTIVO</th><th class="px-6 py-3 text-center text-xs font-semibold tracking-wider">SUPERFICIE</th><th class="px-6 py-3 text-center text-xs font-semibold tracking-wider">ACCIONES</th></tr></thead><tbody id="cuerpoTablaPropiedades" class="bg-white divide-y divide-gray-100"></tbody></table></div>
                 </div>
                 
                 <div class="bg-white rounded-xl shadow-lg border border-gray-300 overflow-hidden">
-                    <div class="tabla-header px-4 py-3 flex justify-between items-center text-white">
-                        <h2 class="text-sm font-bold uppercase tracking-wider"><i class="fa-solid fa-table border border-white/30 p-1.5 rounded bg-white/10 mr-2"></i> Base de Datos de Ventas 2026</h2>
-                        <button onclick="abrirModalMetas()" class="bg-white text-green-900 hover:bg-gray-100 px-4 py-1.5 rounded-md text-xs font-bold transition-colors shadow-sm"><i class="fa-solid fa-gear mr-2"></i> Configurar Metas del Mes</button>
+                    <div class="tabla-header px-4 py-3 flex flex-col md:flex-row justify-between items-center text-white gap-2">
+                        <h2 class="text-xs md:text-sm font-bold uppercase tracking-wider"><i class="fa-solid fa-table border border-white/30 p-1.5 rounded bg-white/10 mr-2"></i> BD Ventas 2026</h2>
+                        <button onclick="abrirModalMetas()" class="bg-white text-green-900 hover:bg-gray-100 px-4 py-1.5 rounded-md text-[10px] md:text-xs font-bold transition-colors shadow-sm w-full md:w-auto"><i class="fa-solid fa-gear mr-2"></i> Configurar Metas</button>
                     </div>
                     <div class="overflow-x-auto custom-scrollbar max-h-[600px] relative">
                         <table class="w-full divide-y divide-gray-200 text-sm border-collapse">
@@ -334,18 +321,17 @@
         </div>
     </div> 
 
-    <!-- MODAL METAS -->
     <div id="modal-metas" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 p-4">
         <div class="bg-white p-6 rounded-2xl shadow-2xl w-full max-w-md border border-gray-200">
             <div class="flex justify-between items-center mb-4"><h3 class="text-xl font-bold text-gray-800"><i class="fa-solid fa-bullseye text-red-500 mr-2"></i> Ajustar Objetivos</h3><button onclick="cerrarModalMetas()" class="text-gray-400 hover:text-red-500"><i class="fa-solid fa-xmark text-xl"></i></button></div>
             <form id="formMetas" class="space-y-4">
                 <input type="hidden" id="meta_mes_anio" value="06-2026">
                 <div><label class="block text-xs font-bold text-gray-500 uppercase">Meta Mensual de Ventas ($)</label><input type="number" id="input_meta_ventas" required class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg font-bold text-green-700 outline-none"></div>
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div><label class="block text-xs font-bold text-gray-500 uppercase">Vuelos Objetivo</label><input type="number" id="input_meta_servicios" required class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg font-bold"></div>
                     <div><label class="block text-xs font-bold text-gray-500 uppercase">Nuevos Clientes</label><input type="number" id="input_meta_clientes" required class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg font-bold"></div>
                 </div>
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div><label class="block text-xs font-bold text-gray-500 uppercase">Meta de Prospectos</label><input type="number" id="input_meta_prospectos" required class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg font-bold"></div>
                     <div><label class="block text-xs font-bold text-gray-500 uppercase">Meta Visitas Campo</label><input type="number" id="input_meta_visitas" required class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg font-bold"></div>
                 </div>
@@ -354,25 +340,24 @@
         </div>
     </div>
 
-    <!-- MODAL CALCULADORA DE INGRESOS (CON SELECTOR DE PAGO) -->
     <div id="modal-ingresos" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 p-4">
-        <div class="bg-white p-6 rounded-2xl shadow-2xl w-full max-w-sm border border-emerald-200">
+        <div class="bg-white p-5 md:p-6 rounded-2xl shadow-2xl w-full max-w-sm border border-emerald-200">
             <div class="flex justify-between items-center mb-4 border-b border-gray-100 pb-2">
                 <h3 class="text-lg font-bold text-gray-800"><i class="fa-solid fa-calculator text-emerald-600 mr-2"></i> Desglose de Ingresos</h3>
                 <button onclick="cerrarModalIngresos()" class="text-gray-400 hover:text-red-500"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
             <div class="space-y-3">
-                <div class="flex justify-between items-center"><label class="text-xs font-bold text-gray-600 uppercase"><i class="fa-solid fa-ruler-combined w-5 text-gray-400"></i> Ha. Trabajadas</label><input type="number" step="0.01" id="m_ha_trabajadas" class="w-32 px-2 py-1 bg-gray-50 border border-gray-300 rounded text-right font-bold text-emerald-600 outline-none"></div>
-                <div class="flex justify-between items-center"><label class="text-xs font-bold text-gray-600 uppercase"><i class="fa-solid fa-dollar-sign w-5 text-gray-400"></i> Precio x Ha.</label><input type="number" step="0.01" id="m_precio_por_ha" class="w-32 px-2 py-1 bg-gray-50 border border-gray-300 rounded text-right font-bold text-emerald-600 outline-none"></div>
-                <div class="flex justify-between items-center border-b border-dashed border-gray-200 pb-2 text-xs font-semibold text-gray-500"><label>Subtotal Fumigación</label><span id="m_subtotal_fumigacion">$0.00</span></div>
-                <div class="flex justify-between items-center"><label class="text-xs font-bold text-gray-600 uppercase"><i class="fa-solid fa-car w-5 text-gray-400"></i> Viáticos Cobrados</label><input type="number" step="0.01" id="m_ingreso_viaticos" class="w-32 px-2 py-1 bg-gray-50 border border-gray-300 rounded text-right font-bold text-emerald-600 outline-none"></div>
-                <div class="flex justify-between items-center"><label class="text-xs font-bold text-gray-600 uppercase"><i class="fa-solid fa-box-open w-5 text-gray-400"></i> Venta Suministros</label><input type="number" step="0.01" id="m_ingreso_suministros" class="w-32 px-2 py-1 bg-gray-50 border border-gray-300 rounded text-right font-bold text-emerald-600 outline-none"></div>
+                <div class="flex justify-between items-center"><label class="text-[10px] md:text-xs font-bold text-gray-600 uppercase"><i class="fa-solid fa-ruler-combined w-5 text-gray-400"></i> Ha. Trabajadas</label><input type="number" step="0.01" id="m_ha_trabajadas" class="w-28 md:w-32 px-2 py-1 bg-gray-50 border border-gray-300 rounded text-right font-bold text-emerald-600 outline-none"></div>
+                <div class="flex justify-between items-center"><label class="text-[10px] md:text-xs font-bold text-gray-600 uppercase"><i class="fa-solid fa-dollar-sign w-5 text-gray-400"></i> Precio x Ha.</label><input type="number" step="0.01" id="m_precio_por_ha" class="w-28 md:w-32 px-2 py-1 bg-gray-50 border border-gray-300 rounded text-right font-bold text-emerald-600 outline-none"></div>
+                <div class="flex justify-between items-center border-b border-dashed border-gray-200 pb-2 text-[10px] md:text-xs font-semibold text-gray-500"><label>Subtotal Fumigación</label><span id="m_subtotal_fumigacion">$0.00</span></div>
+                <div class="flex justify-between items-center"><label class="text-[10px] md:text-xs font-bold text-gray-600 uppercase"><i class="fa-solid fa-car w-5 text-gray-400"></i> Viáticos Cobrados</label><input type="number" step="0.01" id="m_ingreso_viaticos" class="w-28 md:w-32 px-2 py-1 bg-gray-50 border border-gray-300 rounded text-right font-bold text-emerald-600 outline-none"></div>
+                <div class="flex justify-between items-center"><label class="text-[10px] md:text-xs font-bold text-gray-600 uppercase"><i class="fa-solid fa-box-open w-5 text-gray-400"></i> Suministros</label><input type="number" step="0.01" id="m_ingreso_suministros" class="w-28 md:w-32 px-2 py-1 bg-gray-50 border border-gray-300 rounded text-right font-bold text-emerald-600 outline-none"></div>
                 
                 <div class="pt-2 border-t border-dashed border-gray-200">
-                    <label class="text-[10px] font-extrabold text-gray-500 uppercase block mb-2 tracking-wider">Forma de Cobro Realizada</label>
+                    <label class="text-[9px] font-extrabold text-gray-500 uppercase block mb-2 tracking-wider">Forma de Cobro Realizada</label>
                     <div class="grid grid-cols-2 gap-2">
-                        <button type="button" id="btn_pago_efectivo" onclick="seleccionarMetodoPago('Efectivo')" class="py-2 text-xs font-bold rounded-lg border bg-emerald-50 border-emerald-500 text-emerald-700 flex items-center justify-center gap-1 w-full transition-all shadow-sm"><i class="fa-solid fa-money-bill-wave"></i> Efectivo</button>
-                        <button type="button" id="btn_pago_transferencia" onclick="seleccionarMetodoPago('Transferencia')" class="py-2 text-xs font-bold rounded-lg border bg-gray-50 border-gray-200 text-gray-600 flex items-center justify-center gap-1 w-full transition-all"><i class="fa-solid fa-building-columns"></i> Transferencia</button>
+                        <button type="button" id="btn_pago_efectivo" onclick="seleccionarMetodoPago('Efectivo')" class="py-2 text-[10px] md:text-xs font-bold rounded-lg border bg-emerald-50 border-emerald-500 text-emerald-700 flex items-center justify-center gap-1 w-full transition-all shadow-sm"><i class="fa-solid fa-money-bill-wave"></i> Efectivo</button>
+                        <button type="button" id="btn_pago_transferencia" onclick="seleccionarMetodoPago('Transferencia')" class="py-2 text-[10px] md:text-xs font-bold rounded-lg border bg-gray-50 border-gray-200 text-gray-600 flex items-center justify-center gap-1 w-full transition-all"><i class="fa-solid fa-building-columns"></i> Transf.</button>
                     </div>
                 </div>
 
@@ -382,74 +367,72 @@
         </div>
     </div>
 
-    <!-- MODAL CALCULADORA DE GASTOS -->
     <div id="modal-gastos" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 p-4">
-        <div class="bg-white p-6 rounded-2xl shadow-2xl w-full max-w-sm border border-red-200">
+        <div class="bg-white p-5 md:p-6 rounded-2xl shadow-2xl w-full max-w-sm border border-red-200">
             <div class="flex justify-between items-center mb-4 border-b border-gray-100 pb-2"><h3 class="text-lg font-bold text-gray-800"><i class="fa-solid fa-calculator text-red-500 mr-2"></i> Desglose de Gastos</h3><button onclick="cerrarModalGastos()" class="text-gray-400 hover:text-red-500"><i class="fa-solid fa-xmark text-xl"></i></button></div>
             <div class="space-y-3">
-                <div class="flex justify-between items-center"><label class="text-xs font-bold text-gray-600 uppercase"><i class="fa-solid fa-gas-pump w-5 text-gray-400"></i> Gasolina Unidad</label><input type="number" step="0.01" id="m_gas_unidad" class="w-32 px-2 py-1 bg-gray-50 border border-gray-300 text-right font-bold text-red-600 outline-none"></div>
-                <div class="flex justify-between items-center"><label class="text-xs font-bold text-gray-600 uppercase"><i class="fa-solid fa-bolt w-5 text-gray-400"></i> Gasolina Gen.</label><input type="number" step="0.01" id="m_gas_gen" class="w-32 px-2 py-1 bg-gray-50 border border-gray-300 text-right font-bold text-red-600 outline-none"></div>
-                <div class="flex justify-between items-center"><label class="text-xs font-bold text-gray-600 uppercase"><i class="fa-solid fa-users w-5 text-gray-400"></i> Sueldos</label><input type="number" step="0.01" id="m_sueldos" class="w-32 px-2 py-1 bg-gray-50 border border-gray-300 text-right font-bold text-red-600 outline-none"></div>
-                <div class="flex justify-between items-center"><label class="text-xs font-bold text-gray-600 uppercase"><i class="fa-solid fa-flask w-5 text-gray-400"></i> Insumos</label><input type="number" step="0.01" id="m_insumos" class="w-32 px-2 py-1 bg-gray-50 border border-gray-300 text-right font-bold text-red-600 outline-none"></div>
-                <div class="flex justify-between items-center"><label class="text-xs font-bold text-gray-600 uppercase"><i class="fa-solid fa-utensils w-5 text-gray-400"></i> Comidas</label><input type="number" step="0.01" id="m_comidas" class="w-32 px-2 py-1 bg-gray-50 border border-gray-300 text-right font-bold text-red-600 outline-none"></div>
-                <div class="flex justify-between items-center"><label class="text-xs font-bold text-gray-600 uppercase"><i class="fa-solid fa-cookie w-5 text-gray-400"></i> Oxxo</label><input type="number" step="0.01" id="m_oxxo" class="w-32 px-2 py-1 bg-gray-50 border border-gray-300 text-right font-bold text-red-600 outline-none"></div>
+                <div class="flex justify-between items-center"><label class="text-[10px] md:text-xs font-bold text-gray-600 uppercase"><i class="fa-solid fa-gas-pump w-5 text-gray-400"></i> Gas Unidad</label><input type="number" step="0.01" id="m_gas_unidad" class="w-28 md:w-32 px-2 py-1 bg-gray-50 border border-gray-300 text-right font-bold text-red-600 outline-none"></div>
+                <div class="flex justify-between items-center"><label class="text-[10px] md:text-xs font-bold text-gray-600 uppercase"><i class="fa-solid fa-bolt w-5 text-gray-400"></i> Gas Gen.</label><input type="number" step="0.01" id="m_gas_gen" class="w-28 md:w-32 px-2 py-1 bg-gray-50 border border-gray-300 text-right font-bold text-red-600 outline-none"></div>
+                <div class="flex justify-between items-center"><label class="text-[10px] md:text-xs font-bold text-gray-600 uppercase"><i class="fa-solid fa-users w-5 text-gray-400"></i> Sueldos</label><input type="number" step="0.01" id="m_sueldos" class="w-28 md:w-32 px-2 py-1 bg-gray-50 border border-gray-300 text-right font-bold text-red-600 outline-none"></div>
+                <div class="flex justify-between items-center"><label class="text-[10px] md:text-xs font-bold text-gray-600 uppercase"><i class="fa-solid fa-flask w-5 text-gray-400"></i> Insumos</label><input type="number" step="0.01" id="m_insumos" class="w-28 md:w-32 px-2 py-1 bg-gray-50 border border-gray-300 text-right font-bold text-red-600 outline-none"></div>
+                <div class="flex justify-between items-center"><label class="text-[10px] md:text-xs font-bold text-gray-600 uppercase"><i class="fa-solid fa-utensils w-5 text-gray-400"></i> Comidas</label><input type="number" step="0.01" id="m_comidas" class="w-28 md:w-32 px-2 py-1 bg-gray-50 border border-gray-300 text-right font-bold text-red-600 outline-none"></div>
+                <div class="flex justify-between items-center"><label class="text-[10px] md:text-xs font-bold text-gray-600 uppercase"><i class="fa-solid fa-cookie w-5 text-gray-400"></i> Oxxo</label><input type="number" step="0.01" id="m_oxxo" class="w-28 md:w-32 px-2 py-1 bg-gray-50 border border-gray-300 text-right font-bold text-red-600 outline-none"></div>
                 <div class="flex justify-between items-center mt-4 pt-3 border-t border-gray-200"><label class="text-sm font-extrabold text-gray-800 uppercase">Suma Total</label><span id="m_total_display" class="text-xl font-extrabold text-red-600">$0.00</span></div>
             </div>
             <button type="button" onclick="confirmarDesgloseGastos()" class="w-full mt-5 py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg shadow-md"><i class="fa-solid fa-check mr-1"></i> Confirmar y Sumar</button>
         </div>
     </div>
 
-    <!-- MODAL FICHA TÉCNICA DEL SERVICIO (LUPA) -->
     <div id="modal-detalle" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 p-4">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl border border-gray-200 overflow-hidden flex flex-col max-h-[90vh]">
-            <div class="bg-[#064e3b] px-6 py-4 flex justify-between items-center text-white shadow-md z-10">
-                <h3 class="text-lg font-bold tracking-wide flex items-center"><i class="fa-solid fa-magnifying-glass text-green-400 mr-3"></i> Detalle de Operación en Campo</h3>
+            <div class="bg-[#064e3b] px-4 md:px-6 py-4 flex justify-between items-center text-white shadow-md z-10">
+                <h3 class="text-base md:text-lg font-bold tracking-wide flex items-center"><i class="fa-solid fa-magnifying-glass text-green-400 mr-2 md:mr-3"></i> Detalle de Operación</h3>
                 <button onclick="cerrarModalDetalle()" class="text-gray-300 hover:text-white transition-colors"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
-            <div class="p-6 overflow-y-auto custom-scrollbar bg-gray-50/50">
-                <div class="grid grid-cols-3 gap-4 mb-6">
-                    <div class="bg-white p-3 rounded-xl border border-gray-100 shadow-sm"><p class="text-[10px] text-gray-400 font-bold uppercase mb-1">No. Control (Cliente)</p><p id="det_id" class="font-bold text-emerald-700 text-base">---</p></div>
+            <div class="p-4 md:p-6 overflow-y-auto custom-scrollbar bg-gray-50/50">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 mb-4 md:mb-6">
+                    <div class="bg-white p-3 rounded-xl border border-gray-100 shadow-sm"><p class="text-[10px] text-gray-400 font-bold uppercase mb-1">No. Control (Cliente)</p><p id="det_id" class="font-bold text-emerald-700 text-sm md:text-base">---</p></div>
                     <div class="bg-white p-3 rounded-xl border border-gray-100 shadow-sm"><p class="text-[10px] text-gray-400 font-bold uppercase mb-1">Fecha de Vuelo</p><p id="det_fecha" class="font-bold text-blue-700 text-sm">---</p></div>
                     <div class="bg-white p-3 rounded-xl border border-gray-100 shadow-sm"><p class="text-[10px] text-gray-400 font-bold uppercase mb-1">No. Orden / Cotización</p><p id="det_orden" class="font-bold text-gray-800 text-sm">---</p></div>
                 </div>
-                <div class="grid grid-cols-2 gap-4 mb-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 mb-4 md:mb-6">
                     <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm border-l-4 border-l-blue-500">
                         <h4 class="text-xs font-extrabold text-gray-500 uppercase mb-2 flex items-center"><i class="fa-solid fa-user text-blue-500 w-5"></i> Datos del Productor</h4>
-                        <p id="det_cliente" class="font-bold text-gray-800 text-base">---</p>
-                        <p id="det_contacto" class="text-xs text-gray-500 mt-1">---</p>
+                        <p id="det_cliente" class="font-bold text-gray-800 text-sm md:text-base">---</p>
+                        <p id="det_contacto" class="text-[10px] md:text-xs text-gray-500 mt-1">---</p>
                     </div>
                     <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm border-l-4 border-l-amber-500">
                         <h4 class="text-xs font-extrabold text-gray-500 uppercase mb-2 flex items-center"><i class="fa-solid fa-map-location-dot text-amber-500 w-5"></i> Ubicación y Cultivo</h4>
-                        <p id="det_parcela" class="font-bold text-gray-800 text-base">---</p>
-                        <p id="det_cultivo" class="text-xs text-gray-500 mt-1">---</p>
+                        <p id="det_parcela" class="font-bold text-gray-800 text-sm md:text-base">---</p>
+                        <p id="det_cultivo" class="text-[10px] md:text-xs text-gray-500 mt-1">---</p>
                     </div>
                 </div>
-                <div class="grid grid-cols-2 gap-4 mb-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 mb-4 md:mb-6">
                     <div class="bg-emerald-50/50 p-4 rounded-xl border border-emerald-100">
-                        <h4 class="text-xs font-extrabold text-emerald-700 uppercase mb-3 border-b border-emerald-200 pb-2"><i class="fa-solid fa-arrow-trend-up mr-1"></i> Desglose de Ingresos</h4>
-                        <div class="space-y-2 text-sm">
-                            <div class="flex justify-between text-gray-600"><span class="text-xs">Fumigación (<span id="det_ha">0</span> Ha)</span><span id="det_sub_fumi" class="font-medium">$0.00</span></div>
-                            <div class="flex justify-between text-gray-600"><span class="text-xs">Viáticos Cobrados</span><span id="det_in_viat" class="font-medium">$0.00</span></div>
-                            <div class="flex justify-between text-gray-600"><span class="text-xs">Suministros</span><span id="det_in_sumi" class="font-medium">$0.00</span></div>
-                            <div class="flex justify-between pt-2 border-t border-emerald-200 mt-2"><span class="font-bold text-emerald-800 text-xs uppercase">Total Cobrado</span><span id="det_in_total" class="font-extrabold text-emerald-700">$0.00</span></div>
+                        <h4 class="text-xs font-extrabold text-emerald-700 uppercase mb-3 border-b border-emerald-200 pb-2"><i class="fa-solid fa-arrow-trend-up mr-1"></i> Ingresos</h4>
+                        <div class="space-y-2 text-xs md:text-sm">
+                            <div class="flex justify-between text-gray-600"><span>Fumigación (<span id="det_ha">0</span> Ha)</span><span id="det_sub_fumi" class="font-medium">$0.00</span></div>
+                            <div class="flex justify-between text-gray-600"><span>Viáticos Cobrados</span><span id="det_in_viat" class="font-medium">$0.00</span></div>
+                            <div class="flex justify-between text-gray-600"><span>Suministros</span><span id="det_in_sumi" class="font-medium">$0.00</span></div>
+                            <div class="flex justify-between pt-2 border-t border-emerald-200 mt-2"><span class="font-bold text-emerald-800 text-[10px] md:text-xs uppercase">Total Cobrado</span><span id="det_in_total" class="font-extrabold text-emerald-700">$0.00</span></div>
                         </div>
                     </div>
                     <div class="bg-rose-50/50 p-4 rounded-xl border border-rose-100">
                         <h4 class="text-xs font-extrabold text-rose-700 uppercase mb-3 border-b border-rose-200 pb-2"><i class="fa-solid fa-arrow-trend-down mr-1"></i> Desglose Operativo</h4>
-                        <div class="space-y-2 text-sm">
-                            <div class="flex justify-between text-gray-600"><span class="text-xs">Gasolinas (Unidad + Gen)</span><span id="det_gasolinas" class="font-medium">$0.00</span></div>
-                            <div class="flex justify-between text-gray-600"><span class="text-xs">Sueldos</span><span id="det_sueldos" class="font-medium">$0.00</span></div>
-                            <div class="flex justify-between text-gray-600"><span class="text-xs">Insumos aplicados</span><span id="det_out_insumos" class="font-medium">$0.00</span></div>
-                            <div class="flex justify-between text-gray-600"><span class="text-xs">Alimentos (Comidas + Oxxo)</span><span id="det_alimentos" class="font-medium">$0.00</span></div>
-                            <div class="flex justify-between pt-2 border-t border-rose-200 mt-2"><span class="font-bold text-rose-800 text-xs uppercase">Costo Total</span><span id="det_out_total" class="font-extrabold text-rose-700">$0.00</span></div>
+                        <div class="space-y-2 text-xs md:text-sm">
+                            <div class="flex justify-between text-gray-600"><span>Gasolinas (Unidad + Gen)</span><span id="det_gasolinas" class="font-medium">$0.00</span></div>
+                            <div class="flex justify-between text-gray-600"><span>Sueldos</span><span id="det_sueldos" class="font-medium">$0.00</span></div>
+                            <div class="flex justify-between text-gray-600"><span>Insumos aplicados</span><span id="det_out_insumos" class="font-medium">$0.00</span></div>
+                            <div class="flex justify-between text-gray-600"><span>Alimentos (Comidas + Oxxo)</span><span id="det_alimentos" class="font-medium">$0.00</span></div>
+                            <div class="flex justify-between pt-2 border-t border-rose-200 mt-2"><span class="font-bold text-rose-800 text-[10px] md:text-xs uppercase">Costo Total</span><span id="det_out_total" class="font-extrabold text-rose-700">$0.00</span></div>
                         </div>
                     </div>
                 </div>
-                <div class="bg-blue-600 text-white p-4 rounded-xl shadow-md flex justify-between items-center mb-4">
-                    <div><p class="text-xs text-blue-200 font-bold uppercase tracking-wider">Utilidad Neta (Cobro vía <span id="det_metodo_txt">---</span>)</p><p class="text-[10px] text-blue-300 mt-0.5">Ingresos Totales - Gastos Operativos</p></div>
-                    <div id="det_utilidad" class="text-3xl font-extrabold tracking-tight">$0.00</div>
+                <div class="bg-blue-600 text-white p-3 md:p-4 rounded-xl shadow-md flex justify-between items-center mb-4">
+                    <div><p class="text-[10px] md:text-xs text-blue-200 font-bold uppercase tracking-wider">Utilidad Neta (Vía <span id="det_metodo_txt">---</span>)</p><p class="text-[9px] md:text-[10px] text-blue-300 mt-0.5">Ingresos Totales - Gastos Operativos</p></div>
+                    <div id="det_utilidad" class="text-2xl md:text-3xl font-extrabold tracking-tight">$0.00</div>
                 </div>
-                <div class="bg-white p-3 rounded-xl border border-gray-200"><p class="text-[10px] text-gray-400 font-bold uppercase mb-1">Notas / Observaciones</p><p id="det_obs" class="text-sm text-gray-700 italic">---</p></div>
+                <div class="bg-white p-3 rounded-xl border border-gray-200"><p class="text-[10px] text-gray-400 font-bold uppercase mb-1">Notas / Observaciones</p><p id="det_obs" class="text-xs md:text-sm text-gray-700 italic">---</p></div>
             </div>
         </div>
     </div>
@@ -494,10 +477,10 @@
                     if(badge) {
                         if(rolUsuario === 'admin') {
                             badge.innerHTML = '<i class="fa-solid fa-crown mr-1 text-amber-400"></i> ADMIN';
-                            badge.className = "ml-4 text-xs font-bold px-2 py-1 bg-amber-950 text-amber-400 rounded-md border border-amber-600 tracking-wider";
+                            badge.className = "hidden md:inline-block ml-4 text-xs font-bold px-2 py-1 bg-amber-950 text-amber-400 rounded-md border border-amber-600 tracking-wider";
                         } else {
                             badge.innerHTML = '<i class="fa-solid fa-user-gear mr-1 text-green-300"></i> OPERADOR';
-                            badge.className = "ml-4 text-xs font-bold px-2 py-1 bg-green-950 text-green-300 rounded-md border border-green-600 tracking-wider";
+                            badge.className = "hidden md:inline-block ml-4 text-xs font-bold px-2 py-1 bg-green-950 text-green-300 rounded-md border border-green-600 tracking-wider";
                         }
                     }
                     document.getElementById('login-container').classList.add('hidden'); document.getElementById('dashboard-container').classList.remove('hidden');
@@ -552,7 +535,6 @@
             actualizarMetasCEO();
         }
 
-        // --- VELOCÍMETROS ---
         function crearVelocimetro(id, color, nombre) { return { series: [0], chart: { type: 'radialBar', height: 200, background: 'transparent' }, plotOptions: { radialBar: { startAngle: -90, endAngle: 90, track: { background: '#e7e7e7', strokeWidth: '97%' }, dataLabels: { name: { show: false }, value: { offsetY: -5, fontSize: '20px', fontWeight: 'bold', color: '#000000', formatter: function (val) { return val.toFixed(1) + "%"; } } } } }, colors: [color], labels: [nombre] }; }
         var chartVentas = new ApexCharts(document.querySelector("#velocimetro-ventas"), crearVelocimetro("#velocimetro-ventas", "#00E396", "Ventas")); chartVentas.render();
         var chartServicios = new ApexCharts(document.querySelector("#velocimetro-servicios"), crearVelocimetro("#velocimetro-servicios", "#00E396", "Servicios")); chartServicios.render();
@@ -572,7 +554,6 @@
             } catch (error) {}
         }
 
-        // --- CLIENTES (DIRECTORIO LIMPIO) ---
         function renderizarTablaClientes(lista) { 
             const cuerpo = document.getElementById('cuerpoTabla'); cuerpo.innerHTML = ''; document.getElementById('contadorClientes').textContent = `${lista.length} REGISTRADOS`;
             lista.forEach(c => {
@@ -604,7 +585,7 @@
             document.getElementById('email').value = c.email || ''; document.getElementById('telefono').value = c.telefono; 
             document.getElementById('rfc').value = c.rfc; document.getElementById('estado_cliente').value = c.estado || 'Prospecto'; 
             document.getElementById('no_cliente').value = c.no_cliente || '';
-            document.getElementById('tituloFormCliente').innerHTML = `<i class="fa-solid fa-pen text-amber-500 mr-2 text-2xl"></i> Editando Registro`; 
+            document.getElementById('tituloFormCliente').innerHTML = `<i class="fa-solid fa-pen text-amber-500 mr-2 text-xl md:text-2xl"></i> Editando Registro`; 
             document.getElementById('btnSubmitCliente').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-amber-500"; 
             document.getElementById('btnCancelarCliente').classList.remove('hidden'); cambiarVista('inicio'); 
         }
@@ -613,12 +594,11 @@
             document.getElementById('registroForm').reset(); document.getElementById('editClienteId').value = ''; 
             document.getElementById('estado_cliente').value = 'Prospecto'; document.getElementById('no_cliente').value = '';
             document.getElementById('email').value = '';
-            document.getElementById('tituloFormCliente').innerHTML = `<i class="fa-solid fa-user-plus text-green-600 mr-2 text-2xl"></i> Nuevo Registro`; 
+            document.getElementById('tituloFormCliente').innerHTML = `<i class="fa-solid fa-user-plus text-green-600 mr-2 text-xl md:text-2xl"></i> Nuevo Registro`; 
             document.getElementById('btnSubmitCliente').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-[#4ade80]"; 
             document.getElementById('btnCancelarCliente').classList.add('hidden'); 
         }
 
-        // --- PARCELAS ---
         async function cargarPropiedades() { 
             try { 
                 const res = await fetch(`${API_URL}/propiedades/`); memoriaPropiedades = await res.json(); 
@@ -651,19 +631,18 @@
             document.getElementById('selectCliente').value = p.cliente_id; document.getElementById('nombre_propiedad').value = p.nombre_propiedad; 
             document.getElementById('tipo_cultivo').value = p.tipo_cultivo; document.getElementById('superficie_has').value = p.superficie_has; 
             document.getElementById('direccion').value = p.direccion; document.getElementById('estado').value = p.estado; 
-            document.getElementById('tituloFormPropiedad').innerHTML = `<i class="fa-solid fa-pen text-amber-500 mr-2 text-2xl"></i> Editando Parcela`; 
+            document.getElementById('tituloFormPropiedad').innerHTML = `<i class="fa-solid fa-pen text-amber-500 mr-2 text-xl md:text-2xl"></i> Editando Parcela`; 
             document.getElementById('btnSubmitPropiedad').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-amber-500"; 
             document.getElementById('btnCancelarPropiedad').classList.remove('hidden'); cambiarVista('inicio'); 
         }
         
         function limpiarFormPropiedad() { 
             document.getElementById('propiedadForm').reset(); document.getElementById('editPropiedadId').value = ''; 
-            document.getElementById('tituloFormPropiedad').innerHTML = `<i class="fa-solid fa-map-location-dot text-green-600 mr-2 text-2xl"></i> Registrar Parcela`; 
+            document.getElementById('tituloFormPropiedad').innerHTML = `<i class="fa-solid fa-map-location-dot text-green-600 mr-2 text-xl md:text-2xl"></i> Registrar Parcela`; 
             document.getElementById('btnSubmitPropiedad').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-[#4ade80]"; 
             document.getElementById('btnCancelarPropiedad').classList.add('hidden'); 
         }
 
-        // --- VENTAS Y DETALLES ---
         async function cargarServicios() { 
             try { 
                 const res = await fetch(`${API_URL}/servicios/`); memoriaServicios = await res.json(); 
@@ -719,15 +698,14 @@
             const btnEf = document.getElementById('btn_pago_efectivo');
             const btnTr = document.getElementById('btn_pago_transferencia');
             if (metodo === 'Efectivo') {
-                btnEf.className = "py-2 text-xs font-bold rounded-lg border bg-emerald-50 border-emerald-500 text-emerald-700 flex items-center justify-center gap-1 w-full transition-all shadow-sm";
-                btnTr.className = "py-2 text-xs font-bold rounded-lg border bg-gray-50 border-gray-200 text-gray-600 flex items-center justify-center gap-1 w-full transition-all";
+                btnEf.className = "py-2 text-[10px] md:text-xs font-bold rounded-lg border bg-emerald-50 border-emerald-500 text-emerald-700 flex items-center justify-center gap-1 w-full transition-all shadow-sm";
+                btnTr.className = "py-2 text-[10px] md:text-xs font-bold rounded-lg border bg-gray-50 border-gray-200 text-gray-600 flex items-center justify-center gap-1 w-full transition-all";
             } else {
-                btnEf.className = "py-2 text-xs font-bold rounded-lg border bg-gray-50 border-gray-200 text-gray-600 flex items-center justify-center gap-1 w-full transition-all";
-                btnTr.className = "py-2 text-xs font-bold rounded-lg border bg-blue-50 border-blue-500 text-blue-700 flex items-center justify-center gap-1 w-full transition-all shadow-sm";
+                btnEf.className = "py-2 text-[10px] md:text-xs font-bold rounded-lg border bg-gray-50 border-gray-200 text-gray-600 flex items-center justify-center gap-1 w-full transition-all";
+                btnTr.className = "py-2 text-[10px] md:text-xs font-bold rounded-lg border bg-blue-50 border-blue-500 text-blue-700 flex items-center justify-center gap-1 w-full transition-all shadow-sm";
             }
         }
 
-        // --- CALCULADORA DE INGRESOS ---
         function abrirModalDesgloseIngresos() {
             document.getElementById('m_ha_trabajadas').value = document.getElementById('h_ha_trabajadas').value || 0;
             document.getElementById('m_precio_por_ha').value = document.getElementById('h_precio_por_ha').value || 0;
@@ -762,7 +740,6 @@
             document.getElementById('costo_servicio').value = totalIngreso; cerrarModalIngresos();
         }
 
-        // --- CALCULADORA DE GASTOS ---
         function abrirModalDesgloseGastos() { document.getElementById('m_gas_unidad').value = document.getElementById('h_gas_unidad').value || 0; document.getElementById('m_gas_gen').value = document.getElementById('h_gas_gen').value || 0; document.getElementById('m_sueldos').value = document.getElementById('h_sueldos').value || 0; document.getElementById('m_insumos').value = document.getElementById('h_insumos').value || 0; document.getElementById('m_comidas').value = document.getElementById('h_comidas').value || 0; document.getElementById('m_oxxo').value = document.getElementById('h_oxxo').value || 0; calcularTotalModal(); document.getElementById('modal-gastos').classList.remove('hidden'); }
         function cerrarModalGastos() { document.getElementById('modal-gastos').classList.add('hidden'); }
         function calcularTotalModal() { let total = (parseFloat(document.getElementById('m_gas_unidad').value) || 0) + (parseFloat(document.getElementById('m_gas_gen').value) || 0) + (parseFloat(document.getElementById('m_sueldos').value) || 0) + (parseFloat(document.getElementById('m_insumos').value) || 0) + (parseFloat(document.getElementById('m_comidas').value) || 0) + (parseFloat(document.getElementById('m_oxxo').value) || 0); document.getElementById('m_total_display').innerText = "$" + total.toLocaleString('es-MX', {minimumFractionDigits: 2}); return total; }
@@ -774,17 +751,16 @@
             document.getElementById('h_gas_unidad').value = s.gasto_gasolina_unidad || 0; document.getElementById('h_gas_gen').value = s.gasto_gasolina_generador || 0; document.getElementById('h_sueldos').value = s.gasto_sueldos || 0; document.getElementById('h_insumos').value = s.gasto_insumos || 0; document.getElementById('h_comidas').value = s.gasto_comidas || 0; document.getElementById('h_oxxo').value = s.gasto_oxxo || 0;
             document.getElementById('h_ha_trabajadas').value = s.ha_trabajadas || 0; document.getElementById('h_precio_por_ha').value = s.precio_por_ha || 0; document.getElementById('h_ingreso_viaticos').value = s.ingreso_viaticos || 0; document.getElementById('h_ingreso_suministros').value = s.ingreso_suministros || 0;
             document.getElementById('h_metodo_pago').value = s.metodo_pago || 'Efectivo';
-            document.getElementById('tituloFormServio').innerHTML = `<i class="fa-solid fa-pen text-amber-500 mr-2 text-2xl"></i> Editando Venta`; cambiarVista('inicio'); 
+            document.getElementById('tituloFormServio').innerHTML = `<i class="fa-solid fa-pen text-amber-500 mr-2 text-xl md:text-2xl"></i> Editando Venta`; cambiarVista('inicio'); 
         }
         
         function limpiarFormService() { 
             document.getElementById('servicioForm').reset(); document.getElementById('editServioId').value = ''; 
             ['h_gas_unidad', 'h_gas_gen', 'h_sueldos', 'h_insumos', 'h_comidas', 'h_oxxo', 'h_ha_trabajadas', 'h_precio_por_ha', 'h_ingreso_viaticos', 'h_ingreso_suministros'].forEach(id => document.getElementById(id).value = 0); 
             document.getElementById('h_metodo_pago').value = 'Efectivo';
-            document.getElementById('tituloFormServio').innerHTML = `<i class="fa-solid fa-file-invoice-dollar text-green-600 mr-2 text-2xl"></i> Registrar Venta`; 
+            document.getElementById('tituloFormServio').innerHTML = `<i class="fa-solid fa-file-invoice-dollar text-green-600 mr-2 text-xl md:text-2xl"></i> Registrar Venta`; 
         }
 
-        // --- LÓGICA DE LA LUPA DE DETALLES ---
         function verDetalleServicio(id) {
             const s = memoriaServicios.find(x => x.id === id);
             const pr = memoriaPropiedades.find(p => p.id === s.propiedad_id);

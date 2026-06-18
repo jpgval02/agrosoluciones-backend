@@ -798,6 +798,50 @@
             document.getElementById('modal-detalle').classList.remove('hidden');
         }
         function cerrarModalDetalle() { document.getElementById('modal-detalle').classList.add('hidden'); }
+
+        // --- WEBSOCKETS: SINCRONIZACIÓN EN TIEMPO REAL (NIVEL PROFESIONAL) ---
+        let ws;
+        function conectarWebSocket() {
+            // Se usa wss:// en lugar de https:// para abrir el túnel seguro (o ws:// si fuera localhost)
+            const wsProtocol = API_URL.includes("https") ? "wss://" : "ws://";
+            ws = new WebSocket(API_URL.replace("https://", wsProtocol).replace("http://", wsProtocol) + "/ws");
+            
+            ws.onmessage = async function(event) {
+                if(event.data === "update") {
+                    // Si recibimos el aviso, checamos que tengas sesión iniciada
+                    if (!document.getElementById('dashboard-container').classList.contains('hidden')) {
+                        // Seguro anti-borrado: Si estás escribiendo o con calculadoras abiertas, pospone la actualización
+                        const foco = document.activeElement;
+                        const escribiendo = foco && (foco.tagName === 'INPUT' || foco.tagName === 'TEXTAREA' || foco.tagName === 'SELECT');
+                        const modalesAbiertos = !document.getElementById('modal-ingresos').classList.contains('hidden') || 
+                                                !document.getElementById('modal-gastos').classList.contains('hidden') || 
+                                                !document.getElementById('modal-detalle').classList.contains('hidden') ||
+                                                !document.getElementById('modal-metas').classList.contains('hidden');
+                        
+                        if (!escribiendo && !modalesAbiertos) {
+                            try {
+                                await cargarClientes(); 
+                                await cargarPropiedades(); 
+                                await cargarServicios(); 
+                                actualizarEstadisticasYMetas();
+                                
+                                if(document.getElementById('buscadorClientes') && document.getElementById('buscadorClientes').value.trim() !== '') {
+                                    filtrarClientes();
+                                }
+                            } catch(e) { console.log("Sincronizando..."); }
+                        }
+                    }
+                }
+            };
+
+            // Reconexión automática si cambias de red WiFi a Datos en el celular
+            ws.onclose = function(e) {
+                setTimeout(function() { conectarWebSocket(); }, 2000);
+            };
+        }
+        
+        // Iniciamos el túnel en cuanto abres la página
+        conectarWebSocket();
     </script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional, List
@@ -21,6 +21,37 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# --- WEBSOCKETS (TIEMPO REAL) ---
+class ConnectionManager:
+    def __init__(self):
+        self.active_connections: List[WebSocket] = []
+
+    async def connect(self, websocket: WebSocket):
+        await websocket.accept()
+        self.active_connections.append(websocket)
+
+    def disconnect(self, websocket: WebSocket):
+        if websocket in self.active_connections:
+            self.active_connections.remove(websocket)
+
+    async def broadcast(self, message: str):
+        for connection in self.active_connections:
+            try:
+                await connection.send_text(message)
+            except Exception:
+                pass
+
+manager = ConnectionManager()
+
+@app.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket):
+    await manager.connect(websocket)
+    try:
+        while True:
+            data = await websocket.receive_text()
+    except WebSocketDisconnect:
+        manager.disconnect(websocket)
+
 # --- MODELOS DE DATOS ---
 class Credenciales(BaseModel):
     email: str
@@ -29,7 +60,6 @@ class Credenciales(BaseModel):
 class ClienteNuevo(BaseModel):
     nombre: str
     apellidos: str
-    email: str
     telefono: str
     rfc: str
     estado: Optional[str] = "Prospecto"
@@ -67,7 +97,7 @@ class ServicioNuevo(BaseModel):
     precio_por_ha: Optional[float] = 0.0
     ingreso_viaticos: Optional[float] = 0.0
     ingreso_suministros: Optional[float] = 0.0
-    metodo_pago: Optional[str] = "Efectivo" # Variable añadida para el control de flujo
+    metodo_pago: Optional[str] = "Efectivo"
 
 class MetasMensuales(BaseModel):
     mes_anio: str
@@ -102,6 +132,7 @@ async def iniciar_sesion(credenciales: Credenciales):
 async def registrar_cliente(cliente: ClienteNuevo):
     try:
         respuesta = supabase.table('clientes').insert(cliente.dict()).execute()
+        await manager.broadcast("update") # Se dispara actualizacion en vivo
         return {"mensaje": "Guardado", "datos": respuesta.data[0]}
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
 
@@ -114,6 +145,7 @@ async def obtener_clientes():
 async def actualizar_cliente(cliente_id: str, cliente: ClienteNuevo):
     try:
         respuesta = supabase.table('clientes').update(cliente.dict()).eq('id', cliente_id).execute()
+        await manager.broadcast("update")
         return {"mensaje": "Actualizado", "datos": respuesta.data[0]}
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
 
@@ -121,6 +153,7 @@ async def actualizar_cliente(cliente_id: str, cliente: ClienteNuevo):
 async def eliminar_cliente(cliente_id: str):
     try:
         supabase.table('clientes').delete().eq('id', cliente_id).execute()
+        await manager.broadcast("update")
         return {"mensaje": "Eliminado exitosamente"}
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
 
@@ -129,6 +162,7 @@ async def eliminar_cliente(cliente_id: str):
 async def registrar_propiedad(propiedad: PropiedadNueva):
     try:
         respuesta = supabase.table('propiedades').insert(propiedad.dict()).execute()
+        await manager.broadcast("update")
         return {"mensaje": "Guardado", "datos": respuesta.data[0]}
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
 
@@ -141,6 +175,7 @@ async def obtener_propiedades():
 async def actualizar_propiedad(propiedad_id: str, propiedad: PropiedadNueva):
     try:
         respuesta = supabase.table('propiedades').update(propiedad.dict()).eq('id', propiedad_id).execute()
+        await manager.broadcast("update")
         return {"mensaje": "Actualizado", "datos": respuesta.data[0]}
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
 
@@ -148,10 +183,11 @@ async def actualizar_propiedad(propiedad_id: str, propiedad: PropiedadNueva):
 async def eliminar_propiedad(propiedad_id: str):
     try:
         supabase.table('propiedades').delete().eq('id', propiedad_id).execute()
+        await manager.broadcast("update")
         return {"mensaje": "Eliminado exitosamente"}
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
 
-# --- RUTAS DE SERVICIOS (CON CAMPO ACTUALIZADO) ---
+# --- RUTAS DE SERVICIOS ---
 @app.post("/servicios/")
 async def registrar_servicio(servicio: ServicioNuevo):
     try:
@@ -163,6 +199,7 @@ async def registrar_servicio(servicio: ServicioNuevo):
                 supabase.table('clientes').update({'estado': 'Cliente'}).eq('id', cl_id).execute()
         except Exception:
             pass
+        await manager.broadcast("update")
         return {"mensaje": "Guardado", "datos": respuesta.data[0]}
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
 
@@ -175,6 +212,7 @@ async def obtener_servicios():
 async def actualizar_servicio(servicio_id: str, servicio: ServicioNuevo):
     try:
         respuesta = supabase.table('servicios_aplicacion').update(servicio.dict()).eq('id', servicio_id).execute()
+        await manager.broadcast("update")
         return {"mensaje": "Actualizado", "datos": respuesta.data[0]}
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
 
@@ -182,10 +220,11 @@ async def actualizar_servicio(servicio_id: str, servicio: ServicioNuevo):
 async def eliminar_servicio(servicio_id: str):
     try:
         supabase.table('servicios_aplicacion').delete().eq('id', servicio_id).execute()
+        await manager.broadcast("update")
         return {"mensaje": "Eliminado exitosamente"}
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
 
-# --- RUTA PARA VISITAS ---
+# --- VISITAS, METAS Y DASHBOARD ---
 @app.post("/api/visitas/{mes_anio}")
 async def registrar_visita(mes_anio: str):
     try:
@@ -200,45 +239,30 @@ async def registrar_visita(mes_anio: str):
                 "mes_anio": mes_anio, "meta_ventas": 0, "meta_servicios": 0, "meta_clientes": 0, "meta_prospectos": 0, "meta_prospectos_visitas": 0, "visitas_reales": nueva_cantidad
             }
             supabase.table('metas_mensuales').insert(nueva_meta).execute()
+        await manager.broadcast("update")
         return {"mensaje": "Visita registrada en BD", "visitas_reales": nueva_cantidad}
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
 
-# --- RUTA DEL DASHBOARD ---
 @app.get("/api/dashboard/{mes_anio}")
 async def obtener_dashboard(mes_anio: str):
     try:
         respuesta_metas = supabase.table('metas_mensuales').select('*').eq('mes_anio', mes_anio).execute()
-        if len(respuesta_metas.data) == 0:
-            metas = { "meta_ventas": 0, "meta_servicios": 0, "meta_clientes": 0, "meta_prospectos": 0, "meta_prospectos_visitas": 0, "visitas_reales": 0 }
-        else:
-            metas = respuesta_metas.data[0]
-
+        metas = respuesta_metas.data[0] if len(respuesta_metas.data) > 0 else { "meta_ventas": 0, "meta_servicios": 0, "meta_clientes": 0, "meta_prospectos": 0, "meta_prospectos_visitas": 0, "visitas_reales": 0 }
         mes, anio = mes_anio.split("-")
         filtro_fecha = f"{anio}-{mes}" 
-        
         respuesta_servicios = supabase.table('servicios_aplicacion').select('costo_servicio', 'fecha_aplicacion', 'propiedad_id').execute()
         servicios_mes = [s for s in respuesta_servicios.data if s.get('fecha_aplicacion') and s.get('fecha_aplicacion', '').startswith(filtro_fecha)]
         ventas_reales = sum(float(s.get('costo_servicio') or 0) for s in servicios_mes)
         servicios_reales = len(servicios_mes)
-        
         respuesta_clientes = supabase.table('clientes').select('id', 'created_at').execute()
         prospectos_mes = [c for c in respuesta_clientes.data if c.get('created_at') and c.get('created_at', '').startswith(filtro_fecha)]
-        prospectos_reales = len(prospectos_mes)
-
         respuesta_propiedades = supabase.table('propiedades').select('id', 'cliente_id').execute()
         mapa_propiedades = {p['id']: p.get('cliente_id') for p in respuesta_propiedades.data if p.get('cliente_id')}
-        
-        clientes_activos_mes = set()
-        for s in servicios_mes:
-            p_id = s.get('propiedad_id')
-            if p_id and p_id in mapa_propiedades:
-                clientes_activos_mes.add(mapa_propiedades[p_id])
-        clientes_reales = len(clientes_activos_mes)
-
+        clientes_activos_mes = set([mapa_propiedades[s.get('propiedad_id')] for s in servicios_mes if s.get('propiedad_id') and s.get('propiedad_id') in mapa_propiedades])
         return {
             "metas": metas, 
             "reales": {
-                "ventas": ventas_reales, "servicios": servicios_reales, "clientes": clientes_reales, "prospectos": prospectos_reales, "visitas": metas.get("visitas_reales", 0)
+                "ventas": ventas_reales, "servicios": servicios_reales, "clientes": len(clientes_activos_mes), "prospectos": len(prospectos_mes), "visitas": metas.get("visitas_reales", 0)
             }
         }
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
@@ -251,5 +275,6 @@ async def guardar_metas(metas: MetasMensuales):
             supabase.table('metas_mensuales').update(metas.dict()).eq('mes_anio', metas.mes_anio).execute()
         else:
             supabase.table('metas_mensuales').insert(metas.dict()).execute()
+        await manager.broadcast("update")
         return {"mensaje": "Metas guardadas correctamente"}
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))

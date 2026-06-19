@@ -1040,10 +1040,15 @@
         }
         function cerrarModalDetalle() { document.getElementById('modal-detalle').classList.add('hidden'); }
 
-        // --- FUNCIÓN MÁGICA: GENERAR REPORTE EN PDF ---
+        // --- FUNCIÓN MÁGICA: GENERAR REPORTE EN PDF (CORREGIDA) ---
         async function generarPDFReporte() {
             if(!currentServiceIdForPDF) return;
             
+            const btn = document.getElementById('btn_imprimir_pdf');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generando PDF...';
+            btn.disabled = true;
+
             const s = memoriaServicios.find(x => x.id === currentServiceIdForPDF);
             const pr = memoriaPropiedades.find(p => p.id === s.propiedad_id);
             const cl = pr ? memoriaClientes.find(c => c.id === pr.cliente_id) : null;
@@ -1101,32 +1106,63 @@
             document.getElementById('pdf_jc').innerText = `$ ${jc.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
             document.getElementById('pdf_by').innerText = `$ ${by.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
 
+            // --- TRUCO MAESTRO PARA EVITAR PDF EN BLANCO ---
+            // 1. Ponemos una pantalla de carga encima de todo para que el usuario no vea el "parpadeo"
+            const overlay = document.createElement('div');
+            overlay.style.position = 'fixed';
+            overlay.style.top = '0';
+            overlay.style.left = '0';
+            overlay.style.width = '100vw';
+            overlay.style.height = '100vh';
+            overlay.style.backgroundColor = '#f0fdf4';
+            overlay.style.zIndex = '99999';
+            overlay.style.display = 'flex';
+            overlay.style.flexDirection = 'column';
+            overlay.style.alignItems = 'center';
+            overlay.style.justifyContent = 'center';
+            overlay.innerHTML = '<i class="fa-solid fa-file-pdf text-indigo-600 text-6xl mb-4 animate-pulse"></i><h2 class="text-2xl font-extrabold text-gray-800">Generando Documento...</h2><p class="text-sm text-gray-500 mt-2">Calculando utilidades y sellando PDF.</p>';
+            document.body.appendChild(overlay);
+
+            // 2. Traemos la plantilla a la esquina superior izquierda real (debajo del overlay)
             const element = document.getElementById('plantilla-pdf');
-            
-            // Truco maestro: Movemos la plantilla a la pantalla pero detrás de todo (invisible) para que la cámara del PDF la capte bien
             element.classList.remove('hidden');
-            element.classList.add('fixed', 'top-0', 'left-0', '-z-50');
-            
-            const opt = {
-                margin:       0.2,
-                filename:     `Reporte_Venta_${s.no_cotizacion || s.id.substring(0,6).toUpperCase()}.pdf`,
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, scrollY: 0 },
-                jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
-            };
+            element.style.position = 'absolute';
+            element.style.top = '0';
+            element.style.left = '0';
+            element.style.zIndex = '99998';
 
-            const btn = document.getElementById('btn_imprimir_pdf');
-            const originalText = btn.innerHTML;
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generando PDF...';
-            btn.disabled = true;
+            // 3. Reseteamos el scroll a 0 (Si estabas muy abajo en la página, la cámara tomaba foto a lo negro)
+            window.scrollTo(0, 0);
 
-            // html2pdf hace la captura y luego restauramos todo a la normalidad
-            html2pdf().set(opt).from(element).save().then(() => {
-                element.classList.add('hidden');
-                element.classList.remove('fixed', 'top-0', 'left-0', '-z-50');
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-            });
+            // 4. Le damos 500 milisegundos al navegador para que dibuje todo correctamente
+            setTimeout(() => {
+                const opt = {
+                    margin:       0.2,
+                    filename:     `Reporte_Venta_${s.no_cotizacion || s.id.substring(0,6).toUpperCase()}.pdf`,
+                    image:        { type: 'jpeg', quality: 0.98 },
+                    // El windowWidth obliga a la cámara a usar tamaño de PC, aunque estés en celular
+                    html2canvas:  { scale: 2, useCORS: true, scrollY: 0, windowWidth: 800 },
+                    jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+                };
+
+                html2pdf().set(opt).from(element).save().then(() => {
+                    // Limpieza total: Volvemos a esconder la plantilla y quitamos el overlay
+                    element.classList.add('hidden');
+                    element.style.position = '';
+                    element.style.top = '';
+                    element.style.left = '';
+                    element.style.zIndex = '';
+                    document.body.removeChild(overlay);
+                    
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                }).catch(() => {
+                    document.body.removeChild(overlay);
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                    alert("Hubo un error generando el PDF. Intenta de nuevo.");
+                });
+            }, 500);
         }
 
         // --- WEBSOCKETS: SINCRONIZACIÓN EN TIEMPO REAL (NIVEL PROFESIONAL) ---

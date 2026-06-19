@@ -26,8 +26,9 @@
         .kpi-text-real { font-size: 16px; font-weight: bold; color: #000000; }
     </style>
 </head>
-<body class="text-gray-800">
+<body class="text-gray-800 relative">
 
+    <!-- MENÚ LATERAL DESPLEGABLE (SIDEBAR) -->
     <div id="sidebar-menu" class="fixed inset-y-0 left-0 w-72 md:w-80 bg-[#064e3b] text-white transform -translate-x-full transition-transform duration-300 ease-in-out z-[100] shadow-2xl flex flex-col">
         <div class="p-6 border-b border-green-800 flex justify-between items-center bg-[#022c22]">
             <span class="font-extrabold text-lg tracking-wide flex items-center gap-2">
@@ -60,6 +61,7 @@
 
     <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/60 hidden z-[90] transition-opacity duration-300"></div>
 
+    <!-- CONTENEDOR DE LOGIN -->
     <div id="login-container" class="min-h-screen flex items-center justify-center p-4">
         <div class="bg-white p-6 md:p-8 rounded-3xl shadow-xl border border-green-100 max-w-md w-full">
             <div class="text-center mb-8">
@@ -81,6 +83,7 @@
         </div>
     </div>
 
+    <!-- PANEL PRINCIPAL -->
     <div id="dashboard-container" class="hidden pb-12">
         <nav class="tabla-header text-white px-4 md:px-6 py-3 flex justify-between items-center shadow-md sticky top-0 z-50">
             <div class="flex items-center">
@@ -98,6 +101,7 @@
             </button>
         </div>
 
+        <!-- PANTALLA 1: INICIO -->
         <div id="vista-inicio" class="max-w-[1600px] mx-auto mt-6 px-4 md:px-6 block">
             <h2 class="text-xl md:text-2xl font-bold text-gray-800 mb-4 tracking-tight">Objetivos Operativos - Junio 2026</h2>
             
@@ -112,6 +116,7 @@
             <h2 class="text-xl md:text-2xl font-bold text-gray-800 mt-10 mb-6 tracking-tight">Panel de Captura Rápida</h2>
             
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+                <!-- Form Clientes -->
                 <div id="vista-form-clientes" class="bg-white p-5 md:p-6 rounded-2xl shadow-md border border-green-100">
                     <h3 id="tituloFormCliente" class="text-lg md:text-xl font-bold text-gray-800 mb-5 flex items-center"><i class="fa-solid fa-user-plus text-green-600 mr-2 text-xl md:text-2xl"></i> Nuevo Registro</h3>
                     <form id="registroForm" class="space-y-4">
@@ -137,6 +142,7 @@
                     </form>
                 </div>
 
+                <!-- Form Parcelas -->
                 <div id="vista-form-propiedades" class="bg-white p-5 md:p-6 rounded-2xl shadow-md border border-green-100">
                     <h3 id="tituloFormPropiedad" class="text-lg md:text-xl font-bold text-gray-800 mb-5 flex items-center"><i class="fa-solid fa-map-location-dot text-green-600 mr-2 text-xl md:text-2xl"></i> Registrar Parcela</h3>
                     <form id="propiedadForm" class="space-y-4">
@@ -150,6 +156,7 @@
                     </form>
                 </div>
 
+                <!-- Form Ventas -->
                 <div id="vista-form-servicios" class="bg-white p-5 md:p-6 rounded-2xl shadow-md border border-green-100">
                     <h3 id="tituloFormServio" class="text-lg md:text-xl font-bold text-gray-800 mb-5 flex items-center"><i class="fa-solid fa-file-invoice-dollar text-green-600 mr-2 text-xl md:text-2xl"></i> Registrar Venta</h3>
                     <form id="servicioForm" class="space-y-4">
@@ -193,6 +200,7 @@
             </div>
         </div>
 
+        <!-- PANTALLA 2: CONTENEDOR DE REPORTES -->
         <div id="vista-tablas" class="hidden max-w-[1600px] mx-auto mt-6 px-4 md:px-6 pb-12">
             <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-6" id="titulo-seccion-tablas">Base de Datos Operativa</h2>
 
@@ -206,16 +214,19 @@
                 </div>
             </div>
 
+            <!-- MÓDULO: OPERACIONES -->
             <div id="vista-tabla-operaciones" class="hidden bg-white p-4 md:p-8 rounded-2xl shadow-xl border border-gray-200 min-h-[450px]">
                 <div class="flex items-center gap-3 border-b border-gray-100 pb-4 mb-6"><div class="bg-green-100 p-3 rounded-xl text-green-700 text-xl"><i class="fa-solid fa-gears"></i></div><div><h2 class="text-lg md:text-xl font-bold text-gray-800">Módulo de Operaciones</h2><p class="text-[10px] md:text-xs text-gray-400 mt-0.5">Lienzo operativo disponible para desarrollo</p></div></div>
                 <div class="flex flex-col items-center justify-center py-12 border border-dashed border-gray-200 rounded-xl bg-gray-50/50 text-center px-4"><div class="bg-white p-4 rounded-full shadow-sm text-gray-300 text-3xl mb-3"><i class="fa-solid fa-code"></i></div><p class="text-sm font-bold text-gray-600">Módulo Listo</p></div>
             </div>
 
+            <!-- MÓDULO: FINANCIEROS -->
             <div id="vista-tabla-financieros" class="hidden bg-white p-4 md:p-8 rounded-2xl shadow-xl border border-gray-200 min-h-[450px]">
                 <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4 border-b border-gray-100 pb-4 mb-6">
                     <div class="flex items-center gap-3"><div class="bg-rose-100 p-3 rounded-xl text-rose-700 text-xl"><i class="fa-solid fa-wallet"></i></div><div><h2 class="text-lg md:text-xl font-bold text-gray-800">Módulo Financiero</h2><p class="text-[10px] md:text-xs text-gray-400 mt-0.5">Auditoría completa de entradas y salidas</p></div></div>
                 </div>
                 
+                <!-- TABLA DE INGRESOS -->
                 <div class="bg-white rounded-xl shadow-md border border-emerald-200 overflow-hidden mb-8">
                     <div class="bg-emerald-700 px-4 py-3 flex justify-between items-center text-white"><h2 class="text-xs md:text-sm font-bold uppercase tracking-wider"><i class="fa-solid fa-hand-holding-dollar border border-white/30 p-1.5 rounded bg-white/10 mr-2"></i> Ingresos por Servicio</h2></div>
                     <div class="overflow-x-auto custom-scrollbar max-h-[400px] relative">
@@ -237,6 +248,7 @@
                     </div>
                 </div>
 
+                <!-- TABLA DE GASTOS -->
                 <div class="bg-white rounded-xl shadow-md border border-rose-200 overflow-hidden">
                     <div class="bg-rose-700 px-4 py-3 flex justify-between items-center text-white"><h2 class="text-xs md:text-sm font-bold uppercase tracking-wider"><i class="fa-solid fa-file-invoice-dollar border border-white/30 p-1.5 rounded bg-white/10 mr-2"></i> Gastos por Servicio</h2></div>
                     <div class="overflow-x-auto custom-scrollbar max-h-[400px] relative">
@@ -261,6 +273,7 @@
                 </div>
             </div>
 
+            <!-- MÓDULO: VENTAS CRM -->
             <div id="vista-tabla-ventas-crm" class="hidden space-y-10">
                 <div class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
                     <div class="tabla-header px-4 md:px-6 py-4 flex flex-col md:flex-row md:justify-between items-center text-white gap-3">
@@ -315,6 +328,7 @@
         </div>
     </div> 
 
+    <!-- MODAL METAS (RESPONSIVO) -->
     <div id="modal-metas" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 p-4">
         <div class="bg-white p-6 rounded-2xl shadow-2xl w-full max-w-md border border-gray-200">
             <div class="flex justify-between items-center mb-4"><h3 class="text-xl font-bold text-gray-800"><i class="fa-solid fa-bullseye text-red-500 mr-2"></i> Ajustar Objetivos</h3><button onclick="cerrarModalMetas()" class="text-gray-400 hover:text-red-500"><i class="fa-solid fa-xmark text-xl"></i></button></div>
@@ -334,6 +348,7 @@
         </div>
     </div>
 
+    <!-- MODAL CALCULADORA DE INGRESOS -->
     <div id="modal-ingresos" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 p-4">
         <div class="bg-white p-5 md:p-6 rounded-2xl shadow-2xl w-full max-w-sm border border-emerald-200">
             <div class="flex justify-between items-center mb-4 border-b border-gray-100 pb-2">
@@ -361,6 +376,7 @@
         </div>
     </div>
 
+    <!-- MODAL CALCULADORA DE GASTOS -->
     <div id="modal-gastos" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 p-4">
         <div class="bg-white p-5 md:p-6 rounded-2xl shadow-2xl w-full max-w-sm border border-red-200">
             <div class="flex justify-between items-center mb-4 border-b border-gray-100 pb-2"><h3 class="text-lg font-bold text-gray-800"><i class="fa-solid fa-calculator text-red-500 mr-2"></i> Desglose de Gastos</h3><button onclick="cerrarModalGastos()" class="text-gray-400 hover:text-red-500"><i class="fa-solid fa-xmark text-xl"></i></button></div>
@@ -377,6 +393,7 @@
         </div>
     </div>
 
+    <!-- MODAL FICHA TÉCNICA DEL SERVICIO (LUPA) -->
     <div id="modal-detalle" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 p-4">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl border border-gray-200 overflow-hidden flex flex-col max-h-[90vh]">
             <div class="bg-[#064e3b] px-4 md:px-6 py-4 flex justify-between items-center text-white shadow-md z-10">
@@ -440,215 +457,215 @@
         </div>
     </div>
 
-    <div id="pdf-staging" style="position: absolute; left: -9999px; top: 0; z-index: -1000;">
-        <div id="plantilla-pdf" class="w-[800px] bg-white text-black p-8 font-sans" style="font-size: 11px; line-height: 1.4;">
-            <div class="flex justify-between items-start mb-4">
-                <div class="w-1/3"><img src="logo_nuevo.jpeg" alt="Logo" style="max-height: 60px;"></div>
-                <div class="w-1/3 text-center font-bold text-lg leading-tight mt-2 text-[#064e3b]">AGROSOLUCIONES<br>AEREAS</div>
-                <div class="w-1/3 text-right flex justify-end">
-                    <div class="w-40">
-                        <div class="border border-black p-1 text-center font-bold bg-gray-100">Área que emite:</div>
-                        <div class="border-x border-b border-black p-4 text-center h-16 relative">
-                           <span class="absolute bottom-2 w-full left-0 text-gray-400 italic font-serif text-3xl opacity-50">JCGV</span>
-                        </div>
-                        <div class="border-x border-b border-black p-1 text-center font-bold">JCGV</div>
-                        <div class="border-x border-b border-black p-1 text-center text-[10px]">Dirección Comercial</div>
-                    </div>
-                </div>
-            </div>
-            <div class="text-right font-bold text-sm mb-2 text-[#064e3b]">Reporte de Venta<br><span class="font-normal text-xs text-black">Rev. 0 Sept/25</span></div>
-
-            <table class="w-full mb-4 border-collapse border border-black">
-                <tr><td colspan="4" class="bg-gray-200 font-bold border border-black p-1 text-center">Datos generales del servicio</td></tr>
-                <tr>
-                    <td class="font-bold border border-black p-1 w-1/4">Cliente:</td>
-                    <td class="border border-black p-1" id="pdf_cliente"></td>
-                    <td class="font-bold border border-black p-1 w-1/4">No. de Cliente:</td>
-                    <td class="border border-black p-1 text-center font-bold" id="pdf_no_cliente"></td>
-                </tr>
-                <tr>
-                    <td class="font-bold border border-black p-1">Fecha del servicio:</td>
-                    <td class="border border-black p-1" id="pdf_fecha"></td>
-                    <td class="border border-black p-1 bg-gray-50"></td>
-                    <td class="border border-black p-1 bg-gray-50"></td>
-                </tr>
-                <tr>
-                    <td class="font-bold border border-black p-1">Ubicación del servicio:</td>
-                    <td class="border border-black p-1" id="pdf_ubicacion"></td>
-                    <td class="font-bold border border-black p-1">Tipo de cultivo:</td>
-                    <td class="border border-black p-1 text-center" id="pdf_cultivo"></td>
-                </tr>
-                <tr>
-                    <td class="font-bold border border-black p-1">Tipo de servicio:</td>
-                    <td class="border border-black p-1">Fumigación</td>
-                    <td class="border border-black p-1 bg-gray-50"></td>
-                    <td class="border border-black p-1 bg-gray-50"></td>
-                </tr>
-                <tr>
-                    <td class="font-bold border border-black p-1">Responsable:</td>
-                    <td class="border border-black p-1">JARC</td>
-                    <td class="border border-black p-1 bg-gray-50"></td>
-                    <td class="border border-black p-1 bg-gray-50"></td>
-                </tr>
-            </table>
-
-            <table class="w-full mb-4 border-collapse border border-black text-center">
-                <tr><td colspan="7" class="bg-gray-200 font-bold border border-black p-1 text-left">Ingresos</td></tr>
-                <tr class="font-bold bg-gray-100">
-                    <td class="border border-black p-1 text-left w-1/4">Precio total cobrado:</td>
-                    <td class="border border-black p-1">P x Ha</td>
-                    <td class="border border-black p-1">Viáticos</td>
-                    <td class="border border-black p-1">G.A.</td>
-                    <td class="border border-black p-1">Otros</td>
-                    <td class="border border-black p-1 w-[12%]">#Quote:</td>
-                    <td class="border border-black p-1 font-extrabold text-blue-800" id="pdf_quote"></td>
-                </tr>
-                <tr>
-                    <td class="border border-black p-1"></td>
-                    <td class="border border-black p-1" id="pdf_p_ha"></td>
-                    <td class="border border-black p-1" id="pdf_viaticos"></td>
-                    <td class="border border-black p-1">$ 0.00</td>
-                    <td class="border border-black p-1" id="pdf_otros_in"></td>
-                    <td class="border border-black p-1 font-bold bg-gray-100">Ingreso total:</td>
-                    <td class="border border-black p-1 font-bold text-green-700 bg-green-50" id="pdf_total_in"></td>
-                </tr>
-                <tr>
-                    <td class="font-bold border-l border-r border-black p-1 text-left">Método de pago:</td>
-                    <td class="border-r border-black p-1 font-bold text-blue-700" id="pdf_metodo" colspan="2"></td>
-                    <td colspan="4" class="border-r border-black"></td>
-                </tr>
-                <tr>
-                    <td class="font-bold border-l border-r border-b border-black p-1 text-left">Hectáreas trabajadas:</td>
-                    <td class="border-r border-b border-black p-1 font-bold" id="pdf_ha" colspan="2"></td>
-                    <td colspan="4" class="border-r border-b border-black"></td>
-                </tr>
-            </table>
-
-            <table class="w-full mb-4 border-collapse border border-black text-center">
-                <tr><td colspan="8" class="bg-gray-200 font-bold border border-black p-1 text-left">Gastos directos</td></tr>
-                <tr>
-                    <td class="font-bold border border-black p-1 text-left w-1/4">Gasolina Transporte:</td>
-                    <td class="border border-black p-1 bg-gray-100">Unidad 1</td>
-                    <td class="border border-black p-1 bg-gray-100">Unidad 2</td>
-                    <td class="border border-black p-1 bg-gray-100">Generador</td>
-                    <td class="border border-black p-1 bg-gray-100">Repuestos</td>
-                    <td class="border border-black p-1 bg-gray-100">Otros</td>
-                    <td class="font-bold border border-black p-1 bg-gray-200">T:</td>
-                    <td class="border border-black p-1 font-bold text-red-600 bg-red-50" id="pdf_gas_t"></td>
-                </tr>
-                <tr>
-                    <td class="border border-black p-1"></td>
-                    <td class="border border-black p-1" id="pdf_gas_u1"></td>
-                    <td class="border border-black p-1">$ 0.00</td>
-                    <td class="border border-black p-1" id="pdf_gas_gen"></td>
-                    <td class="border border-black p-1">$ 0.00</td>
-                    <td class="border border-black p-1">$ 0.00</td>
-                    <td class="border border-black p-1 bg-gray-200"></td>
-                    <td class="border border-black p-1 bg-gray-200"></td>
-                </tr>
-                <tr>
-                    <td class="font-bold border border-black p-1 text-left">Sueldos:</td>
-                    <td class="border border-black p-1 bg-gray-100">Técnico 1</td>
-                    <td class="border border-black p-1 bg-gray-100">Técnico 2</td>
-                    <td class="border border-black p-1 bg-gray-100">Director 1</td>
-                    <td class="border border-black p-1 bg-gray-100">Director 2</td>
-                    <td class="border border-black p-1 bg-gray-100">Otros</td>
-                    <td class="font-bold border border-black p-1 bg-gray-200">T:</td>
-                    <td class="border border-black p-1 font-bold text-red-600 bg-red-50" id="pdf_sue_t"></td>
-                </tr>
-                <tr>
-                    <td class="border border-black p-1"></td>
-                    <td class="border border-black p-1" id="pdf_sue_t1"></td>
-                    <td class="border border-black p-1">$ 0.00</td>
-                    <td class="border border-black p-1">$ 0.00</td>
-                    <td class="border border-black p-1">$ 0.00</td>
-                    <td class="border border-black p-1">$ 0.00</td>
-                    <td class="border border-black p-1 bg-gray-200"></td>
-                    <td class="border border-black p-1 bg-gray-200"></td>
-                </tr>
-                <tr>
-                    <td class="font-bold border border-black p-1 text-left">Insumos:</td>
-                    <td class="border border-black p-1 bg-gray-100" colspan="2">Agroquímico</td>
-                    <td class="border border-black p-1 bg-gray-100" colspan="3">Otros</td>
-                    <td class="font-bold border border-black p-1 bg-gray-200">T:</td>
-                    <td class="border border-black p-1 font-bold text-red-600 bg-red-50" id="pdf_ins_t"></td>
-                </tr>
-                <tr>
-                    <td class="border border-black p-1"></td>
-                    <td class="border border-black p-1" colspan="2" id="pdf_ins_agro"></td>
-                    <td class="border border-black p-1" colspan="3">$ 0.00</td>
-                    <td class="border border-black p-1 bg-gray-200"></td>
-                    <td class="border border-black p-1 bg-gray-200"></td>
-                </tr>
-                <tr>
-                    <td class="font-bold border border-black p-1 text-left">Comidas:</td>
-                    <td class="border border-black p-1 bg-gray-100" colspan="2">Comida</td>
-                    <td class="border border-black p-1 bg-gray-100" colspan="3">Oxxo</td>
-                    <td class="font-bold border border-black p-1 bg-gray-200">T:</td>
-                    <td class="border border-black p-1 font-bold text-red-600 bg-red-50" id="pdf_com_t"></td>
-                </tr>
-                <tr>
-                    <td class="border border-black p-1"></td>
-                    <td class="border border-black p-1" colspan="2" id="pdf_com_comida"></td>
-                    <td class="border border-black p-1" colspan="3" id="pdf_com_oxxo"></td>
-                    <td class="border border-black p-1 bg-gray-200"></td>
-                    <td class="border border-black p-1 bg-gray-200"></td>
-                </tr>
-                <tr>
-                    <td colspan="6" class="font-bold border border-black p-1.5 text-right bg-gray-200 text-sm">Total de gastos:</td>
-                    <td colspan="2" class="font-extrabold border border-black p-1.5 bg-gray-200 text-red-700 text-sm" id="pdf_total_gastos"></td>
-                </tr>
-                <tr>
-                    <td colspan="6" class="font-bold border border-black p-1.5 text-right bg-blue-100 text-sm text-blue-900">Utilidad del ejercicio:</td>
-                    <td colspan="2" class="font-extrabold border border-black p-1.5 bg-blue-100 text-blue-700 text-sm" id="pdf_utilidad"></td>
-                </tr>
-            </table>
-
-            <table class="w-full mb-8 border-collapse border border-black text-center">
-                <tr>
-                    <td class="font-bold border border-black p-1.5 bg-gray-200 w-[20%] text-left">Margen de utilidad neto:</td>
-                    <td class="font-bold border border-black p-1.5 w-[15%]" id="pdf_margen"></td>
-                    <td class="font-bold border border-black p-1.5 bg-gray-200 w-[15%]">Capital (15%):</td>
-                    <td class="font-extrabold border border-black p-1.5 text-green-700 w-[17.5%]" id="pdf_capital"></td>
-                    <td class="font-bold border border-black p-1.5 bg-gray-200 w-[15%]">Dividendo (85%):</td>
-                    <td class="font-extrabold border border-black p-1.5 text-green-700 w-[17.5%]" id="pdf_dividendo"></td>
-                </tr>
-                <tr>
-                    <td colspan="4" class="border-l border-r border-black p-1"></td>
-                    <td class="font-bold border border-black p-1 bg-gray-100 text-right">JC (25%):</td>
-                    <td class="font-bold border border-black p-1" id="pdf_jc"></td>
-                </tr>
-                <tr>
-                    <td colspan="4" class="border-l border-r border-b border-black p-1"></td>
-                    <td class="font-bold border border-black p-1 bg-gray-100 text-right">BY (75%):</td>
-                    <td class="font-bold border border-black p-1" id="pdf_by"></td>
-                </tr>
-            </table>
-
-            <div class="flex justify-between mt-16 px-10">
-                <div class="text-center w-[30%]">
-                    <div class="border-b border-black h-10 mb-1 relative">
-                        <span class="absolute bottom-1 w-full left-0 text-gray-400 italic font-serif text-2xl opacity-0">...</span>
-                    </div>
-                    <div class="font-bold">De conformidad</div>
-                    <div class="text-[9px] text-white">.</div>
-                </div>
-                <div class="text-center w-[30%]">
-                    <div class="border-b border-black h-10 mb-1 relative">
-                         <span class="absolute bottom-1 w-full left-0 text-gray-400 italic font-serif text-3xl opacity-50">JCGV</span>
-                    </div>
-                    <div class="font-bold">JCGV</div>
-                    <div class="text-[10px]">Dirección Comercial</div>
-                </div>
-                <div class="text-center w-[30%]">
-                    <div class="border-b border-black h-10 mb-1 relative">
-                        <span class="absolute bottom-1 w-full left-0 text-gray-400 italic font-serif text-2xl opacity-0">...</span>
-                    </div>
-                    <div class="font-bold">YLGF</div>
-                    <div class="text-[10px]">Dirección Admón. y Finanzas</div>
-                </div>
+    <!-- MOLDE INVISIBLE DEL REPORTE PDF (DISEÑO EXACTO) -->
+    <!-- Mantenemos la estructura escondida aquí para que JS la llene y clone -->
+    <div id="plantilla-pdf" class="hidden bg-white text-black p-8 font-sans w-[800px]" style="font-size: 11px; line-height: 1.4;">
+        
+        <!-- Encabezado (Sin el recuadro a la derecha) -->
+        <div class="flex justify-between items-center mb-6">
+            <div class="w-1/3"><img src="logo_alternativo.png" alt="Logo" style="max-height: 50px;"></div>
+            <div class="w-1/3 text-center font-extrabold text-xl leading-tight text-[#064e3b]">AGROSOLUCIONES<br>AÉREAS</div>
+            <div class="w-1/3 text-right">
+                <div class="font-bold text-sm text-[#064e3b]">Reporte de Venta</div>
+                <div class="font-normal text-xs text-gray-500">Rev. 0 Sept/25</div>
             </div>
         </div>
+
+        <!-- Sección 1: Datos -->
+        <table class="w-full mb-4 border-collapse border border-black">
+            <tr><td colspan="4" class="bg-gray-200 font-bold border border-black p-1.5 text-center text-sm">Datos generales del servicio</td></tr>
+            <tr>
+                <td class="font-bold border border-black p-1.5 w-1/4">Cliente:</td>
+                <td class="border border-black p-1.5" id="pdf_cliente"></td>
+                <td class="font-bold border border-black p-1.5 w-1/4">No. de Cliente:</td>
+                <td class="border border-black p-1.5 text-center font-bold" id="pdf_no_cliente"></td>
+            </tr>
+            <tr>
+                <td class="font-bold border border-black p-1.5">Fecha del servicio:</td>
+                <td class="border border-black p-1.5" id="pdf_fecha"></td>
+                <td class="border border-black p-1.5 bg-gray-50"></td>
+                <td class="border border-black p-1.5 bg-gray-50"></td>
+            </tr>
+            <tr>
+                <td class="font-bold border border-black p-1.5">Ubicación del servicio:</td>
+                <td class="border border-black p-1.5" id="pdf_ubicacion"></td>
+                <td class="font-bold border border-black p-1.5">Tipo de cultivo:</td>
+                <td class="border border-black p-1.5 text-center text-gray-700" id="pdf_cultivo"></td>
+            </tr>
+            <tr>
+                <td class="font-bold border border-black p-1.5">Tipo de servicio:</td>
+                <td class="border border-black p-1.5 text-gray-700">Fumigación</td>
+                <td class="border border-black p-1.5 bg-gray-50"></td>
+                <td class="border border-black p-1.5 bg-gray-50"></td>
+            </tr>
+            <tr>
+                <td class="font-bold border border-black p-1.5">Responsable:</td>
+                <td class="border border-black p-1.5 text-gray-700">JARC</td>
+                <td class="border border-black p-1.5 bg-gray-50"></td>
+                <td class="border border-black p-1.5 bg-gray-50"></td>
+            </tr>
+        </table>
+
+        <!-- Sección 2: Ingresos -->
+        <table class="w-full mb-4 border-collapse border border-black text-center">
+            <tr><td colspan="7" class="bg-gray-200 font-bold border border-black p-1.5 text-left text-sm">Ingresos</td></tr>
+            <tr class="font-bold bg-gray-100">
+                <td class="border border-black p-1.5 text-left w-1/4">Precio total cobrado:</td>
+                <td class="border border-black p-1.5">P x Ha</td>
+                <td class="border border-black p-1.5">Viáticos</td>
+                <td class="border border-black p-1.5">G.A.</td>
+                <td class="border border-black p-1.5">Otros</td>
+                <td class="border border-black p-1.5 w-[12%]">#Quote:</td>
+                <td class="border border-black p-1.5 font-extrabold text-blue-800 text-sm" id="pdf_quote"></td>
+            </tr>
+            <tr>
+                <td class="border border-black p-1.5"></td>
+                <td class="border border-black p-1.5" id="pdf_p_ha"></td>
+                <td class="border border-black p-1.5" id="pdf_viaticos"></td>
+                <td class="border border-black p-1.5 text-gray-500">$ 0.00</td>
+                <td class="border border-black p-1.5" id="pdf_otros_in"></td>
+                <td class="border border-black p-1.5 font-bold bg-gray-100">Ingreso total:</td>
+                <td class="border border-black p-1.5 font-bold text-green-700 bg-green-50 text-sm" id="pdf_total_in"></td>
+            </tr>
+            <tr>
+                <td class="font-bold border-l border-r border-black p-1.5 text-left">Método de pago:</td>
+                <td class="border-r border-black p-1.5 font-bold text-blue-700" id="pdf_metodo" colspan="2"></td>
+                <td colspan="4" class="border-r border-black"></td>
+            </tr>
+            <tr>
+                <td class="font-bold border-l border-r border-b border-black p-1.5 text-left">Hectáreas trabajadas:</td>
+                <td class="border-r border-b border-black p-1.5 font-bold" id="pdf_ha" colspan="2"></td>
+                <td colspan="4" class="border-r border-b border-black"></td>
+            </tr>
+        </table>
+
+        <!-- Sección 3: Gastos -->
+        <table class="w-full mb-4 border-collapse border border-black text-center">
+            <tr><td colspan="8" class="bg-gray-200 font-bold border border-black p-1.5 text-left text-sm">Gastos directos</td></tr>
+            <tr>
+                <td class="font-bold border border-black p-1.5 text-left w-1/4">Gasolina Transporte:</td>
+                <td class="border border-black p-1.5 bg-gray-100">Unidad 1</td>
+                <td class="border border-black p-1.5 bg-gray-100">Unidad 2</td>
+                <td class="border border-black p-1.5 bg-gray-100">Generador</td>
+                <td class="border border-black p-1.5 bg-gray-100">Repuestos</td>
+                <td class="border border-black p-1.5 bg-gray-100">Otros</td>
+                <td class="font-bold border border-black p-1.5 bg-gray-200">T:</td>
+                <td class="border border-black p-1.5 font-bold text-red-600 bg-red-50" id="pdf_gas_t"></td>
+            </tr>
+            <tr>
+                <td class="border border-black p-1.5"></td>
+                <td class="border border-black p-1.5" id="pdf_gas_u1"></td>
+                <td class="border border-black p-1.5 text-gray-500">$ 0.00</td>
+                <td class="border border-black p-1.5" id="pdf_gas_gen"></td>
+                <td class="border border-black p-1.5 text-gray-500">$ 0.00</td>
+                <td class="border border-black p-1.5 text-gray-500">$ 0.00</td>
+                <td class="border border-black p-1.5 bg-gray-200"></td>
+                <td class="border border-black p-1.5 bg-gray-200"></td>
+            </tr>
+            <tr>
+                <td class="font-bold border border-black p-1.5 text-left">Sueldos:</td>
+                <td class="border border-black p-1.5 bg-gray-100">Técnico 1</td>
+                <td class="border border-black p-1.5 bg-gray-100">Técnico 2</td>
+                <td class="border border-black p-1.5 bg-gray-100">Director 1</td>
+                <td class="border border-black p-1.5 bg-gray-100">Director 2</td>
+                <td class="border border-black p-1.5 bg-gray-100">Otros</td>
+                <td class="font-bold border border-black p-1.5 bg-gray-200">T:</td>
+                <td class="border border-black p-1.5 font-bold text-red-600 bg-red-50" id="pdf_sue_t"></td>
+            </tr>
+            <tr>
+                <td class="border border-black p-1.5"></td>
+                <td class="border border-black p-1.5" id="pdf_sue_t1"></td>
+                <td class="border border-black p-1.5 text-gray-500">$ 0.00</td>
+                <td class="border border-black p-1.5 text-gray-500">$ 0.00</td>
+                <td class="border border-black p-1.5 text-gray-500">$ 0.00</td>
+                <td class="border border-black p-1.5 text-gray-500">$ 0.00</td>
+                <td class="border border-black p-1.5 bg-gray-200"></td>
+                <td class="border border-black p-1.5 bg-gray-200"></td>
+            </tr>
+            <tr>
+                <td class="font-bold border border-black p-1.5 text-left">Insumos:</td>
+                <td class="border border-black p-1.5 bg-gray-100" colspan="2">Agroquímico</td>
+                <td class="border border-black p-1.5 bg-gray-100" colspan="3">Otros</td>
+                <td class="font-bold border border-black p-1.5 bg-gray-200">T:</td>
+                <td class="border border-black p-1.5 font-bold text-red-600 bg-red-50" id="pdf_ins_t"></td>
+            </tr>
+            <tr>
+                <td class="border border-black p-1.5"></td>
+                <td class="border border-black p-1.5" colspan="2" id="pdf_ins_agro"></td>
+                <td class="border border-black p-1.5" colspan="3" class="text-gray-500">$ 0.00</td>
+                <td class="border border-black p-1.5 bg-gray-200"></td>
+                <td class="border border-black p-1.5 bg-gray-200"></td>
+            </tr>
+            <tr>
+                <td class="font-bold border border-black p-1.5 text-left">Comidas:</td>
+                <td class="border border-black p-1.5 bg-gray-100" colspan="2">Comida</td>
+                <td class="border border-black p-1.5 bg-gray-100" colspan="3">Oxxo</td>
+                <td class="font-bold border border-black p-1.5 bg-gray-200">T:</td>
+                <td class="border border-black p-1.5 font-bold text-red-600 bg-red-50" id="pdf_com_t"></td>
+            </tr>
+            <tr>
+                <td class="border border-black p-1.5"></td>
+                <td class="border border-black p-1.5" colspan="2" id="pdf_com_comida"></td>
+                <td class="border border-black p-1.5" colspan="3" id="pdf_com_oxxo"></td>
+                <td class="border border-black p-1.5 bg-gray-200"></td>
+                <td class="border border-black p-1.5 bg-gray-200"></td>
+            </tr>
+            <tr>
+                <td colspan="6" class="font-bold border border-black p-2 text-right bg-gray-200 text-sm">Total de gastos:</td>
+                <td colspan="2" class="font-extrabold border border-black p-2 bg-gray-200 text-red-700 text-sm" id="pdf_total_gastos"></td>
+            </tr>
+            <tr>
+                <td colspan="6" class="font-bold border border-black p-2 text-right bg-blue-50 text-sm text-blue-900">Utilidad del ejercicio:</td>
+                <td colspan="2" class="font-extrabold border border-black p-2 bg-blue-50 text-blue-700 text-sm" id="pdf_utilidad"></td>
+            </tr>
+        </table>
+
+        <!-- Sección 4: Resultados / Reparticion -->
+        <table class="w-full mb-8 border-collapse border border-black text-center">
+            <tr>
+                <td class="font-bold border border-black p-1.5 bg-gray-200 w-[20%] text-left">Margen de utilidad neto:</td>
+                <td class="font-bold border border-black p-1.5 w-[15%]" id="pdf_margen"></td>
+                <td class="font-bold border border-black p-1.5 bg-gray-200 w-[15%]">Capital (15%):</td>
+                <td class="font-extrabold border border-black p-1.5 text-green-700 w-[17.5%]" id="pdf_capital"></td>
+                <td class="font-bold border border-black p-1.5 bg-gray-200 w-[15%]">Dividendo (85%):</td>
+                <td class="font-extrabold border border-black p-1.5 text-green-700 w-[17.5%]" id="pdf_dividendo"></td>
+            </tr>
+            <tr>
+                <td colspan="4" class="border-l border-r border-black p-1.5 bg-white"></td>
+                <td class="font-bold border border-black p-1.5 bg-gray-100 text-right">JC (25%):</td>
+                <td class="font-bold border border-black p-1.5" id="pdf_jc"></td>
+            </tr>
+            <tr>
+                <td colspan="4" class="border-l border-r border-b border-black p-1.5 bg-white"></td>
+                <td class="font-bold border border-black p-1.5 bg-gray-100 text-right">BY (75%):</td>
+                <td class="font-bold border border-black p-1.5" id="pdf_by"></td>
+            </tr>
+        </table>
+
+        <!-- Firmas Inferiores (Las 2 Solicitadas) -->
+        <div class="flex justify-center gap-16 mt-16 px-10 pb-10">
+            <!-- Firma 1 -->
+            <div class="w-64 border border-black flex flex-col">
+                <div class="bg-gray-100 font-bold text-center border-b border-black p-1.5 text-sm">Área que emite:</div>
+                <div class="h-24 text-center relative p-2 flex-grow bg-white">
+                    <span class="absolute inset-0 flex items-center justify-center text-gray-300 italic font-serif text-4xl opacity-50">JCGV</span>
+                </div>
+                <div class="border-t border-black font-extrabold text-center p-1.5 text-sm bg-white">JCGV</div>
+                <div class="border-t border-black text-center p-1.5 text-xs text-gray-700 bg-white">Dirección Comercial</div>
+            </div>
+            
+            <!-- Firma 2 -->
+            <div class="w-64 border border-black flex flex-col">
+                <div class="bg-gray-100 font-bold text-center border-b border-black p-1.5 text-sm">Autorización:</div>
+                <div class="h-24 text-center relative p-2 flex-grow bg-white">
+                    <!-- Espacio para firma en blanco -->
+                </div>
+                <div class="border-t border-black font-extrabold text-center p-1.5 text-sm bg-white">YLGF</div>
+                <div class="border-t border-black text-center p-1.5 text-xs text-gray-700 bg-white">Dirección Admón. y Finanzas</div>
+            </div>
+        </div>
+        <!-- Fin Plantilla -->
+        
     </div>
 
     <script>
@@ -1016,7 +1033,7 @@
         }
         function cerrarModalDetalle() { document.getElementById('modal-detalle').classList.add('hidden'); }
 
-        // --- FUNCIÓN MÁGICA: GENERAR REPORTE EN PDF (CORREGIDA AL 100%) ---
+        // --- FUNCIÓN MÁGICA: GENERAR REPORTE EN PDF (CLONACIÓN SEGURA) ---
         async function generarPDFReporte() {
             if(!currentServiceIdForPDF) return;
             
@@ -1029,6 +1046,7 @@
             const pr = memoriaPropiedades.find(p => p.id === s.propiedad_id);
             const cl = pr ? memoriaClientes.find(c => c.id === pr.cliente_id) : null;
 
+            // 1. Llenamos los datos en el molde original (está escondido)
             document.getElementById('pdf_cliente').innerText = cl ? `${cl.nombre} ${cl.apellidos}` : 'N/A';
             document.getElementById('pdf_no_cliente').innerText = (cl && cl.no_cliente) ? cl.no_cliente : 'S/N';
             document.getElementById('pdf_fecha').innerText = s.fecha_aplicacion || '';
@@ -1082,38 +1100,61 @@
             document.getElementById('pdf_jc').innerText = `$ ${jc.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
             document.getElementById('pdf_by').innerText = `$ ${by.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
 
-            // --- TRUCO MAESTRO REVISADO: STAGING AREA SEGURA ---
-            const wrapper = document.getElementById('pdf-staging');
-            const element = document.getElementById('plantilla-pdf');
+            // 2. Colocamos el telón elegante de carga
+            const overlay = document.createElement('div');
+            overlay.className = 'fixed inset-0 bg-green-50 z-[99999] flex flex-col items-center justify-center';
+            overlay.innerHTML = '<i class="fa-solid fa-file-pdf text-indigo-600 text-6xl mb-4 animate-pulse"></i><h2 class="text-2xl font-extrabold text-gray-800">Generando Documento...</h2><p class="text-sm text-gray-500 mt-2">Calculando utilidades y sellando PDF.</p>';
+            document.body.appendChild(overlay);
 
-            // Movemos la caja a la zona visible del scroll, pero en el fondo (z-index: -1000)
-            wrapper.style.left = '0px';
-            wrapper.style.top = window.scrollY + 'px';
-
-            const opt = {
-                margin:       0.2,
-                filename:     `Reporte_Venta_${s.no_cotizacion || s.id.substring(0,6).toUpperCase()}.pdf`,
-                image:        { type: 'jpeg', quality: 0.98 },
-                // Le pasamos el scroll exacto para que la cámara no se pierda
-                html2canvas:  { scale: 2, useCORS: true, scrollY: window.scrollY },
-                jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
-            };
-
-            // Damos 200ms al navegador para "acomodar" el código antes del flash fotográfico
+            // 3. Clonamos el molde a una caja segura que la cámara pueda leer perfectamente sin recortes
             setTimeout(() => {
-                html2pdf().set(opt).from(element).save().then(() => {
-                    // Devolvemos la caja a su exilio
-                    wrapper.style.left = '-9999px';
+                const moldeOriginal = document.getElementById('plantilla-pdf');
+                
+                const cajaSegura = document.createElement('div');
+                cajaSegura.style.position = 'absolute';
+                cajaSegura.style.top = '0';
+                cajaSegura.style.left = '0';
+                cajaSegura.style.width = '800px'; 
+                cajaSegura.style.backgroundColor = 'white';
+                cajaSegura.style.zIndex = '-9999'; // Escondido debajo del telón
+                
+                // Extraemos el interior del molde original
+                cajaSegura.innerHTML = moldeOriginal.innerHTML;
+                // Replicamos sus clases pero quitamos la clase 'hidden'
+                cajaSegura.className = moldeOriginal.className.replace('hidden', '');
+                
+                document.body.appendChild(cajaSegura);
+
+                // Configuración de la cámara
+                const opt = {
+                    margin:       0.2,
+                    filename:     `Reporte_Venta_${s.no_cotizacion || s.id.substring(0,6).toUpperCase()}.pdf`,
+                    image:        { type: 'jpeg', quality: 0.98 },
+                    html2canvas:  { 
+                        scale: 2, 
+                        useCORS: true, 
+                        scrollY: 0,
+                        windowWidth: 800,
+                        // Le decimos a la cámara que tome todo el alto sin importar la pantalla
+                        windowHeight: cajaSegura.scrollHeight + 50 
+                    },
+                    jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+                };
+
+                // 4. Tomar foto y limpiar rastro
+                html2pdf().set(opt).from(cajaSegura).save().then(() => {
+                    document.body.removeChild(cajaSegura);
+                    document.body.removeChild(overlay);
                     btn.innerHTML = originalText;
                     btn.disabled = false;
                 }).catch(err => {
-                    console.error("PDF Error: ", err);
-                    wrapper.style.left = '-9999px';
+                    document.body.removeChild(cajaSegura);
+                    document.body.removeChild(overlay);
                     btn.innerHTML = originalText;
                     btn.disabled = false;
-                    alert("Hubo un pequeño error. Inténtalo de nuevo.");
+                    alert("Ocurrió un error. Inténtalo de nuevo.");
                 });
-            }, 200);
+            }, 300); // 300ms de gracia para que la cámara prepare los pixeles
         }
 
         // --- WEBSOCKETS: SINCRONIZACIÓN EN TIEMPO REAL (NIVEL PROFESIONAL) ---

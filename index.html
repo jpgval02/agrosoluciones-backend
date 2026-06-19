@@ -28,6 +28,7 @@
 </head>
 <body class="text-gray-800">
 
+    <!-- MENÚ LATERAL DESPLEGABLE (SIDEBAR) -->
     <div id="sidebar-menu" class="fixed inset-y-0 left-0 w-72 md:w-80 bg-[#064e3b] text-white transform -translate-x-full transition-transform duration-300 ease-in-out z-[100] shadow-2xl flex flex-col">
         <div class="p-6 border-b border-green-800 flex justify-between items-center bg-[#022c22]">
             <span class="font-extrabold text-lg tracking-wide flex items-center gap-2">
@@ -60,6 +61,7 @@
 
     <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/60 hidden z-[90] transition-opacity duration-300"></div>
 
+    <!-- CONTENEDOR DE LOGIN -->
     <div id="login-container" class="min-h-screen flex items-center justify-center p-4">
         <div class="bg-white p-6 md:p-8 rounded-3xl shadow-xl border border-green-100 max-w-md w-full">
             <div class="text-center mb-8">
@@ -81,6 +83,7 @@
         </div>
     </div>
 
+    <!-- PANEL PRINCIPAL -->
     <div id="dashboard-container" class="hidden pb-12">
         <nav class="tabla-header text-white px-4 md:px-6 py-3 flex justify-between items-center shadow-md sticky top-0 z-50">
             <div class="flex items-center">
@@ -98,6 +101,7 @@
             </button>
         </div>
 
+        <!-- PANTALLA 1: INICIO -->
         <div id="vista-inicio" class="max-w-[1600px] mx-auto mt-6 px-4 md:px-6 block">
             <h2 class="text-xl md:text-2xl font-bold text-gray-800 mb-4 tracking-tight">Objetivos Operativos - Junio 2026</h2>
             
@@ -112,6 +116,7 @@
             <h2 class="text-xl md:text-2xl font-bold text-gray-800 mt-10 mb-6 tracking-tight">Panel de Captura Rápida</h2>
             
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+                <!-- Form Clientes -->
                 <div id="vista-form-clientes" class="bg-white p-5 md:p-6 rounded-2xl shadow-md border border-green-100">
                     <h3 id="tituloFormCliente" class="text-lg md:text-xl font-bold text-gray-800 mb-5 flex items-center"><i class="fa-solid fa-user-plus text-green-600 mr-2 text-xl md:text-2xl"></i> Nuevo Registro</h3>
                     <form id="registroForm" class="space-y-4">
@@ -137,6 +142,7 @@
                     </form>
                 </div>
 
+                <!-- Form Parcelas -->
                 <div id="vista-form-propiedades" class="bg-white p-5 md:p-6 rounded-2xl shadow-md border border-green-100">
                     <h3 id="tituloFormPropiedad" class="text-lg md:text-xl font-bold text-gray-800 mb-5 flex items-center"><i class="fa-solid fa-map-location-dot text-green-600 mr-2 text-xl md:text-2xl"></i> Registrar Parcela</h3>
                     <form id="propiedadForm" class="space-y-4">
@@ -150,6 +156,7 @@
                     </form>
                 </div>
 
+                <!-- Form Ventas -->
                 <div id="vista-form-servicios" class="bg-white p-5 md:p-6 rounded-2xl shadow-md border border-green-100">
                     <h3 id="tituloFormServio" class="text-lg md:text-xl font-bold text-gray-800 mb-5 flex items-center"><i class="fa-solid fa-file-invoice-dollar text-green-600 mr-2 text-xl md:text-2xl"></i> Registrar Venta</h3>
                     <form id="servicioForm" class="space-y-4">
@@ -193,6 +200,7 @@
             </div>
         </div>
 
+        <!-- PANTALLA 2: CONTENEDOR DE REPORTES -->
         <div id="vista-tablas" class="hidden max-w-[1600px] mx-auto mt-6 px-4 md:px-6 pb-12">
             <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-6" id="titulo-seccion-tablas">Base de Datos Operativa</h2>
 
@@ -206,16 +214,19 @@
                 </div>
             </div>
 
+            <!-- MÓDULO: OPERACIONES -->
             <div id="vista-tabla-operaciones" class="hidden bg-white p-4 md:p-8 rounded-2xl shadow-xl border border-gray-200 min-h-[450px]">
                 <div class="flex items-center gap-3 border-b border-gray-100 pb-4 mb-6"><div class="bg-green-100 p-3 rounded-xl text-green-700 text-xl"><i class="fa-solid fa-gears"></i></div><div><h2 class="text-lg md:text-xl font-bold text-gray-800">Módulo de Operaciones</h2><p class="text-[10px] md:text-xs text-gray-400 mt-0.5">Lienzo operativo disponible para desarrollo</p></div></div>
                 <div class="flex flex-col items-center justify-center py-12 border border-dashed border-gray-200 rounded-xl bg-gray-50/50 text-center px-4"><div class="bg-white p-4 rounded-full shadow-sm text-gray-300 text-3xl mb-3"><i class="fa-solid fa-code"></i></div><p class="text-sm font-bold text-gray-600">Módulo Listo</p></div>
             </div>
 
+            <!-- MÓDULO: FINANCIEROS -->
             <div id="vista-tabla-financieros" class="hidden bg-white p-4 md:p-8 rounded-2xl shadow-xl border border-gray-200 min-h-[450px]">
                 <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4 border-b border-gray-100 pb-4 mb-6">
                     <div class="flex items-center gap-3"><div class="bg-rose-100 p-3 rounded-xl text-rose-700 text-xl"><i class="fa-solid fa-wallet"></i></div><div><h2 class="text-lg md:text-xl font-bold text-gray-800">Módulo Financiero</h2><p class="text-[10px] md:text-xs text-gray-400 mt-0.5">Auditoría completa de entradas y salidas</p></div></div>
                 </div>
                 
+                <!-- TABLA DE INGRESOS -->
                 <div class="bg-white rounded-xl shadow-md border border-emerald-200 overflow-hidden mb-8">
                     <div class="bg-emerald-700 px-4 py-3 flex justify-between items-center text-white"><h2 class="text-xs md:text-sm font-bold uppercase tracking-wider"><i class="fa-solid fa-hand-holding-dollar border border-white/30 p-1.5 rounded bg-white/10 mr-2"></i> Ingresos por Servicio</h2></div>
                     <div class="overflow-x-auto custom-scrollbar max-h-[400px] relative">
@@ -237,6 +248,7 @@
                     </div>
                 </div>
 
+                <!-- TABLA DE GASTOS -->
                 <div class="bg-white rounded-xl shadow-md border border-rose-200 overflow-hidden">
                     <div class="bg-rose-700 px-4 py-3 flex justify-between items-center text-white"><h2 class="text-xs md:text-sm font-bold uppercase tracking-wider"><i class="fa-solid fa-file-invoice-dollar border border-white/30 p-1.5 rounded bg-white/10 mr-2"></i> Gastos por Servicio</h2></div>
                     <div class="overflow-x-auto custom-scrollbar max-h-[400px] relative">
@@ -261,6 +273,7 @@
                 </div>
             </div>
 
+            <!-- MÓDULO: VENTAS CRM -->
             <div id="vista-tabla-ventas-crm" class="hidden space-y-10">
                 <div class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
                     <div class="tabla-header px-4 md:px-6 py-4 flex flex-col md:flex-row md:justify-between items-center text-white gap-3">
@@ -315,6 +328,7 @@
         </div>
     </div> 
 
+    <!-- MODAL METAS (RESPONSIVO) -->
     <div id="modal-metas" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 p-4">
         <div class="bg-white p-6 rounded-2xl shadow-2xl w-full max-w-md border border-gray-200">
             <div class="flex justify-between items-center mb-4"><h3 class="text-xl font-bold text-gray-800"><i class="fa-solid fa-bullseye text-red-500 mr-2"></i> Ajustar Objetivos</h3><button onclick="cerrarModalMetas()" class="text-gray-400 hover:text-red-500"><i class="fa-solid fa-xmark text-xl"></i></button></div>
@@ -334,6 +348,7 @@
         </div>
     </div>
 
+    <!-- MODAL CALCULADORA DE INGRESOS -->
     <div id="modal-ingresos" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 p-4">
         <div class="bg-white p-5 md:p-6 rounded-2xl shadow-2xl w-full max-w-sm border border-emerald-200">
             <div class="flex justify-between items-center mb-4 border-b border-gray-100 pb-2">
@@ -361,6 +376,7 @@
         </div>
     </div>
 
+    <!-- MODAL CALCULADORA DE GASTOS -->
     <div id="modal-gastos" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 p-4">
         <div class="bg-white p-5 md:p-6 rounded-2xl shadow-2xl w-full max-w-sm border border-red-200">
             <div class="flex justify-between items-center mb-4 border-b border-gray-100 pb-2"><h3 class="text-lg font-bold text-gray-800"><i class="fa-solid fa-calculator text-red-500 mr-2"></i> Desglose de Gastos</h3><button onclick="cerrarModalGastos()" class="text-gray-400 hover:text-red-500"><i class="fa-solid fa-xmark text-xl"></i></button></div>
@@ -377,6 +393,7 @@
         </div>
     </div>
 
+    <!-- MODAL FICHA TÉCNICA DEL SERVICIO (LUPA) -->
     <div id="modal-detalle" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 p-4">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl border border-gray-200 overflow-hidden flex flex-col max-h-[90vh]">
             <div class="bg-[#064e3b] px-4 md:px-6 py-4 flex justify-between items-center text-white shadow-md z-10">
@@ -441,7 +458,9 @@
         </div>
     </div>
 
-    <div id="plantilla-pdf" class="absolute top-[-9999px] left-[-9999px] w-[800px] bg-white text-black p-8 font-sans" style="font-size: 11px; line-height: 1.4;">
+    <!-- MOLDE INVISIBLE DEL REPORTE PDF (ESTILO EXCEL) -->
+    <div id="plantilla-pdf" class="hidden w-[800px] bg-white text-black p-8 font-sans" style="font-size: 11px; line-height: 1.4;">
+        <!-- Encabezado -->
         <div class="flex justify-between items-start mb-4">
             <div class="w-1/3"><img src="logo_nuevo.jpeg" alt="Logo" style="max-height: 60px;"></div>
             <div class="w-1/3 text-center font-bold text-lg leading-tight mt-2 text-[#064e3b]">AGROSOLUCIONES<br>AEREAS</div>
@@ -458,6 +477,7 @@
         </div>
         <div class="text-right font-bold text-sm mb-2 text-[#064e3b]">Reporte de Venta<br><span class="font-normal text-xs text-black">Rev. 0 Sept/25</span></div>
 
+        <!-- Sección 1: Datos -->
         <table class="w-full mb-4 border-collapse border border-black">
             <tr><td colspan="4" class="bg-gray-200 font-bold border border-black p-1 text-center">Datos generales del servicio</td></tr>
             <tr>
@@ -492,6 +512,7 @@
             </tr>
         </table>
 
+        <!-- Sección 2: Ingresos -->
         <table class="w-full mb-4 border-collapse border border-black text-center">
             <tr><td colspan="7" class="bg-gray-200 font-bold border border-black p-1 text-left">Ingresos</td></tr>
             <tr class="font-bold bg-gray-100">
@@ -524,6 +545,7 @@
             </tr>
         </table>
 
+        <!-- Sección 3: Gastos -->
         <table class="w-full mb-4 border-collapse border border-black text-center">
             <tr><td colspan="8" class="bg-gray-200 font-bold border border-black p-1 text-left">Gastos directos</td></tr>
             <tr>
@@ -604,6 +626,7 @@
             </tr>
         </table>
 
+        <!-- Sección 4: Resultados / Reparticion -->
         <table class="w-full mb-8 border-collapse border border-black text-center">
             <tr>
                 <td class="font-bold border border-black p-1.5 bg-gray-200 w-[20%] text-left">Margen de utilidad neto:</td>
@@ -625,6 +648,7 @@
             </tr>
         </table>
 
+        <!-- Firmas -->
         <div class="flex justify-between mt-16 px-10">
             <div class="text-center w-[30%]">
                 <div class="border-b border-black h-10 mb-1 relative">
@@ -648,7 +672,8 @@
                 <div class="text-[10px]">Dirección Admón. y Finanzas</div>
             </div>
         </div>
-        </div>
+        <!-- Fin Plantilla -->
+    </div>
 
     <script>
         const API_URL = "https://agrosoluciones-backend.onrender.com";
@@ -656,8 +681,6 @@
         let rolUsuario = 'trabajador'; 
         let visitasCampoRealizadas = 0; 
         let metodoPagoSeleccionado = 'Efectivo';
-        
-        // Variable para guardar el ID del servicio y usarlo en el PDF
         let currentServiceIdForPDF = null;
 
         function toggleSidebar() {
@@ -978,7 +1001,7 @@
         }
 
         function verDetalleServicio(id) {
-            currentServiceIdForPDF = id; // Guardamos el ID para cuando se presione imprimir
+            currentServiceIdForPDF = id; 
             
             const s = memoriaServicios.find(x => x.id === id);
             const pr = memoriaPropiedades.find(p => p.id === s.propiedad_id);
@@ -1021,12 +1044,10 @@
         async function generarPDFReporte() {
             if(!currentServiceIdForPDF) return;
             
-            // 1. Conseguimos los datos
             const s = memoriaServicios.find(x => x.id === currentServiceIdForPDF);
             const pr = memoriaPropiedades.find(p => p.id === s.propiedad_id);
             const cl = pr ? memoriaClientes.find(c => c.id === pr.cliente_id) : null;
 
-            // 2. Llenamos el molde oculto (Datos Generales)
             document.getElementById('pdf_cliente').innerText = cl ? `${cl.nombre} ${cl.apellidos}` : 'N/A';
             document.getElementById('pdf_no_cliente').innerText = (cl && cl.no_cliente) ? cl.no_cliente : 'S/N';
             document.getElementById('pdf_fecha').innerText = s.fecha_aplicacion || '';
@@ -1036,7 +1057,6 @@
             document.getElementById('pdf_metodo').innerText = s.metodo_pago || 'Efectivo';
             document.getElementById('pdf_ha').innerText = s.ha_trabajadas || (pr ? pr.superficie_has : 0);
 
-            // 3. Llenamos los Ingresos
             let p_ha = s.precio_por_ha || 0;
             let viaticos = s.ingreso_viaticos || 0;
             let otros_in = s.ingreso_suministros || 0;
@@ -1047,7 +1067,6 @@
             document.getElementById('pdf_otros_in').innerText = `$ ${otros_in.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
             document.getElementById('pdf_total_in').innerText = `$ ${total_in.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
 
-            // 4. Llenamos los Gastos
             document.getElementById('pdf_gas_u1').innerText = `$ ${(s.gasto_gasolina_unidad || 0).toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
             document.getElementById('pdf_gas_gen').innerText = `$ ${(s.gasto_gasolina_generador || 0).toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
             let t_gas = (s.gasto_gasolina_unidad || 0) + (s.gasto_gasolina_generador || 0);
@@ -1070,7 +1089,6 @@
             let utilidad = total_in - total_out;
             document.getElementById('pdf_utilidad').innerText = `$ ${utilidad.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
 
-            // 5. Cálculos Matemáticos Automáticos (Margen, Capital y Dividendos)
             let margen = total_in > 0 ? (utilidad / total_in) * 100 : 0;
             let capital = utilidad * 0.15;
             let dividendo = utilidad * 0.85;
@@ -1083,15 +1101,17 @@
             document.getElementById('pdf_jc').innerText = `$ ${jc.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
             document.getElementById('pdf_by').innerText = `$ ${by.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
 
-            // 6. Imprimir y Descargar
             const element = document.getElementById('plantilla-pdf');
             
-            // Le damos formato de hoja Carta
+            // Truco maestro: Movemos la plantilla a la pantalla pero detrás de todo (invisible) para que la cámara del PDF la capte bien
+            element.classList.remove('hidden');
+            element.classList.add('fixed', 'top-0', 'left-0', '-z-50');
+            
             const opt = {
                 margin:       0.2,
                 filename:     `Reporte_Venta_${s.no_cotizacion || s.id.substring(0,6).toUpperCase()}.pdf`,
                 image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2 },
+                html2canvas:  { scale: 2, scrollY: 0 },
                 jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
             };
 
@@ -1100,8 +1120,10 @@
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generando PDF...';
             btn.disabled = true;
 
-            // html2pdf hace la captura y luego restauramos el botón
+            // html2pdf hace la captura y luego restauramos todo a la normalidad
             html2pdf().set(opt).from(element).save().then(() => {
+                element.classList.add('hidden');
+                element.classList.remove('fixed', 'top-0', 'left-0', '-z-50');
                 btn.innerHTML = originalText;
                 btn.disabled = false;
             });

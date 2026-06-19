@@ -7,6 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
@@ -111,13 +112,11 @@
             <h2 class="text-xl md:text-2xl font-bold text-gray-800 mt-10 mb-6 tracking-tight">Panel de Captura Rápida</h2>
             
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
-                
                 <div id="vista-form-clientes" class="bg-white p-5 md:p-6 rounded-2xl shadow-md border border-green-100">
                     <h3 id="tituloFormCliente" class="text-lg md:text-xl font-bold text-gray-800 mb-5 flex items-center"><i class="fa-solid fa-user-plus text-green-600 mr-2 text-xl md:text-2xl"></i> Nuevo Registro</h3>
                     <form id="registroForm" class="space-y-4">
                         <input type="hidden" id="editClienteId">
                         <input type="hidden" id="email" value="">
-
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                             <input type="text" id="nombre" placeholder="Nombre(s)" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
                             <input type="text" id="apellidos" placeholder="Apellidos" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
@@ -155,23 +154,19 @@
                     <h3 id="tituloFormServio" class="text-lg md:text-xl font-bold text-gray-800 mb-5 flex items-center"><i class="fa-solid fa-file-invoice-dollar text-green-600 mr-2 text-xl md:text-2xl"></i> Registrar Venta</h3>
                     <form id="servicioForm" class="space-y-4">
                         <input type="hidden" id="editServioId">
-                        
                         <input type="hidden" id="h_gas_unidad" value="0"><input type="hidden" id="h_gas_gen" value="0"><input type="hidden" id="h_sueldos" value="0"><input type="hidden" id="h_insumos" value="0"><input type="hidden" id="h_comidas" value="0"><input type="hidden" id="h_oxxo" value="0">
                         <input type="hidden" id="h_ha_trabajadas" value="0"><input type="hidden" id="h_precio_por_ha" value="0"><input type="hidden" id="h_ingreso_viaticos" value="0"><input type="hidden" id="h_ingreso_suministros" value="0">
                         <input type="hidden" id="h_metodo_pago" value="Efectivo">
 
                         <div><label class="text-[10px] text-gray-500 font-bold uppercase">Productor / Parcela</label><select id="selectPropiedad" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm"><option value="">-- Selecciona --</option></select></div>
-                        
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                             <div><label class="text-[10px] text-gray-500 font-bold uppercase">No. Cotización</label><input type="text" id="no_cotizacion" placeholder="Ej. C-001" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 text-sm rounded-lg"></div>
                             <div><label class="text-[10px] text-gray-500 font-bold uppercase">No. Orden Serv.</label><input type="text" id="no_orden" placeholder="Ej. OS-001" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 text-sm rounded-lg"></div>
                         </div>
-                        
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                             <div><label class="text-[10px] text-gray-500 font-bold uppercase">Fecha de Venta</label><input type="date" id="fecha_aplicacion" required class="w-full px-3 py-2 bg-gray-50 border text-sm rounded-lg text-gray-600"></div>
                             <div><label class="text-[10px] text-gray-500 font-bold uppercase">Fecha Seguimiento</label><input type="date" id="fecha_seguimiento" class="w-full px-3 py-2 bg-gray-50 border text-sm rounded-lg text-gray-600"></div>
                         </div>
-                        
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3 items-end">
                             <div>
                                 <label class="text-[10px] text-gray-500 font-bold uppercase">Ingresos Total ($)</label>
@@ -205,7 +200,6 @@
                 <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-200 flex items-center space-x-4"><div class="bg-indigo-100 w-12 h-12 rounded-full flex items-center justify-center text-indigo-600 shrink-0"><i class="fa-solid fa-calendar-days text-lg"></i></div><div class="w-full"><p class="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-1">Filtrar por Mes</p><select id="filtroMes" onchange="actualizarEstadisticasYMetas()" class="w-full bg-gray-50 border text-sm font-bold text-gray-700 py-1.5 px-2 outline-none cursor-pointer"><option value="todos">Histórico Total</option><option value="01">Enero</option><option value="02">Febrero</option><option value="03">Marzo</option><option value="04">Abril</option><option value="05">Mayo</option><option value="06" selected>Junio</option><option value="07">Julio</option><option value="08">Agosto</option><option value="09">Septiembre</option><option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option></select></div></div>
                 <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex items-center space-x-4"><div class="bg-yellow-100 w-12 h-12 rounded-full flex items-center justify-center text-yellow-600 shrink-0"><i class="fa-solid fa-ruler-combined text-lg"></i></div><div><p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Ha. Fumigadas</p><p id="stat-hectareas" class="text-2xl font-extrabold text-gray-800 leading-none mt-1">0</p></div></div>
                 <div class="bg-white p-4 rounded-2xl shadow-sm border border-green-200 flex items-center space-x-4"><div class="bg-green-100 w-12 h-12 rounded-full flex items-center justify-center text-green-600 shrink-0"><i class="fa-solid fa-arrow-trend-up text-lg"></i></div><div><p class="text-[10px] text-green-600/80 font-bold uppercase tracking-wider">Ingresos Mensuales</p><p id="stat-ingresos" class="text-2xl font-extrabold text-green-700 leading-none mt-1">$0</p></div></div>
-                
                 <div class="relative w-full h-full">
                     <button id="btn-registrar-visita" onclick="registrarVisitaCampo()" class="hidden absolute -top-10 right-0 bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] font-bold py-1.5 px-3 rounded-lg shadow-md transition-all flex items-center gap-1.5 border border-emerald-400 z-10 whitespace-nowrap"><i class="fa-solid fa-map-location-dot"></i> Visita Realizada</button>
                     <div class="bg-white p-4 rounded-2xl shadow-sm border border-blue-200 flex items-center space-x-4 h-full"><div class="bg-blue-100 w-12 h-12 rounded-full flex items-center justify-center text-blue-600 shrink-0"><i class="fa-solid fa-sack-dollar text-lg"></i></div><div><p class="text-[10px] text-blue-600/80 font-bold uppercase tracking-wider">Utilidad Neta</p><p id="stat-utilidad" class="text-2xl font-extrabold text-blue-700 leading-none mt-1">$0</p></div></div>
@@ -432,10 +426,229 @@
                     <div><p class="text-[10px] md:text-xs text-blue-200 font-bold uppercase tracking-wider">Utilidad Neta (Vía <span id="det_metodo_txt">---</span>)</p><p class="text-[9px] md:text-[10px] text-blue-300 mt-0.5">Ingresos Totales - Gastos Operativos</p></div>
                     <div id="det_utilidad" class="text-2xl md:text-3xl font-extrabold tracking-tight">$0.00</div>
                 </div>
-                <div class="bg-white p-3 rounded-xl border border-gray-200"><p class="text-[10px] text-gray-400 font-bold uppercase mb-1">Notas / Observaciones</p><p id="det_obs" class="text-xs md:text-sm text-gray-700 italic">---</p></div>
+                
+                <div class="flex flex-col md:flex-row justify-between items-end gap-3 mt-4">
+                    <div class="bg-white p-3 rounded-xl border border-gray-200 flex-1 w-full">
+                        <p class="text-[10px] text-gray-400 font-bold uppercase mb-1">Notas / Observaciones</p>
+                        <p id="det_obs" class="text-xs md:text-sm text-gray-700 italic">---</p>
+                    </div>
+                    <button id="btn_imprimir_pdf" onclick="generarPDFReporte()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 whitespace-nowrap w-full md:w-auto h-full">
+                        <i class="fa-solid fa-file-pdf"></i> Imprimir Reporte
+                    </button>
+                </div>
+
             </div>
         </div>
     </div>
+
+    <div id="plantilla-pdf" class="absolute top-[-9999px] left-[-9999px] w-[800px] bg-white text-black p-8 font-sans" style="font-size: 11px; line-height: 1.4;">
+        <div class="flex justify-between items-start mb-4">
+            <div class="w-1/3"><img src="logo_nuevo.jpeg" alt="Logo" style="max-height: 60px;"></div>
+            <div class="w-1/3 text-center font-bold text-lg leading-tight mt-2 text-[#064e3b]">AGROSOLUCIONES<br>AEREAS</div>
+            <div class="w-1/3 text-right flex justify-end">
+                <div class="w-40">
+                    <div class="border border-black p-1 text-center font-bold bg-gray-100">Área que emite:</div>
+                    <div class="border-x border-b border-black p-4 text-center h-16 relative">
+                       <span class="absolute bottom-2 w-full left-0 text-gray-400 italic font-serif text-3xl opacity-50">JCGV</span>
+                    </div>
+                    <div class="border-x border-b border-black p-1 text-center font-bold">JCGV</div>
+                    <div class="border-x border-b border-black p-1 text-center text-[10px]">Dirección Comercial</div>
+                </div>
+            </div>
+        </div>
+        <div class="text-right font-bold text-sm mb-2 text-[#064e3b]">Reporte de Venta<br><span class="font-normal text-xs text-black">Rev. 0 Sept/25</span></div>
+
+        <table class="w-full mb-4 border-collapse border border-black">
+            <tr><td colspan="4" class="bg-gray-200 font-bold border border-black p-1 text-center">Datos generales del servicio</td></tr>
+            <tr>
+                <td class="font-bold border border-black p-1 w-1/4">Cliente:</td>
+                <td class="border border-black p-1" id="pdf_cliente"></td>
+                <td class="font-bold border border-black p-1 w-1/4">No. de Cliente:</td>
+                <td class="border border-black p-1 text-center font-bold" id="pdf_no_cliente"></td>
+            </tr>
+            <tr>
+                <td class="font-bold border border-black p-1">Fecha del servicio:</td>
+                <td class="border border-black p-1" id="pdf_fecha"></td>
+                <td class="border border-black p-1 bg-gray-50"></td>
+                <td class="border border-black p-1 bg-gray-50"></td>
+            </tr>
+            <tr>
+                <td class="font-bold border border-black p-1">Ubicación del servicio:</td>
+                <td class="border border-black p-1" id="pdf_ubicacion"></td>
+                <td class="font-bold border border-black p-1">Tipo de cultivo:</td>
+                <td class="border border-black p-1 text-center" id="pdf_cultivo"></td>
+            </tr>
+            <tr>
+                <td class="font-bold border border-black p-1">Tipo de servicio:</td>
+                <td class="border border-black p-1">Fumigación</td>
+                <td class="border border-black p-1 bg-gray-50"></td>
+                <td class="border border-black p-1 bg-gray-50"></td>
+            </tr>
+            <tr>
+                <td class="font-bold border border-black p-1">Responsable:</td>
+                <td class="border border-black p-1">JARC</td>
+                <td class="border border-black p-1 bg-gray-50"></td>
+                <td class="border border-black p-1 bg-gray-50"></td>
+            </tr>
+        </table>
+
+        <table class="w-full mb-4 border-collapse border border-black text-center">
+            <tr><td colspan="7" class="bg-gray-200 font-bold border border-black p-1 text-left">Ingresos</td></tr>
+            <tr class="font-bold bg-gray-100">
+                <td class="border border-black p-1 text-left w-1/4">Precio total cobrado:</td>
+                <td class="border border-black p-1">P x Ha</td>
+                <td class="border border-black p-1">Viáticos</td>
+                <td class="border border-black p-1">G.A.</td>
+                <td class="border border-black p-1">Otros</td>
+                <td class="border border-black p-1 w-[12%]">#Quote:</td>
+                <td class="border border-black p-1 font-extrabold text-blue-800" id="pdf_quote"></td>
+            </tr>
+            <tr>
+                <td class="border border-black p-1"></td>
+                <td class="border border-black p-1" id="pdf_p_ha"></td>
+                <td class="border border-black p-1" id="pdf_viaticos"></td>
+                <td class="border border-black p-1">$ 0.00</td>
+                <td class="border border-black p-1" id="pdf_otros_in"></td>
+                <td class="border border-black p-1 font-bold bg-gray-100">Ingreso total:</td>
+                <td class="border border-black p-1 font-bold text-green-700 bg-green-50" id="pdf_total_in"></td>
+            </tr>
+            <tr>
+                <td class="font-bold border-l border-r border-black p-1 text-left">Método de pago:</td>
+                <td class="border-r border-black p-1 font-bold text-blue-700" id="pdf_metodo" colspan="2"></td>
+                <td colspan="4" class="border-r border-black"></td>
+            </tr>
+            <tr>
+                <td class="font-bold border-l border-r border-b border-black p-1 text-left">Hectáreas trabajadas:</td>
+                <td class="border-r border-b border-black p-1 font-bold" id="pdf_ha" colspan="2"></td>
+                <td colspan="4" class="border-r border-b border-black"></td>
+            </tr>
+        </table>
+
+        <table class="w-full mb-4 border-collapse border border-black text-center">
+            <tr><td colspan="8" class="bg-gray-200 font-bold border border-black p-1 text-left">Gastos directos</td></tr>
+            <tr>
+                <td class="font-bold border border-black p-1 text-left w-1/4">Gasolina Transporte:</td>
+                <td class="border border-black p-1 bg-gray-100">Unidad 1</td>
+                <td class="border border-black p-1 bg-gray-100">Unidad 2</td>
+                <td class="border border-black p-1 bg-gray-100">Generador</td>
+                <td class="border border-black p-1 bg-gray-100">Repuestos</td>
+                <td class="border border-black p-1 bg-gray-100">Otros</td>
+                <td class="font-bold border border-black p-1 bg-gray-200">T:</td>
+                <td class="border border-black p-1 font-bold text-red-600 bg-red-50" id="pdf_gas_t"></td>
+            </tr>
+            <tr>
+                <td class="border border-black p-1"></td>
+                <td class="border border-black p-1" id="pdf_gas_u1"></td>
+                <td class="border border-black p-1">$ 0.00</td>
+                <td class="border border-black p-1" id="pdf_gas_gen"></td>
+                <td class="border border-black p-1">$ 0.00</td>
+                <td class="border border-black p-1">$ 0.00</td>
+                <td class="border border-black p-1 bg-gray-200"></td>
+                <td class="border border-black p-1 bg-gray-200"></td>
+            </tr>
+            <tr>
+                <td class="font-bold border border-black p-1 text-left">Sueldos:</td>
+                <td class="border border-black p-1 bg-gray-100">Técnico 1</td>
+                <td class="border border-black p-1 bg-gray-100">Técnico 2</td>
+                <td class="border border-black p-1 bg-gray-100">Director 1</td>
+                <td class="border border-black p-1 bg-gray-100">Director 2</td>
+                <td class="border border-black p-1 bg-gray-100">Otros</td>
+                <td class="font-bold border border-black p-1 bg-gray-200">T:</td>
+                <td class="border border-black p-1 font-bold text-red-600 bg-red-50" id="pdf_sue_t"></td>
+            </tr>
+            <tr>
+                <td class="border border-black p-1"></td>
+                <td class="border border-black p-1" id="pdf_sue_t1"></td>
+                <td class="border border-black p-1">$ 0.00</td>
+                <td class="border border-black p-1">$ 0.00</td>
+                <td class="border border-black p-1">$ 0.00</td>
+                <td class="border border-black p-1">$ 0.00</td>
+                <td class="border border-black p-1 bg-gray-200"></td>
+                <td class="border border-black p-1 bg-gray-200"></td>
+            </tr>
+            <tr>
+                <td class="font-bold border border-black p-1 text-left">Insumos:</td>
+                <td class="border border-black p-1 bg-gray-100" colspan="2">Agroquímico</td>
+                <td class="border border-black p-1 bg-gray-100" colspan="3">Otros</td>
+                <td class="font-bold border border-black p-1 bg-gray-200">T:</td>
+                <td class="border border-black p-1 font-bold text-red-600 bg-red-50" id="pdf_ins_t"></td>
+            </tr>
+            <tr>
+                <td class="border border-black p-1"></td>
+                <td class="border border-black p-1" colspan="2" id="pdf_ins_agro"></td>
+                <td class="border border-black p-1" colspan="3">$ 0.00</td>
+                <td class="border border-black p-1 bg-gray-200"></td>
+                <td class="border border-black p-1 bg-gray-200"></td>
+            </tr>
+            <tr>
+                <td class="font-bold border border-black p-1 text-left">Comidas:</td>
+                <td class="border border-black p-1 bg-gray-100" colspan="2">Comida</td>
+                <td class="border border-black p-1 bg-gray-100" colspan="3">Oxxo</td>
+                <td class="font-bold border border-black p-1 bg-gray-200">T:</td>
+                <td class="border border-black p-1 font-bold text-red-600 bg-red-50" id="pdf_com_t"></td>
+            </tr>
+            <tr>
+                <td class="border border-black p-1"></td>
+                <td class="border border-black p-1" colspan="2" id="pdf_com_comida"></td>
+                <td class="border border-black p-1" colspan="3" id="pdf_com_oxxo"></td>
+                <td class="border border-black p-1 bg-gray-200"></td>
+                <td class="border border-black p-1 bg-gray-200"></td>
+            </tr>
+            <tr>
+                <td colspan="6" class="font-bold border border-black p-1.5 text-right bg-gray-200 text-sm">Total de gastos:</td>
+                <td colspan="2" class="font-extrabold border border-black p-1.5 bg-gray-200 text-red-700 text-sm" id="pdf_total_gastos"></td>
+            </tr>
+            <tr>
+                <td colspan="6" class="font-bold border border-black p-1.5 text-right bg-blue-100 text-sm text-blue-900">Utilidad del ejercicio:</td>
+                <td colspan="2" class="font-extrabold border border-black p-1.5 bg-blue-100 text-blue-700 text-sm" id="pdf_utilidad"></td>
+            </tr>
+        </table>
+
+        <table class="w-full mb-8 border-collapse border border-black text-center">
+            <tr>
+                <td class="font-bold border border-black p-1.5 bg-gray-200 w-[20%] text-left">Margen de utilidad neto:</td>
+                <td class="font-bold border border-black p-1.5 w-[15%]" id="pdf_margen"></td>
+                <td class="font-bold border border-black p-1.5 bg-gray-200 w-[15%]">Capital (15%):</td>
+                <td class="font-extrabold border border-black p-1.5 text-green-700 w-[17.5%]" id="pdf_capital"></td>
+                <td class="font-bold border border-black p-1.5 bg-gray-200 w-[15%]">Dividendo (85%):</td>
+                <td class="font-extrabold border border-black p-1.5 text-green-700 w-[17.5%]" id="pdf_dividendo"></td>
+            </tr>
+            <tr>
+                <td colspan="4" class="border-l border-r border-black p-1"></td>
+                <td class="font-bold border border-black p-1 bg-gray-100 text-right">JC (25%):</td>
+                <td class="font-bold border border-black p-1" id="pdf_jc"></td>
+            </tr>
+            <tr>
+                <td colspan="4" class="border-l border-r border-b border-black p-1"></td>
+                <td class="font-bold border border-black p-1 bg-gray-100 text-right">BY (75%):</td>
+                <td class="font-bold border border-black p-1" id="pdf_by"></td>
+            </tr>
+        </table>
+
+        <div class="flex justify-between mt-16 px-10">
+            <div class="text-center w-[30%]">
+                <div class="border-b border-black h-10 mb-1 relative">
+                    <span class="absolute bottom-1 w-full left-0 text-gray-400 italic font-serif text-2xl opacity-0">...</span>
+                </div>
+                <div class="font-bold">De conformidad</div>
+                <div class="text-[9px] text-white">.</div>
+            </div>
+            <div class="text-center w-[30%]">
+                <div class="border-b border-black h-10 mb-1 relative">
+                     <span class="absolute bottom-1 w-full left-0 text-gray-400 italic font-serif text-3xl opacity-50">JCGV</span>
+                </div>
+                <div class="font-bold">JCGV</div>
+                <div class="text-[10px]">Dirección Comercial</div>
+            </div>
+            <div class="text-center w-[30%]">
+                <div class="border-b border-black h-10 mb-1 relative">
+                    <span class="absolute bottom-1 w-full left-0 text-gray-400 italic font-serif text-2xl opacity-0">...</span>
+                </div>
+                <div class="font-bold">YLGF</div>
+                <div class="text-[10px]">Dirección Admón. y Finanzas</div>
+            </div>
+        </div>
+        </div>
 
     <script>
         const API_URL = "https://agrosoluciones-backend.onrender.com";
@@ -443,6 +656,9 @@
         let rolUsuario = 'trabajador'; 
         let visitasCampoRealizadas = 0; 
         let metodoPagoSeleccionado = 'Efectivo';
+        
+        // Variable para guardar el ID del servicio y usarlo en el PDF
+        let currentServiceIdForPDF = null;
 
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar-menu');
@@ -762,6 +978,8 @@
         }
 
         function verDetalleServicio(id) {
+            currentServiceIdForPDF = id; // Guardamos el ID para cuando se presione imprimir
+            
             const s = memoriaServicios.find(x => x.id === id);
             const pr = memoriaPropiedades.find(p => p.id === s.propiedad_id);
             const cl = pr ? memoriaClientes.find(c => c.id === pr.cliente_id) : null;
@@ -799,18 +1017,105 @@
         }
         function cerrarModalDetalle() { document.getElementById('modal-detalle').classList.add('hidden'); }
 
+        // --- FUNCIÓN MÁGICA: GENERAR REPORTE EN PDF ---
+        async function generarPDFReporte() {
+            if(!currentServiceIdForPDF) return;
+            
+            // 1. Conseguimos los datos
+            const s = memoriaServicios.find(x => x.id === currentServiceIdForPDF);
+            const pr = memoriaPropiedades.find(p => p.id === s.propiedad_id);
+            const cl = pr ? memoriaClientes.find(c => c.id === pr.cliente_id) : null;
+
+            // 2. Llenamos el molde oculto (Datos Generales)
+            document.getElementById('pdf_cliente').innerText = cl ? `${cl.nombre} ${cl.apellidos}` : 'N/A';
+            document.getElementById('pdf_no_cliente').innerText = (cl && cl.no_cliente) ? cl.no_cliente : 'S/N';
+            document.getElementById('pdf_fecha').innerText = s.fecha_aplicacion || '';
+            document.getElementById('pdf_ubicacion').innerText = pr ? pr.direccion : '';
+            document.getElementById('pdf_cultivo').innerText = pr ? pr.tipo_cultivo : '';
+            document.getElementById('pdf_quote').innerText = s.no_cotizacion || 'S/N';
+            document.getElementById('pdf_metodo').innerText = s.metodo_pago || 'Efectivo';
+            document.getElementById('pdf_ha').innerText = s.ha_trabajadas || (pr ? pr.superficie_has : 0);
+
+            // 3. Llenamos los Ingresos
+            let p_ha = s.precio_por_ha || 0;
+            let viaticos = s.ingreso_viaticos || 0;
+            let otros_in = s.ingreso_suministros || 0;
+            let total_in = s.costo_servicio || 0;
+
+            document.getElementById('pdf_p_ha').innerText = `$ ${p_ha.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+            document.getElementById('pdf_viaticos').innerText = `$ ${viaticos.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+            document.getElementById('pdf_otros_in').innerText = `$ ${otros_in.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+            document.getElementById('pdf_total_in').innerText = `$ ${total_in.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+
+            // 4. Llenamos los Gastos
+            document.getElementById('pdf_gas_u1').innerText = `$ ${(s.gasto_gasolina_unidad || 0).toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+            document.getElementById('pdf_gas_gen').innerText = `$ ${(s.gasto_gasolina_generador || 0).toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+            let t_gas = (s.gasto_gasolina_unidad || 0) + (s.gasto_gasolina_generador || 0);
+            document.getElementById('pdf_gas_t').innerText = `$ ${t_gas.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+
+            document.getElementById('pdf_sue_t1').innerText = `$ ${(s.gasto_sueldos || 0).toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+            document.getElementById('pdf_sue_t').innerText = `$ ${(s.gasto_sueldos || 0).toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+
+            document.getElementById('pdf_ins_agro').innerText = `$ ${(s.gasto_insumos || 0).toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+            document.getElementById('pdf_ins_t').innerText = `$ ${(s.gasto_insumos || 0).toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+
+            document.getElementById('pdf_com_comida').innerText = `$ ${(s.gasto_comidas || 0).toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+            document.getElementById('pdf_com_oxxo').innerText = `$ ${(s.gasto_oxxo || 0).toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+            let t_com = (s.gasto_comidas || 0) + (s.gasto_oxxo || 0);
+            document.getElementById('pdf_com_t').innerText = `$ ${t_com.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+
+            let total_out = s.gastos || 0;
+            document.getElementById('pdf_total_gastos').innerText = `$ ${total_out.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+
+            let utilidad = total_in - total_out;
+            document.getElementById('pdf_utilidad').innerText = `$ ${utilidad.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+
+            // 5. Cálculos Matemáticos Automáticos (Margen, Capital y Dividendos)
+            let margen = total_in > 0 ? (utilidad / total_in) * 100 : 0;
+            let capital = utilidad * 0.15;
+            let dividendo = utilidad * 0.85;
+            let jc = dividendo * 0.25;
+            let by = dividendo * 0.75;
+
+            document.getElementById('pdf_margen').innerText = `${margen.toFixed(0)}%`;
+            document.getElementById('pdf_capital').innerText = `$ ${capital.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+            document.getElementById('pdf_dividendo').innerText = `$ ${dividendo.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+            document.getElementById('pdf_jc').innerText = `$ ${jc.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+            document.getElementById('pdf_by').innerText = `$ ${by.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+
+            // 6. Imprimir y Descargar
+            const element = document.getElementById('plantilla-pdf');
+            
+            // Le damos formato de hoja Carta
+            const opt = {
+                margin:       0.2,
+                filename:     `Reporte_Venta_${s.no_cotizacion || s.id.substring(0,6).toUpperCase()}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2 },
+                jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+
+            const btn = document.getElementById('btn_imprimir_pdf');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generando PDF...';
+            btn.disabled = true;
+
+            // html2pdf hace la captura y luego restauramos el botón
+            html2pdf().set(opt).from(element).save().then(() => {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            });
+        }
+
         // --- WEBSOCKETS: SINCRONIZACIÓN EN TIEMPO REAL (NIVEL PROFESIONAL) ---
         let ws;
         function conectarWebSocket() {
-            // Se usa wss:// en lugar de https:// para abrir el túnel seguro (o ws:// si fuera localhost)
             const wsProtocol = API_URL.includes("https") ? "wss://" : "ws://";
             ws = new WebSocket(API_URL.replace("https://", wsProtocol).replace("http://", wsProtocol) + "/ws");
             
             ws.onmessage = async function(event) {
                 if(event.data === "update") {
-                    // Si recibimos el aviso, checamos que tengas sesión iniciada
                     if (!document.getElementById('dashboard-container').classList.contains('hidden')) {
-                        // Seguro anti-borrado: Si estás escribiendo o con calculadoras abiertas, pospone la actualización
                         const foco = document.activeElement;
                         const escribiendo = foco && (foco.tagName === 'INPUT' || foco.tagName === 'TEXTAREA' || foco.tagName === 'SELECT');
                         const modalesAbiertos = !document.getElementById('modal-ingresos').classList.contains('hidden') || 
@@ -834,13 +1139,10 @@
                 }
             };
 
-            // Reconexión automática si cambias de red WiFi a Datos en el celular
             ws.onclose = function(e) {
                 setTimeout(function() { conectarWebSocket(); }, 2000);
             };
         }
-        
-        // Iniciamos el túnel en cuanto abres la página
         conectarWebSocket();
     </script>
 </body>

@@ -26,7 +26,7 @@
         .kpi-text-real { font-size: 16px; font-weight: bold; color: #000000; }
     </style>
 </head>
-<body class="text-gray-800 relative">
+<body class="text-gray-800">
 
     <!-- MENÚ LATERAL DESPLEGABLE (SIDEBAR) -->
     <div id="sidebar-menu" class="fixed inset-y-0 left-0 w-72 md:w-80 bg-[#064e3b] text-white transform -translate-x-full transition-transform duration-300 ease-in-out z-[100] shadow-2xl flex flex-col">
@@ -328,7 +328,7 @@
         </div>
     </div> 
 
-    <!-- MODAL METAS (RESPONSIVO) -->
+    <!-- MODAL METAS (AHORA SÍ FUNCIONAL) -->
     <div id="modal-metas" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 p-4">
         <div class="bg-white p-6 rounded-2xl shadow-2xl w-full max-w-md border border-gray-200">
             <div class="flex justify-between items-center mb-4"><h3 class="text-xl font-bold text-gray-800"><i class="fa-solid fa-bullseye text-red-500 mr-2"></i> Ajustar Objetivos</h3><button onclick="cerrarModalMetas()" class="text-gray-400 hover:text-red-500"><i class="fa-solid fa-xmark text-xl"></i></button></div>
@@ -457,11 +457,9 @@
         </div>
     </div>
 
-    <!-- MOLDE INVISIBLE DEL REPORTE PDF (DISEÑO EXACTO) -->
-    <!-- Mantenemos la estructura escondida aquí para que JS la llene y clone -->
+    <!-- MOLDE INVISIBLE DEL REPORTE PDF (DISEÑO EXACTO EXCEL) -->
     <div id="plantilla-pdf" class="hidden bg-white text-black p-8 font-sans w-[800px]" style="font-size: 11px; line-height: 1.4;">
-        
-        <!-- Encabezado (Sin el recuadro a la derecha) -->
+        <!-- Encabezado (Sin recuadro derecho de firmas) -->
         <div class="flex justify-between items-center mb-6">
             <div class="w-1/3"><img src="logo_alternativo.png" alt="Logo" style="max-height: 50px;"></div>
             <div class="w-1/3 text-center font-extrabold text-xl leading-tight text-[#064e3b]">AGROSOLUCIONES<br>AÉREAS</div>
@@ -786,6 +784,54 @@
             } catch (error) {}
         }
 
+        // --- FUNCIONES DEL MODAL DE METAS ---
+        function abrirModalMetas() {
+            document.getElementById('modal-metas').classList.remove('hidden');
+            let mesBusqueda = document.getElementById('filtroMes').value; 
+            if(mesBusqueda === 'todos') mesBusqueda = "06"; 
+            document.getElementById('meta_mes_anio').value = `${mesBusqueda}-2026`;
+        }
+
+        function cerrarModalMetas() {
+            document.getElementById('modal-metas').classList.add('hidden');
+            document.getElementById('formMetas').reset();
+        }
+
+        document.getElementById('formMetas').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btnGuardarMetas');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Guardando...';
+            btn.disabled = true;
+
+            const mes_anio = document.getElementById('meta_mes_anio').value;
+            const datos = {
+                meta_ventas: parseFloat(document.getElementById('input_meta_ventas').value) || 0,
+                meta_servicios: parseInt(document.getElementById('input_meta_servicios').value) || 0,
+                meta_clientes: parseInt(document.getElementById('input_meta_clientes').value) || 0,
+                meta_prospectos: parseInt(document.getElementById('input_meta_prospectos').value) || 0,
+                meta_prospectos_visitas: parseInt(document.getElementById('input_meta_visitas').value) || 0
+            };
+
+            try {
+                const res = await fetch(`${API_URL}/api/metas/${mes_anio}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(datos)
+                });
+                if(res.ok) {
+                    cerrarModalMetas();
+                    actualizarEstadisticasYMetas();
+                } else {
+                    alert("Error al actualizar las metas. Verifica tu conexión.");
+                }
+            } catch(error) {
+                alert("Error de conexión al guardar las metas.");
+            }
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        });
+
         function renderizarTablaClientes(lista) { 
             const cuerpo = document.getElementById('cuerpoTabla'); cuerpo.innerHTML = ''; document.getElementById('contadorClientes').textContent = `${lista.length} REGISTRADOS`;
             lista.forEach(c => {
@@ -1033,7 +1079,7 @@
         }
         function cerrarModalDetalle() { document.getElementById('modal-detalle').classList.add('hidden'); }
 
-        // --- FUNCIÓN MÁGICA: GENERAR REPORTE EN PDF (CLONACIÓN SEGURA) ---
+        // --- FUNCIÓN MÁGICA: GENERAR REPORTE EN PDF (SOLUCIÓN DEFINITIVA Z-INDEX) ---
         async function generarPDFReporte() {
             if(!currentServiceIdForPDF) return;
             
@@ -1046,7 +1092,7 @@
             const pr = memoriaPropiedades.find(p => p.id === s.propiedad_id);
             const cl = pr ? memoriaClientes.find(c => c.id === pr.cliente_id) : null;
 
-            // 1. Llenamos los datos en el molde original (está escondido)
+            // Llenar datos de la plantilla
             document.getElementById('pdf_cliente').innerText = cl ? `${cl.nombre} ${cl.apellidos}` : 'N/A';
             document.getElementById('pdf_no_cliente').innerText = (cl && cl.no_cliente) ? cl.no_cliente : 'S/N';
             document.getElementById('pdf_fecha').innerText = s.fecha_aplicacion || '';
@@ -1100,61 +1146,59 @@
             document.getElementById('pdf_jc').innerText = `$ ${jc.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
             document.getElementById('pdf_by').innerText = `$ ${by.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
 
-            // 2. Colocamos el telón elegante de carga
+            // --- TRUCO DEFINITIVO DE LA PANTALLA ---
+            
+            // 1. Pantalla de Carga (Z-INDEX SUPER ALTO)
             const overlay = document.createElement('div');
-            overlay.className = 'fixed inset-0 bg-green-50 z-[99999] flex flex-col items-center justify-center';
-            overlay.innerHTML = '<i class="fa-solid fa-file-pdf text-indigo-600 text-6xl mb-4 animate-pulse"></i><h2 class="text-2xl font-extrabold text-gray-800">Generando Documento...</h2><p class="text-sm text-gray-500 mt-2">Calculando utilidades y sellando PDF.</p>';
+            overlay.className = 'fixed inset-0 flex flex-col items-center justify-center';
+            overlay.style.backgroundColor = '#f0fdf4';
+            overlay.style.zIndex = '999999'; // Escondemos todo
+            overlay.innerHTML = '<i class="fa-solid fa-file-pdf text-indigo-600 text-6xl mb-4 animate-pulse"></i><h2 class="text-2xl font-extrabold text-gray-800">Generando Documento...</h2>';
             document.body.appendChild(overlay);
 
-            // 3. Clonamos el molde a una caja segura que la cámara pueda leer perfectamente sin recortes
-            setTimeout(() => {
-                const moldeOriginal = document.getElementById('plantilla-pdf');
-                
-                const cajaSegura = document.createElement('div');
-                cajaSegura.style.position = 'absolute';
-                cajaSegura.style.top = '0';
-                cajaSegura.style.left = '0';
-                cajaSegura.style.width = '800px'; 
-                cajaSegura.style.backgroundColor = 'white';
-                cajaSegura.style.zIndex = '-9999'; // Escondido debajo del telón
-                
-                // Extraemos el interior del molde original
-                cajaSegura.innerHTML = moldeOriginal.innerHTML;
-                // Replicamos sus clases pero quitamos la clase 'hidden'
-                cajaSegura.className = moldeOriginal.className.replace('hidden', '');
-                
-                document.body.appendChild(cajaSegura);
+            // 2. Traemos la hoja HASTA ADELANTE pero DEBAJO de la pantalla de carga
+            const element = document.getElementById('plantilla-pdf');
+            element.classList.remove('hidden');
+            element.style.position = 'absolute';
+            element.style.top = '0px'; 
+            element.style.left = '0px';
+            element.style.zIndex = '999998'; // La cámara YA PUEDE VERLA
+            element.style.backgroundColor = 'white'; 
 
-                // Configuración de la cámara
+            // 3. Forzamos a la pantalla a ir al inicio exacto para que la foto encuadre bien
+            window.scrollTo(0, 0);
+
+            // 4. Le damos 500ms de respiro y tomamos la foto
+            setTimeout(() => {
                 const opt = {
                     margin:       0.2,
                     filename:     `Reporte_Venta_${s.no_cotizacion || s.id.substring(0,6).toUpperCase()}.pdf`,
                     image:        { type: 'jpeg', quality: 0.98 },
-                    html2canvas:  { 
-                        scale: 2, 
-                        useCORS: true, 
-                        scrollY: 0,
-                        windowWidth: 800,
-                        // Le decimos a la cámara que tome todo el alto sin importar la pantalla
-                        windowHeight: cajaSegura.scrollHeight + 50 
-                    },
+                    // SIN forzar el scrollY. Dejamos que actúe natural
+                    html2canvas:  { scale: 2, useCORS: true, windowWidth: 800 },
                     jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
                 };
 
-                // 4. Tomar foto y limpiar rastro
-                html2pdf().set(opt).from(cajaSegura).save().then(() => {
-                    document.body.removeChild(cajaSegura);
+                html2pdf().set(opt).from(element).save().then(() => {
+                    // Restauramos limpieza
+                    element.classList.add('hidden');
+                    element.style.position = '';
+                    element.style.top = '';
+                    element.style.left = '';
+                    element.style.zIndex = '';
                     document.body.removeChild(overlay);
+
                     btn.innerHTML = originalText;
                     btn.disabled = false;
                 }).catch(err => {
-                    document.body.removeChild(cajaSegura);
+                    console.error("PDF Error: ", err);
+                    element.classList.add('hidden');
                     document.body.removeChild(overlay);
                     btn.innerHTML = originalText;
                     btn.disabled = false;
-                    alert("Ocurrió un error. Inténtalo de nuevo.");
+                    alert("Hubo un error generando el PDF. Inténtalo de nuevo.");
                 });
-            }, 300); // 300ms de gracia para que la cámara prepare los pixeles
+            }, 500); 
         }
 
         // --- WEBSOCKETS: SINCRONIZACIÓN EN TIEMPO REAL (NIVEL PROFESIONAL) ---

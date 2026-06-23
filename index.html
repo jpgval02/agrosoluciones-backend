@@ -31,9 +31,14 @@
     <!-- MENÚ LATERAL DESPLEGABLE (SIDEBAR) -->
     <div id="sidebar-menu" class="fixed inset-y-0 left-0 w-72 md:w-80 bg-[#064e3b] text-white transform -translate-x-full transition-transform duration-300 ease-in-out z-[100] shadow-2xl flex flex-col">
         <div class="p-6 border-b border-green-800 flex justify-between items-center bg-[#022c22]">
-            <span class="font-extrabold text-lg tracking-wide flex items-center gap-2"><i class="fa-solid fa-layer-group text-green-400"></i> MÓDULOS</span>
-            <button onclick="toggleSidebar()" class="text-gray-400 hover:text-white transition-colors"><i class="fa-solid fa-xmark text-2xl"></i></button>
+            <span class="font-extrabold text-lg tracking-wide flex items-center gap-2">
+                <i class="fa-solid fa-layer-group text-green-400"></i> MÓDULOS
+            </span>
+            <button onclick="toggleSidebar()" class="text-gray-400 hover:text-white transition-colors">
+                <i class="fa-solid fa-xmark text-2xl"></i>
+            </button>
         </div>
+        
         <div class="flex-1 overflow-y-auto p-4 space-y-2">
             <button onclick="cambiarVista('inicio'); toggleSidebar();" class="w-full text-left px-4 py-3.5 hover:bg-green-800/60 rounded-xl transition-colors flex items-center gap-3 font-semibold text-sm tracking-wide group">
                 <div class="bg-green-900 group-hover:bg-green-700 p-2 rounded-lg transition-colors"><i class="fa-solid fa-house text-green-400 w-5 text-center"></i></div> Inicio
@@ -48,6 +53,7 @@
                 <div class="bg-green-900 group-hover:bg-green-700 p-2 rounded-lg transition-colors"><i class="fa-solid fa-chart-line text-green-400 w-5 text-center"></i></div> Ventas CRM
             </button>
         </div>
+
         <div class="p-4 bg-[#022c22] text-center text-[10px] text-green-500 font-bold tracking-wider border-t border-green-800">
             AGROSOLUCIONES AÉREAS v4.5
         </div>
@@ -63,8 +69,14 @@
                 <p class="text-sm text-gray-500 mt-1 font-medium">Portal Operativo Privado</p>
             </div>
             <form id="loginForm" class="space-y-5">
-                <div><label class="block text-sm font-bold text-gray-700 mb-1">Correo Electrónico</label><div class="relative"><div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><i class="fa-solid fa-envelope text-gray-400"></i></div><input type="email" id="loginEmail" required class="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-green-600 outline-none transition-all"></div></div>
-                <div><label class="block text-sm font-bold text-gray-700 mb-1">Contraseña</label><div class="relative"><div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><i class="fa-solid fa-lock text-gray-400"></i></div><input type="password" id="loginPassword" required class="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-green-600 outline-none transition-all"></div></div>
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-1">Correo Electrónico</label>
+                    <div class="relative"><div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><i class="fa-solid fa-envelope text-gray-400"></i></div><input type="email" id="loginEmail" required class="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-green-600 outline-none transition-all"></div>
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-1">Contraseña</label>
+                    <div class="relative"><div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><i class="fa-solid fa-lock text-gray-400"></i></div><input type="password" id="loginPassword" required class="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-green-600 outline-none transition-all"></div>
+                </div>
                 <div id="loginError" class="hidden bg-rose-50 text-rose-600 text-sm font-bold p-3 rounded-lg text-center border border-rose-100"></div>
                 <button type="submit" id="btnLogin" class="w-full py-3 rounded-xl text-sm font-bold text-white bg-green-700 hover:bg-green-600 transition-all shadow-md flex items-center justify-center"><i class="fa-solid fa-right-to-bracket mr-2"></i> Iniciar Sesión</button>
             </form>
@@ -74,8 +86,13 @@
     <!-- PANEL PRINCIPAL -->
     <div id="dashboard-container" class="hidden pb-12">
         <nav class="tabla-header text-white px-4 md:px-6 py-3 flex justify-between items-center shadow-md sticky top-0 z-50">
-            <div class="flex items-center"><img src="logo_alternativo.png" alt="Logo Agrosoluciones" class="h-8 md:h-12 w-auto object-contain drop-shadow-md"><span id="badge-rol" class="hidden md:inline-block ml-4 text-xs font-bold px-2 py-1 bg-green-800 rounded-md border border-green-600 tracking-wider"></span></div>
-            <div class="flex items-center"><button onclick="cerrarSesion()" class="bg-red-600 hover:bg-red-500 px-3 py-2 rounded-md text-sm font-bold transition-colors shadow-sm border border-red-400"><i class="fa-solid fa-power-off"></i></button></div>
+            <div class="flex items-center">
+                <img src="logo_alternativo.png" alt="Logo Agrosoluciones" class="h-8 md:h-12 w-auto object-contain drop-shadow-md">
+                <span id="badge-rol" class="hidden md:inline-block ml-4 text-xs font-bold px-2 py-1 bg-green-800 rounded-md border border-green-600 tracking-wider"></span>
+            </div>
+            <div class="flex items-center">
+                <button onclick="cerrarSesion()" class="bg-red-600 hover:bg-red-500 px-3 py-2 rounded-md text-sm font-bold transition-colors shadow-sm border border-red-400"><i class="fa-solid fa-power-off"></i></button>
+            </div>
         </nav>
 
         <div class="max-w-[1600px] mx-auto mt-4 md:mt-6 px-4 md:px-6">
@@ -87,6 +104,7 @@
         <!-- PANTALLA 1: INICIO -->
         <div id="vista-inicio" class="max-w-[1600px] mx-auto mt-6 px-4 md:px-6 block">
             <h2 class="text-xl md:text-2xl font-bold text-gray-800 mb-4 tracking-tight">Objetivos Operativos - Junio 2026</h2>
+            
             <div class="dashboard-container">
                 <div class="kpi-card"><div class="kpi-title">Ventas vs Meta</div><div id="velocimetro-ventas"></div><div class="kpi-text-real" id="texto-ventas-real">$0 / $0</div></div>
                 <div class="kpi-card"><div class="kpi-title">Vuelos de Drones</div><div id="velocimetro-servicios"></div><div class="kpi-text-real" id="texto-servicios-real">0 / 0</div></div>
@@ -102,11 +120,23 @@
                 <div id="vista-form-clientes" class="bg-white p-5 md:p-6 rounded-2xl shadow-md border border-green-100">
                     <h3 id="tituloFormCliente" class="text-lg md:text-xl font-bold text-gray-800 mb-5 flex items-center"><i class="fa-solid fa-user-plus text-green-600 mr-2 text-xl md:text-2xl"></i> Nuevo Registro</h3>
                     <form id="registroForm" class="space-y-4">
-                        <input type="hidden" id="editClienteId"><input type="hidden" id="email" value="">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3"><input type="text" id="nombre" placeholder="Nombre(s)" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none"><input type="text" id="apellidos" placeholder="Apellidos" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none"></div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3"><input type="text" id="no_cliente" placeholder="No. Cliente (Ej. C-010)" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none"><input type="text" id="telefono" placeholder="Teléfono" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none"></div>
-                        <div><input type="text" id="rfc" placeholder="RFC" class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none uppercase"></div>
-                        <div><label class="text-[10px] text-gray-500 font-bold uppercase">Etapa del Embudo</label><select id="estado_cliente" class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm font-bold text-gray-700 cursor-pointer"><option value="Prospecto" selected>Prospecto 🟡</option><option value="Negociación">Negociación 🟠</option><option value="Cliente">Cliente Real 🟢</option></select></div>
+                        <input type="hidden" id="editClienteId">
+                        <input type="hidden" id="email" value="">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <input type="text" id="nombre" placeholder="Nombre(s)" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
+                            <input type="text" id="apellidos" placeholder="Apellidos" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <input type="text" id="no_cliente" placeholder="No. Cliente (Ej. C-010)" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
+                            <input type="text" id="telefono" placeholder="Teléfono" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
+                        </div>
+                        <div>
+                            <input type="text" id="rfc" placeholder="RFC" class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none uppercase">
+                        </div>
+                        <div>
+                            <label class="text-[10px] text-gray-500 font-bold uppercase">Etapa del Embudo</label>
+                            <select id="estado_cliente" class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm font-bold text-gray-700 cursor-pointer"><option value="Prospecto" selected>Prospecto 🟡</option><option value="Negociación">Negociación 🟠</option><option value="Cliente">Cliente Real 🟢</option></select>
+                        </div>
                         <button type="submit" id="btnSubmitCliente" class="w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-[#4ade80] hover:bg-green-500 text-green-900 transition-colors shadow-sm"><i class="fa-solid fa-save mr-1"></i> Guardar Registro</button>
                         <button type="button" id="btnCancelarCliente" onclick="limpiarFormCliente()" class="hidden w-full py-2 rounded-xl text-xs font-bold text-gray-600 bg-gray-200 hover:bg-gray-300">Cancelar Edición</button>
                     </form>
@@ -130,8 +160,10 @@
                 <div id="vista-form-servicios" class="bg-white p-5 md:p-6 rounded-2xl shadow-md border border-green-100">
                     <h3 id="tituloFormServio" class="text-lg md:text-xl font-bold text-gray-800 mb-5 flex items-center"><i class="fa-solid fa-file-invoice-dollar text-green-600 mr-2 text-xl md:text-2xl"></i> Registrar Venta</h3>
                     <form id="servicioForm" class="space-y-4">
-                        <input type="hidden" id="editServioId"><input type="hidden" id="h_gas_unidad" value="0"><input type="hidden" id="h_gas_gen" value="0"><input type="hidden" id="h_sueldos" value="0"><input type="hidden" id="h_insumos" value="0"><input type="hidden" id="h_comidas" value="0"><input type="hidden" id="h_oxxo" value="0">
-                        <input type="hidden" id="h_ha_trabajadas" value="0"><input type="hidden" id="h_precio_por_ha" value="0"><input type="hidden" id="h_ingreso_viaticos" value="0"><input type="hidden" id="h_ingreso_suministros" value="0"><input type="hidden" id="h_metodo_pago" value="Efectivo">
+                        <input type="hidden" id="editServioId">
+                        <input type="hidden" id="h_gas_unidad" value="0"><input type="hidden" id="h_gas_gen" value="0"><input type="hidden" id="h_sueldos" value="0"><input type="hidden" id="h_insumos" value="0"><input type="hidden" id="h_comidas" value="0"><input type="hidden" id="h_oxxo" value="0">
+                        <input type="hidden" id="h_ha_trabajadas" value="0"><input type="hidden" id="h_precio_por_ha" value="0"><input type="hidden" id="h_ingreso_viaticos" value="0"><input type="hidden" id="h_ingreso_suministros" value="0">
+                        <input type="hidden" id="h_metodo_pago" value="Efectivo">
 
                         <div><label class="text-[10px] text-gray-500 font-bold uppercase">Productor / Parcela</label><select id="selectPropiedad" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm"><option value="">-- Selecciona --</option></select></div>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -425,213 +457,222 @@
         </div>
     </div>
 
-    <!-- MOLDE INVISIBLE DEL REPORTE PDF (DISEÑO EXACTO EXCEL - COMPACTO 1 HOJA) -->
-    <div id="plantilla-pdf" class="hidden" style="width: 800px; background-color: white; padding: 15px 30px; font-family: sans-serif; font-size: 11px; line-height: 1.3; color: black;">
-        
-        <!-- Encabezado -->
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-            <div style="width: 33.33%;"><img src="logo_alternativo.png" alt="Logo" style="max-height: 45px;"></div>
-            <div style="width: 33.33%; text-align: center; font-weight: 800; font-size: 18px; line-height: 1.2; color: #064e3b;">AGROSOLUCIONES<br>AÉREAS</div>
-            <div style="width: 33.33%; text-align: right;">
-                <div style="font-weight: bold; font-size: 14px; color: #064e3b;">Reporte de Venta</div>
-                <div style="font-weight: normal; font-size: 11px; color: #6b7280;">Rev. 0 Sept/25</div>
-            </div>
-        </div>
+    <!-- PANTALLA DE CARGA ELEGANTE -->
+    <div id="pdf-loading-overlay" class="hidden fixed inset-0 flex-col items-center justify-center bg-green-50 z-[999999]">
+        <i class="fa-solid fa-file-pdf text-indigo-600 text-6xl mb-4 animate-pulse"></i>
+        <h2 class="text-2xl font-extrabold text-gray-800">Generando Documento...</h2>
+        <p class="text-sm text-gray-500 mt-2">Por favor, no cierres esta pantalla.</p>
+    </div>
 
-        <!-- Sección 1: Datos -->
-        <table style="width: 100%; border-collapse: collapse; border: 1px solid black; margin-bottom: 10px;">
-            <tr><td colspan="4" style="background-color: #e5e7eb; font-weight: bold; border: 1px solid black; padding: 4px; text-align: center; font-size: 13px;">Datos generales del servicio</td></tr>
-            <tr>
-                <td style="font-weight: bold; border: 1px solid black; padding: 4px; width: 25%;">Cliente:</td>
-                <td style="border: 1px solid black; padding: 4px;" id="pdf_cliente"></td>
-                <td style="font-weight: bold; border: 1px solid black; padding: 4px; width: 25%;">No. de Cliente:</td>
-                <td style="border: 1px solid black; padding: 4px; text-align: center; font-weight: bold;" id="pdf_no_cliente"></td>
-            </tr>
-            <tr>
-                <td style="font-weight: bold; border: 1px solid black; padding: 4px;">Fecha del servicio:</td>
-                <td style="border: 1px solid black; padding: 4px;" id="pdf_fecha"></td>
-                <td style="border: 1px solid black; padding: 4px; background-color: #f9fafb;"></td>
-                <td style="border: 1px solid black; padding: 4px; background-color: #f9fafb;"></td>
-            </tr>
-            <tr>
-                <td style="font-weight: bold; border: 1px solid black; padding: 4px;">Ubicación del servicio:</td>
-                <td style="border: 1px solid black; padding: 4px;" id="pdf_ubicacion"></td>
-                <td style="font-weight: bold; border: 1px solid black; padding: 4px;">Tipo de cultivo:</td>
-                <td style="border: 1px solid black; padding: 4px; text-align: center; color: #374151;" id="pdf_cultivo"></td>
-            </tr>
-            <tr>
-                <td style="font-weight: bold; border: 1px solid black; padding: 4px;">Tipo de servicio:</td>
-                <td style="border: 1px solid black; padding: 4px; color: #374151;">Fumigación</td>
-                <td style="border: 1px solid black; padding: 4px; background-color: #f9fafb;"></td>
-                <td style="border: 1px solid black; padding: 4px; background-color: #f9fafb;"></td>
-            </tr>
-            <tr>
-                <td style="font-weight: bold; border: 1px solid black; padding: 4px;">Responsable:</td>
-                <td style="border: 1px solid black; padding: 4px; color: #374151;">JARC</td>
-                <td style="border: 1px solid black; padding: 4px; background-color: #f9fafb;"></td>
-                <td style="border: 1px solid black; padding: 4px; background-color: #f9fafb;"></td>
-            </tr>
-        </table>
-
-        <!-- Sección 2: Ingresos -->
-        <table style="width: 100%; border-collapse: collapse; border: 1px solid black; margin-bottom: 10px; text-align: center;">
-            <tr><td colspan="7" style="background-color: #e5e7eb; font-weight: bold; border: 1px solid black; padding: 4px; text-align: left; font-size: 13px;">Ingresos</td></tr>
-            <tr style="font-weight: bold; background-color: #f3f4f6;">
-                <td style="border: 1px solid black; padding: 4px; text-align: left; width: 25%;">Precio total cobrado:</td>
-                <td style="border: 1px solid black; padding: 4px;">P x Ha</td>
-                <td style="border: 1px solid black; padding: 4px;">Viáticos</td>
-                <td style="border: 1px solid black; padding: 4px;">G.A.</td>
-                <td style="border: 1px solid black; padding: 4px;">Otros</td>
-                <td style="border: 1px solid black; padding: 4px; width: 12%;">#Quote:</td>
-                <td style="border: 1px solid black; padding: 4px; font-weight: 800; color: #1e40af; font-size: 13px;" id="pdf_quote"></td>
-            </tr>
-            <tr>
-                <td style="border: 1px solid black; padding: 4px;"></td>
-                <td style="border: 1px solid black; padding: 4px;" id="pdf_p_ha"></td>
-                <td style="border: 1px solid black; padding: 4px;" id="pdf_viaticos"></td>
-                <td style="border: 1px solid black; padding: 4px; color: #6b7280;">$ 0.00</td>
-                <td style="border: 1px solid black; padding: 4px;" id="pdf_otros_in"></td>
-                <td style="border: 1px solid black; padding: 4px; font-weight: bold; background-color: #f3f4f6;">Ingreso total:</td>
-                <td style="border: 1px solid black; padding: 4px; font-weight: bold; color: #15803d; background-color: #f0fdf4; font-size: 13px;" id="pdf_total_in"></td>
-            </tr>
-            <tr>
-                <td style="font-weight: bold; border-left: 1px solid black; border-right: 1px solid black; padding: 4px; text-align: left;">Método de pago:</td>
-                <td style="border-right: 1px solid black; padding: 4px; font-weight: bold; color: #1d4ed8;" id="pdf_metodo" colspan="2"></td>
-                <td colspan="4" style="border-right: 1px solid black;"></td>
-            </tr>
-            <tr>
-                <td style="font-weight: bold; border-left: 1px solid black; border-right: 1px solid black; border-bottom: 1px solid black; padding: 4px; text-align: left;">Hectáreas trabajadas:</td>
-                <td style="border-right: 1px solid black; border-bottom: 1px solid black; padding: 4px; font-weight: bold;" id="pdf_ha" colspan="2"></td>
-                <td colspan="4" style="border-right: 1px solid black; border-bottom: 1px solid black;"></td>
-            </tr>
-        </table>
-
-        <!-- Sección 3: Gastos -->
-        <table style="width: 100%; border-collapse: collapse; border: 1px solid black; margin-bottom: 10px; text-align: center;">
-            <tr><td colspan="8" style="background-color: #e5e7eb; font-weight: bold; border: 1px solid black; padding: 4px; text-align: left; font-size: 13px;">Gastos directos</td></tr>
-            <tr>
-                <td style="font-weight: bold; border: 1px solid black; padding: 4px; text-align: left; width: 25%;">Gasolina Transporte:</td>
-                <td style="border: 1px solid black; padding: 4px; background-color: #f3f4f6;">Unidad 1</td>
-                <td style="border: 1px solid black; padding: 4px; background-color: #f3f4f6;">Unidad 2</td>
-                <td style="border: 1px solid black; padding: 4px; background-color: #f3f4f6;">Generador</td>
-                <td style="border: 1px solid black; padding: 4px; background-color: #f3f4f6;">Repuestos</td>
-                <td style="border: 1px solid black; padding: 4px; background-color: #f3f4f6;">Otros</td>
-                <td style="font-weight: bold; border: 1px solid black; padding: 4px; background-color: #e5e7eb;">T:</td>
-                <td style="border: 1px solid black; padding: 4px; font-weight: bold; color: #dc2626; background-color: #fef2f2;" id="pdf_gas_t"></td>
-            </tr>
-            <tr>
-                <td style="border: 1px solid black; padding: 4px;"></td>
-                <td style="border: 1px solid black; padding: 4px;" id="pdf_gas_u1"></td>
-                <td style="border: 1px solid black; padding: 4px; color: #6b7280;">$ 0.00</td>
-                <td style="border: 1px solid black; padding: 4px;" id="pdf_gas_gen"></td>
-                <td style="border: 1px solid black; padding: 4px; color: #6b7280;">$ 0.00</td>
-                <td style="border: 1px solid black; padding: 4px; color: #6b7280;">$ 0.00</td>
-                <td style="border: 1px solid black; padding: 4px; background-color: #e5e7eb;"></td>
-                <td style="border: 1px solid black; padding: 4px; background-color: #e5e7eb;"></td>
-            </tr>
-            <tr>
-                <td style="font-weight: bold; border: 1px solid black; padding: 4px; text-align: left;">Sueldos:</td>
-                <td style="border: 1px solid black; padding: 4px; background-color: #f3f4f6;">Técnico 1</td>
-                <td style="border: 1px solid black; padding: 4px; background-color: #f3f4f6;">Técnico 2</td>
-                <td style="border: 1px solid black; padding: 4px; background-color: #f3f4f6;">Director 1</td>
-                <td style="border: 1px solid black; padding: 4px; background-color: #f3f4f6;">Director 2</td>
-                <td style="border: 1px solid black; padding: 4px; background-color: #f3f4f6;">Otros</td>
-                <td style="font-weight: bold; border: 1px solid black; padding: 4px; background-color: #e5e7eb;">T:</td>
-                <td style="border: 1px solid black; padding: 4px; font-weight: bold; color: #dc2626; background-color: #fef2f2;" id="pdf_sue_t"></td>
-            </tr>
-            <tr>
-                <td style="border: 1px solid black; padding: 4px;"></td>
-                <td style="border: 1px solid black; padding: 4px;" id="pdf_sue_t1"></td>
-                <td style="border: 1px solid black; padding: 4px; color: #6b7280;">$ 0.00</td>
-                <td style="border: 1px solid black; padding: 4px; color: #6b7280;">$ 0.00</td>
-                <td style="border: 1px solid black; padding: 4px; color: #6b7280;">$ 0.00</td>
-                <td style="border: 1px solid black; padding: 4px; color: #6b7280;">$ 0.00</td>
-                <td style="border: 1px solid black; padding: 4px; background-color: #e5e7eb;"></td>
-                <td style="border: 1px solid black; padding: 4px; background-color: #e5e7eb;"></td>
-            </tr>
-            <tr>
-                <td style="font-weight: bold; border: 1px solid black; padding: 4px; text-align: left;">Insumos:</td>
-                <td style="border: 1px solid black; padding: 4px; background-color: #f3f4f6;" colspan="2">Agroquímico</td>
-                <td style="border: 1px solid black; padding: 4px; background-color: #f3f4f6;" colspan="3">Otros</td>
-                <td style="font-weight: bold; border: 1px solid black; padding: 4px; background-color: #e5e7eb;">T:</td>
-                <td style="border: 1px solid black; padding: 4px; font-weight: bold; color: #dc2626; background-color: #fef2f2;" id="pdf_ins_t"></td>
-            </tr>
-            <tr>
-                <td style="border: 1px solid black; padding: 4px;"></td>
-                <td style="border: 1px solid black; padding: 4px;" colspan="2" id="pdf_ins_agro"></td>
-                <td style="border: 1px solid black; padding: 4px; color: #6b7280;" colspan="3">$ 0.00</td>
-                <td style="border: 1px solid black; padding: 4px; background-color: #e5e7eb;"></td>
-                <td style="border: 1px solid black; padding: 4px; background-color: #e5e7eb;"></td>
-            </tr>
-            <tr>
-                <td style="font-weight: bold; border: 1px solid black; padding: 4px; text-align: left;">Comidas:</td>
-                <td style="border: 1px solid black; padding: 4px; background-color: #f3f4f6;" colspan="2">Comida</td>
-                <td style="border: 1px solid black; padding: 4px; background-color: #f3f4f6;" colspan="3">Oxxo</td>
-                <td style="font-weight: bold; border: 1px solid black; padding: 4px; background-color: #e5e7eb;">T:</td>
-                <td style="border: 1px solid black; padding: 4px; font-weight: bold; color: #dc2626; background-color: #fef2f2;" id="pdf_com_t"></td>
-            </tr>
-            <tr>
-                <td style="border: 1px solid black; padding: 4px;"></td>
-                <td style="border: 1px solid black; padding: 4px;" colspan="2" id="pdf_com_comida"></td>
-                <td style="border: 1px solid black; padding: 4px;" colspan="3" id="pdf_com_oxxo"></td>
-                <td style="border: 1px solid black; padding: 4px; background-color: #e5e7eb;"></td>
-                <td style="border: 1px solid black; padding: 4px; background-color: #e5e7eb;"></td>
-            </tr>
-            <tr>
-                <td colspan="6" style="font-weight: bold; border: 1px solid black; padding: 6px; text-align: right; background-color: #e5e7eb; font-size: 13px;">Total de gastos:</td>
-                <td colspan="2" style="font-weight: 800; border: 1px solid black; padding: 6px; background-color: #e5e7eb; color: #b91c1c; font-size: 13px;" id="pdf_total_gastos"></td>
-            </tr>
-            <tr>
-                <td colspan="6" style="font-weight: bold; border: 1px solid black; padding: 6px; text-align: right; background-color: #eff6ff; font-size: 13px; color: #1e3a8a;">Utilidad del ejercicio:</td>
-                <td colspan="2" style="font-weight: 800; border: 1px solid black; padding: 6px; background-color: #eff6ff; color: #1d4ed8; font-size: 13px;" id="pdf_utilidad"></td>
-            </tr>
-        </table>
-
-        <!-- Sección 4: Resultados / Reparticion -->
-        <table style="width: 100%; border-collapse: collapse; border: 1px solid black; margin-bottom: 15px; text-align: center;">
-            <tr>
-                <td style="font-weight: bold; border: 1px solid black; padding: 4px; background-color: #e5e7eb; width: 20%; text-align: left;">Margen de utilidad neto:</td>
-                <td style="font-weight: bold; border: 1px solid black; padding: 4px; width: 15%;" id="pdf_margen"></td>
-                <td style="font-weight: bold; border: 1px solid black; padding: 4px; background-color: #e5e7eb; width: 15%;">Capital (15%):</td>
-                <td style="font-weight: 800; border: 1px solid black; padding: 4px; color: #15803d; width: 17.5%;" id="pdf_capital"></td>
-                <td style="font-weight: bold; border: 1px solid black; padding: 4px; background-color: #e5e7eb; width: 15%;">Dividendo (85%):</td>
-                <td style="font-weight: 800; border: 1px solid black; padding: 4px; color: #15803d; width: 17.5%;" id="pdf_dividendo"></td>
-            </tr>
-            <tr>
-                <td colspan="4" style="border-left: 1px solid black; border-right: 1px solid black; padding: 4px; background-color: white;"></td>
-                <td style="font-weight: bold; border: 1px solid black; padding: 4px; background-color: #f3f4f6; text-align: right;">JC (25%):</td>
-                <td style="font-weight: bold; border: 1px solid black; padding: 4px;" id="pdf_jc"></td>
-            </tr>
-            <tr>
-                <td colspan="4" style="border-left: 1px solid black; border-right: 1px solid black; border-bottom: 1px solid black; padding: 4px; background-color: white;"></td>
-                <td style="font-weight: bold; border: 1px solid black; padding: 4px; background-color: #f3f4f6; text-align: right;">BY (75%):</td>
-                <td style="font-weight: bold; border: 1px solid black; padding: 4px;" id="pdf_by"></td>
-            </tr>
-        </table>
-
-        <!-- Firmas Inferiores -->
-        <div style="display: flex; justify-content: center; gap: 60px; margin-top: 20px; padding-bottom: 10px;">
-            <!-- Firma 1 -->
-            <div style="width: 240px; border: 1px solid black; display: flex; flex-direction: column;">
-                <div style="background-color: #f3f4f6; font-weight: bold; text-align: center; border-bottom: 1px solid black; padding: 4px; font-size: 13px;">Área que emite:</div>
-                <div style="height: 70px; text-align: center; position: relative; padding: 4px; flex-grow: 1; background-color: white;">
-                    <span style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: #d1d5db; font-style: italic; font-family: serif; font-size: 30px; opacity: 0.5;">JCGV</span>
+    <!-- ZONA DE IMPRESIÓN (MÉTODO EN VIVO PARA SAFARI MÓVIL Y 1 HOJA) -->
+    <div id="print-wrapper" class="hidden absolute top-0 left-0 w-full bg-white z-[999998] justify-center">
+        <div id="plantilla-pdf" style="width: 800px; background-color: white; padding: 20px 30px; font-family: sans-serif; font-size: 11px; line-height: 1.3; color: black;">
+            
+            <!-- Encabezado -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <div style="width: 33.33%;"><img src="logo_alternativo.png" alt="Logo" style="max-height: 45px;"></div>
+                <div style="width: 33.33%; text-align: center; font-weight: 800; font-size: 18px; line-height: 1.2; color: #064e3b;">AGROSOLUCIONES<br>AÉREAS</div>
+                <div style="width: 33.33%; text-align: right;">
+                    <div style="font-weight: bold; font-size: 14px; color: #064e3b;">Reporte de Venta</div>
+                    <div style="font-weight: normal; font-size: 11px; color: #6b7280;">Rev. 0 Sept/25</div>
                 </div>
-                <div style="border-top: 1px solid black; font-weight: 800; text-align: center; padding: 4px; font-size: 13px; background-color: white;">JCGV</div>
-                <div style="border-top: 1px solid black; text-align: center; padding: 4px; font-size: 11px; color: #374151; background-color: white;">Dirección Comercial</div>
+            </div>
+
+            <!-- Sección 1: Datos -->
+            <table style="width: 100%; border-collapse: collapse; border: 1px solid black; margin-bottom: 10px;">
+                <tr><td colspan="4" style="background-color: #e5e7eb; font-weight: bold; border: 1px solid black; padding: 4px; text-align: center; font-size: 13px;">Datos generales del servicio</td></tr>
+                <tr>
+                    <td style="font-weight: bold; border: 1px solid black; padding: 4px; width: 25%;">Cliente:</td>
+                    <td style="border: 1px solid black; padding: 4px;" id="pdf_cliente"></td>
+                    <td style="font-weight: bold; border: 1px solid black; padding: 4px; width: 25%;">No. de Cliente:</td>
+                    <td style="border: 1px solid black; padding: 4px; text-align: center; font-weight: bold;" id="pdf_no_cliente"></td>
+                </tr>
+                <tr>
+                    <td style="font-weight: bold; border: 1px solid black; padding: 4px;">Fecha del servicio:</td>
+                    <td style="border: 1px solid black; padding: 4px;" id="pdf_fecha"></td>
+                    <td style="border: 1px solid black; padding: 4px; background-color: #f9fafb;"></td>
+                    <td style="border: 1px solid black; padding: 4px; background-color: #f9fafb;"></td>
+                </tr>
+                <tr>
+                    <td style="font-weight: bold; border: 1px solid black; padding: 4px;">Ubicación del servicio:</td>
+                    <td style="border: 1px solid black; padding: 4px;" id="pdf_ubicacion"></td>
+                    <td style="font-weight: bold; border: 1px solid black; padding: 4px;">Tipo de cultivo:</td>
+                    <td style="border: 1px solid black; padding: 4px; text-align: center; color: #374151;" id="pdf_cultivo"></td>
+                </tr>
+                <tr>
+                    <td style="font-weight: bold; border: 1px solid black; padding: 4px;">Tipo de servicio:</td>
+                    <td style="border: 1px solid black; padding: 4px; color: #374151;">Fumigación</td>
+                    <td style="border: 1px solid black; padding: 4px; background-color: #f9fafb;"></td>
+                    <td style="border: 1px solid black; padding: 4px; background-color: #f9fafb;"></td>
+                </tr>
+                <tr>
+                    <td style="font-weight: bold; border: 1px solid black; padding: 4px;">Responsable:</td>
+                    <td style="border: 1px solid black; padding: 4px; color: #374151;">JARC</td>
+                    <td style="border: 1px solid black; padding: 4px; background-color: #f9fafb;"></td>
+                    <td style="border: 1px solid black; padding: 4px; background-color: #f9fafb;"></td>
+                </tr>
+            </table>
+
+            <!-- Sección 2: Ingresos -->
+            <table style="width: 100%; border-collapse: collapse; border: 1px solid black; margin-bottom: 10px; text-align: center;">
+                <tr><td colspan="7" style="background-color: #e5e7eb; font-weight: bold; border: 1px solid black; padding: 4px; text-align: left; font-size: 13px;">Ingresos</td></tr>
+                <tr style="font-weight: bold; background-color: #f3f4f6;">
+                    <td style="border: 1px solid black; padding: 4px; text-align: left; width: 25%;">Precio total cobrado:</td>
+                    <td style="border: 1px solid black; padding: 4px;">P x Ha</td>
+                    <td style="border: 1px solid black; padding: 4px;">Viáticos</td>
+                    <td style="border: 1px solid black; padding: 4px;">G.A.</td>
+                    <td style="border: 1px solid black; padding: 4px;">Otros</td>
+                    <td style="border: 1px solid black; padding: 4px; width: 12%;">#Quote:</td>
+                    <td style="border: 1px solid black; padding: 4px; font-weight: 800; color: #1e40af; font-size: 13px;" id="pdf_quote"></td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid black; padding: 4px;"></td>
+                    <td style="border: 1px solid black; padding: 4px;" id="pdf_p_ha"></td>
+                    <td style="border: 1px solid black; padding: 4px;" id="pdf_viaticos"></td>
+                    <td style="border: 1px solid black; padding: 4px; color: #6b7280;">$ 0.00</td>
+                    <td style="border: 1px solid black; padding: 4px;" id="pdf_otros_in"></td>
+                    <td style="border: 1px solid black; padding: 4px; font-weight: bold; background-color: #f3f4f6;">Ingreso total:</td>
+                    <td style="border: 1px solid black; padding: 4px; font-weight: bold; color: #15803d; background-color: #f0fdf4; font-size: 13px;" id="pdf_total_in"></td>
+                </tr>
+                <tr>
+                    <td style="font-weight: bold; border-left: 1px solid black; border-right: 1px solid black; padding: 4px; text-align: left;">Método de pago:</td>
+                    <td style="border-right: 1px solid black; padding: 4px; font-weight: bold; color: #1d4ed8;" id="pdf_metodo" colspan="2"></td>
+                    <td colspan="4" style="border-right: 1px solid black;"></td>
+                </tr>
+                <tr>
+                    <td style="font-weight: bold; border-left: 1px solid black; border-right: 1px solid black; border-bottom: 1px solid black; padding: 4px; text-align: left;">Hectáreas trabajadas:</td>
+                    <td style="border-right: 1px solid black; border-bottom: 1px solid black; padding: 4px; font-weight: bold;" id="pdf_ha" colspan="2"></td>
+                    <td colspan="4" style="border-right: 1px solid black; border-bottom: 1px solid black;"></td>
+                </tr>
+            </table>
+
+            <!-- Sección 3: Gastos -->
+            <table style="width: 100%; border-collapse: collapse; border: 1px solid black; margin-bottom: 10px; text-align: center;">
+                <tr><td colspan="8" style="background-color: #e5e7eb; font-weight: bold; border: 1px solid black; padding: 4px; text-align: left; font-size: 13px;">Gastos directos</td></tr>
+                <tr>
+                    <td style="font-weight: bold; border: 1px solid black; padding: 4px; text-align: left; width: 25%;">Gasolina Transporte:</td>
+                    <td style="border: 1px solid black; padding: 4px; background-color: #f3f4f6;">Unidad 1</td>
+                    <td style="border: 1px solid black; padding: 4px; background-color: #f3f4f6;">Unidad 2</td>
+                    <td style="border: 1px solid black; padding: 4px; background-color: #f3f4f6;">Generador</td>
+                    <td style="border: 1px solid black; padding: 4px; background-color: #f3f4f6;">Repuestos</td>
+                    <td style="border: 1px solid black; padding: 4px; background-color: #f3f4f6;">Otros</td>
+                    <td style="font-weight: bold; border: 1px solid black; padding: 4px; background-color: #e5e7eb;">T:</td>
+                    <td style="border: 1px solid black; padding: 4px; font-weight: bold; color: #dc2626; background-color: #fef2f2;" id="pdf_gas_t"></td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid black; padding: 4px;"></td>
+                    <td style="border: 1px solid black; padding: 4px;" id="pdf_gas_u1"></td>
+                    <td style="border: 1px solid black; padding: 4px; color: #6b7280;">$ 0.00</td>
+                    <td style="border: 1px solid black; padding: 4px;" id="pdf_gas_gen"></td>
+                    <td style="border: 1px solid black; padding: 4px; color: #6b7280;">$ 0.00</td>
+                    <td style="border: 1px solid black; padding: 4px; color: #6b7280;">$ 0.00</td>
+                    <td style="border: 1px solid black; padding: 4px; background-color: #e5e7eb;"></td>
+                    <td style="border: 1px solid black; padding: 4px; background-color: #e5e7eb;"></td>
+                </tr>
+                <tr>
+                    <td style="font-weight: bold; border: 1px solid black; padding: 4px; text-align: left;">Sueldos:</td>
+                    <td style="border: 1px solid black; padding: 4px; background-color: #f3f4f6;">Técnico 1</td>
+                    <td style="border: 1px solid black; padding: 4px; background-color: #f3f4f6;">Técnico 2</td>
+                    <td style="border: 1px solid black; padding: 4px; background-color: #f3f4f6;">Director 1</td>
+                    <td style="border: 1px solid black; padding: 4px; background-color: #f3f4f6;">Director 2</td>
+                    <td style="border: 1px solid black; padding: 4px; background-color: #f3f4f6;">Otros</td>
+                    <td style="font-weight: bold; border: 1px solid black; padding: 4px; background-color: #e5e7eb;">T:</td>
+                    <td style="border: 1px solid black; padding: 4px; font-weight: bold; color: #dc2626; background-color: #fef2f2;" id="pdf_sue_t"></td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid black; padding: 4px;"></td>
+                    <td style="border: 1px solid black; padding: 4px;" id="pdf_sue_t1"></td>
+                    <td style="border: 1px solid black; padding: 4px; color: #6b7280;">$ 0.00</td>
+                    <td style="border: 1px solid black; padding: 4px; color: #6b7280;">$ 0.00</td>
+                    <td style="border: 1px solid black; padding: 4px; color: #6b7280;">$ 0.00</td>
+                    <td style="border: 1px solid black; padding: 4px; color: #6b7280;">$ 0.00</td>
+                    <td style="border: 1px solid black; padding: 4px; background-color: #e5e7eb;"></td>
+                    <td style="border: 1px solid black; padding: 4px; background-color: #e5e7eb;"></td>
+                </tr>
+                <tr>
+                    <td style="font-weight: bold; border: 1px solid black; padding: 4px; text-align: left;">Insumos:</td>
+                    <td style="border: 1px solid black; padding: 4px; background-color: #f3f4f6;" colspan="2">Agroquímico</td>
+                    <td style="border: 1px solid black; padding: 4px; background-color: #f3f4f6;" colspan="3">Otros</td>
+                    <td style="font-weight: bold; border: 1px solid black; padding: 4px; background-color: #e5e7eb;">T:</td>
+                    <td style="border: 1px solid black; padding: 4px; font-weight: bold; color: #dc2626; background-color: #fef2f2;" id="pdf_ins_t"></td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid black; padding: 4px;"></td>
+                    <td style="border: 1px solid black; padding: 4px;" colspan="2" id="pdf_ins_agro"></td>
+                    <td style="border: 1px solid black; padding: 4px; color: #6b7280;" colspan="3">$ 0.00</td>
+                    <td style="border: 1px solid black; padding: 4px; background-color: #e5e7eb;"></td>
+                    <td style="border: 1px solid black; padding: 4px; background-color: #e5e7eb;"></td>
+                </tr>
+                <tr>
+                    <td style="font-weight: bold; border: 1px solid black; padding: 4px; text-align: left;">Comidas:</td>
+                    <td style="border: 1px solid black; padding: 4px; background-color: #f3f4f6;" colspan="2">Comida</td>
+                    <td style="border: 1px solid black; padding: 4px; background-color: #f3f4f6;" colspan="3">Oxxo</td>
+                    <td style="font-weight: bold; border: 1px solid black; padding: 4px; background-color: #e5e7eb;">T:</td>
+                    <td style="border: 1px solid black; padding: 4px; font-weight: bold; color: #dc2626; background-color: #fef2f2;" id="pdf_com_t"></td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid black; padding: 4px;"></td>
+                    <td style="border: 1px solid black; padding: 4px;" colspan="2" id="pdf_com_comida"></td>
+                    <td style="border: 1px solid black; padding: 4px;" colspan="3" id="pdf_com_oxxo"></td>
+                    <td style="border: 1px solid black; padding: 4px; background-color: #e5e7eb;"></td>
+                    <td style="border: 1px solid black; padding: 4px; background-color: #e5e7eb;"></td>
+                </tr>
+                <tr>
+                    <td colspan="6" style="font-weight: bold; border: 1px solid black; padding: 6px; text-align: right; background-color: #e5e7eb; font-size: 13px;">Total de gastos:</td>
+                    <td colspan="2" style="font-weight: 800; border: 1px solid black; padding: 6px; background-color: #e5e7eb; color: #b91c1c; font-size: 13px;" id="pdf_total_gastos"></td>
+                </tr>
+                <tr>
+                    <td colspan="6" style="font-weight: bold; border: 1px solid black; padding: 6px; text-align: right; background-color: #eff6ff; font-size: 13px; color: #1e3a8a;">Utilidad del ejercicio:</td>
+                    <td colspan="2" style="font-weight: 800; border: 1px solid black; padding: 6px; background-color: #eff6ff; color: #1d4ed8; font-size: 13px;" id="pdf_utilidad"></td>
+                </tr>
+            </table>
+
+            <!-- Sección 4: Resultados / Reparticion -->
+            <table style="width: 100%; border-collapse: collapse; border: 1px solid black; margin-bottom: 10px; text-align: center;">
+                <tr>
+                    <td style="font-weight: bold; border: 1px solid black; padding: 4px; background-color: #e5e7eb; width: 20%; text-align: left;">Margen de utilidad neto:</td>
+                    <td style="font-weight: bold; border: 1px solid black; padding: 4px; width: 15%;" id="pdf_margen"></td>
+                    <td style="font-weight: bold; border: 1px solid black; padding: 4px; background-color: #e5e7eb; width: 15%;">Capital (15%):</td>
+                    <td style="font-weight: 800; border: 1px solid black; padding: 4px; color: #15803d; width: 17.5%;" id="pdf_capital"></td>
+                    <td style="font-weight: bold; border: 1px solid black; padding: 4px; background-color: #e5e7eb; width: 15%;">Dividendo (85%):</td>
+                    <td style="font-weight: 800; border: 1px solid black; padding: 4px; color: #15803d; width: 17.5%;" id="pdf_dividendo"></td>
+                </tr>
+                <tr>
+                    <td colspan="4" style="border-left: 1px solid black; border-right: 1px solid black; padding: 4px; background-color: white;"></td>
+                    <td style="font-weight: bold; border: 1px solid black; padding: 4px; background-color: #f3f4f6; text-align: right;">JC (25%):</td>
+                    <td style="font-weight: bold; border: 1px solid black; padding: 4px;" id="pdf_jc"></td>
+                </tr>
+                <tr>
+                    <td colspan="4" style="border-left: 1px solid black; border-right: 1px solid black; border-bottom: 1px solid black; padding: 4px; background-color: white;"></td>
+                    <td style="font-weight: bold; border: 1px solid black; padding: 4px; background-color: #f3f4f6; text-align: right;">BY (75%):</td>
+                    <td style="font-weight: bold; border: 1px solid black; padding: 4px;" id="pdf_by"></td>
+                </tr>
+            </table>
+
+            <!-- Firmas Inferiores -->
+            <div style="display: flex; justify-content: center; gap: 60px; margin-top: 15px; padding-bottom: 5px;">
+                <!-- Firma 1 -->
+                <div style="width: 240px; border: 1px solid black; display: flex; flex-direction: column;">
+                    <div style="background-color: #f3f4f6; font-weight: bold; text-align: center; border-bottom: 1px solid black; padding: 4px; font-size: 13px;">Área que emite:</div>
+                    <div style="height: 60px; text-align: center; position: relative; padding: 4px; flex-grow: 1; background-color: white;">
+                        <span style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: #d1d5db; font-style: italic; font-family: serif; font-size: 30px; opacity: 0.5;">JCGV</span>
+                    </div>
+                    <div style="border-top: 1px solid black; font-weight: 800; text-align: center; padding: 4px; font-size: 13px; background-color: white;">JCGV</div>
+                    <div style="border-top: 1px solid black; text-align: center; padding: 4px; font-size: 11px; color: #374151; background-color: white;">Dirección Comercial</div>
+                </div>
+                
+                <!-- Firma 2 -->
+                <div style="width: 240px; border: 1px solid black; display: flex; flex-direction: column;">
+                    <div style="background-color: #f3f4f6; font-weight: bold; text-align: center; border-bottom: 1px solid black; padding: 4px; font-size: 13px;">Autorización:</div>
+                    <div style="height: 60px; text-align: center; position: relative; padding: 4px; flex-grow: 1; background-color: white;">
+                        <!-- Espacio para firma en blanco -->
+                    </div>
+                    <div style="border-top: 1px solid black; font-weight: 800; text-align: center; padding: 4px; font-size: 13px; background-color: white;">YLGF</div>
+                    <div style="border-top: 1px solid black; text-align: center; padding: 4px; font-size: 11px; color: #374151; background-color: white;">Dirección Admón. y Finanzas</div>
+                </div>
             </div>
             
-            <!-- Firma 2 -->
-            <div style="width: 240px; border: 1px solid black; display: flex; flex-direction: column;">
-                <div style="background-color: #f3f4f6; font-weight: bold; text-align: center; border-bottom: 1px solid black; padding: 4px; font-size: 13px;">Autorización:</div>
-                <div style="height: 70px; text-align: center; position: relative; padding: 4px; flex-grow: 1; background-color: white;">
-                    <!-- Espacio para firma en blanco -->
-                </div>
-                <div style="border-top: 1px solid black; font-weight: 800; text-align: center; padding: 4px; font-size: 13px; background-color: white;">YLGF</div>
-                <div style="border-top: 1px solid black; text-align: center; padding: 4px; font-size: 11px; color: #374151; background-color: white;">Dirección Admón. y Finanzas</div>
-            </div>
         </div>
-        
     </div>
 
     <script>
@@ -1115,35 +1156,24 @@
             document.getElementById('pdf_by').innerText = `$ ${by.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
 
             // 2. Pantalla de carga (Para tapar el proceso visualmente)
-            const overlay = document.createElement('div');
-            overlay.className = 'fixed inset-0 flex flex-col items-center justify-center';
-            overlay.style.backgroundColor = '#f0fdf4';
-            overlay.style.zIndex = '999999'; 
-            overlay.innerHTML = '<i class="fa-solid fa-file-pdf text-indigo-600 text-6xl mb-4 animate-pulse"></i><h2 class="text-2xl font-extrabold text-gray-800">Generando Documento...</h2>';
-            document.body.appendChild(overlay);
+            const overlay = document.getElementById('pdf-loading-overlay');
+            overlay.classList.remove('hidden');
+            overlay.style.display = 'flex';
 
-            // 3. Crear un "Clon" bloqueado a 800px absolutos (Esto cura el error en celulares)
-            const original = document.getElementById('plantilla-pdf');
-            const printContainer = document.createElement('div');
-            printContainer.style.position = 'absolute';
-            printContainer.style.top = '0px'; 
-            printContainer.style.left = '0px';
-            printContainer.style.width = '800px'; // Candado anti-aplastamiento móvil
-            printContainer.style.backgroundColor = '#ffffff'; 
-            printContainer.style.zIndex = '999998'; // Justo debajo de la pantalla de carga
-            printContainer.innerHTML = original.innerHTML;
+            // 3. Crear el formato bloqueado a 800px absolutos (Esto cura el error en celulares)
+            const wrapper = document.getElementById('print-wrapper');
+            wrapper.classList.remove('hidden');
+            wrapper.style.display = 'flex';
             
-            document.body.appendChild(printContainer);
-
             // Forzar a la pantalla a ir arriba para el encuadre
             window.scrollTo(0, 0);
 
-            // 4. Capturar, comprimir y descargar
+            // 4. Capturar, descargar y esconder
             setTimeout(() => {
                 const opt = {
                     margin:       0.15, // Margen muy ajustado para garantizar que quepa en 1 hoja
                     filename:     `Reporte_Venta_${s.no_cotizacion || s.id.substring(0,6).toUpperCase()}.pdf`,
-                    image:        { type: 'jpeg', quality: 1.0 },
+                    image:        { type: 'jpeg', quality: 0.98 },
                     html2canvas:  { 
                         scale: 2, 
                         useCORS: true, 
@@ -1154,21 +1184,25 @@
                     jsPDF:        { 
                         unit: 'in', 
                         format: 'letter', 
-                        orientation: 'portrait',
-                        compress: true 
+                        orientation: 'portrait' 
+                        // Sin 'compress: true' porque daña el PDF en Adobe Acrobat
                     }
                 };
 
-                html2pdf().set(opt).from(printContainer).save().then(() => {
+                html2pdf().set(opt).from(document.getElementById('plantilla-pdf')).save().then(() => {
                     // Limpieza total
-                    document.body.removeChild(printContainer);
-                    document.body.removeChild(overlay);
+                    wrapper.classList.add('hidden');
+                    wrapper.style.display = '';
+                    overlay.classList.add('hidden');
+                    overlay.style.display = '';
                     btn.innerHTML = originalText;
                     btn.disabled = false;
                 }).catch(err => {
                     console.error("PDF Error: ", err);
-                    document.body.removeChild(printContainer);
-                    document.body.removeChild(overlay);
+                    wrapper.classList.add('hidden');
+                    wrapper.style.display = '';
+                    overlay.classList.add('hidden');
+                    overlay.style.display = '';
                     btn.innerHTML = originalText;
                     btn.disabled = false;
                     alert("Hubo un error generando el PDF. Inténtalo de nuevo.");

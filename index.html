@@ -464,8 +464,9 @@
         <p class="text-sm text-gray-500 mt-2">Por favor, no cierres esta pantalla.</p>
     </div>
 
-    <!-- MOLDE INVISIBLE DEL REPORTE PDF (DISEÑO EXACTO EXCEL - COMPACTO 1 HOJA Y ANTI-RECORTE) -->
-    <div id="plantilla-pdf" class="hidden" style="width: 800px; box-sizing: border-box; background-color: white; padding: 15px 30px; font-family: sans-serif; font-size: 11px; line-height: 1.3; color: black;">
+    <!-- MOLDE INVISIBLE DEL REPORTE PDF (OCULTO LIMPIAMENTE) -->
+    <div id="plantilla-pdf" class="hidden">
+        <!-- El contenido será copiado al contenedor absoluto -->
         
         <!-- Encabezado -->
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
@@ -1158,19 +1159,26 @@
             overlay.classList.remove('hidden');
             overlay.style.display = 'flex';
 
-            // 3. Preparar el documento (Lo colocamos arriba a la izquierda para la foto)
-            const element = document.getElementById('plantilla-pdf');
-            element.classList.remove('hidden');
-            element.style.display = 'block';
-            element.style.position = 'absolute';
-            element.style.top = '0px';
-            element.style.left = '0px';
-            element.style.zIndex = '999998';
+            // 3. Crear el contenedor ABSOLUTO en 0,0 para que no haya márgenes blancos en laptops
+            const printContainer = document.createElement('div');
+            printContainer.style.position = 'absolute';
+            printContainer.style.top = '0px';
+            printContainer.style.left = '0px';
+            printContainer.style.width = '800px'; 
+            printContainer.style.backgroundColor = '#ffffff';
+            printContainer.style.padding = '20px 30px';
+            printContainer.style.margin = '0px';
+            printContainer.style.boxSizing = 'border-box';
+            printContainer.style.zIndex = '999998'; 
+            printContainer.style.color = '#000000';
+            printContainer.innerHTML = document.getElementById('plantilla-pdf').innerHTML;
+
+            document.body.appendChild(printContainer);
             
-            // Forzar a la pantalla a ir arriba para el encuadre perfecto
+            // Subir el scroll para que la "cámara" empiece desde arriba
             window.scrollTo(0, 0);
 
-            // 4. Capturar, descargar y esconder
+            // 4. Capturar y descargar
             setTimeout(() => {
                 const opt = {
                     margin:       0.15,
@@ -1180,8 +1188,9 @@
                         scale: 2, 
                         useCORS: true, 
                         scrollY: 0,
-                        scrollX: 0, // ESCUDO ANTI-RECORTE EN LAPTOPS WIDE
-                        backgroundColor: '#ffffff' 
+                        scrollX: 0, 
+                        windowWidth: 800,
+                        backgroundColor: '#ffffff'
                     },
                     jsPDF:        { 
                         unit: 'in', 
@@ -1190,28 +1199,16 @@
                     }
                 };
 
-                html2pdf().set(opt).from(element).save().then(() => {
+                html2pdf().set(opt).from(printContainer).save().then(() => {
                     // Limpieza total
-                    element.classList.add('hidden');
-                    element.style.display = '';
-                    element.style.position = '';
-                    element.style.top = '';
-                    element.style.left = '';
-                    element.style.zIndex = '';
-                    
+                    document.body.removeChild(printContainer);
                     overlay.classList.add('hidden');
                     overlay.style.display = '';
                     btn.innerHTML = originalText;
                     btn.disabled = false;
                 }).catch(err => {
                     console.error("PDF Error: ", err);
-                    element.classList.add('hidden');
-                    element.style.display = '';
-                    element.style.position = '';
-                    element.style.top = '';
-                    element.style.left = '';
-                    element.style.zIndex = '';
-                    
+                    document.body.removeChild(printContainer);
                     overlay.classList.add('hidden');
                     overlay.style.display = '';
                     btn.innerHTML = originalText;

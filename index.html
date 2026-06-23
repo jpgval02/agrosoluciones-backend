@@ -28,6 +28,7 @@
 </head>
 <body class="text-gray-800">
 
+    <!-- MENÚ LATERAL DESPLEGABLE (SIDEBAR) -->
     <div id="sidebar-menu" class="fixed inset-y-0 left-0 w-72 md:w-80 bg-[#064e3b] text-white transform -translate-x-full transition-transform duration-300 ease-in-out z-[100] shadow-2xl flex flex-col">
         <div class="p-6 border-b border-green-800 flex justify-between items-center bg-[#022c22]">
             <span class="font-extrabold text-lg tracking-wide flex items-center gap-2">
@@ -60,6 +61,7 @@
 
     <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/60 hidden z-[90] transition-opacity duration-300"></div>
 
+    <!-- CONTENEDOR DE LOGIN -->
     <div id="login-container" class="min-h-screen flex items-center justify-center p-4">
         <div class="bg-white p-6 md:p-8 rounded-3xl shadow-xl border border-green-100 max-w-md w-full">
             <div class="text-center mb-8">
@@ -81,6 +83,7 @@
         </div>
     </div>
 
+    <!-- PANEL PRINCIPAL -->
     <div id="dashboard-container" class="hidden pb-12">
         <nav class="tabla-header text-white px-4 md:px-6 py-3 flex justify-between items-center shadow-md sticky top-0 z-50">
             <div class="flex items-center">
@@ -98,6 +101,7 @@
             </button>
         </div>
 
+        <!-- PANTALLA 1: INICIO -->
         <div id="vista-inicio" class="max-w-[1600px] mx-auto mt-6 px-4 md:px-6 block">
             <h2 class="text-xl md:text-2xl font-bold text-gray-800 mb-4 tracking-tight">Objetivos Operativos - Junio 2026</h2>
             
@@ -112,6 +116,7 @@
             <h2 class="text-xl md:text-2xl font-bold text-gray-800 mt-10 mb-6 tracking-tight">Panel de Captura Rápida</h2>
             
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+                <!-- Form Clientes -->
                 <div id="vista-form-clientes" class="bg-white p-5 md:p-6 rounded-2xl shadow-md border border-green-100">
                     <h3 id="tituloFormCliente" class="text-lg md:text-xl font-bold text-gray-800 mb-5 flex items-center"><i class="fa-solid fa-user-plus text-green-600 mr-2 text-xl md:text-2xl"></i> Nuevo Registro</h3>
                     <form id="registroForm" class="space-y-4">
@@ -137,6 +142,7 @@
                     </form>
                 </div>
 
+                <!-- Form Parcelas -->
                 <div id="vista-form-propiedades" class="bg-white p-5 md:p-6 rounded-2xl shadow-md border border-green-100">
                     <h3 id="tituloFormPropiedad" class="text-lg md:text-xl font-bold text-gray-800 mb-5 flex items-center"><i class="fa-solid fa-map-location-dot text-green-600 mr-2 text-xl md:text-2xl"></i> Registrar Parcela</h3>
                     <form id="propiedadForm" class="space-y-4">
@@ -150,6 +156,7 @@
                     </form>
                 </div>
 
+                <!-- Form Ventas -->
                 <div id="vista-form-servicios" class="bg-white p-5 md:p-6 rounded-2xl shadow-md border border-green-100">
                     <h3 id="tituloFormServio" class="text-lg md:text-xl font-bold text-gray-800 mb-5 flex items-center"><i class="fa-solid fa-file-invoice-dollar text-green-600 mr-2 text-xl md:text-2xl"></i> Registrar Venta</h3>
                     <form id="servicioForm" class="space-y-4">
@@ -193,6 +200,7 @@
             </div>
         </div>
 
+        <!-- PANTALLA 2: CONTENEDOR DE REPORTES -->
         <div id="vista-tablas" class="hidden max-w-[1600px] mx-auto mt-6 px-4 md:px-6 pb-12">
             <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-6" id="titulo-seccion-tablas">Base de Datos Operativa</h2>
 
@@ -206,16 +214,19 @@
                 </div>
             </div>
 
+            <!-- MÓDULO: OPERACIONES -->
             <div id="vista-tabla-operaciones" class="hidden bg-white p-4 md:p-8 rounded-2xl shadow-xl border border-gray-200 min-h-[450px]">
                 <div class="flex items-center gap-3 border-b border-gray-100 pb-4 mb-6"><div class="bg-green-100 p-3 rounded-xl text-green-700 text-xl"><i class="fa-solid fa-gears"></i></div><div><h2 class="text-lg md:text-xl font-bold text-gray-800">Módulo de Operaciones</h2><p class="text-[10px] md:text-xs text-gray-400 mt-0.5">Lienzo operativo disponible para desarrollo</p></div></div>
                 <div class="flex flex-col items-center justify-center py-12 border border-dashed border-gray-200 rounded-xl bg-gray-50/50 text-center px-4"><div class="bg-white p-4 rounded-full shadow-sm text-gray-300 text-3xl mb-3"><i class="fa-solid fa-code"></i></div><p class="text-sm font-bold text-gray-600">Módulo Listo</p></div>
             </div>
 
+            <!-- MÓDULO: FINANCIEROS -->
             <div id="vista-tabla-financieros" class="hidden bg-white p-4 md:p-8 rounded-2xl shadow-xl border border-gray-200 min-h-[450px]">
                 <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4 border-b border-gray-100 pb-4 mb-6">
                     <div class="flex items-center gap-3"><div class="bg-rose-100 p-3 rounded-xl text-rose-700 text-xl"><i class="fa-solid fa-wallet"></i></div><div><h2 class="text-lg md:text-xl font-bold text-gray-800">Módulo Financiero</h2><p class="text-[10px] md:text-xs text-gray-400 mt-0.5">Auditoría completa de entradas y salidas</p></div></div>
                 </div>
                 
+                <!-- TABLA DE INGRESOS -->
                 <div class="bg-white rounded-xl shadow-md border border-emerald-200 overflow-hidden mb-8">
                     <div class="bg-emerald-700 px-4 py-3 flex justify-between items-center text-white"><h2 class="text-xs md:text-sm font-bold uppercase tracking-wider"><i class="fa-solid fa-hand-holding-dollar border border-white/30 p-1.5 rounded bg-white/10 mr-2"></i> Ingresos por Servicio</h2></div>
                     <div class="overflow-x-auto custom-scrollbar max-h-[400px] relative">
@@ -237,6 +248,7 @@
                     </div>
                 </div>
 
+                <!-- TABLA DE GASTOS -->
                 <div class="bg-white rounded-xl shadow-md border border-rose-200 overflow-hidden">
                     <div class="bg-rose-700 px-4 py-3 flex justify-between items-center text-white"><h2 class="text-xs md:text-sm font-bold uppercase tracking-wider"><i class="fa-solid fa-file-invoice-dollar border border-white/30 p-1.5 rounded bg-white/10 mr-2"></i> Gastos por Servicio</h2></div>
                     <div class="overflow-x-auto custom-scrollbar max-h-[400px] relative">
@@ -261,6 +273,7 @@
                 </div>
             </div>
 
+            <!-- MÓDULO: VENTAS CRM -->
             <div id="vista-tabla-ventas-crm" class="hidden space-y-10">
                 <div class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
                     <div class="tabla-header px-4 md:px-6 py-4 flex flex-col md:flex-row md:justify-between items-center text-white gap-3">
@@ -315,6 +328,7 @@
         </div>
     </div> 
 
+    <!-- MODAL METAS -->
     <div id="modal-metas" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 p-4">
         <div class="bg-white p-6 rounded-2xl shadow-2xl w-full max-w-md border border-gray-200">
             <div class="flex justify-between items-center mb-4"><h3 class="text-xl font-bold text-gray-800"><i class="fa-solid fa-bullseye text-red-500 mr-2"></i> Ajustar Objetivos</h3><button onclick="cerrarModalMetas()" class="text-gray-400 hover:text-red-500"><i class="fa-solid fa-xmark text-xl"></i></button></div>
@@ -334,6 +348,7 @@
         </div>
     </div>
 
+    <!-- MODAL CALCULADORA DE INGRESOS -->
     <div id="modal-ingresos" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 p-4">
         <div class="bg-white p-5 md:p-6 rounded-2xl shadow-2xl w-full max-w-sm border border-emerald-200">
             <div class="flex justify-between items-center mb-4 border-b border-gray-100 pb-2">
@@ -361,6 +376,7 @@
         </div>
     </div>
 
+    <!-- MODAL CALCULADORA DE GASTOS -->
     <div id="modal-gastos" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 p-4">
         <div class="bg-white p-5 md:p-6 rounded-2xl shadow-2xl w-full max-w-sm border border-red-200">
             <div class="flex justify-between items-center mb-4 border-b border-gray-100 pb-2"><h3 class="text-lg font-bold text-gray-800"><i class="fa-solid fa-calculator text-red-500 mr-2"></i> Desglose de Gastos</h3><button onclick="cerrarModalGastos()" class="text-gray-400 hover:text-red-500"><i class="fa-solid fa-xmark text-xl"></i></button></div>
@@ -377,6 +393,7 @@
         </div>
     </div>
 
+    <!-- MODAL FICHA TÉCNICA DEL SERVICIO (LUPA) -->
     <div id="modal-detalle" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 p-4">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl border border-gray-200 overflow-hidden flex flex-col max-h-[90vh]">
             <div class="bg-[#064e3b] px-4 md:px-6 py-4 flex justify-between items-center text-white shadow-md z-10">
@@ -440,10 +457,13 @@
         </div>
     </div>
 
+    <!-- ZONA DE IMPRESIÓN (MÉTODO INFALIBLE PARA ADOBE) -->
     <div id="print-wrapper" style="display: none; position: absolute; top: 0; left: 0; width: 100%; min-height: 100vh; background-color: #f3f4f6; z-index: 999999; justify-content: center; padding: 20px;">
-        <div id="plantilla-pdf" style="width: 800px; background-color: white; padding: 30px; font-family: sans-serif; font-size: 11px; line-height: 1.4; color: black; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+        <!-- RECUADRO CON ESPACIOS REDUCIDOS PARA QUE QUEPA PERFECTO EN UNA HOJA -->
+        <div id="plantilla-pdf" style="width: 800px; background-color: white; padding: 20px 30px; font-family: sans-serif; font-size: 11px; line-height: 1.4; color: black; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
             
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+            <!-- Encabezado -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
                 <div style="width: 33.33%;"><img src="logo_alternativo.png" alt="Logo" style="max-height: 50px;"></div>
                 <div style="width: 33.33%; text-align: center; font-weight: 800; font-size: 20px; line-height: 1.2; color: #064e3b;">AGROSOLUCIONES<br>AÉREAS</div>
                 <div style="width: 33.33%; text-align: right;">
@@ -452,7 +472,8 @@
                 </div>
             </div>
 
-            <table style="width: 100%; border-collapse: collapse; border: 1px solid black; margin-bottom: 16px;">
+            <!-- Sección 1: Datos -->
+            <table style="width: 100%; border-collapse: collapse; border: 1px solid black; margin-bottom: 12px;">
                 <tr><td colspan="4" style="background-color: #e5e7eb; font-weight: bold; border: 1px solid black; padding: 6px; text-align: center; font-size: 14px;">Datos generales del servicio</td></tr>
                 <tr>
                     <td style="font-weight: bold; border: 1px solid black; padding: 6px; width: 25%;">Cliente:</td>
@@ -486,7 +507,8 @@
                 </tr>
             </table>
 
-            <table style="width: 100%; border-collapse: collapse; border: 1px solid black; margin-bottom: 16px; text-align: center;">
+            <!-- Sección 2: Ingresos -->
+            <table style="width: 100%; border-collapse: collapse; border: 1px solid black; margin-bottom: 12px; text-align: center;">
                 <tr><td colspan="7" style="background-color: #e5e7eb; font-weight: bold; border: 1px solid black; padding: 6px; text-align: left; font-size: 14px;">Ingresos</td></tr>
                 <tr style="font-weight: bold; background-color: #f3f4f6;">
                     <td style="border: 1px solid black; padding: 6px; text-align: left; width: 25%;">Precio total cobrado:</td>
@@ -518,7 +540,8 @@
                 </tr>
             </table>
 
-            <table style="width: 100%; border-collapse: collapse; border: 1px solid black; margin-bottom: 16px; text-align: center;">
+            <!-- Sección 3: Gastos -->
+            <table style="width: 100%; border-collapse: collapse; border: 1px solid black; margin-bottom: 12px; text-align: center;">
                 <tr><td colspan="8" style="background-color: #e5e7eb; font-weight: bold; border: 1px solid black; padding: 6px; text-align: left; font-size: 14px;">Gastos directos</td></tr>
                 <tr>
                     <td style="font-weight: bold; border: 1px solid black; padding: 6px; text-align: left; width: 25%;">Gasolina Transporte:</td>
@@ -598,7 +621,8 @@
                 </tr>
             </table>
 
-            <table style="width: 100%; border-collapse: collapse; border: 1px solid black; margin-bottom: 32px; text-align: center;">
+            <!-- Sección 4: Resultados / Reparticion -->
+            <table style="width: 100%; border-collapse: collapse; border: 1px solid black; margin-bottom: 20px; text-align: center;">
                 <tr>
                     <td style="font-weight: bold; border: 1px solid black; padding: 6px; background-color: #e5e7eb; width: 20%; text-align: left;">Margen de utilidad neto:</td>
                     <td style="font-weight: bold; border: 1px solid black; padding: 6px; width: 15%;" id="pdf_margen"></td>
@@ -619,7 +643,9 @@
                 </tr>
             </table>
 
-            <div style="display: flex; justify-content: center; gap: 64px; margin-top: 64px; padding-bottom: 40px;">
+            <!-- Firmas Inferiores -->
+            <div style="display: flex; justify-content: center; gap: 64px; margin-top: 30px; padding-bottom: 10px; page-break-inside: avoid;">
+                <!-- Firma 1 -->
                 <div style="width: 256px; border: 1px solid black; display: flex; flex-direction: column;">
                     <div style="background-color: #f3f4f6; font-weight: bold; text-align: center; border-bottom: 1px solid black; padding: 6px; font-size: 14px;">Área que emite:</div>
                     <div style="height: 96px; text-align: center; position: relative; padding: 8px; flex-grow: 1; background-color: white;">
@@ -629,10 +655,12 @@
                     <div style="border-top: 1px solid black; text-align: center; padding: 6px; font-size: 12px; color: #374151; background-color: white;">Dirección Comercial</div>
                 </div>
                 
+                <!-- Firma 2 -->
                 <div style="width: 256px; border: 1px solid black; display: flex; flex-direction: column;">
                     <div style="background-color: #f3f4f6; font-weight: bold; text-align: center; border-bottom: 1px solid black; padding: 6px; font-size: 14px;">Autorización:</div>
                     <div style="height: 96px; text-align: center; position: relative; padding: 8px; flex-grow: 1; background-color: white;">
-                        </div>
+                        <!-- Espacio para firma en blanco -->
+                    </div>
                     <div style="border-top: 1px solid black; font-weight: 800; text-align: center; padding: 6px; font-size: 14px; background-color: white;">YLGF</div>
                     <div style="border-top: 1px solid black; text-align: center; padding: 6px; font-size: 12px; color: #374151; background-color: white;">Dirección Admón. y Finanzas</div>
                 </div>

@@ -132,7 +132,7 @@ async def iniciar_sesion(credenciales: Credenciales):
 async def registrar_cliente(cliente: ClienteNuevo):
     try:
         respuesta = supabase.table('clientes').insert(cliente.dict()).execute()
-        await manager.broadcast("update") # Se dispara actualizacion en vivo
+        await manager.broadcast("update") 
         return {"mensaje": "Guardado", "datos": respuesta.data[0]}
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
 

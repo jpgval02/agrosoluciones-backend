@@ -805,7 +805,9 @@
             btn.disabled = true;
 
             const mes_anio = document.getElementById('meta_mes_anio').value;
+            // ¡ESTE ERA EL DATO FALTANTE! 
             const datos = {
+                mes_anio: mes_anio, 
                 meta_ventas: parseFloat(document.getElementById('input_meta_ventas').value) || 0,
                 meta_servicios: parseInt(document.getElementById('input_meta_servicios').value) || 0,
                 meta_clientes: parseInt(document.getElementById('input_meta_clientes').value) || 0,
@@ -814,7 +816,8 @@
             };
 
             try {
-                const res = await fetch(`${API_URL}/api/metas/${mes_anio}`, {
+                // Aquí usamos la ruta /api/metas/ (con la diagonal al final)
+                const res = await fetch(`${API_URL}/api/metas/`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(datos)

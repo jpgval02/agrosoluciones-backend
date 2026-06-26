@@ -154,11 +154,9 @@ async def iniciar_sesion(credenciales: Credenciales):
                         urllib.request.urlopen(req_del)
                     except: pass
                     
-                # AQUI ESTÁ LA MAGIA: Forzamos el parámetro "issuer" para que diga Sistema ASOA
+                # Dejamos la carga limpia solo con el tipo (Supabase bloquea si metemos el nombre desde aquí)
                 payload_qr = {
-                    "factor_type": "totp", 
-                    "friendly_name": "Acceso Operativo",
-                    "issuer": "Sistema ASOA" 
+                    "factor_type": "totp"
                 }
                 req_enroll = urllib.request.Request(f"{url}/auth/v1/mfa/factors/enroll", data=json.dumps(payload_qr).encode('utf-8'), headers=headers, method="POST")
                 with urllib.request.urlopen(req_enroll) as res_enroll:
@@ -172,7 +170,7 @@ async def iniciar_sesion(credenciales: Credenciales):
                     "qr_code": enroll_data.get("totp", {}).get("qr_code")
                 }
         except Exception as api_err:
-            raise HTTPException(status_code=400, detail=f"Error en comunicación con Supabase MFA: {str(api_err)}")
+            raise HTTPException(status_code=400, detail=f"Error interno Supabase MFA: {str(api_err)}")
             
     except Exception as e:
         error_msg = str(e)

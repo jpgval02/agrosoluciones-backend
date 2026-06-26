@@ -535,7 +535,7 @@
                 <td style="border: 1px solid black; padding: 4px; font-weight: bold; color: #15803d; background-color: #f0fdf4; font-size: 13px;" id="pdf_total_in"></td>
             </tr>
             <tr>
-                <td style="font-weight: bold; border: 1px solid black; border-right: 1px solid black; padding: 4px; text-align: left;">Método de pago:</td>
+                <td style="font-weight: bold; border-left: 1px solid black; border-right: 1px solid black; padding: 4px; text-align: left;">Método de pago:</td>
                 <td style="border-right: 1px solid black; padding: 4px; font-weight: bold; color: #1d4ed8;" id="pdf_metodo" colspan="2"></td>
                 <td colspan="4" style="border-right: 1px solid black;"></td>
             </tr>
@@ -749,7 +749,9 @@
                         iniciarDashboard();
                     }
                 } else {
-                    document.getElementById('loginError').textContent = "Correo o contraseña incorrectos."; 
+                    // AQUÍ ESTÁ LA CORRECCIÓN: AHORA LEE EL ERROR EXACTO DEL SERVIDOR
+                    const errorTxt = data.detail || "Correo o contraseña incorrectos.";
+                    document.getElementById('loginError').textContent = errorTxt; 
                     document.getElementById('loginError').classList.remove('hidden'); 
                     btn.innerHTML = originalText; btn.disabled = false;
                 }
@@ -1255,7 +1257,7 @@
                         useCORS: true, 
                         backgroundColor: '#ffffff'
                     },
-                    jsPOS:        { 
+                    jsPDF:        { 
                         unit: 'in', 
                         format: 'letter', 
                         orientation: 'portrait' 
@@ -1323,3 +1325,4 @@
     </script>
 </body>
 </html>
+}

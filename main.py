@@ -4,6 +4,8 @@ from pydantic import BaseModel
 from typing import Optional, List
 from supabase import create_client, Client
 import os
+import json
+import urllib.request
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -113,86 +115,99 @@ class MetasMensuales(BaseModel):
     meta_prospectos_visitas: Optional[int] = 0
     visitas_reales: Optional[int] = 0
 
-# --- RUTA DE LOGIN PRINCIPAL ---
+# --- RUTA DE LOGIN ---
 @app.post("/login/")
 async def iniciar_sesion(credenciales: Credenciales):
     try:
-        # Filtro 1: Validamos que exista el correo y la contraseña
         respuesta = supabase.auth.sign_in_with_password({
             "email": credenciales.email,
             "password": credenciales.password
         })
         
-        # Filtro 2: Bóveda de Seguridad (MFA)
-        factores_info = supabase.auth.mfa.list_factors()
+        token = respuesta.session.access_token
         
-        # Leemos los factores soportando si vienen como objeto o diccionario
-        factores = getattr(factores_info, 'all', []) if hasattr(factores_info, 'all') else factores_info.get('all', [])
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "apikey": key,
+            "Content-Type": "application/json"
+        }
         
-        factores_verificados = []
-        factores_sucios = []
-        for f in factores:
-            status = getattr(f, 'status', None) if hasattr(f, 'status') else f.get('status')
-            if status == 'verified':
-                factores_verificados.append(f)
-            else:
-                factores_sucios.append(f)
+        try:
+            req_factors = urllib.request.Request(f"{url}/auth/v1/mfa/factors", headers=headers, method="GET")
+            with urllib.request.urlopen(req_factors) as res_api:
+                factores_data = json.loads(res_api.read().decode())
                 
-        if len(factores_verificados) > 0:
-            # YA ESTÁ VINCULADO: Solo pedimos el código
-            f = factores_verificados[0]
-            f_id = getattr(f, 'id', None) if hasattr(f, 'id') else f.get('id')
-            return {
-                "mensaje": "Requiere 2FA", 
-                "necesita_2fa": True, 
-                "tipo": "login",
-                "factor_id": f_id
-            }
-        else:
-            # ES NUEVO: Limpiamos basura de intentos previos y generamos QR
-            for fs in factores_sucios:
-                fs_id = getattr(fs, 'id', None) if hasattr(fs, 'id') else fs.get('id')
-                try: supabase.auth.mfa.unenroll({"factor_id": fs_id})
-                except: pass
-
-            # *LA CORRECCIÓN MÁGICA DE LOS CORCHETES*
-            enroll_res = supabase.auth.mfa.enroll({"factor_type": "totp"})
+            factores_verificados = [f for f in factores_data if f.get('status') == 'verified']
+            factores_sucios = [f for f in factores_data if f.get('status') != 'verified']
             
-            # Extraemos los datos sin importar cómo responda Python
-            factor_id = getattr(enroll_res, 'id', None) if hasattr(enroll_res, 'id') else enroll_res.get('id')
-            totp = getattr(enroll_res, 'totp', None) if hasattr(enroll_res, 'totp') else enroll_res.get('totp', {})
-            qr_code = getattr(totp, 'qr_code', None) if hasattr(totp, 'qr_code') else totp.get('qr_code', '')
-            
-            return {
-                "mensaje": "Requiere configurar 2FA",
-                "necesita_2fa": True,
-                "tipo": "setup",
-                "factor_id": factor_id,
-                "qr_code": qr_code
-            }
+            if len(factores_verificados) > 0:
+                return {
+                    "mensaje": "Requiere 2FA", 
+                    "necesita_2fa": True, 
+                    "tipo": "login",
+                    "factor_id": factores_verificados[0].get("id")
+                }
+            else:
+                for fs in factores_sucios:
+                    try:
+                        req_del = urllib.request.Request(f"{url}/auth/v1/mfa/factors/{fs.get('id')}", headers=headers, method="DELETE")
+                        urllib.request.urlopen(req_del)
+                    except: pass
+                    
+                # AQUI ESTÁ LA MAGIA: Forzamos el parámetro "issuer" para que diga Sistema ASOA
+                payload_qr = {
+                    "factor_type": "totp", 
+                    "friendly_name": "Acceso Operativo",
+                    "issuer": "Sistema ASOA" 
+                }
+                req_enroll = urllib.request.Request(f"{url}/auth/v1/mfa/factors/enroll", data=json.dumps(payload_qr).encode('utf-8'), headers=headers, method="POST")
+                with urllib.request.urlopen(req_enroll) as res_enroll:
+                    enroll_data = json.loads(res_enroll.read().decode())
+                    
+                return {
+                    "mensaje": "Requiere configurar 2FA",
+                    "necesita_2fa": True,
+                    "tipo": "setup",
+                    "factor_id": enroll_data.get("id"),
+                    "qr_code": enroll_data.get("totp", {}).get("qr_code")
+                }
+        except Exception as api_err:
+            raise HTTPException(status_code=400, detail=f"Error en comunicación con Supabase MFA: {str(api_err)}")
             
     except Exception as e:
         error_msg = str(e)
         if "Invalid login credentials" in error_msg:
-            raise HTTPException(status_code=401, detail="Correo o contraseña incorrectos")
+            raise HTTPException(status_code=401, detail="Correo o contraseña incorrectos.")
+        elif isinstance(e, HTTPException):
+            raise e
         else:
-            # Si falla la creación del QR, lanzamos el error para verlo, NO lo dejamos pasar
-            raise HTTPException(status_code=400, detail=f"Error Interno MFA: {error_msg}")
+            raise HTTPException(status_code=400, detail=f"Error Crítico: {error_msg}")
 
-# --- RUTA VERIFICACIÓN 2 PASOS (LOS 6 NÚMEROS DE GOOGLE AUTHENTICATOR) ---
+# --- RUTA VERIFICACIÓN 2 PASOS ---
 @app.post("/verificar-2fa/")
 async def verificar_2fa(req: Verifica2FA):
     try:
-        # *CORRECCIÓN: Usamos diccionarios aquí también*
-        challenge = supabase.auth.mfa.challenge({"factor_id": req.factor_id})
-        ch_id = getattr(challenge, 'id', None) if hasattr(challenge, 'id') else challenge.get('id')
+        session = supabase.auth.get_session()
+        if not session:
+            raise Exception("Sesión expirada o no encontrada.")
+            
+        token = session.access_token
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "apikey": key,
+            "Content-Type": "application/json"
+        }
         
-        verificacion = supabase.auth.mfa.verify({
-            "factor_id": req.factor_id, 
-            "challenge_id": ch_id, 
-            "code": req.codigo
-        })
-        
+        req_challenge = urllib.request.Request(f"{url}/auth/v1/mfa/factors/{req.factor_id}/challenge", data=json.dumps({}).encode('utf-8'), headers=headers, method="POST")
+        with urllib.request.urlopen(req_challenge) as res_c:
+            challenge_data = json.loads(res_c.read().decode())
+            challenge_id = challenge_data.get("id")
+            
+        verify_payload = {"challenge_id": challenge_id, "code": req.codigo}
+        req_verify = urllib.request.Request(f"{url}/auth/v1/mfa/factors/{req.factor_id}/verify", data=json.dumps(verify_payload).encode('utf-8'), headers=headers, method="POST")
+        with urllib.request.urlopen(req_verify) as res_v:
+            verify_data = json.loads(res_v.read().decode())
+            
         rol_usuario = "trabajador"
         try:
             datos_rol = supabase.table('roles').select('rol').eq('email', req.email).execute()
@@ -203,7 +218,7 @@ async def verificar_2fa(req: Verifica2FA):
             
         return {"mensaje": "Acceso concedido", "rol": rol_usuario}
     except Exception as e:
-        raise HTTPException(status_code=401, detail="Código 2FA incorrecto")
+        raise HTTPException(status_code=401, detail="El código de Google Authenticator es incorrecto o ya expiró.")
 
 # --- RUTAS DE CLIENTES ---
 @app.post("/clientes/")

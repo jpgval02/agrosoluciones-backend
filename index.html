@@ -34,6 +34,27 @@
         <p class="text-sm text-gray-500 mt-2">Por favor, no cierres esta pantalla.</p>
     </div>
 
+    <div id="modal-2fa" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-[9999] p-4">
+        <div class="bg-white p-6 md:p-8 rounded-3xl shadow-xl max-w-sm w-full text-center">
+            <i class="fa-solid fa-shield-halved text-5xl text-emerald-600 mb-4"></i>
+            <h3 class="text-xl font-bold text-gray-800 mb-2">Seguridad en 2 Pasos</h3>
+            <p id="2fa-instructions" class="text-xs text-gray-500 mb-4">Abre Google Authenticator e ingresa el código.</p>
+            
+            <div id="2fa-qr-container" class="hidden mb-6 flex flex-col items-center justify-center">
+                <div id="2fa-qr-box" class="p-2 border-2 border-dashed border-gray-300 rounded-xl mb-2 flex justify-center items-center bg-white w-full overflow-hidden">
+                    </div>
+                <p class="text-[10px] text-rose-500 font-bold uppercase"><i class="fa-solid fa-triangle-exclamation"></i> Solo verás esto 1 vez en la vida</p>
+            </div>
+            
+            <input type="text" id="codigo2fa" maxlength="6" placeholder="000000" class="w-full text-center text-3xl font-extrabold tracking-[0.3em] py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-600 outline-none mb-4" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+            
+            <button onclick="enviarCodigo2FA()" id="btn2fa" class="w-full py-3 bg-gray-900 hover:bg-black text-white font-bold rounded-xl shadow-md transition-colors flex justify-center items-center">
+                Verificar e Ingresar
+            </button>
+            <button type="button" onclick="cancelar2FA()" class="w-full mt-3 py-2 text-xs font-bold text-gray-500 hover:text-gray-700">Cancelar</button>
+        </div>
+    </div>
+
     <div id="app-content">
         
         <div id="sidebar-menu" class="fixed inset-y-0 left-0 w-72 md:w-80 bg-[#064e3b] text-white transform -translate-x-full transition-transform duration-300 ease-in-out z-[100] shadow-2xl flex flex-col">
@@ -654,6 +675,9 @@
         let visitasCampoRealizadas = 0; 
         let metodoPagoSeleccionado = 'Efectivo';
         let currentServiceIdForPDF = null;
+        
+        let factorIdActual = null;
+        let emailLoginActual = null;
 
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar-menu');
@@ -673,34 +697,109 @@
             }
         });
 
+        // --- SISTEMA DE LOGIN Y BÓVEDA ---
         document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            const btn = document.getElementById('btnLogin'); btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Cargando...'; btn.disabled = true; 
+            const btn = document.getElementById('btnLogin'); 
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Procesando...'; 
+            btn.disabled = true; 
+            
             try {
                 const res = await fetch(`${API_URL}/login/`, {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email: document.getElementById('loginEmail').value, password: document.getElementById('loginPassword').value })
                 });
                 const data = await res.json(); 
+                
                 if (res.ok) {
-                    rolUsuario = data.rol || 'trabajador';
-                    const badge = document.getElementById('badge-rol');
-                    if(badge) {
-                        if(rolUsuario === 'admin') {
-                            badge.innerHTML = '<i class="fa-solid fa-crown mr-1 text-amber-400"></i> ADMIN';
-                            badge.className = "hidden md:inline-block ml-4 text-xs font-bold px-2 py-1 bg-amber-950 text-amber-400 rounded-md border border-amber-600 tracking-wider";
+                    if (data.necesita_2fa) {
+                        // LA CONTRASEÑA ES CORRECTA: ACTIVA LA BÓVEDA DE GOOGLE AUTHENTICATOR
+                        factorIdActual = data.factor_id;
+                        emailLoginActual = document.getElementById('loginEmail').value;
+                        document.getElementById('modal-2fa').classList.remove('hidden');
+                        
+                        if (data.tipo === 'setup') {
+                            // ES NUEVO: MOSTRAR EL QR
+                            document.getElementById('2fa-qr-container').classList.remove('hidden');
+                            document.getElementById('2fa-qr-box').innerHTML = data.qr_code;
+                            const svgElement = document.querySelector('#2fa-qr-box svg');
+                            if (svgElement) svgElement.classList.add('w-44', 'h-44', 'mx-auto');
+                            document.getElementById('2fa-instructions').innerText = "Escanea este código en la app Google Authenticator de tu celular e ingresa los 6 números abajo para vincular tu dispositivo de manera permanente.";
                         } else {
-                            badge.innerHTML = '<i class="fa-solid fa-user-gear mr-1 text-green-300"></i> OPERADOR';
-                            badge.className = "hidden md:inline-block ml-4 text-xs font-bold px-2 py-1 bg-green-950 text-green-300 rounded-md border border-green-600 tracking-wider";
+                            // YA ESTÁ REGISTRADO: SOLO PEDIR LOS 6 NÚMEROS
+                            document.getElementById('2fa-qr-container').classList.add('hidden');
+                            document.getElementById('2fa-instructions').innerText = "Abre tu aplicación de Google Authenticator e ingresa el código de 6 dígitos.";
                         }
+                        
+                        document.getElementById('loginError').classList.add('hidden');
+                        btn.innerHTML = originalText; btn.disabled = false;
+                    } else {
+                        // Acceso concedido directamente (Si el servidor no soporta MFA)
+                        rolUsuario = data.rol || 'trabajador';
+                        iniciarDashboard();
                     }
-                    document.getElementById('login-container').classList.add('hidden'); document.getElementById('dashboard-container').classList.remove('hidden');
-                    await inicializarPanel(); 
                 } else {
-                    document.getElementById('loginError').textContent = "Correo o contraseña incorrectos."; document.getElementById('loginError').classList.remove('hidden'); btn.innerHTML = 'Iniciar Sesión'; btn.disabled = false;
+                    document.getElementById('loginError').textContent = "Correo o contraseña incorrectos."; 
+                    document.getElementById('loginError').classList.remove('hidden'); 
+                    btn.innerHTML = originalText; btn.disabled = false;
                 }
-            } catch (error) { alert("Error de conexión"); btn.innerHTML = 'Iniciar Sesión'; btn.disabled = false; }
+            } catch (error) { 
+                alert("Error de conexión con el servidor."); 
+                btn.innerHTML = originalText; btn.disabled = false; 
+            }
         });
+
+        // VALIDACIÓN DE LOS 6 DÍGITOS
+        async function enviarCodigo2FA() {
+            const btn = document.getElementById('btn2fa');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Verificando...';
+            btn.disabled = true;
+
+            const codigo = document.getElementById('codigo2fa').value;
+            try {
+                const res = await fetch(`${API_URL}/verificar-2fa/`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ factor_id: factorIdActual, codigo: codigo, email: emailLoginActual })
+                });
+                
+                if(res.ok) {
+                    const data = await res.json();
+                    document.getElementById('modal-2fa').classList.add('hidden');
+                    rolUsuario = data.rol || 'trabajador';
+                    iniciarDashboard();
+                } else {
+                    alert("Código de seguridad incorrecto. Intenta de nuevo.");
+                }
+            } catch(e) {
+                alert("Error de conexión durante la verificación.");
+            }
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
+
+        function cancelar2FA() {
+            document.getElementById('modal-2fa').classList.add('hidden');
+            document.getElementById('codigo2fa').value = '';
+        }
+
+        async function iniciarDashboard() {
+            const badge = document.getElementById('badge-rol');
+            if(badge) {
+                if(rolUsuario === 'admin') {
+                    badge.innerHTML = '<i class="fa-solid fa-crown mr-1 text-amber-400"></i> ADMIN';
+                    badge.className = "hidden md:inline-block ml-4 text-xs font-bold px-2 py-1 bg-amber-950 text-amber-400 rounded-md border border-amber-600 tracking-wider";
+                } else {
+                    badge.innerHTML = '<i class="fa-solid fa-user-gear mr-1 text-green-300"></i> OPERADOR';
+                    badge.className = "hidden md:inline-block ml-4 text-xs font-bold px-2 py-1 bg-green-950 text-green-300 rounded-md border border-green-600 tracking-wider";
+                }
+            }
+            document.getElementById('login-container').classList.add('hidden'); 
+            document.getElementById('dashboard-container').classList.remove('hidden');
+            await inicializarPanel(); 
+        }
 
         function cerrarSesion() { window.location.reload(); }
         async function inicializarPanel() { await cargarClientes(); await cargarPropiedades(); await cargarServicios(); cambiarVista('inicio'); }
@@ -1060,7 +1159,6 @@
         }
         function cerrarModalDetalle() { document.getElementById('modal-detalle').classList.add('hidden'); }
 
-        // --- FUNCIÓN MÁGICA: GENERAR REPORTE EN PDF (AISLAMIENTO TOTAL) ---
         async function generarPDFReporte() {
             if(!currentServiceIdForPDF) return;
             
@@ -1073,7 +1171,6 @@
             const pr = memoriaPropiedades.find(p => p.id === s.propiedad_id);
             const cl = pr ? memoriaClientes.find(c => c.id === pr.cliente_id) : null;
 
-            // 1. Llenar datos de la plantilla
             document.getElementById('pdf_cliente').innerText = cl ? `${cl.nombre} ${cl.apellidos}` : 'N/A';
             document.getElementById('pdf_no_cliente').innerText = (cl && cl.no_cliente) ? cl.no_cliente : 'S/N';
             document.getElementById('pdf_fecha').innerText = s.fecha_aplicacion || '';
@@ -1127,7 +1224,6 @@
             document.getElementById('pdf_jc').innerText = `$ ${jc.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
             document.getElementById('pdf_by').innerText = `$ ${by.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
 
-            // 2. Aislamiento Total: Ocultamos TODA la app y mostramos el lienzo de carga y el PDF
             const overlay = document.getElementById('pdf-loading-overlay');
             const appContent = document.getElementById('app-content');
             const template = document.getElementById('pdf-template-container');
@@ -1135,13 +1231,11 @@
             overlay.classList.remove('hidden');
             overlay.style.display = 'flex';
             
-            appContent.style.display = 'none'; // ¡Escondemos la app entera!
-            template.style.display = 'block';  // ¡Mostramos el formato!
+            appContent.style.display = 'none'; 
+            template.style.display = 'block';  
 
-            // Obligamos a la pantalla a ir a 0,0 (que ahora es exactamente la esquina del PDF)
             window.scrollTo(0, 0);
 
-            // 3. Tomar la foto (Le damos 500ms al navegador para dibujar todo a color)
             setTimeout(() => {
                 const opt = {
                     margin:       0.15,
@@ -1160,7 +1254,6 @@
                 };
 
                 html2pdf().set(opt).from(template).save().then(() => {
-                    // Restauramos todo a la normalidad
                     template.style.display = 'none';
                     appContent.style.display = 'block';
                     overlay.style.display = 'none';
@@ -1182,7 +1275,6 @@
             }, 500); 
         }
 
-        // --- WEBSOCKETS: SINCRONIZACIÓN EN TIEMPO REAL ---
         let ws;
         function conectarWebSocket() {
             const wsProtocol = API_URL.includes("https") ? "wss://" : "ws://";

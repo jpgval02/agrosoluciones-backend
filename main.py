@@ -57,6 +57,11 @@ class Credenciales(BaseModel):
     email: str
     password: str
 
+class Verifica2FA(BaseModel):
+    factor_id: str
+    codigo: str
+    email: str
+
 class ClienteNuevo(BaseModel):
     nombre: str
     apellidos: str
@@ -108,14 +113,57 @@ class MetasMensuales(BaseModel):
     meta_prospectos_visitas: Optional[int] = 0
     visitas_reales: Optional[int] = 0
 
-# --- RUTA DE LOGIN ---
+# --- RUTA DE LOGIN PRINCIPAL ---
 @app.post("/login/")
 async def iniciar_sesion(credenciales: Credenciales):
     try:
+        # Filtro 1: Validamos que exista y sea la contraseña correcta
         respuesta = supabase.auth.sign_in_with_password({
             "email": credenciales.email,
             "password": credenciales.password
         })
+        
+        # Filtro 2: Bóveda 2FA
+        try:
+            if hasattr(supabase.auth, 'mfa'):
+                user_factors = getattr(respuesta.user, 'factors', []) or []
+                factores_verificados = [f for f in user_factors if getattr(f, 'status', '') == 'verified']
+                
+                # Ya vinculó su celular anteriormente
+                if len(factores_verificados) > 0:
+                    factor_id = getattr(factores_verificados[0], 'id', '')
+                    return {
+                        "mensaje": "Requiere 2FA", 
+                        "necesita_2fa": True, 
+                        "tipo": "login",
+                        "factor_id": factor_id
+                    }
+                else:
+                    # Es nuevo, limpiamos basura si la hubiera y generamos QR
+                    unverified = [f for f in user_factors if getattr(f, 'status', '') != 'verified']
+                    for uf in unverified:
+                        try: supabase.auth.mfa.unenroll(factor_id=getattr(uf, 'id', ''))
+                        except: pass
+                        
+                    enroll_res = supabase.auth.mfa.enroll(factor_type="totp")
+                    factor_id = getattr(enroll_res, 'id', '') if hasattr(enroll_res, 'id') else enroll_res.get('id', '')
+                    totp = getattr(enroll_res, 'totp', None)
+                    qr_code = getattr(totp, 'qr_code', '') if totp else ''
+                    if not qr_code and isinstance(enroll_res, dict):
+                        qr_code = enroll_res.get('totp', {}).get('qr_code', '')
+                        
+                    return {
+                        "mensaje": "Requiere configurar 2FA",
+                        "necesita_2fa": True,
+                        "tipo": "setup",
+                        "factor_id": factor_id,
+                        "qr_code": qr_code
+                    }
+        except Exception as e:
+            print(f"Alerta MFA Interna: {e}")
+            pass 
+            
+        # Si por alguna razón el servidor no soporta MFA, entra de forma normal
         rol_usuario = "trabajador"
         try:
             datos_rol = supabase.table('roles').select('rol').eq('email', credenciales.email).execute()
@@ -123,9 +171,35 @@ async def iniciar_sesion(credenciales: Credenciales):
                 rol_usuario = datos_rol.data[0]['rol']
         except Exception:
             pass
-        return {"mensaje": "Acceso concedido", "rol": rol_usuario}
+        return {"mensaje": "Acceso concedido", "rol": rol_usuario, "necesita_2fa": False}
     except Exception:
         raise HTTPException(status_code=401, detail="Correo o contraseña incorrectos")
+
+# --- RUTA VERIFICACIÓN 2 PASOS (LOS 6 NÚMEROS) ---
+@app.post("/verificar-2fa/")
+async def verificar_2fa(req: Verifica2FA):
+    try:
+        challenge = supabase.auth.mfa.challenge(factor_id=req.factor_id)
+        ch_id = getattr(challenge, 'id', '') if hasattr(challenge, 'id') else challenge.get('id', '')
+        
+        # Validamos los 6 dígitos frente a Supabase
+        verificacion = supabase.auth.mfa.verify(
+            factor_id=req.factor_id, 
+            challenge_id=ch_id, 
+            code=req.codigo
+        )
+        
+        rol_usuario = "trabajador"
+        try:
+            datos_rol = supabase.table('roles').select('rol').eq('email', req.email).execute()
+            if len(datos_rol.data) > 0:
+                rol_usuario = datos_rol.data[0]['rol']
+        except Exception:
+            pass
+            
+        return {"mensaje": "Acceso concedido", "rol": rol_usuario}
+    except Exception as e:
+        raise HTTPException(status_code=401, detail="Código 2FA incorrecto")
 
 # --- RUTAS DE CLIENTES ---
 @app.post("/clientes/")

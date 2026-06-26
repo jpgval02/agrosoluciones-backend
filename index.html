@@ -535,7 +535,7 @@
                 <td style="border: 1px solid black; padding: 4px; font-weight: bold; color: #15803d; background-color: #f0fdf4; font-size: 13px;" id="pdf_total_in"></td>
             </tr>
             <tr>
-                <td style="font-weight: bold; border-left: 1px solid black; border-right: 1px solid black; padding: 4px; text-align: left;">Método de pago:</td>
+                <td style="font-weight: bold; border: 1px solid black; border-right: 1px solid black; padding: 4px; text-align: left;">Método de pago:</td>
                 <td style="border-right: 1px solid black; padding: 4px; font-weight: bold; color: #1d4ed8;" id="pdf_metodo" colspan="2"></td>
                 <td colspan="4" style="border-right: 1px solid black;"></td>
             </tr>
@@ -714,20 +714,30 @@
                 
                 if (res.ok) {
                     if (data.necesita_2fa) {
-                        // LA CONTRASEÑA ES CORRECTA: ACTIVA LA BÓVEDA DE GOOGLE AUTHENTICATOR
                         factorIdActual = data.factor_id;
                         emailLoginActual = document.getElementById('loginEmail').value;
                         document.getElementById('modal-2fa').classList.remove('hidden');
                         
                         if (data.tipo === 'setup') {
-                            // ES NUEVO: MOSTRAR EL QR
                             document.getElementById('2fa-qr-container').classList.remove('hidden');
-                            document.getElementById('2fa-qr-box').innerHTML = data.qr_code;
+                            
+                            // --- MAGIA DEL LIMPIADOR DE QR AQUÍ ---
+                            let qrLimpio = data.qr_code;
+                            if(qrLimpio.startsWith("data:image/svg+xml;utf-8,")) {
+                                qrLimpio = qrLimpio.replace("data:image/svg+xml;utf-8,", "");
+                            }
+                            document.getElementById('2fa-qr-box').innerHTML = qrLimpio;
+                            
                             const svgElement = document.querySelector('#2fa-qr-box svg');
-                            if (svgElement) svgElement.classList.add('w-44', 'h-44', 'mx-auto');
+                            if (svgElement) {
+                                svgElement.setAttribute('width', '100%');
+                                svgElement.setAttribute('height', '100%');
+                                svgElement.classList.add('w-48', 'h-48', 'mx-auto');
+                            }
+                            // --------------------------------------
+
                             document.getElementById('2fa-instructions').innerText = "Escanea este código en la app Google Authenticator de tu celular e ingresa los 6 números abajo para vincular tu dispositivo de manera permanente.";
                         } else {
-                            // YA ESTÁ REGISTRADO: SOLO PEDIR LOS 6 NÚMEROS
                             document.getElementById('2fa-qr-container').classList.add('hidden');
                             document.getElementById('2fa-instructions').innerText = "Abre tu aplicación de Google Authenticator e ingresa el código de 6 dígitos.";
                         }
@@ -735,7 +745,6 @@
                         document.getElementById('loginError').classList.add('hidden');
                         btn.innerHTML = originalText; btn.disabled = false;
                     } else {
-                        // Acceso concedido directamente (Si el servidor no soporta MFA)
                         rolUsuario = data.rol || 'trabajador';
                         iniciarDashboard();
                     }
@@ -1246,7 +1255,7 @@
                         useCORS: true, 
                         backgroundColor: '#ffffff'
                     },
-                    jsPDF:        { 
+                    jsPOS:        { 
                         unit: 'in', 
                         format: 'letter', 
                         orientation: 'portrait' 

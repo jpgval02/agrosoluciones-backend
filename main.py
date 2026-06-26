@@ -117,77 +117,81 @@ class MetasMensuales(BaseModel):
 @app.post("/login/")
 async def iniciar_sesion(credenciales: Credenciales):
     try:
-        # Filtro 1: Validamos que exista y sea la contraseña correcta
+        # Filtro 1: Validamos que exista el correo y la contraseña
         respuesta = supabase.auth.sign_in_with_password({
             "email": credenciales.email,
             "password": credenciales.password
         })
         
-        # Filtro 2: Bóveda 2FA
-        try:
-            if hasattr(supabase.auth, 'mfa'):
-                user_factors = getattr(respuesta.user, 'factors', []) or []
-                factores_verificados = [f for f in user_factors if getattr(f, 'status', '') == 'verified']
+        # Filtro 2: Bóveda de Seguridad (MFA)
+        factores_info = supabase.auth.mfa.list_factors()
+        
+        # Leemos los factores soportando si vienen como objeto o diccionario
+        factores = getattr(factores_info, 'all', []) if hasattr(factores_info, 'all') else factores_info.get('all', [])
+        
+        factores_verificados = []
+        factores_sucios = []
+        for f in factores:
+            status = getattr(f, 'status', None) if hasattr(f, 'status') else f.get('status')
+            if status == 'verified':
+                factores_verificados.append(f)
+            else:
+                factores_sucios.append(f)
                 
-                # Ya vinculó su celular anteriormente
-                if len(factores_verificados) > 0:
-                    factor_id = getattr(factores_verificados[0], 'id', '')
-                    return {
-                        "mensaje": "Requiere 2FA", 
-                        "necesita_2fa": True, 
-                        "tipo": "login",
-                        "factor_id": factor_id
-                    }
-                else:
-                    # Es nuevo, limpiamos basura si la hubiera y generamos QR
-                    unverified = [f for f in user_factors if getattr(f, 'status', '') != 'verified']
-                    for uf in unverified:
-                        try: supabase.auth.mfa.unenroll(factor_id=getattr(uf, 'id', ''))
-                        except: pass
-                        
-                    enroll_res = supabase.auth.mfa.enroll(factor_type="totp")
-                    factor_id = getattr(enroll_res, 'id', '') if hasattr(enroll_res, 'id') else enroll_res.get('id', '')
-                    totp = getattr(enroll_res, 'totp', None)
-                    qr_code = getattr(totp, 'qr_code', '') if totp else ''
-                    if not qr_code and isinstance(enroll_res, dict):
-                        qr_code = enroll_res.get('totp', {}).get('qr_code', '')
-                        
-                    return {
-                        "mensaje": "Requiere configurar 2FA",
-                        "necesita_2fa": True,
-                        "tipo": "setup",
-                        "factor_id": factor_id,
-                        "qr_code": qr_code
-                    }
-        except Exception as e:
-            print(f"Alerta MFA Interna: {e}")
-            pass 
-            
-        # Si por alguna razón el servidor no soporta MFA, entra de forma normal
-        rol_usuario = "trabajador"
-        try:
-            datos_rol = supabase.table('roles').select('rol').eq('email', credenciales.email).execute()
-            if len(datos_rol.data) > 0:
-                rol_usuario = datos_rol.data[0]['rol']
-        except Exception:
-            pass
-        return {"mensaje": "Acceso concedido", "rol": rol_usuario, "necesita_2fa": False}
-    except Exception:
-        raise HTTPException(status_code=401, detail="Correo o contraseña incorrectos")
+        if len(factores_verificados) > 0:
+            # YA ESTÁ VINCULADO: Solo pedimos el código
+            f = factores_verificados[0]
+            f_id = getattr(f, 'id', None) if hasattr(f, 'id') else f.get('id')
+            return {
+                "mensaje": "Requiere 2FA", 
+                "necesita_2fa": True, 
+                "tipo": "login",
+                "factor_id": f_id
+            }
+        else:
+            # ES NUEVO: Limpiamos basura de intentos previos y generamos QR
+            for fs in factores_sucios:
+                fs_id = getattr(fs, 'id', None) if hasattr(fs, 'id') else fs.get('id')
+                try: supabase.auth.mfa.unenroll({"factor_id": fs_id})
+                except: pass
 
-# --- RUTA VERIFICACIÓN 2 PASOS (LOS 6 NÚMEROS) ---
+            # *LA CORRECCIÓN MÁGICA DE LOS CORCHETES*
+            enroll_res = supabase.auth.mfa.enroll({"factor_type": "totp"})
+            
+            # Extraemos los datos sin importar cómo responda Python
+            factor_id = getattr(enroll_res, 'id', None) if hasattr(enroll_res, 'id') else enroll_res.get('id')
+            totp = getattr(enroll_res, 'totp', None) if hasattr(enroll_res, 'totp') else enroll_res.get('totp', {})
+            qr_code = getattr(totp, 'qr_code', None) if hasattr(totp, 'qr_code') else totp.get('qr_code', '')
+            
+            return {
+                "mensaje": "Requiere configurar 2FA",
+                "necesita_2fa": True,
+                "tipo": "setup",
+                "factor_id": factor_id,
+                "qr_code": qr_code
+            }
+            
+    except Exception as e:
+        error_msg = str(e)
+        if "Invalid login credentials" in error_msg:
+            raise HTTPException(status_code=401, detail="Correo o contraseña incorrectos")
+        else:
+            # Si falla la creación del QR, lanzamos el error para verlo, NO lo dejamos pasar
+            raise HTTPException(status_code=400, detail=f"Error Interno MFA: {error_msg}")
+
+# --- RUTA VERIFICACIÓN 2 PASOS (LOS 6 NÚMEROS DE GOOGLE AUTHENTICATOR) ---
 @app.post("/verificar-2fa/")
 async def verificar_2fa(req: Verifica2FA):
     try:
-        challenge = supabase.auth.mfa.challenge(factor_id=req.factor_id)
-        ch_id = getattr(challenge, 'id', '') if hasattr(challenge, 'id') else challenge.get('id', '')
+        # *CORRECCIÓN: Usamos diccionarios aquí también*
+        challenge = supabase.auth.mfa.challenge({"factor_id": req.factor_id})
+        ch_id = getattr(challenge, 'id', None) if hasattr(challenge, 'id') else challenge.get('id')
         
-        # Validamos los 6 dígitos frente a Supabase
-        verificacion = supabase.auth.mfa.verify(
-            factor_id=req.factor_id, 
-            challenge_id=ch_id, 
-            code=req.codigo
-        )
+        verificacion = supabase.auth.mfa.verify({
+            "factor_id": req.factor_id, 
+            "challenge_id": ch_id, 
+            "code": req.codigo
+        })
         
         rol_usuario = "trabajador"
         try:

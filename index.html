@@ -470,7 +470,21 @@
 
         </div> </div>
 
-    <div id="toast-container" class="fixed bottom-6 right-6 z-[9999] flex flex-col gap-3 items-end pointer-events-none"></div>
+    <div class="fixed bottom-6 right-6 z-[9999] flex flex-col items-end pointer-events-auto">
+        <div id="panel-notificaciones" class="hidden mb-4 bg-gray-900 border border-gray-700 rounded-2xl shadow-2xl w-72 md:w-80 max-h-[70vh] flex-col overflow-hidden transition-all duration-300 origin-bottom-right">
+            <div class="bg-gray-800 px-4 py-3 flex justify-between items-center border-b border-gray-700">
+                <h3 class="text-white font-bold text-sm tracking-wide"><i class="fa-solid fa-bell text-yellow-500 mr-2"></i> Seguimientos</h3>
+                <span id="notif-header-count" class="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">0</span>
+            </div>
+            <div id="lista-notificaciones" class="overflow-y-auto custom-scrollbar p-3 flex flex-col gap-3 max-h-[60vh]">
+                </div>
+        </div>
+        
+        <button onclick="toggleNotificaciones()" class="relative bg-gray-900 hover:bg-black text-white p-4 rounded-full shadow-2xl border border-gray-700 transition-transform hover:scale-105">
+            <i class="fa-solid fa-bell text-xl"></i>
+            <span id="badge-notificaciones" class="hidden absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-extrabold w-5 h-5 flex items-center justify-center rounded-full border border-gray-900 shadow-sm animate-bounce">0</span>
+        </button>
+    </div>
 
     <div id="pdf-template-container" style="display: none; width: 800px; background-color: white; padding: 20px 30px; font-family: sans-serif; font-size: 11px; line-height: 1.3; color: black; box-sizing: border-box; margin: 0;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
@@ -818,7 +832,7 @@
             await cargarPropiedades(); 
             await cargarServicios(); 
             cambiarVista('inicio'); 
-            revisarSeguimientos(); // ARRANCAMOS EL MOTOR DE NOTIFICACIONES
+            revisarSeguimientos(); 
         }
 
         function cambiarVista(vista) {
@@ -833,11 +847,14 @@
             else { document.getElementById('vista-tablas').classList.remove('hidden'); const targetTabla = document.getElementById('vista-tabla-' + vista); if(targetTabla) { targetTabla.classList.remove('hidden'); targetTabla.classList.add('block'); } }
         }
 
-        // --- SISTEMA DE NOTIFICACIONES (SEGUIMIENTOS) ---
+        // --- SISTEMA DE NOTIFICACIONES TIPO PANEL ---
         function revisarSeguimientos() {
-            const container = document.getElementById('toast-container');
-            if(!container) return;
-            container.innerHTML = ''; 
+            const lista = document.getElementById('lista-notificaciones');
+            const badge = document.getElementById('badge-notificaciones');
+            const headerCount = document.getElementById('notif-header-count');
+            if(!lista) return;
+            
+            lista.innerHTML = ''; 
             
             const hoy = new Date();
             hoy.setHours(0,0,0,0);
@@ -867,84 +884,72 @@
                 }
             });
             
-            // Ordenar por urgencia (los más atrasados o próximos primero)
+            // Ordenar: Los más urgentes (negativos o cero) primero.
             seguimientosPendientes.sort((a, b) => a.dias - b.dias);
             
-            const MAX_TOASTS = 3;
-            let mostrados = 0;
+            // Actualizar la burbuja roja
+            const total = seguimientosPendientes.length;
+            if (total > 0) {
+                badge.textContent = total;
+                badge.classList.remove('hidden');
+                headerCount.textContent = total;
+            } else {
+                badge.classList.add('hidden');
+                headerCount.textContent = '0';
+                lista.innerHTML = `<div class="p-6 text-center text-gray-400 text-xs font-bold flex flex-col items-center"><i class="fa-solid fa-mug-hot text-gray-500 text-3xl mb-3"></i>¡Todo al día! No hay seguimientos pendientes.</div>`;
+                return;
+            }
             
+            // Renderizar cada tarjeta dentro del panel
             seguimientosPendientes.forEach(seg => {
-                if (mostrados >= MAX_TOASTS) return;
-                
                 let colorBorde = 'border-l-yellow-500';
                 let textoDias = `Faltan ${seg.dias} días`;
-                let colorIcono = 'text-yellow-500';
                 
                 if (seg.dias <= 0) {
                     colorBorde = 'border-l-red-500';
                     textoDias = seg.dias === 0 ? '¡Toca HOY!' : `Vencido hace ${Math.abs(seg.dias)} días`;
-                    colorIcono = 'text-red-500';
                 } else if (seg.dias <= 5) {
                     colorBorde = 'border-l-orange-500';
-                    colorIcono = 'text-orange-500';
                 }
                 
-                const toast = document.createElement('div');
-                toast.id = `toast-${seg.id}`;
-                toast.className = `bg-gray-900 text-white rounded-xl shadow-2xl p-4 w-72 md:w-80 pointer-events-auto border-l-4 ${colorBorde} transform transition-all duration-500 translate-x-full opacity-0`;
+                const tarjeta = document.createElement('div');
+                tarjeta.id = `notif-${seg.id}`;
+                tarjeta.className = `bg-gray-800 rounded-xl p-3 border-l-4 ${colorBorde} shadow-sm transition-all hover:bg-gray-750`;
                 
-                toast.innerHTML = `
-                    <div class="flex justify-between items-start mb-2">
-                        <div class="flex items-center gap-2">
-                            <i class="fa-solid fa-bell ${colorIcono} animate-pulse"></i>
-                            <span class="text-xs font-bold text-gray-300 tracking-wider">SEGUIMIENTO</span>
-                        </div>
-                        <button onclick="cerrarToast('${seg.id}')" class="text-gray-500 hover:text-white transition-colors"><i class="fa-solid fa-xmark"></i></button>
+                tarjeta.innerHTML = `
+                    <div class="flex justify-between items-start mb-1">
+                        <p class="font-bold text-white text-sm truncate pr-2">${seg.nombre}</p>
                     </div>
-                    <p class="font-bold text-sm md:text-base truncate mb-1">${seg.nombre}</p>
-                    <p class="text-xs text-gray-400 mb-3">${textoDias} (${seg.fecha})</p>
-                    <div class="flex gap-2">
-                        <button onclick="cerrarToast('${seg.id}'); cambiarVista('ventas-crm');" class="flex-1 bg-gray-800 hover:bg-gray-700 text-xs font-bold py-2 rounded-lg transition-colors border border-gray-700 shadow-sm">Ver CRM</button>
-                        <button id="btn-hecho-${seg.id}" onclick="marcarHecho('${seg.id}')" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold py-2 rounded-lg transition-colors flex items-center justify-center gap-1 shadow-sm"><i class="fa-solid fa-check"></i> Hecho</button>
+                    <p class="text-[10px] text-gray-400 mb-2">${textoDias} (${seg.fecha})</p>
+                    <div class="flex gap-2 mt-2">
+                        <button onclick="cerrarPanelNotif(); cambiarVista('ventas-crm');" class="flex-1 bg-gray-700 hover:bg-gray-600 text-white text-[10px] font-bold py-1.5 rounded transition-colors border border-gray-600 shadow-sm">Ver CRM</button>
+                        <button id="btn-hecho-${seg.id}" onclick="marcarHechoPanel('${seg.id}')" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] font-bold py-1.5 rounded transition-colors flex items-center justify-center gap-1 shadow-sm"><i class="fa-solid fa-check"></i> Hecho</button>
                     </div>
                 `;
-                container.appendChild(toast);
-                
-                // Animación de entrada suave
-                setTimeout(() => {
-                    toast.classList.remove('translate-x-full', 'opacity-0');
-                }, 100 * mostrados);
-                
-                mostrados++;
+                lista.appendChild(tarjeta);
             });
-            
-            // Tarjeta resumen anti-spam
-            if (seguimientosPendientes.length > MAX_TOASTS) {
-                const extras = seguimientosPendientes.length - MAX_TOASTS;
-                const summaryToast = document.createElement('div');
-                summaryToast.className = `bg-gray-800 text-gray-300 rounded-xl shadow-2xl p-3 w-72 md:w-80 pointer-events-auto border border-gray-700 transform transition-all duration-500 translate-x-full opacity-0 text-center text-xs font-bold cursor-pointer hover:bg-gray-700`;
-                summaryToast.onclick = function() { cambiarVista('ventas-crm'); };
-                summaryToast.innerHTML = `+ ${extras} seguimientos pendientes más`;
-                container.appendChild(summaryToast);
-                
-                setTimeout(() => {
-                    summaryToast.classList.remove('translate-x-full', 'opacity-0');
-                }, 100 * mostrados);
-            }
         }
         
-        function cerrarToast(id) {
-            const toast = document.getElementById(`toast-${id}`);
-            if(toast) {
-                toast.classList.add('translate-x-full', 'opacity-0');
-                setTimeout(() => toast.remove(), 500);
+        function toggleNotificaciones() {
+            const panel = document.getElementById('panel-notificaciones');
+            if(panel.classList.contains('hidden')) {
+                panel.classList.remove('hidden');
+                panel.classList.add('flex');
+            } else {
+                cerrarPanelNotif();
             }
         }
+
+        function cerrarPanelNotif() {
+            const panel = document.getElementById('panel-notificaciones');
+            panel.classList.add('hidden');
+            panel.classList.remove('flex');
+        }
         
-        async function marcarHecho(id) {
+        async function marcarHechoPanel(id) {
             const btn = document.getElementById(`btn-hecho-${id}`);
             const originalHTML = btn.innerHTML;
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Auditando...';
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Guardando...';
             btn.disabled = true;
             
             const fechaHoy = new Date().toLocaleDateString('es-MX');
@@ -960,7 +965,13 @@
                     btn.classList.remove('bg-emerald-600', 'hover:bg-emerald-500');
                     btn.classList.add('bg-gray-700', 'text-emerald-400');
                     btn.innerHTML = '<i class="fa-solid fa-check-double"></i> ¡Auditado!';
-                    setTimeout(() => cerrarToast(id), 1500);
+                    
+                    // En 1 segundo, borramos la tarjeta de la lista y actualizamos el motor
+                    setTimeout(() => {
+                        const tarjeta = document.getElementById(`notif-${id}`);
+                        if(tarjeta) tarjeta.remove();
+                        revisarSeguimientos(); 
+                    }, 1000);
                 } else {
                     alert("Error al actualizar la base de datos.");
                     btn.innerHTML = originalHTML;

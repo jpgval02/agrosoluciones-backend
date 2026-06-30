@@ -470,6 +470,8 @@
 
         </div> </div>
 
+    <div id="toast-container" class="fixed bottom-6 right-6 z-[9999] flex flex-col gap-3 items-end pointer-events-none"></div>
+
     <div id="pdf-template-container" style="display: none; width: 800px; background-color: white; padding: 20px 30px; font-family: sans-serif; font-size: 11px; line-height: 1.3; color: black; box-sizing: border-box; margin: 0;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
             <div style="width: 33.33%;"><img src="logo_alternativo.png" alt="Logo" style="max-height: 45px;"></div>
@@ -721,7 +723,6 @@
                         if (data.tipo === 'setup') {
                             document.getElementById('2fa-qr-container').classList.remove('hidden');
                             
-                            // --- MAGIA DEL LIMPIADOR DE QR AQUÍ ---
                             let qrLimpio = data.qr_code;
                             if(qrLimpio.startsWith("data:image/svg+xml;utf-8,")) {
                                 qrLimpio = qrLimpio.replace("data:image/svg+xml;utf-8,", "");
@@ -734,7 +735,6 @@
                                 svgElement.setAttribute('height', '100%');
                                 svgElement.classList.add('w-48', 'h-48', 'mx-auto');
                             }
-                            // --------------------------------------
 
                             document.getElementById('2fa-instructions').innerText = "Escanea este código en la app Google Authenticator de tu celular e ingresa los 6 números abajo para vincular tu dispositivo de manera permanente.";
                         } else {
@@ -749,7 +749,6 @@
                         iniciarDashboard();
                     }
                 } else {
-                    // AQUÍ ESTÁ LA CORRECCIÓN: AHORA LEE EL ERROR EXACTO DEL SERVIDOR
                     const errorTxt = data.detail || "Correo o contraseña incorrectos.";
                     document.getElementById('loginError').textContent = errorTxt; 
                     document.getElementById('loginError').classList.remove('hidden'); 
@@ -813,7 +812,14 @@
         }
 
         function cerrarSesion() { window.location.reload(); }
-        async function inicializarPanel() { await cargarClientes(); await cargarPropiedades(); await cargarServicios(); cambiarVista('inicio'); }
+        
+        async function inicializarPanel() { 
+            await cargarClientes(); 
+            await cargarPropiedades(); 
+            await cargarServicios(); 
+            cambiarVista('inicio'); 
+            revisarSeguimientos(); // ARRANCAMOS EL MOTOR DE NOTIFICACIONES
+        }
 
         function cambiarVista(vista) {
             ['inicio', 'financieros', 'operaciones', 'ventas-crm'].forEach(sec => {
@@ -826,6 +832,147 @@
             if (vista === 'inicio') { document.getElementById('vista-inicio').classList.remove('hidden'); actualizarEstadisticasYMetas(); } 
             else { document.getElementById('vista-tablas').classList.remove('hidden'); const targetTabla = document.getElementById('vista-tabla-' + vista); if(targetTabla) { targetTabla.classList.remove('hidden'); targetTabla.classList.add('block'); } }
         }
+
+        // --- SISTEMA DE NOTIFICACIONES (SEGUIMIENTOS) ---
+        function revisarSeguimientos() {
+            const container = document.getElementById('toast-container');
+            if(!container) return;
+            container.innerHTML = ''; 
+            
+            const hoy = new Date();
+            hoy.setHours(0,0,0,0);
+            
+            let seguimientosPendientes = [];
+            
+            memoriaServicios.forEach(s => {
+                if (s.fecha_seguimiento && s.fecha_seguimiento.trim() !== '') {
+                    const partes = s.fecha_seguimiento.split('-');
+                    if(partes.length === 3) {
+                        const fechaSeg = new Date(partes[0], partes[1] - 1, partes[2]);
+                        const diffTime = Math.ceil((fechaSeg - hoy) / (1000 * 60 * 60 * 24));
+                        
+                        if (diffTime <= 10) {
+                            const pr = memoriaPropiedades.find(p => p.id === s.propiedad_id);
+                            const cl = pr ? memoriaClientes.find(c => c.id === pr.cliente_id) : null;
+                            const nombre = cl ? `${cl.nombre} ${cl.apellidos}` : 'Cliente Sin Nombre';
+                            
+                            seguimientosPendientes.push({
+                                id: s.id,
+                                nombre: nombre,
+                                dias: diffTime,
+                                fecha: s.fecha_seguimiento
+                            });
+                        }
+                    }
+                }
+            });
+            
+            // Ordenar por urgencia (los más atrasados o próximos primero)
+            seguimientosPendientes.sort((a, b) => a.dias - b.dias);
+            
+            const MAX_TOASTS = 3;
+            let mostrados = 0;
+            
+            seguimientosPendientes.forEach(seg => {
+                if (mostrados >= MAX_TOASTS) return;
+                
+                let colorBorde = 'border-l-yellow-500';
+                let textoDias = `Faltan ${seg.dias} días`;
+                let colorIcono = 'text-yellow-500';
+                
+                if (seg.dias <= 0) {
+                    colorBorde = 'border-l-red-500';
+                    textoDias = seg.dias === 0 ? '¡Toca HOY!' : `Vencido hace ${Math.abs(seg.dias)} días`;
+                    colorIcono = 'text-red-500';
+                } else if (seg.dias <= 5) {
+                    colorBorde = 'border-l-orange-500';
+                    colorIcono = 'text-orange-500';
+                }
+                
+                const toast = document.createElement('div');
+                toast.id = `toast-${seg.id}`;
+                toast.className = `bg-gray-900 text-white rounded-xl shadow-2xl p-4 w-72 md:w-80 pointer-events-auto border-l-4 ${colorBorde} transform transition-all duration-500 translate-x-full opacity-0`;
+                
+                toast.innerHTML = `
+                    <div class="flex justify-between items-start mb-2">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-bell ${colorIcono} animate-pulse"></i>
+                            <span class="text-xs font-bold text-gray-300 tracking-wider">SEGUIMIENTO</span>
+                        </div>
+                        <button onclick="cerrarToast('${seg.id}')" class="text-gray-500 hover:text-white transition-colors"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                    <p class="font-bold text-sm md:text-base truncate mb-1">${seg.nombre}</p>
+                    <p class="text-xs text-gray-400 mb-3">${textoDias} (${seg.fecha})</p>
+                    <div class="flex gap-2">
+                        <button onclick="cerrarToast('${seg.id}'); cambiarVista('ventas-crm');" class="flex-1 bg-gray-800 hover:bg-gray-700 text-xs font-bold py-2 rounded-lg transition-colors border border-gray-700 shadow-sm">Ver CRM</button>
+                        <button id="btn-hecho-${seg.id}" onclick="marcarHecho('${seg.id}')" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold py-2 rounded-lg transition-colors flex items-center justify-center gap-1 shadow-sm"><i class="fa-solid fa-check"></i> Hecho</button>
+                    </div>
+                `;
+                container.appendChild(toast);
+                
+                // Animación de entrada suave
+                setTimeout(() => {
+                    toast.classList.remove('translate-x-full', 'opacity-0');
+                }, 100 * mostrados);
+                
+                mostrados++;
+            });
+            
+            // Tarjeta resumen anti-spam
+            if (seguimientosPendientes.length > MAX_TOASTS) {
+                const extras = seguimientosPendientes.length - MAX_TOASTS;
+                const summaryToast = document.createElement('div');
+                summaryToast.className = `bg-gray-800 text-gray-300 rounded-xl shadow-2xl p-3 w-72 md:w-80 pointer-events-auto border border-gray-700 transform transition-all duration-500 translate-x-full opacity-0 text-center text-xs font-bold cursor-pointer hover:bg-gray-700`;
+                summaryToast.onclick = function() { cambiarVista('ventas-crm'); };
+                summaryToast.innerHTML = `+ ${extras} seguimientos pendientes más`;
+                container.appendChild(summaryToast);
+                
+                setTimeout(() => {
+                    summaryToast.classList.remove('translate-x-full', 'opacity-0');
+                }, 100 * mostrados);
+            }
+        }
+        
+        function cerrarToast(id) {
+            const toast = document.getElementById(`toast-${id}`);
+            if(toast) {
+                toast.classList.add('translate-x-full', 'opacity-0');
+                setTimeout(() => toast.remove(), 500);
+            }
+        }
+        
+        async function marcarHecho(id) {
+            const btn = document.getElementById(`btn-hecho-${id}`);
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Auditando...';
+            btn.disabled = true;
+            
+            const fechaHoy = new Date().toLocaleDateString('es-MX');
+            
+            try {
+                const res = await fetch(`${API_URL}/api/servicios/${id}/hecho`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ fecha_completado: fechaHoy })
+                });
+                
+                if(res.ok) {
+                    btn.classList.remove('bg-emerald-600', 'hover:bg-emerald-500');
+                    btn.classList.add('bg-gray-700', 'text-emerald-400');
+                    btn.innerHTML = '<i class="fa-solid fa-check-double"></i> ¡Auditado!';
+                    setTimeout(() => cerrarToast(id), 1500);
+                } else {
+                    alert("Error al actualizar la base de datos.");
+                    btn.innerHTML = originalHTML;
+                    btn.disabled = false;
+                }
+            } catch(e) {
+                alert("Falla de conexión.");
+                btn.innerHTML = originalHTML;
+                btn.disabled = false;
+            }
+        }
+        // --------------------------------------------------------
 
         async function registrarVisitaCampo() {
             let mesBusqueda = document.getElementById('filtroMes').value; if(mesBusqueda === 'todos') mesBusqueda = "06"; 
@@ -1307,6 +1454,7 @@
                                 await cargarPropiedades(); 
                                 await cargarServicios(); 
                                 actualizarEstadisticasYMetas();
+                                revisarSeguimientos(); // También actualizamos notificaciones en tiempo real
                                 
                                 if(document.getElementById('buscadorClientes') && document.getElementById('buscadorClientes').value.trim() !== '') {
                                     filtrarClientes();
@@ -1325,4 +1473,3 @@
     </script>
 </body>
 </html>
-}

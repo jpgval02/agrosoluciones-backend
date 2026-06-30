@@ -113,6 +113,9 @@ class MetasMensuales(BaseModel):
     meta_prospectos_visitas: Optional[int] = 0
     visitas_reales: Optional[int] = 0
 
+class SeguimientoHecho(BaseModel):
+    fecha_completado: str
+
 # --- RUTA DE LOGIN PRINCIPAL ---
 @app.post("/login/")
 async def iniciar_sesion(credenciales: Credenciales):
@@ -183,7 +186,7 @@ async def iniciar_sesion(credenciales: Credenciales):
             # Si falla algo, lo mostramos tal cual en rojo para diagnosticar
             raise HTTPException(status_code=400, detail=f"Error Interno MFA: {error_msg}")
 
-# --- RUTA VERIFICACIÓN 2 PASOS (LOS 6 NÚMEROS DE GOOGLE AUTHENTICATOR) ---
+# --- RUTA VERIFICACIÓN 2 PASOS ---
 @app.post("/verificar-2fa/")
 async def verificar_2fa(req: Verifica2FA):
     try:
@@ -304,6 +307,31 @@ async def eliminar_servicio(servicio_id: str):
         await manager.broadcast("update")
         return {"mensaje": "Eliminado exitosamente"}
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
+
+# --- RUTA DE BOTON "HECHO" EN SEGUIMIENTOS ---
+@app.post("/api/servicios/{servicio_id}/hecho")
+async def marcar_seguimiento_hecho(servicio_id: str, req: SeguimientoHecho):
+    try:
+        # Obtenemos las observaciones actuales
+        res = supabase.table('servicios_aplicacion').select('observaciones').eq('id', servicio_id).execute()
+        obs_actual = ""
+        if len(res.data) > 0:
+            obs_actual = res.data[0].get('observaciones') or ""
+            
+        # Agregamos la firma de auditoría
+        separador = "\n" if obs_actual else ""
+        nueva_obs = f"{obs_actual}{separador}[Sistema] Seguimiento completado el {req.fecha_completado}."
+        
+        # Guardamos en la base de datos (y borramos la fecha para que no vuelva a molestar)
+        supabase.table('servicios_aplicacion').update({
+            "fecha_seguimiento": None,
+            "observaciones": nueva_obs
+        }).eq('id', servicio_id).execute()
+        
+        await manager.broadcast("update")
+        return {"mensaje": "Seguimiento completado y auditado"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 # --- VISITAS, METAS Y DASHBOARD ---
 @app.post("/api/visitas/{mes_anio}")

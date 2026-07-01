@@ -34,6 +34,7 @@
         <p class="text-sm text-gray-500 mt-2">Por favor, no cierres esta pantalla.</p>
     </div>
 
+    <!-- MODAL 2FA DE SEGURIDAD -->
     <div id="modal-2fa" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-[9999] p-4">
         <div class="bg-white p-6 md:p-8 rounded-3xl shadow-xl max-w-sm w-full text-center">
             <i class="fa-solid fa-shield-halved text-5xl text-emerald-600 mb-4"></i>
@@ -145,6 +146,7 @@
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 items-start">
                     
+                    <!-- 1. Formulario de Clientes -->
                     <div id="vista-form-clientes" class="bg-white p-5 md:p-6 rounded-2xl shadow-md border border-green-100">
                         <h3 id="tituloFormCliente" class="text-lg md:text-xl font-bold text-gray-800 mb-5 flex items-center"><i class="fa-solid fa-user-plus text-green-600 mr-2 text-xl md:text-2xl"></i> Nuevo Registro</h3>
                         <form id="registroForm" class="space-y-4">
@@ -170,6 +172,7 @@
                         </form>
                     </div>
 
+                    <!-- 2. Formulario de Parcela -->
                     <div id="vista-form-propiedades" class="bg-white p-5 md:p-6 rounded-2xl shadow-md border border-green-100">
                         <h3 id="tituloFormPropiedad" class="text-lg md:text-xl font-bold text-gray-800 mb-5 flex items-center"><i class="fa-solid fa-map-location-dot text-green-600 mr-2 text-xl md:text-2xl"></i> Registrar Parcela</h3>
                         <form id="propiedadForm" class="space-y-4">
@@ -189,6 +192,7 @@
                         </form>
                     </div>
 
+                    <!-- 3. Formulario de Cotización -->
                     <div id="vista-form-cotizaciones" class="bg-white p-5 md:p-6 rounded-2xl shadow-md border border-amber-200">
                         <h3 id="tituloFormCotizacion" class="text-lg md:text-xl font-bold text-gray-800 mb-5 flex items-center"><i class="fa-solid fa-file-signature text-amber-500 mr-2 text-xl md:text-2xl"></i> Nueva Cotización</h3>
                         <form id="cotizacionForm" class="space-y-4">
@@ -225,6 +229,7 @@
                         </form>
                     </div>
 
+                    <!-- 4. Formulario de Ventas -->
                     <div id="vista-form-servicios" class="bg-white p-5 md:p-6 rounded-2xl shadow-md border border-green-100">
                         <h3 id="tituloFormServio" class="text-lg md:text-xl font-bold text-gray-800 mb-5 flex items-center"><i class="fa-solid fa-file-invoice-dollar text-green-600 mr-2 text-xl md:text-2xl"></i> Registrar Venta</h3>
                         <form id="servicioForm" class="space-y-4">
@@ -268,6 +273,7 @@
                 </div>
             </div>
 
+            <!-- MODULO DE COTIZACIONES (SOLO TABLA) -->
             <div id="vista-tabla-cotizaciones" class="hidden max-w-[1600px] mx-auto mt-6 px-4 md:px-6 pb-12 space-y-8">
                 <div class="flex items-center gap-3 border-b border-gray-200 pb-4">
                     <div class="bg-amber-100 p-3 rounded-xl text-amber-600 text-xl"><i class="fa-solid fa-file-signature"></i></div>
@@ -298,6 +304,7 @@
                 </div>
             </div>
 
+            <!-- VISTAS ORIGINALES DE TABLAS -->
             <div id="vista-tablas" class="hidden max-w-[1600px] mx-auto mt-6 px-4 md:px-6 pb-12">
                 <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-6" id="titulo-seccion-tablas">Base de Datos Operativa</h2>
 
@@ -419,6 +426,7 @@
                 </div>
             </div>
 
+            <!-- MODALES DE OPERACION -->
             <div id="modal-metas" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 p-4">
                 <div class="bg-white p-6 rounded-2xl shadow-2xl w-full max-w-md border border-gray-200">
                     <div class="flex justify-between items-center mb-4"><h3 class="text-xl font-bold text-gray-800"><i class="fa-solid fa-bullseye text-red-500 mr-2"></i> Ajustar Objetivos</h3><button onclick="cerrarModalMetas()" class="text-gray-400 hover:text-red-500"><i class="fa-solid fa-xmark text-xl"></i></button></div>
@@ -546,6 +554,7 @@
 
         </div> </div>
 
+    <!-- CENTRO DE NOTIFICACIONES (LA CAMPANITA) -->
     <div class="fixed bottom-24 md:bottom-8 right-4 md:right-8 z-[9999] flex flex-col items-end pointer-events-auto">
         <div id="panel-notificaciones" class="hidden mb-4 bg-gray-900 border border-gray-700 rounded-2xl shadow-2xl w-72 md:w-80 max-h-[70vh] flex-col overflow-hidden transition-all duration-300 origin-bottom-right">
             <div class="bg-gray-800 px-4 py-3 flex justify-between items-center border-b border-gray-700">
@@ -562,6 +571,7 @@
         </button>
     </div>
 
+    <!-- PLANTILLA PDF REPORTE VENTAS -->
     <div id="pdf-template-container" style="display: none; width: 800px; background-color: white; padding: 20px 30px; font-family: sans-serif; font-size: 11px; line-height: 1.3; color: black; box-sizing: border-box; margin: 0;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
             <div style="width: 33.33%;"><img src="logo_alternativo.png" alt="Logo" style="max-height: 45px;"></div>
@@ -760,6 +770,7 @@
         
     </div>
 
+    <!-- NUEVA PLANTILLA PDF: COTIZACIÓN -->
     <div id="pdf-cotizacion-template" style="display: none; width: 800px; background-color: white; padding: 30px 40px; font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; color: #333;">
         
         <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px; border-bottom: 2px solid #1b6b43; padding-bottom: 15px;">
@@ -791,6 +802,7 @@
                 </tr>
             </thead>
             <tbody>
+                <!-- Fila Fumigación -->
                 <tr>
                     <td style="padding: 12px; border: 1px solid #ddd; vertical-align: top;">
                         <strong style="color: #222;">Servicio de fumigación aérea especializada con dron agrícola en potrero.</strong><br>
@@ -801,6 +813,7 @@
                     <td style="padding: 12px; border: 1px solid #ddd; text-align: center; vertical-align: top;">Ha</td>
                     <td style="padding: 12px; border: 1px solid #ddd; text-align: right; vertical-align: top; font-weight: bold;" id="pdfcot_total_fumi"></td>
                 </tr>
+                <!-- Fila Suministros -->
                 <tr id="pdfcot_row_suministros" style="display: none;">
                     <td style="padding: 12px; border: 1px solid #ddd; vertical-align: top;">
                         <strong style="color: #222;">Suministro agroquímico.</strong><br>
@@ -860,7 +873,6 @@
         let visitasCampoRealizadas = 0; 
         let metodoPagoSeleccionado = 'Efectivo';
         let currentServiceIdForPDF = null;
-        let currentCotIdForPDF = null;
         
         let factorIdActual = null;
         let emailLoginActual = null;
@@ -875,231 +887,13 @@
         document.getElementById('selectPropiedad2').addEventListener('change', function() {
             const pId = this.value;
             if(pId) {
-                const prop = memoriaPropiedades.find(x => x.id === pId);
+                const prop = memoriaPropiedades.find(x => String(x.id) === String(pId));
                 if(prop) {
                     document.getElementById('h_ha_trabajadas').value = prop.superficie_has || 0;
                     document.getElementById('m_ha_trabajadas').value = prop.superficie_has || 0;
                 }
             }
         });
-
-        // --- LÓGICA DEL MÓDULO DE COTIZACIONES ---
-        function calcularTotalCotizacion() {
-            const ha = parseFloat(document.getElementById('cot_ha').value) || 0;
-            const precio = parseFloat(document.getElementById('cot_precio_ha').value) || 0;
-            const sumi = parseFloat(document.getElementById('cot_suministros_costo').value) || 0;
-            const desc = parseFloat(document.getElementById('cot_descuento').value) || 0;
-            
-            const total = (ha * precio) + sumi - desc;
-            document.getElementById('cot_total_display').value = "$" + total.toLocaleString('es-MX', {minimumFractionDigits: 2});
-            return total;
-        }
-
-        ['cot_ha', 'cot_precio_ha', 'cot_suministros_costo', 'cot_descuento'].forEach(id => {
-            document.getElementById(id).addEventListener('input', calcularTotalCotizacion);
-        });
-
-        document.getElementById('cotizacionForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const id = document.getElementById('editCotId').value;
-            
-            const obsObj = {
-                suministros: parseFloat(document.getElementById('cot_suministros_costo').value || 0),
-                detalles_suministros: document.getElementById('cot_suministros_detalle').value,
-                descuento: parseFloat(document.getElementById('cot_descuento').value || 0)
-            };
-
-            const datos = {
-                cliente_id: document.getElementById('cot_cliente').value,
-                fecha: document.getElementById('cot_fecha').value,
-                cultivo: document.getElementById('cot_cultivo').value,
-                hectareas: parseFloat(document.getElementById('cot_ha').value || 0),
-                precio_ha: parseFloat(document.getElementById('cot_precio_ha').value || 0),
-                total: calcularTotalCotizacion(),
-                estado: "Pendiente",
-                observaciones: JSON.stringify(obsObj)
-            };
-
-            const btn = document.getElementById('btnSubmitCotizacion');
-            const originalText = btn.innerHTML;
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Procesando...';
-            btn.disabled = true;
-
-            try {
-                await fetch(id ? `${API_URL}/cotizaciones/${id}` : `${API_URL}/cotizaciones/`, { 
-                    method: id ? 'PUT' : 'POST', 
-                    headers: { 'Content-Type': 'application/json' }, 
-                    body: JSON.stringify(datos) 
-                });
-                limpiarFormCotizacion();
-                await cargarCotizaciones();
-            } catch(e) { alert("Error al guardar cotización."); }
-            
-            btn.innerHTML = originalText;
-            btn.disabled = false;
-        });
-
-        async function cargarCotizaciones() {
-            try {
-                const res = await fetch(`${API_URL}/cotizaciones/`);
-                memoriaCotizaciones = await res.json();
-                
-                const cuerpo = document.getElementById('cuerpoTablaCotizaciones');
-                cuerpo.innerHTML = '';
-                
-                memoriaCotizaciones.forEach(c => {
-                    const cl = memoriaClientes.find(x => x.id === c.cliente_id);
-                    const nomCliente = cl ? `${cl.nombre} ${cl.apellidos}` : 'N/A';
-                    const telCliente = cl ? cl.telefono : '';
-                    
-                    let badgeColor = c.estado === 'Aprobada' ? 'bg-emerald-100 text-emerald-800 border-emerald-300' : 'bg-amber-100 text-amber-800 border-amber-300';
-                    let shortId = String(c.id).substring(0,4).toUpperCase(); 
-
-                    cuerpo.innerHTML += `
-                        <tr class="hover:bg-amber-50/50">
-                            <td class="px-6 py-4 font-bold text-amber-700">COT-${shortId}</td>
-                            <td class="px-6 py-4">${c.fecha}</td>
-                            <td class="px-6 py-4">
-                                <p class="font-bold text-gray-800">${nomCliente}</p>
-                                <p class="text-[10px] text-gray-500">${telCliente}</p>
-                            </td>
-                            <td class="px-6 py-4 text-gray-600">${c.cultivo}</td>
-                            <td class="px-6 py-4 text-center font-bold">${c.hectareas} Ha</td>
-                            <td class="px-6 py-4 text-right font-extrabold text-blue-700">$${(c.total||0).toLocaleString('es-MX', {minimumFractionDigits:2})}</td>
-                            <td class="px-6 py-4 text-center"><span class="text-[10px] font-bold px-2 py-0.5 rounded-full border ${badgeColor}">${c.estado}</span></td>
-                            <td class="px-6 py-4 text-center space-x-1 whitespace-nowrap">
-                                <button onclick="imprimirCotizacion('${c.id}')" class="bg-indigo-600 text-white hover:bg-indigo-500 px-3 py-1.5 rounded-md text-xs shadow-sm"><i class="fa-solid fa-file-pdf"></i></button>
-                                <button onclick="editarCotizacion('${c.id}')" class="bg-amber-400 text-white hover:bg-amber-300 px-3 py-1.5 rounded-md text-xs shadow-sm"><i class="fa-solid fa-pen"></i></button>
-                                <button onclick="eliminarCotizacion('${c.id}')" class="bg-rose-600 text-white hover:bg-rose-500 px-3 py-1.5 rounded-md text-xs shadow-sm"><i class="fa-solid fa-trash"></i></button>
-                            </td>
-                        </tr>
-                    `;
-                });
-            } catch(e) {}
-        }
-
-        function editarCotizacion(id) {
-            const c = memoriaCotizaciones.find(x => x.id === id);
-            let obs = { suministros: 0, detalles_suministros: '', descuento: 0 };
-            try { if(c.observaciones) obs = JSON.parse(c.observaciones); } catch(e){}
-
-            document.getElementById('editCotId').value = c.id;
-            document.getElementById('cot_cliente').value = c.cliente_id;
-            document.getElementById('cot_fecha').value = c.fecha;
-            document.getElementById('cot_cultivo').value = c.cultivo;
-            document.getElementById('cot_ha').value = c.hectareas;
-            document.getElementById('cot_precio_ha').value = c.precio_ha;
-            document.getElementById('cot_suministros_costo').value = obs.suministros || '';
-            document.getElementById('cot_suministros_detalle').value = obs.detalles_suministros || '';
-            document.getElementById('cot_descuento').value = obs.descuento || '';
-            
-            calcularTotalCotizacion();
-
-            document.getElementById('tituloFormCotizacion').innerHTML = `<i class="fa-solid fa-pen text-blue-500 mr-2 text-xl md:text-2xl"></i> Editando Cotización`;
-            document.getElementById('btnSubmitCotizacion').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-blue-600 hover:bg-blue-500 transition-colors shadow-sm";
-            document.getElementById('btnCancelarCot').classList.remove('hidden');
-            
-            cambiarVista('inicio');
-        }
-
-        function limpiarFormCotizacion() {
-            document.getElementById('cotizacionForm').reset();
-            document.getElementById('editCotId').value = '';
-            document.getElementById('cot_total_display').value = '';
-            document.getElementById('tituloFormCotizacion').innerHTML = `<i class="fa-solid fa-file-signature text-amber-500 mr-2 text-xl md:text-2xl"></i> Nueva Cotización`;
-            document.getElementById('btnSubmitCotizacion').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-amber-600 hover:bg-amber-500 transition-colors shadow-sm";
-            document.getElementById('btnCancelarCot').classList.add('hidden');
-        }
-
-        async function eliminarCotizacion(id) {
-            if(confirm("¿Estás seguro de eliminar esta cotización?")) {
-                await fetch(`${API_URL}/cotizaciones/${id}`, { method: 'DELETE' });
-                await cargarCotizaciones();
-            }
-        }
-
-        async function imprimirCotizacion(id) {
-            const c = memoriaCotizaciones.find(x => x.id === id);
-            const cl = memoriaClientes.find(x => x.id === c.cliente_id);
-            if(!c || !cl) return;
-
-            let obs = { suministros: 0, detalles_suministros: '', descuento: 0 };
-            try { if(c.observaciones) obs = JSON.parse(c.observaciones); } catch(e){}
-
-            let shortId = String(c.id).substring(0,4).toUpperCase();
-            
-            // Llenar datos en el HTML de la plantilla
-            document.getElementById('pdfcot_id').innerText = shortId;
-            document.getElementById('pdfcot_fecha').innerText = c.fecha;
-            document.getElementById('pdfcot_cliente').innerText = `${cl.nombre} ${cl.apellidos}`;
-            document.getElementById('pdfcot_ubicacion').innerText = c.cultivo;
-            document.getElementById('pdfcot_tel').innerText = cl.telefono || 'N/A';
-            
-            document.getElementById('pdfcot_ha_txt').innerText = c.hectareas;
-            document.getElementById('pdfcot_cant').innerText = c.hectareas;
-            document.getElementById('pdfcot_pu').innerText = "$" + (c.precio_ha || 0).toLocaleString('es-MX', {minimumFractionDigits: 2});
-            
-            let subtotalFumi = c.hectareas * c.precio_ha;
-            document.getElementById('pdfcot_total_fumi').innerText = "$" + subtotalFumi.toLocaleString('es-MX', {minimumFractionDigits: 2});
-
-            const rowSuministros = document.getElementById('pdfcot_row_suministros');
-            if (obs.suministros > 0) {
-                rowSuministros.style.display = 'table-row';
-                document.getElementById('pdfcot_det_suministros').innerText = obs.detalles_suministros || 'Productos varios';
-                document.getElementById('pdfcot_pu_sum').innerText = "$" + obs.suministros.toLocaleString('es-MX', {minimumFractionDigits: 2});
-                document.getElementById('pdfcot_total_sum').innerText = "$" + obs.suministros.toLocaleString('es-MX', {minimumFractionDigits: 2});
-            } else {
-                rowSuministros.style.display = 'none';
-            }
-
-            let subtotalBruto = subtotalFumi + (obs.suministros || 0);
-            document.getElementById('pdfcot_subtotal').innerText = "$" + subtotalBruto.toLocaleString('es-MX', {minimumFractionDigits: 2}) + " MN";
-
-            const rowDesc = document.getElementById('pdfcot_row_descuento');
-            if (obs.descuento > 0) {
-                rowDesc.style.display = 'table-row';
-                document.getElementById('pdfcot_descuento').innerText = "-$" + obs.descuento.toLocaleString('es-MX', {minimumFractionDigits: 2}) + " MN";
-            } else {
-                rowDesc.style.display = 'none';
-            }
-
-            document.getElementById('pdfcot_total').innerText = "$" + (c.total || 0).toLocaleString('es-MX', {minimumFractionDigits: 2}) + " MN";
-
-            // Lógica de generación de PDF
-            const overlay = document.getElementById('pdf-loading-overlay');
-            const appContent = document.getElementById('app-content');
-            const template = document.getElementById('pdf-cotizacion-template');
-
-            overlay.classList.remove('hidden');
-            overlay.style.display = 'flex';
-            appContent.style.display = 'none'; 
-            template.style.display = 'block';  
-
-            window.scrollTo(0, 0);
-
-            setTimeout(() => {
-                const opt = {
-                    margin:       0.15,
-                    filename:     `Cotizacion_${shortId}_${cl.nombre}.pdf`,
-                    image:        { type: 'jpeg', quality: 1.0 },
-                    html2canvas:  { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
-                    jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
-                };
-
-                html2pdf().set(opt).from(template).save().then(() => {
-                    template.style.display = 'none';
-                    appContent.style.display = 'block';
-                    overlay.style.display = 'none';
-                    overlay.classList.add('hidden');
-                }).catch(err => {
-                    template.style.display = 'none';
-                    appContent.style.display = 'block';
-                    overlay.style.display = 'none';
-                    overlay.classList.add('hidden');
-                    alert("Error generando el PDF.");
-                });
-            }, 500); 
-        }
 
         // --- SISTEMA DE LOGIN Y BÓVEDA ---
         document.getElementById('loginForm').addEventListener('submit', async function(e) {
@@ -1268,8 +1062,8 @@
                         const diffTime = Math.ceil((fechaSeg - hoy) / (1000 * 60 * 60 * 24));
                         
                         if (diffTime <= 10) {
-                            const pr = memoriaPropiedades.find(p => p.id === s.propiedad_id);
-                            const cl = pr ? memoriaClientes.find(c => c.id === pr.cliente_id) : null;
+                            const pr = memoriaPropiedades.find(p => String(p.id) === String(s.propiedad_id));
+                            const cl = pr ? memoriaClientes.find(c => String(c.id) === String(pr.cliente_id)) : null;
                             const nombre = cl ? `${cl.nombre} ${cl.apellidos}` : 'Cliente Sin Nombre';
                             
                             seguimientosPendientes.push({
@@ -1379,6 +1173,228 @@
             }
         }
 
+        // --- LÓGICA DEL MÓDULO DE COTIZACIONES ---
+        function calcularTotalCotizacion() {
+            const ha = parseFloat(document.getElementById('cot_ha').value) || 0;
+            const precio = parseFloat(document.getElementById('cot_precio_ha').value) || 0;
+            const sumi = parseFloat(document.getElementById('cot_suministros_costo').value) || 0;
+            const desc = parseFloat(document.getElementById('cot_descuento').value) || 0;
+            
+            const total = (ha * precio) + sumi - desc;
+            document.getElementById('cot_total_display').value = "$" + total.toLocaleString('es-MX', {minimumFractionDigits: 2});
+            return total;
+        }
+
+        ['cot_ha', 'cot_precio_ha', 'cot_suministros_costo', 'cot_descuento'].forEach(id => {
+            document.getElementById(id).addEventListener('input', calcularTotalCotizacion);
+        });
+
+        document.getElementById('cotizacionForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const id = document.getElementById('editCotId').value;
+            
+            const obsObj = {
+                suministros: parseFloat(document.getElementById('cot_suministros_costo').value || 0),
+                detalles_suministros: document.getElementById('cot_suministros_detalle').value,
+                descuento: parseFloat(document.getElementById('cot_descuento').value || 0)
+            };
+
+            const datos = {
+                cliente_id: document.getElementById('cot_cliente').value,
+                fecha: document.getElementById('cot_fecha').value,
+                cultivo: document.getElementById('cot_cultivo').value,
+                hectareas: parseFloat(document.getElementById('cot_ha').value || 0),
+                precio_ha: parseFloat(document.getElementById('cot_precio_ha').value || 0),
+                total: calcularTotalCotizacion(),
+                estado: "Pendiente",
+                observaciones: JSON.stringify(obsObj)
+            };
+
+            const btn = document.getElementById('btnSubmitCotizacion');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Procesando...';
+            btn.disabled = true;
+
+            try {
+                await fetch(id ? `${API_URL}/cotizaciones/${id}` : `${API_URL}/cotizaciones/`, { 
+                    method: id ? 'PUT' : 'POST', 
+                    headers: { 'Content-Type': 'application/json' }, 
+                    body: JSON.stringify(datos) 
+                });
+                limpiarFormCotizacion();
+                await cargarCotizaciones();
+            } catch(e) { alert("Error al guardar cotización."); }
+            
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        });
+
+        async function cargarCotizaciones() {
+            try {
+                const res = await fetch(`${API_URL}/cotizaciones/`);
+                memoriaCotizaciones = await res.json();
+                
+                const cuerpo = document.getElementById('cuerpoTablaCotizaciones');
+                cuerpo.innerHTML = '';
+                
+                memoriaCotizaciones.forEach(c => {
+                    const cl = memoriaClientes.find(x => String(x.id) === String(c.cliente_id));
+                    const nomCliente = cl ? `${cl.nombre} ${cl.apellidos}` : 'N/A';
+                    const telCliente = cl ? cl.telefono : '';
+                    
+                    let badgeColor = c.estado === 'Aprobada' ? 'bg-emerald-100 text-emerald-800 border-emerald-300' : 'bg-amber-100 text-amber-800 border-amber-300';
+                    let shortId = String(c.id).substring(0,4).toUpperCase(); 
+
+                    cuerpo.innerHTML += `
+                        <tr class="hover:bg-amber-50/50">
+                            <td class="px-6 py-4 font-bold text-amber-700">COT-${shortId}</td>
+                            <td class="px-6 py-4">${c.fecha}</td>
+                            <td class="px-6 py-4">
+                                <p class="font-bold text-gray-800">${nomCliente}</p>
+                                <p class="text-[10px] text-gray-500">${telCliente}</p>
+                            </td>
+                            <td class="px-6 py-4 text-gray-600">${c.cultivo}</td>
+                            <td class="px-6 py-4 text-center font-bold">${c.hectareas} Ha</td>
+                            <td class="px-6 py-4 text-right font-extrabold text-blue-700">$${(c.total||0).toLocaleString('es-MX', {minimumFractionDigits:2})}</td>
+                            <td class="px-6 py-4 text-center"><span class="text-[10px] font-bold px-2 py-0.5 rounded-full border ${badgeColor}">${c.estado}</span></td>
+                            <td class="px-6 py-4 text-center space-x-1 whitespace-nowrap">
+                                <button onclick="imprimirCotizacion('${c.id}')" class="bg-indigo-600 text-white hover:bg-indigo-500 px-3 py-1.5 rounded-md text-xs shadow-sm"><i class="fa-solid fa-file-pdf"></i></button>
+                                <button onclick="editarCotizacion('${c.id}')" class="bg-amber-400 text-white hover:bg-amber-300 px-3 py-1.5 rounded-md text-xs shadow-sm"><i class="fa-solid fa-pen"></i></button>
+                                <button onclick="eliminarCotizacion('${c.id}')" class="bg-rose-600 text-white hover:bg-rose-500 px-3 py-1.5 rounded-md text-xs shadow-sm"><i class="fa-solid fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } catch(e) {}
+        }
+
+        function editarCotizacion(id) {
+            const c = memoriaCotizaciones.find(x => String(x.id) === String(id));
+            if (!c) return;
+
+            let obs = { suministros: 0, detalles_suministros: '', descuento: 0 };
+            try { if(c.observaciones) obs = JSON.parse(c.observaciones); } catch(e){}
+
+            document.getElementById('editCotId').value = c.id;
+            document.getElementById('cot_cliente').value = c.cliente_id;
+            document.getElementById('cot_fecha').value = c.fecha;
+            document.getElementById('cot_cultivo').value = c.cultivo;
+            document.getElementById('cot_ha').value = c.hectareas;
+            document.getElementById('cot_precio_ha').value = c.precio_ha;
+            document.getElementById('cot_suministros_costo').value = obs.suministros || '';
+            document.getElementById('cot_suministros_detalle').value = obs.detalles_suministros || '';
+            document.getElementById('cot_descuento').value = obs.descuento || '';
+            
+            calcularTotalCotizacion();
+
+            document.getElementById('tituloFormCotizacion').innerHTML = `<i class="fa-solid fa-pen text-blue-500 mr-2 text-xl md:text-2xl"></i> Editando Cotización`;
+            document.getElementById('btnSubmitCotizacion').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-blue-600 hover:bg-blue-500 transition-colors shadow-sm";
+            document.getElementById('btnCancelarCot').classList.remove('hidden');
+            
+            cambiarVista('inicio');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function limpiarFormCotizacion() {
+            document.getElementById('cotizacionForm').reset();
+            document.getElementById('editCotId').value = '';
+            document.getElementById('cot_total_display').value = '';
+            document.getElementById('tituloFormCotizacion').innerHTML = `<i class="fa-solid fa-file-signature text-amber-500 mr-2 text-xl md:text-2xl"></i> Nueva Cotización`;
+            document.getElementById('btnSubmitCotizacion').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-amber-600 hover:bg-amber-500 transition-colors shadow-sm";
+            document.getElementById('btnCancelarCot').classList.add('hidden');
+        }
+
+        async function eliminarCotizacion(id) {
+            if(confirm("¿Estás seguro de eliminar esta cotización?")) {
+                await fetch(`${API_URL}/cotizaciones/${id}`, { method: 'DELETE' });
+                await cargarCotizaciones();
+            }
+        }
+
+        async function imprimirCotizacion(id) {
+            const c = memoriaCotizaciones.find(x => String(x.id) === String(id));
+            if (!c) return;
+            const cl = memoriaClientes.find(x => String(x.id) === String(c.cliente_id));
+            
+            const nomCliente = cl ? `${cl.nombre} ${cl.apellidos}` : 'Cliente Eliminado';
+            const telCliente = cl ? cl.telefono : 'N/A';
+
+            let obs = { suministros: 0, detalles_suministros: '', descuento: 0 };
+            try { if(c.observaciones) obs = JSON.parse(c.observaciones); } catch(e){}
+
+            let shortId = String(c.id).substring(0,4).toUpperCase();
+            
+            document.getElementById('pdfcot_id').innerText = shortId;
+            document.getElementById('pdfcot_fecha').innerText = c.fecha;
+            document.getElementById('pdfcot_cliente').innerText = nomCliente;
+            document.getElementById('pdfcot_ubicacion').innerText = c.cultivo;
+            document.getElementById('pdfcot_tel').innerText = telCliente;
+            
+            document.getElementById('pdfcot_ha_txt').innerText = c.hectareas;
+            document.getElementById('pdfcot_cant').innerText = c.hectareas;
+            document.getElementById('pdfcot_pu').innerText = "$" + (c.precio_ha || 0).toLocaleString('es-MX', {minimumFractionDigits: 2});
+            
+            let subtotalFumi = c.hectareas * c.precio_ha;
+            document.getElementById('pdfcot_total_fumi').innerText = "$" + subtotalFumi.toLocaleString('es-MX', {minimumFractionDigits: 2});
+
+            const rowSuministros = document.getElementById('pdfcot_row_suministros');
+            if (obs.suministros > 0) {
+                rowSuministros.style.display = 'table-row';
+                document.getElementById('pdfcot_det_suministros').innerText = obs.detalles_suministros || 'Productos varios';
+                document.getElementById('pdfcot_pu_sum').innerText = "$" + obs.suministros.toLocaleString('es-MX', {minimumFractionDigits: 2});
+                document.getElementById('pdfcot_total_sum').innerText = "$" + obs.suministros.toLocaleString('es-MX', {minimumFractionDigits: 2});
+            } else {
+                rowSuministros.style.display = 'none';
+            }
+
+            let subtotalBruto = subtotalFumi + (obs.suministros || 0);
+            document.getElementById('pdfcot_subtotal').innerText = "$" + subtotalBruto.toLocaleString('es-MX', {minimumFractionDigits: 2}) + " MN";
+
+            const rowDesc = document.getElementById('pdfcot_row_descuento');
+            if (obs.descuento > 0) {
+                rowDesc.style.display = 'table-row';
+                document.getElementById('pdfcot_descuento').innerText = "-$" + obs.descuento.toLocaleString('es-MX', {minimumFractionDigits: 2}) + " MN";
+            } else {
+                rowDesc.style.display = 'none';
+            }
+
+            document.getElementById('pdfcot_total').innerText = "$" + (c.total || 0).toLocaleString('es-MX', {minimumFractionDigits: 2}) + " MN";
+
+            const overlay = document.getElementById('pdf-loading-overlay');
+            const appContent = document.getElementById('app-content');
+            const template = document.getElementById('pdf-cotizacion-template');
+
+            overlay.classList.remove('hidden');
+            overlay.style.display = 'flex';
+            appContent.style.display = 'none'; 
+            template.style.display = 'block';  
+
+            window.scrollTo(0, 0);
+
+            setTimeout(() => {
+                const opt = {
+                    margin:       0.15,
+                    filename:     `Cotizacion_${shortId}_${nomCliente.split(' ')[0]}.pdf`,
+                    image:        { type: 'jpeg', quality: 1.0 },
+                    html2canvas:  { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
+                    jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+                };
+
+                html2pdf().set(opt).from(template).save().then(() => {
+                    template.style.display = 'none';
+                    appContent.style.display = 'block';
+                    overlay.style.display = 'none';
+                    overlay.classList.add('hidden');
+                }).catch(err => {
+                    template.style.display = 'none';
+                    appContent.style.display = 'block';
+                    overlay.style.display = 'none';
+                    overlay.classList.add('hidden');
+                    alert("Error generando el PDF.");
+                });
+            }, 500); 
+        }
+
         async function registrarVisitaCampo() {
             let mesBusqueda = document.getElementById('filtroMes').value; if(mesBusqueda === 'todos') mesBusqueda = "06"; 
             const mesActual = `${mesBusqueda}-2026`;
@@ -1399,7 +1415,7 @@
             let serviciosFiltrados = memoriaServicios; if (mesSeleccionado !== 'todos') { serviciosFiltrados = memoriaServicios.filter(s => s.fecha_aplicacion && s.fecha_aplicacion.split('-')[1] === mesSeleccionado); }
             let totalHaFumigadas = 0; let totalIngresos = 0; let totalGastos = 0;
             serviciosFiltrados.forEach(s => {
-                let prop = memoriaPropiedades.find(p => p.id === s.propiedad_id); if(prop) totalHaFumigadas += (s.ha_trabajadas || prop.superficie_has || 0);
+                let prop = memoriaPropiedades.find(p => String(p.id) === String(s.propiedad_id)); if(prop) totalHaFumigadas += (s.ha_trabajadas || prop.superficie_has || 0);
                 totalIngresos += (s.costo_servicio || 0); totalGastos += (s.gastos || 0); 
             });
             document.getElementById('stat-hectareas').textContent = totalHaFumigadas.toFixed(2);
@@ -1491,7 +1507,7 @@
                 memoriaClientes = await res.json(); 
                 
                 const sel = document.getElementById('selectCliente'); 
-                const selCot = document.getElementById('cot_cliente'); // Para cotizaciones
+                const selCot = document.getElementById('cot_cliente'); 
                 
                 sel.innerHTML = '<option value="">-- Selecciona --</option>'; 
                 if(selCot) selCot.innerHTML = '<option value="">-- Selecciona Cliente --</option>';
@@ -1520,7 +1536,9 @@
         async function eliminarCliente(id) { if(confirm("¿Eliminar productor?")) { await fetch(`${API_URL}/clientes/${id}`, { method: 'DELETE' }); await inicializarPanel(); } }
         
         function tabularEdicionCliente(id) { 
-            const c = memoriaClientes.find(x => x.id === id); document.getElementById('editClienteId').value = c.id; 
+            const c = memoriaClientes.find(x => String(x.id) === String(id)); 
+            if(!c) return;
+            document.getElementById('editClienteId').value = c.id; 
             document.getElementById('nombre').value = c.nombre; document.getElementById('apellidos').value = c.apellidos; 
             document.getElementById('email').value = c.email || ''; document.getElementById('telefono').value = c.telefono; 
             document.getElementById('rfc').value = c.rfc; document.getElementById('estado_cliente').value = c.estado || 'Prospecto'; 
@@ -1545,7 +1563,7 @@
                 const cuerpo = document.getElementById('cuerpoTablaPropiedades'); cuerpo.innerHTML = ''; 
                 const sel = document.getElementById('selectPropiedad'); sel.innerHTML = '<option value="">-- Selecciona --</option>'; 
                 memoriaPropiedades.forEach(p => { 
-                    const cl = memoriaClientes.find(c => c.id === p.cliente_id); const nD = cl ? `${cl.nombre} ${cl.apellidos}` : 'N/A'; 
+                    const cl = memoriaClientes.find(c => String(c.id) === String(p.cliente_id)); const nD = cl ? `${cl.nombre} ${cl.apellidos}` : 'N/A'; 
                     cuerpo.innerHTML += `<tr><td class="px-6 py-4"><p class="font-bold text-sm">${p.nombre_propiedad}</p><p class="text-[11px] text-gray-500">${p.direccion} - Prop: ${nD}</p></td><td class="px-6 py-4 text-center"><span class="bg-[#1b6b43] text-white px-3 py-1 rounded-full text-[10px] font-bold">${p.tipo_cultivo}</span></td><td class="px-6 py-4 text-center"><p class="text-xl font-extrabold">${p.superficie_has}</p></td><td class="px-6 py-4 text-center"><button onclick="ajustarEdicionPropiedad('${p.id}')" class="bg-amber-400 text-white text-xs px-4 py-2 rounded-full mr-1"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="eliminarPropiedad('${p.id}')" class="bg-rose-600 text-white text-xs px-4 py-2 rounded-full"><i class="fa-solid fa-trash"></i></button></td></tr>`; 
                     sel.innerHTML += `<option value="${p.id}">${nD} - ${p.nombre_propiedad}</option>`; 
                 }); 
@@ -1567,7 +1585,9 @@
         async function eliminarPropiedad(id) { if(confirm("¿Eliminar parcela?")) { await fetch(`${API_URL}/propiedades/${id}`, { method: 'DELETE' }); await inicializarPanel(); } }
         
         function ajustarEdicionPropiedad(id) { 
-            const p = memoriaPropiedades.find(x => x.id === id); document.getElementById('editPropiedadId').value = p.id; 
+            const p = memoriaPropiedades.find(x => String(x.id) === String(id)); 
+            if(!p) return;
+            document.getElementById('editPropiedadId').value = p.id; 
             document.getElementById('selectCliente').value = p.cliente_id; document.getElementById('nombre_propiedad').value = p.nombre_propiedad; 
             document.getElementById('tipo_cultivo').value = p.tipo_cultivo; document.getElementById('superficie_has').value = p.superficie_has; 
             document.getElementById('direccion').value = p.direccion; document.getElementById('estado').value = p.estado; 
@@ -1591,8 +1611,8 @@
                 const cuerpoIngresos = document.getElementById('cuerpoTablaIngresos'); cuerpoIngresos.innerHTML = ''; 
 
                 memoriaServicios.forEach(s => { 
-                    const pr = memoriaPropiedades.find(p => p.id === s.propiedad_id); 
-                    const cl = pr ? memoriaClientes.find(c => c.id === pr.cliente_id) : null; 
+                    const pr = memoriaPropiedades.find(p => String(p.id) === String(s.propiedad_id)); 
+                    const cl = pr ? memoriaClientes.find(c => String(c.id) === String(pr.cliente_id)) : null; 
                     
                     let noControl = (cl && cl.no_cliente) ? cl.no_cliente : (s.id ? String(s.id).substring(0,6).toUpperCase() : 'S/N');
                     let nomProd = cl ? cl.nombre + " " + cl.apellidos : 'N/A'; 
@@ -1687,11 +1707,14 @@
         function confirmarDesgloseGastos() { let totalGasto = calcularTotalModal(); document.getElementById('h_gas_unidad').value = document.getElementById('m_gas_unidad').value || 0; document.getElementById('h_gas_gen').value = document.getElementById('m_gas_gen').value || 0; document.getElementById('h_sueldos').value = document.getElementById('m_sueldos').value || 0; document.getElementById('h_insumos').value = document.getElementById('m_insumos').value || 0; document.getElementById('h_comidas').value = document.getElementById('m_comidas').value || 0; document.getElementById('h_oxxo').value = document.getElementById('m_oxxo').value || 0; document.getElementById('gastos').value = totalGasto; cerrarModalGastos(); }
 
         function prepararEdicionServicio(id) { 
-            const s = memoriaServicios.find(x => x.id === id); document.getElementById('editServioId').value = s.id; document.getElementById('selectPropiedad2').value = s.propiedad_id; document.getElementById('fecha_aplicacion').value = s.fecha_aplicacion||''; document.getElementById('costo_servicio').value = s.costo_servicio||''; document.getElementById('no_cotizacion').value = s.no_cotizacion||''; document.getElementById('no_orden').value = s.no_orden||''; document.getElementById('gastos').value = s.gastos||''; document.getElementById('fecha_seguimiento').value = s.fecha_seguimiento||''; document.getElementById('no_factura').value = s.no_factura||''; document.getElementById('observaciones').value = s.observaciones||''; 
+            const s = memoriaServicios.find(x => String(x.id) === String(id)); 
+            if(!s) return;
+            document.getElementById('editServioId').value = s.id; document.getElementById('selectPropiedad2').value = s.propiedad_id; document.getElementById('fecha_aplicacion').value = s.fecha_aplicacion||''; document.getElementById('costo_servicio').value = s.costo_servicio||''; document.getElementById('no_cotizacion').value = s.no_cotizacion||''; document.getElementById('no_orden').value = s.no_orden||''; document.getElementById('gastos').value = s.gastos||''; document.getElementById('fecha_seguimiento').value = s.fecha_seguimiento||''; document.getElementById('no_factura').value = s.no_factura||''; document.getElementById('observaciones').value = s.observaciones||''; 
             document.getElementById('h_gas_unidad').value = s.gasto_gasolina_unidad || 0; document.getElementById('h_gas_gen').value = s.gasto_gasolina_generador || 0; document.getElementById('h_sueldos').value = s.gasto_sueldos || 0; document.getElementById('h_insumos').value = s.gasto_insumos || 0; document.getElementById('h_comidas').value = s.gasto_comidas || 0; document.getElementById('h_oxxo').value = s.gasto_oxxo || 0;
             document.getElementById('h_ha_trabajadas').value = s.ha_trabajadas || 0; document.getElementById('h_precio_por_ha').value = s.precio_por_ha || 0; document.getElementById('h_ingreso_viaticos').value = s.ingreso_viaticos || 0; document.getElementById('h_ingreso_suministros').value = s.ingreso_suministros || 0;
             document.getElementById('h_metodo_pago').value = s.metodo_pago || 'Efectivo';
             document.getElementById('tituloFormServio').innerHTML = `<i class="fa-solid fa-pen text-amber-500 mr-2 text-xl md:text-2xl"></i> Editando Venta`; cambiarVista('inicio'); 
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
         
         function limpiarFormService() { 
@@ -1704,9 +1727,10 @@
         function verDetalleServicio(id) {
             currentServiceIdForPDF = id; 
             
-            const s = memoriaServicios.find(x => x.id === id);
-            const pr = memoriaPropiedades.find(p => p.id === s.propiedad_id);
-            const cl = pr ? memoriaClientes.find(c => c.id === pr.cliente_id) : null;
+            const s = memoriaServicios.find(x => String(x.id) === String(id));
+            if(!s) return;
+            const pr = memoriaPropiedades.find(p => String(p.id) === String(s.propiedad_id));
+            const cl = pr ? memoriaClientes.find(c => String(c.id) === String(pr.cliente_id)) : null;
             
             document.getElementById('det_id').innerText = (cl && cl.no_cliente) ? cl.no_cliente : (s.id ? String(s.id).substring(0,6).toUpperCase() : 'S/N');
             document.getElementById('det_fecha').innerText = s.fecha_aplicacion || 'No definida';
@@ -1749,9 +1773,9 @@
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generando PDF...';
             btn.disabled = true;
 
-            const s = memoriaServicios.find(x => x.id === currentServiceIdForPDF);
-            const pr = memoriaPropiedades.find(p => p.id === s.propiedad_id);
-            const cl = pr ? memoriaClientes.find(c => c.id === pr.cliente_id) : null;
+            const s = memoriaServicios.find(x => String(x.id) === String(currentServiceIdForPDF));
+            const pr = memoriaPropiedades.find(p => String(p.id) === String(s.propiedad_id));
+            const cl = pr ? memoriaClientes.find(c => String(c.id) === String(pr.cliente_id)) : null;
 
             document.getElementById('pdf_cliente').innerText = cl ? `${cl.nombre} ${cl.apellidos}` : 'N/A';
             document.getElementById('pdf_no_cliente').innerText = (cl && cl.no_cliente) ? cl.no_cliente : 'S/N';
@@ -1821,7 +1845,7 @@
             setTimeout(() => {
                 const opt = {
                     margin:       0.15,
-                    filename:     `Reporte_Venta_${s.no_cotizacion || s.id.substring(0,6).toUpperCase()}.pdf`,
+                    filename:     `Reporte_Venta_${s.no_cotizacion || String(s.id).substring(0,6).toUpperCase()}.pdf`,
                     image:        { type: 'jpeg', quality: 1.0 },
                     html2canvas:  { 
                         scale: 2, 
@@ -1844,7 +1868,6 @@
                     btn.innerHTML = originalText;
                     btn.disabled = false;
                 }).catch(err => {
-                    console.error("PDF Error: ", err);
                     template.style.display = 'none';
                     appContent.style.display = 'block';
                     overlay.style.display = 'none';
@@ -1852,7 +1875,7 @@
                     
                     btn.innerHTML = originalText;
                     btn.disabled = false;
-                    alert("Hubo un error generando el PDF. Inténtalo de nuevo.");
+                    alert("Hubo un error generando el PDF.");
                 });
             }, 500); 
         }

@@ -116,20 +116,26 @@ class MetasMensuales(BaseModel):
 class SeguimientoHecho(BaseModel):
     fecha_completado: str
 
+class CotizacionNueva(BaseModel):
+    cliente_id: str
+    fecha: str
+    cultivo: str
+    hectareas: float
+    precio_ha: float
+    total: float
+    estado: Optional[str] = "Pendiente"
+    observaciones: Optional[str] = ""
+
 # --- RUTA DE LOGIN PRINCIPAL ---
 @app.post("/login/")
 async def iniciar_sesion(credenciales: Credenciales):
     try:
-        # Filtro 1: Validamos que exista el correo y la contraseña
         respuesta = supabase.auth.sign_in_with_password({
             "email": credenciales.email,
             "password": credenciales.password
         })
         
-        # Filtro 2: Bóveda de Seguridad (MFA)
         factores_info = supabase.auth.mfa.list_factors()
-        
-        # Leemos los factores soportando si vienen como objeto o diccionario
         factores = getattr(factores_info, 'all', []) if hasattr(factores_info, 'all') else factores_info.get('all', [])
         
         factores_verificados = []
@@ -142,7 +148,6 @@ async def iniciar_sesion(credenciales: Credenciales):
                 factores_sucios.append(f)
                 
         if len(factores_verificados) > 0:
-            # YA ESTÁ VINCULADO: Solo pedimos el código
             f = factores_verificados[0]
             f_id = getattr(f, 'id', None) if hasattr(f, 'id') else f.get('id')
             return {
@@ -152,20 +157,17 @@ async def iniciar_sesion(credenciales: Credenciales):
                 "factor_id": f_id
             }
         else:
-            # ES NUEVO: Limpiamos basura de intentos previos y generamos QR
             for fs in factores_sucios:
                 fs_id = getattr(fs, 'id', None) if hasattr(fs, 'id') else fs.get('id')
                 try: supabase.auth.mfa.unenroll({"factor_id": fs_id})
                 except: pass
 
-            # --- LA MAGIA NATIVA Y LIMPIA ---
             enroll_res = supabase.auth.mfa.enroll({
                 "factor_type": "totp",
                 "issuer": "Sistema ASOA",
                 "friendly_name": "Portal Operativo"
             })
             
-            # Extraemos los datos sin importar cómo responda Python
             factor_id = getattr(enroll_res, 'id', None) if hasattr(enroll_res, 'id') else enroll_res.get('id')
             totp = getattr(enroll_res, 'totp', None) if hasattr(enroll_res, 'totp') else enroll_res.get('totp', {})
             qr_code = getattr(totp, 'qr_code', None) if hasattr(totp, 'qr_code') else totp.get('qr_code', '')
@@ -183,7 +185,6 @@ async def iniciar_sesion(credenciales: Credenciales):
         if "Invalid login credentials" in error_msg:
             raise HTTPException(status_code=401, detail="Correo o contraseña incorrectos.")
         else:
-            # Si falla algo, lo mostramos tal cual en rojo para diagnosticar
             raise HTTPException(status_code=400, detail=f"Error Interno MFA: {error_msg}")
 
 # --- RUTA VERIFICACIÓN 2 PASOS ---
@@ -312,26 +313,53 @@ async def eliminar_servicio(servicio_id: str):
 @app.post("/api/servicios/{servicio_id}/hecho")
 async def marcar_seguimiento_hecho(servicio_id: str, req: SeguimientoHecho):
     try:
-        # Obtenemos las observaciones actuales
         res = supabase.table('servicios_aplicacion').select('observaciones').eq('id', servicio_id).execute()
         obs_actual = ""
         if len(res.data) > 0:
             obs_actual = res.data[0].get('observaciones') or ""
             
-        # Agregamos la firma de auditoría
         separador = "\n" if obs_actual else ""
         nueva_obs = f"{obs_actual}{separador}[Sistema] Seguimiento completado el {req.fecha_completado}."
         
-        # Guardamos en la base de datos (y borramos la fecha para que no vuelva a molestar)
         supabase.table('servicios_aplicacion').update({
             "fecha_seguimiento": None,
             "observaciones": nueva_obs
         }).eq('id', servicio_id).execute()
         
         await manager.broadcast("update")
-        return {"mensaje": "Seguimiento completado y auditado"}
+        return {"mensaje": "Seguimiento completado"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+# --- RUTAS DE COTIZACIONES ---
+@app.post("/cotizaciones/")
+async def registrar_cotizacion(cot: CotizacionNueva):
+    try:
+        respuesta = supabase.table('cotizaciones').insert(cot.dict()).execute()
+        await manager.broadcast("update")
+        return {"mensaje": "Cotización guardada", "datos": respuesta.data[0]}
+    except Exception as e: raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/cotizaciones/")
+async def obtener_cotizaciones():
+    respuesta = supabase.table('cotizaciones').select("*").execute()
+    return respuesta.data
+
+@app.put("/cotizaciones/{cot_id}")
+async def actualizar_cotizacion(cot_id: str, cot: CotizacionNueva):
+    try:
+        respuesta = supabase.table('cotizaciones').update(cot.dict()).eq('id', cot_id).execute()
+        await manager.broadcast("update")
+        return {"mensaje": "Actualizado", "datos": respuesta.data[0]}
+    except Exception as e: raise HTTPException(status_code=500, detail=str(e))
+
+@app.delete("/cotizaciones/{cot_id}")
+async def eliminar_cotizacion(cot_id: str):
+    try:
+        supabase.table('cotizaciones').delete().eq('id', cot_id).execute()
+        await manager.broadcast("update")
+        return {"mensaje": "Eliminado"}
+    except Exception as e: raise HTTPException(status_code=500, detail=str(e))
 
 # --- VISITAS, METAS Y DASHBOARD ---
 @app.post("/api/visitas/{mes_anio}")

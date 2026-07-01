@@ -34,7 +34,6 @@
         <p class="text-sm text-gray-500 mt-2">Por favor, no cierres esta pantalla.</p>
     </div>
 
-    <!-- MODAL 2FA DE SEGURIDAD -->
     <div id="modal-2fa" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-[9999] p-4">
         <div class="bg-white p-6 md:p-8 rounded-3xl shadow-xl max-w-sm w-full text-center">
             <i class="fa-solid fa-shield-halved text-5xl text-emerald-600 mb-4"></i>
@@ -144,17 +143,18 @@
 
                 <h2 class="text-xl md:text-2xl font-bold text-gray-800 mt-10 mb-6 tracking-tight">Panel de Captura Rápida</h2>
                 
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 items-start">
+                    
                     <div id="vista-form-clientes" class="bg-white p-5 md:p-6 rounded-2xl shadow-md border border-green-100">
                         <h3 id="tituloFormCliente" class="text-lg md:text-xl font-bold text-gray-800 mb-5 flex items-center"><i class="fa-solid fa-user-plus text-green-600 mr-2 text-xl md:text-2xl"></i> Nuevo Registro</h3>
                         <form id="registroForm" class="space-y-4">
                             <input type="hidden" id="editClienteId">
                             <input type="hidden" id="email" value="">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div class="grid grid-cols-1 gap-3">
                                 <input type="text" id="nombre" placeholder="Nombre(s)" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
                                 <input type="text" id="apellidos" placeholder="Apellidos" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
                             </div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div class="grid grid-cols-1 gap-3">
                                 <input type="text" id="no_cliente" placeholder="No. Cliente (Ej. C-010)" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
                                 <input type="text" id="telefono" placeholder="Teléfono" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none">
                             </div>
@@ -175,11 +175,53 @@
                         <form id="propiedadForm" class="space-y-4">
                             <input type="hidden" id="editPropiedadId">
                             <select id="selectCliente" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-600 outline-none"><option value="">-- Selecciona el Propietario --</option></select>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3"><input type="text" id="nombre_propiedad" placeholder="Nombre Rancho" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm"><input type="text" id="tipo_cultivo" placeholder="Cultivo (Ej. Maíz)" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm"></div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3"><input type="number" step="0.01" id="superficie_has" placeholder="Hectáreas" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm"><input type="text" id="direccion" placeholder="Localidad (Predio)" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm"></div>
+                            <div class="grid grid-cols-1 gap-3">
+                                <input type="text" id="nombre_propiedad" placeholder="Nombre Rancho" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+                                <input type="text" id="tipo_cultivo" placeholder="Cultivo (Ej. Maíz)" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+                            </div>
+                            <div class="grid grid-cols-1 gap-3">
+                                <input type="number" step="0.01" id="superficie_has" placeholder="Hectáreas" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+                                <input type="text" id="direccion" placeholder="Localidad (Predio)" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+                            </div>
                             <input type="text" id="estado" value="Veracruz" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
                             <button type="submit" id="btnSubmitPropiedad" class="w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-[#4ade80] hover:bg-green-500 text-green-900 transition-colors shadow-sm"><i class="fa-solid fa-save mr-1"></i> Guardar Parcela</button>
                             <button type="button" id="btnCancelarPropiedad" onclick="limpiarFormPropiedad()" class="hidden w-full py-2 rounded-xl text-xs font-bold text-gray-600 bg-gray-200 hover:bg-gray-300">Cancelar Edición</button>
+                        </form>
+                    </div>
+
+                    <div id="vista-form-cotizaciones" class="bg-white p-5 md:p-6 rounded-2xl shadow-md border border-amber-200">
+                        <h3 id="tituloFormCotizacion" class="text-lg md:text-xl font-bold text-gray-800 mb-5 flex items-center"><i class="fa-solid fa-file-signature text-amber-500 mr-2 text-xl md:text-2xl"></i> Nueva Cotización</h3>
+                        <form id="cotizacionForm" class="space-y-4">
+                            <input type="hidden" id="editCotId">
+                            
+                            <div><label class="text-[10px] text-gray-500 font-bold uppercase">Productor / Cliente</label><select id="cot_cliente" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm"><option value="">-- Selecciona Cliente --</option></select></div>
+                            
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
+                                <div><label class="text-[10px] text-gray-500 font-bold uppercase">Fecha Emisión</label><input type="date" id="cot_fecha" required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm"></div>
+                                <div><label class="text-[10px] text-gray-500 font-bold uppercase">Ubicación / Predio</label><input type="text" id="cot_cultivo" placeholder="Ej. Loc. Loma" required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm"></div>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-3 border-t border-dashed border-gray-200 pt-3">
+                                <div><label class="text-[10px] text-gray-500 font-bold uppercase">Hectáreas (Ha)</label><input type="number" step="0.01" id="cot_ha" required placeholder="0.00" class="w-full px-3 py-2 bg-blue-50 border border-blue-200 rounded-lg text-sm font-bold text-blue-800"></div>
+                                <div><label class="text-[10px] text-gray-500 font-bold uppercase">Precio por Ha ($)</label><input type="number" step="0.01" id="cot_precio_ha" required placeholder="0.00" class="w-full px-3 py-2 bg-blue-50 border border-blue-200 rounded-lg text-sm font-bold text-blue-800"></div>
+                            </div>
+
+                            <div class="border-t border-dashed border-gray-200 pt-3">
+                                <label class="text-[10px] text-gray-500 font-bold uppercase flex items-center justify-between">Suministros ($) <span class="text-amber-500 font-normal normal-case">Opcional</span></label>
+                                <input type="number" step="0.01" id="cot_suministros_costo" placeholder="0.00" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm font-bold text-gray-700 mb-2">
+                                <textarea id="cot_suministros_detalle" rows="2" placeholder="Detalle (Ej. Paso D, Feudo...)" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-xs"></textarea>
+                            </div>
+
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-3 border-t border-dashed border-gray-200 pt-3 items-end">
+                                <div><label class="text-[10px] text-gray-500 font-bold uppercase">Descuento ($)</label><input type="number" step="0.01" id="cot_descuento" placeholder="0.00" class="w-full px-3 py-2 bg-rose-50 border border-rose-200 rounded-lg text-sm font-bold text-rose-600"></div>
+                                <div>
+                                    <label class="text-[10px] text-gray-500 font-bold uppercase">TOTAL COTIZADO</label>
+                                    <input type="text" id="cot_total_display" readonly placeholder="$0.00" class="w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-lg text-sm font-extrabold text-gray-800 outline-none cursor-not-allowed">
+                                </div>
+                            </div>
+                            
+                            <button type="submit" id="btnSubmitCotizacion" class="w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-amber-600 hover:bg-amber-500 transition-colors shadow-sm"><i class="fa-solid fa-save mr-1"></i> Guardar Cotización</button>
+                            <button type="button" id="btnCancelarCot" onclick="limpiarFormCotizacion()" class="hidden w-full py-2 rounded-xl text-xs font-bold text-gray-600 bg-gray-200 hover:bg-gray-300">Cancelar Edición</button>
                         </form>
                     </div>
 
@@ -192,15 +234,15 @@
                             <input type="hidden" id="h_metodo_pago" value="Efectivo">
 
                             <div><label class="text-[10px] text-gray-500 font-bold uppercase">Productor / Parcela</label><select id="selectPropiedad2" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm"><option value="">-- Selecciona --</option></select></div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
                                 <div><label class="text-[10px] text-gray-500 font-bold uppercase">No. Cotización</label><input type="text" id="no_cotizacion" placeholder="Ej. 1292" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 text-sm rounded-lg"></div>
                                 <div><label class="text-[10px] text-gray-500 font-bold uppercase">No. Orden Serv.</label><input type="text" id="no_orden" placeholder="Ej. OS-001" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 text-sm rounded-lg"></div>
                             </div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
                                 <div><label class="text-[10px] text-gray-500 font-bold uppercase">Fecha de Venta</label><input type="date" id="fecha_aplicacion" required class="w-full px-3 py-2 bg-gray-50 border text-sm rounded-lg text-gray-600"></div>
                                 <div><label class="text-[10px] text-gray-500 font-bold uppercase">Fecha Seguimiento</label><input type="date" id="fecha_seguimiento" class="w-full px-3 py-2 bg-gray-50 border text-sm rounded-lg text-gray-600"></div>
                             </div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 items-end">
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-3 items-end">
                                 <div>
                                     <label class="text-[10px] text-gray-500 font-bold uppercase">Ingresos Total ($)</label>
                                     <div class="flex items-center space-x-1">
@@ -226,78 +268,36 @@
                 </div>
             </div>
 
-            <!-- MÓDULO DE COTIZACIONES -->
             <div id="vista-tabla-cotizaciones" class="hidden max-w-[1600px] mx-auto mt-6 px-4 md:px-6 pb-12 space-y-8">
                 <div class="flex items-center gap-3 border-b border-gray-200 pb-4">
                     <div class="bg-amber-100 p-3 rounded-xl text-amber-600 text-xl"><i class="fa-solid fa-file-signature"></i></div>
-                    <div><h2 class="text-xl md:text-2xl font-bold text-gray-800">Centro de Cotizaciones</h2><p class="text-xs text-gray-500 mt-0.5">Genera y administra propuestas comerciales (PDF)</p></div>
+                    <div><h2 class="text-xl md:text-2xl font-bold text-gray-800">Centro de Cotizaciones</h2><p class="text-xs text-gray-500 mt-0.5">Historial y emisión de PDF de propuestas comerciales</p></div>
                 </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
-                    <!-- Formulario de Cotización -->
-                    <div class="bg-white p-5 md:p-6 rounded-2xl shadow-md border border-amber-100 lg:col-span-1">
-                        <h3 id="tituloFormCotizacion" class="text-lg font-bold text-gray-800 mb-5 flex items-center"><i class="fa-solid fa-plus-circle text-amber-500 mr-2"></i> Crear Cotización</h3>
-                        <form id="cotizacionForm" class="space-y-4">
-                            <input type="hidden" id="editCotId">
-                            
-                            <div><label class="text-[10px] text-gray-500 font-bold uppercase">Productor / Cliente</label><select id="cot_cliente" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm"><option value="">-- Selecciona Cliente --</option></select></div>
-                            
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                <div><label class="text-[10px] text-gray-500 font-bold uppercase">Fecha Emisión</label><input type="date" id="cot_fecha" required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm"></div>
-                                <div><label class="text-[10px] text-gray-500 font-bold uppercase">Ubicación / Predio</label><input type="text" id="cot_cultivo" placeholder="Ej. Loc. Loma Central" required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm"></div>
-                            </div>
-                            
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 border-t border-dashed border-gray-200 pt-3">
-                                <div><label class="text-[10px] text-gray-500 font-bold uppercase">Hectáreas (Ha)</label><input type="number" step="0.01" id="cot_ha" required placeholder="0.00" class="w-full px-3 py-2 bg-blue-50 border border-blue-200 rounded-lg text-sm font-bold text-blue-800"></div>
-                                <div><label class="text-[10px] text-gray-500 font-bold uppercase">Precio por Ha ($)</label><input type="number" step="0.01" id="cot_precio_ha" required placeholder="0.00" class="w-full px-3 py-2 bg-blue-50 border border-blue-200 rounded-lg text-sm font-bold text-blue-800"></div>
-                            </div>
-
-                            <div class="border-t border-dashed border-gray-200 pt-3">
-                                <label class="text-[10px] text-gray-500 font-bold uppercase flex items-center justify-between">Costo Suministros ($) <span class="text-amber-500 font-normal normal-case">Opcional</span></label>
-                                <input type="number" step="0.01" id="cot_suministros_costo" placeholder="0.00" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm font-bold text-gray-700 mb-2">
-                                <textarea id="cot_suministros_detalle" rows="2" placeholder="Detalle (Ej. Paso D, Feudo, Inex...)" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-xs"></textarea>
-                            </div>
-
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 border-t border-dashed border-gray-200 pt-3 items-end">
-                                <div><label class="text-[10px] text-gray-500 font-bold uppercase">Descuento Especial ($)</label><input type="number" step="0.01" id="cot_descuento" placeholder="0.00" class="w-full px-3 py-2 bg-rose-50 border border-rose-200 rounded-lg text-sm font-bold text-rose-600"></div>
-                                <div>
-                                    <label class="text-[10px] text-gray-500 font-bold uppercase">TOTAL COTIZADO</label>
-                                    <input type="text" id="cot_total_display" readonly placeholder="$0.00" class="w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-lg text-sm font-extrabold text-gray-800 outline-none cursor-not-allowed">
-                                </div>
-                            </div>
-                            
-                            <button type="submit" id="btnSubmitCotizacion" class="w-full mt-4 py-3 rounded-xl text-sm font-bold text-white bg-amber-600 hover:bg-amber-500 transition-colors shadow-sm"><i class="fa-solid fa-save mr-1"></i> Guardar Cotización</button>
-                            <button type="button" id="btnCancelarCot" onclick="limpiarFormCotizacion()" class="hidden w-full py-2 rounded-xl text-xs font-bold text-gray-600 bg-gray-200 hover:bg-gray-300">Cancelar Edición</button>
-                        </form>
+                <div class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden w-full">
+                    <div class="bg-amber-600 px-4 md:px-6 py-4 flex justify-between items-center text-white">
+                        <h2 class="text-xs md:text-sm font-bold uppercase tracking-wider"><i class="fa-solid fa-list mr-2"></i> Base de Datos de Propuestas</h2>
                     </div>
-
-                    <!-- Tabla de Cotizaciones -->
-                    <div class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden lg:col-span-2">
-                        <div class="bg-amber-600 px-4 md:px-6 py-4 flex justify-between items-center text-white">
-                            <h2 class="text-xs md:text-sm font-bold uppercase tracking-wider"><i class="fa-solid fa-list mr-2"></i> Historial de Propuestas</h2>
-                        </div>
-                        <div class="overflow-x-auto custom-scrollbar max-h-[600px] relative">
-                            <table class="w-full divide-y divide-gray-200 text-sm border-collapse">
-                                <thead class="bg-gray-100 text-gray-700 sticky top-0 z-10 shadow-sm border-b-2 border-gray-300">
-                                    <tr>
-                                        <th class="th-excel bg-gray-200">Cotización</th>
-                                        <th class="th-excel">Fecha</th>
-                                        <th class="th-excel">Productor</th>
-                                        <th class="th-excel">Predio / Loc.</th>
-                                        <th class="th-excel text-center">Hectáreas</th>
-                                        <th class="th-excel text-right">Total Propuesto</th>
-                                        <th class="th-excel text-center">Estado</th>
-                                        <th class="th-excel text-center"><i class="fa-solid fa-gears"></i> Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="cuerpoTablaCotizaciones" class="bg-white divide-y divide-gray-200"></tbody>
-                            </table>
-                        </div>
+                    <div class="overflow-x-auto custom-scrollbar max-h-[600px] relative">
+                        <table class="w-full divide-y divide-gray-200 text-sm border-collapse">
+                            <thead class="bg-gray-100 text-gray-700 sticky top-0 z-10 shadow-sm border-b-2 border-gray-300">
+                                <tr>
+                                    <th class="th-excel bg-gray-200">Cotización</th>
+                                    <th class="th-excel">Fecha</th>
+                                    <th class="th-excel">Productor</th>
+                                    <th class="th-excel">Predio / Loc.</th>
+                                    <th class="th-excel text-center">Hectáreas</th>
+                                    <th class="th-excel text-right">Total Propuesto</th>
+                                    <th class="th-excel text-center">Estado</th>
+                                    <th class="th-excel text-center"><i class="fa-solid fa-gears"></i> Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cuerpoTablaCotizaciones" class="bg-white divide-y divide-gray-200"></tbody>
+                        </table>
                     </div>
                 </div>
             </div>
 
-            <!-- VISTAS ORIGINALES -->
             <div id="vista-tablas" class="hidden max-w-[1600px] mx-auto mt-6 px-4 md:px-6 pb-12">
                 <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-6" id="titulo-seccion-tablas">Base de Datos Operativa</h2>
 
@@ -419,7 +419,6 @@
                 </div>
             </div>
 
-            <!-- MODALES DE OPERACION -->
             <div id="modal-metas" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 p-4">
                 <div class="bg-white p-6 rounded-2xl shadow-2xl w-full max-w-md border border-gray-200">
                     <div class="flex justify-between items-center mb-4"><h3 class="text-xl font-bold text-gray-800"><i class="fa-solid fa-bullseye text-red-500 mr-2"></i> Ajustar Objetivos</h3><button onclick="cerrarModalMetas()" class="text-gray-400 hover:text-red-500"><i class="fa-solid fa-xmark text-xl"></i></button></div>
@@ -547,7 +546,6 @@
 
         </div> </div>
 
-    <!-- CENTRO DE NOTIFICACIONES (LA CAMPANITA) CON PARCHE PARA SAFARI (Elevada en móviles: bottom-24) -->
     <div class="fixed bottom-24 md:bottom-8 right-4 md:right-8 z-[9999] flex flex-col items-end pointer-events-auto">
         <div id="panel-notificaciones" class="hidden mb-4 bg-gray-900 border border-gray-700 rounded-2xl shadow-2xl w-72 md:w-80 max-h-[70vh] flex-col overflow-hidden transition-all duration-300 origin-bottom-right">
             <div class="bg-gray-800 px-4 py-3 flex justify-between items-center border-b border-gray-700">
@@ -564,7 +562,6 @@
         </button>
     </div>
 
-    <!-- PLANTILLA PDF REPORTE VENTAS ORIGINAL -->
     <div id="pdf-template-container" style="display: none; width: 800px; background-color: white; padding: 20px 30px; font-family: sans-serif; font-size: 11px; line-height: 1.3; color: black; box-sizing: border-box; margin: 0;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
             <div style="width: 33.33%;"><img src="logo_alternativo.png" alt="Logo" style="max-height: 45px;"></div>
@@ -763,7 +760,6 @@
         
     </div>
 
-    <!-- NUEVA PLANTILLA PDF: COTIZACIÓN (Diseño Elegante y Profesional) -->
     <div id="pdf-cotizacion-template" style="display: none; width: 800px; background-color: white; padding: 30px 40px; font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; color: #333;">
         
         <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px; border-bottom: 2px solid #1b6b43; padding-bottom: 15px;">
@@ -795,7 +791,6 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- Fila Fumigación -->
                 <tr>
                     <td style="padding: 12px; border: 1px solid #ddd; vertical-align: top;">
                         <strong style="color: #222;">Servicio de fumigación aérea especializada con dron agrícola en potrero.</strong><br>
@@ -806,7 +801,6 @@
                     <td style="padding: 12px; border: 1px solid #ddd; text-align: center; vertical-align: top;">Ha</td>
                     <td style="padding: 12px; border: 1px solid #ddd; text-align: right; vertical-align: top; font-weight: bold;" id="pdfcot_total_fumi"></td>
                 </tr>
-                <!-- Fila Suministros (Solo se mostrará si hay suministros) -->
                 <tr id="pdfcot_row_suministros" style="display: none;">
                     <td style="padding: 12px; border: 1px solid #ddd; vertical-align: top;">
                         <strong style="color: #222;">Suministro agroquímico.</strong><br>
@@ -959,7 +953,7 @@
                     const telCliente = cl ? cl.telefono : '';
                     
                     let badgeColor = c.estado === 'Aprobada' ? 'bg-emerald-100 text-emerald-800 border-emerald-300' : 'bg-amber-100 text-amber-800 border-amber-300';
-                    let shortId = String(c.id).substring(0,4).toUpperCase(); // Simulando un ID corto
+                    let shortId = String(c.id).substring(0,4).toUpperCase(); 
 
                     cuerpo.innerHTML += `
                         <tr class="hover:bg-amber-50/50">
@@ -1001,17 +995,19 @@
             
             calcularTotalCotizacion();
 
-            document.getElementById('tituloFormCotizacion').innerHTML = `<i class="fa-solid fa-pen text-blue-500 mr-2"></i> Editando Cotización`;
-            document.getElementById('btnSubmitCotizacion').className = "w-full mt-4 py-3 rounded-xl text-sm font-bold text-white bg-blue-600 hover:bg-blue-500 transition-colors shadow-sm";
+            document.getElementById('tituloFormCotizacion').innerHTML = `<i class="fa-solid fa-pen text-blue-500 mr-2 text-xl md:text-2xl"></i> Editando Cotización`;
+            document.getElementById('btnSubmitCotizacion').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-blue-600 hover:bg-blue-500 transition-colors shadow-sm";
             document.getElementById('btnCancelarCot').classList.remove('hidden');
+            
+            cambiarVista('inicio');
         }
 
         function limpiarFormCotizacion() {
             document.getElementById('cotizacionForm').reset();
             document.getElementById('editCotId').value = '';
             document.getElementById('cot_total_display').value = '';
-            document.getElementById('tituloFormCotizacion').innerHTML = `<i class="fa-solid fa-plus-circle text-amber-500 mr-2"></i> Crear Cotización`;
-            document.getElementById('btnSubmitCotizacion').className = "w-full mt-4 py-3 rounded-xl text-sm font-bold text-white bg-amber-600 hover:bg-amber-500 transition-colors shadow-sm";
+            document.getElementById('tituloFormCotizacion').innerHTML = `<i class="fa-solid fa-file-signature text-amber-500 mr-2 text-xl md:text-2xl"></i> Nueva Cotización`;
+            document.getElementById('btnSubmitCotizacion').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-amber-600 hover:bg-amber-500 transition-colors shadow-sm";
             document.getElementById('btnCancelarCot').classList.add('hidden');
         }
 
@@ -1880,7 +1876,7 @@
                             try {
                                 await cargarClientes(); 
                                 await cargarPropiedades(); 
-                                await cargarServicios();
+                                await cargarServicios(); 
                                 await cargarCotizaciones();
                                 actualizarEstadisticasYMetas();
                                 revisarSeguimientos(); 

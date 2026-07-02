@@ -131,6 +131,7 @@
                 </button>
             </div>
 
+            <!-- VISTA: INICIO -->
             <div id="vista-inicio" class="max-w-[1600px] mx-auto mt-6 px-4 md:px-6 block">
                 <h2 class="text-xl md:text-2xl font-bold text-gray-800 mb-4 tracking-tight">Objetivos Operativos - Junio 2026</h2>
                 
@@ -249,7 +250,7 @@
 
                             <div><label class="text-[10px] text-gray-500 font-bold uppercase">Productor / Parcela</label><select id="selectPropiedad2" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm"><option value="">-- Selecciona --</option></select></div>
                             <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
-                                <div><label class="text-[10px] text-gray-500 font-bold uppercase">No. Cotización</label><input type="text" id="no_cotizacion" placeholder="Ej. 1292" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 text-sm rounded-lg"></div>
+                                <div><label class="text-[10px] text-gray-500 font-bold uppercase">No. Cotización</label><input type="text" id="no_cotizacion_venta" placeholder="Ej. 1292" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 text-sm rounded-lg"></div>
                                 <div><label class="text-[10px] text-gray-500 font-bold uppercase">No. Orden Serv.</label><input type="text" id="no_orden" placeholder="Ej. OS-001" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 text-sm rounded-lg"></div>
                             </div>
                             <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
@@ -282,7 +283,7 @@
                 </div>
             </div>
 
-            <!-- MODULO DE COTIZACIONES (SOLO TABLA) -->
+            <!-- VISTA: TABLA COTIZACIONES -->
             <div id="vista-tabla-cotizaciones" class="hidden max-w-[1600px] mx-auto mt-6 px-4 md:px-6 pb-12 space-y-8">
                 <div class="flex items-center gap-3 border-b border-gray-200 pb-4">
                     <div class="bg-amber-100 p-3 rounded-xl text-amber-600 text-xl"><i class="fa-solid fa-file-signature"></i></div>
@@ -313,10 +314,11 @@
                 </div>
             </div>
 
-            <!-- VISTAS ORIGINALES DE TABLAS -->
+            <!-- VISTA: TABLAS GENERALES -->
             <div id="vista-tablas" class="hidden max-w-[1600px] mx-auto mt-6 px-4 md:px-6 pb-12">
                 <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-6" id="titulo-seccion-tablas">Base de Datos Operativa</h2>
 
+                <!-- KPIs Superiores -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                     <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-200 flex items-center space-x-4"><div class="bg-indigo-100 w-12 h-12 rounded-full flex items-center justify-center text-indigo-600 shrink-0"><i class="fa-solid fa-calendar-days text-lg"></i></div><div class="w-full"><p class="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-1">Filtrar por Mes</p><select id="filtroMes" onchange="actualizarEstadisticasYMetas()" class="w-full bg-gray-50 border text-sm font-bold text-gray-700 py-1.5 px-2 outline-none cursor-pointer"><option value="todos">Histórico Total</option><option value="01">Enero</option><option value="02">Febrero</option><option value="03">Marzo</option><option value="04">Abril</option><option value="05">Mayo</option><option value="06" selected>Junio</option><option value="07">Julio</option><option value="08">Agosto</option><option value="09">Septiembre</option><option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option></select></div></div>
                     <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex items-center space-x-4"><div class="bg-yellow-100 w-12 h-12 rounded-full flex items-center justify-center text-yellow-600 shrink-0"><i class="fa-solid fa-ruler-combined text-lg"></i></div><div><p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Ha. Fumigadas</p><p id="stat-hectareas" class="text-2xl font-extrabold text-gray-800 leading-none mt-1">0</p></div></div>
@@ -327,11 +329,13 @@
                     </div>
                 </div>
 
+                <!-- Tabla Operaciones -->
                 <div id="vista-tabla-operaciones" class="hidden bg-white p-4 md:p-8 rounded-2xl shadow-xl border border-gray-200 min-h-[450px]">
                     <div class="flex items-center gap-3 border-b border-gray-100 pb-4 mb-6"><div class="bg-green-100 p-3 rounded-xl text-green-700 text-xl"><i class="fa-solid fa-gears"></i></div><div><h2 class="text-lg md:text-xl font-bold text-gray-800">Módulo de Operaciones</h2><p class="text-[10px] md:text-xs text-gray-400 mt-0.5">Lienzo operativo disponible para desarrollo</p></div></div>
                     <div class="flex flex-col items-center justify-center py-12 border border-dashed border-gray-200 rounded-xl bg-gray-50/50 text-center px-4"><div class="bg-white p-4 rounded-full shadow-sm text-gray-300 text-3xl mb-3"><i class="fa-solid fa-code"></i></div><p class="text-sm font-bold text-gray-600">Módulo Listo</p></div>
                 </div>
 
+                <!-- Tablas Financieros -->
                 <div id="vista-tabla-financieros" class="hidden bg-white p-4 md:p-8 rounded-2xl shadow-xl border border-gray-200 min-h-[450px]">
                     <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4 border-b border-gray-100 pb-4 mb-6">
                         <div class="flex items-center gap-3"><div class="bg-rose-100 p-3 rounded-xl text-rose-700 text-xl"><i class="fa-solid fa-wallet"></i></div><div><h2 class="text-lg md:text-xl font-bold text-gray-800">Módulo Financiero</h2><p class="text-[10px] md:text-xs text-gray-400 mt-0.5">Auditoría completa de entradas y salidas</p></div></div>
@@ -382,6 +386,7 @@
                     </div>
                 </div>
 
+                <!-- Tablas Ventas CRM -->
                 <div id="vista-tabla-ventas-crm" class="hidden space-y-10">
                     <div class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
                         <div class="tabla-header px-4 md:px-6 py-4 flex flex-col md:flex-row md:justify-between items-center text-white gap-3">
@@ -1245,7 +1250,7 @@
                 memoriaCotizaciones = await res.json();
                 
                 const cuerpo = document.getElementById('cuerpoTablaCotizaciones');
-                cuerpo.innerHTML = '';
+                if(cuerpo) cuerpo.innerHTML = '';
                 
                 memoriaCotizaciones.forEach(c => {
                     const cl = memoriaClientes.find(x => String(x.id) === String(c.cliente_id));
@@ -1255,32 +1260,32 @@
                     let obs = {};
                     try { if(c.observaciones) obs = JSON.parse(c.observaciones); } catch(e){}
                     
-                    // Mostrar el número ingresado manualmente
                     let numCot = obs.no_cotizacion ? obs.no_cotizacion : String(c.id).substring(0,4).toUpperCase();
-
                     let badgeColor = c.estado === 'Aprobada' ? 'bg-emerald-100 text-emerald-800 border-emerald-300' : 'bg-amber-100 text-amber-800 border-amber-300';
 
-                    cuerpo.innerHTML += `
-                        <tr class="hover:bg-amber-50/50">
-                            <td class="px-6 py-4 font-bold text-amber-700">COT-${numCot}</td>
-                            <td class="px-6 py-4">${c.fecha}</td>
-                            <td class="px-6 py-4">
-                                <p class="font-bold text-gray-800">${nomCliente}</p>
-                                <p class="text-[10px] text-gray-500">${telCliente}</p>
-                            </td>
-                            <td class="px-6 py-4 text-gray-600">${c.cultivo}</td>
-                            <td class="px-6 py-4 text-center font-bold">${c.hectareas} Ha</td>
-                            <td class="px-6 py-4 text-right font-extrabold text-blue-700">$${(c.total||0).toLocaleString('es-MX', {minimumFractionDigits:2})}</td>
-                            <td class="px-6 py-4 text-center"><span class="text-[10px] font-bold px-2 py-0.5 rounded-full border ${badgeColor}">${c.estado}</span></td>
-                            <td class="px-6 py-4 text-center space-x-1 whitespace-nowrap">
-                                <button onclick="imprimirCotizacion('${c.id}')" class="bg-indigo-600 text-white hover:bg-indigo-500 px-3 py-1.5 rounded-md text-xs shadow-sm"><i class="fa-solid fa-file-pdf"></i></button>
-                                <button onclick="editarCotizacion('${c.id}')" class="bg-amber-400 text-white hover:bg-amber-300 px-3 py-1.5 rounded-md text-xs shadow-sm"><i class="fa-solid fa-pen"></i></button>
-                                <button onclick="eliminarCotizacion('${c.id}')" class="bg-rose-600 text-white hover:bg-rose-500 px-3 py-1.5 rounded-md text-xs shadow-sm"><i class="fa-solid fa-trash"></i></button>
-                            </td>
-                        </tr>
-                    `;
+                    if(cuerpo) {
+                        cuerpo.innerHTML += `
+                            <tr class="hover:bg-amber-50/50">
+                                <td class="px-6 py-4 font-bold text-amber-700">COT-${numCot}</td>
+                                <td class="px-6 py-4">${c.fecha}</td>
+                                <td class="px-6 py-4">
+                                    <p class="font-bold text-gray-800">${nomCliente}</p>
+                                    <p class="text-[10px] text-gray-500">${telCliente}</p>
+                                </td>
+                                <td class="px-6 py-4 text-gray-600">${c.cultivo}</td>
+                                <td class="px-6 py-4 text-center font-bold">${c.hectareas} Ha</td>
+                                <td class="px-6 py-4 text-right font-extrabold text-blue-700">$${(c.total||0).toLocaleString('es-MX', {minimumFractionDigits:2})}</td>
+                                <td class="px-6 py-4 text-center"><span class="text-[10px] font-bold px-2 py-0.5 rounded-full border ${badgeColor}">${c.estado}</span></td>
+                                <td class="px-6 py-4 text-center space-x-1 whitespace-nowrap">
+                                    <button onclick="imprimirCotizacion('${c.id}')" class="bg-indigo-600 text-white hover:bg-indigo-500 px-3 py-1.5 rounded-md text-xs shadow-sm"><i class="fa-solid fa-file-pdf"></i></button>
+                                    <button onclick="editarCotizacion('${c.id}')" class="bg-amber-400 text-white hover:bg-amber-300 px-3 py-1.5 rounded-md text-xs shadow-sm"><i class="fa-solid fa-pen"></i></button>
+                                    <button onclick="eliminarCotizacion('${c.id}')" class="bg-rose-600 text-white hover:bg-rose-500 px-3 py-1.5 rounded-md text-xs shadow-sm"><i class="fa-solid fa-trash"></i></button>
+                                </td>
+                            </tr>
+                        `;
+                    }
                 });
-            } catch(e) {}
+            } catch(e) { console.error(e); }
         }
 
         function editarCotizacion(id) {
@@ -1328,7 +1333,6 @@
             }
         }
 
-        // FUNCION PARA FECHAS ELEGANTES EN EL PDF
         function formatearFechaEspanol(fechaStr) {
             if(!fechaStr) return '';
             const partes = fechaStr.split('-');
@@ -1520,7 +1524,10 @@
         });
 
         function renderizarTablaClientes(lista) { 
-            const cuerpo = document.getElementById('cuerpoTabla'); cuerpo.innerHTML = ''; document.getElementById('contadorClientes').textContent = `${lista.length} REGISTRADOS`;
+            const cuerpo = document.getElementById('cuerpoTabla'); 
+            if(!cuerpo) return;
+            cuerpo.innerHTML = ''; 
+            document.getElementById('contadorClientes').textContent = `${lista.length} REGISTRADOS`;
             lista.forEach(c => {
                 let badge = c.estado === 'Cliente' ? `<span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-300">Cliente Real 🟢</span>` : `<span class="bg-blue-100 text-blue-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-blue-300">Prospecto 🟡</span>`;
                 let folioCliente = c.no_cliente ? `<span class="text-emerald-700 font-extrabold mr-1">[${c.no_cliente}]</span>` : '';
@@ -1537,16 +1544,16 @@
                 const sel = document.getElementById('selectCliente'); 
                 const selCot = document.getElementById('cot_cliente'); 
                 
-                sel.innerHTML = '<option value="">-- Selecciona --</option>'; 
+                if(sel) sel.innerHTML = '<option value="">-- Selecciona --</option>'; 
                 if(selCot) selCot.innerHTML = '<option value="">-- Selecciona Cliente --</option>';
                 
                 memoriaClientes.forEach(c => { 
                     const optHTML = `<option value="${c.id}">${c.nombre} ${c.apellidos}</option>`;
-                    sel.innerHTML += optHTML; 
+                    if(sel) sel.innerHTML += optHTML; 
                     if(selCot) selCot.innerHTML += optHTML;
                 }); 
                 renderizarTablaClientes(memoriaClientes); 
-            } catch (e) {} 
+            } catch (e) { console.error(e); } 
         }
         
         document.getElementById('registroForm').addEventListener('submit', async function(e) { 
@@ -1587,14 +1594,25 @@
 
         async function cargarPropiedades() { 
             try { 
-                const res = await fetch(`${API_URL}/propiedades/`); memoriaPropiedades = await res.json(); 
-                const cuerpo = document.getElementById('cuerpoTablaPropiedades'); cuerpo.innerHTML = ''; 
-                const sel = document.getElementById('selectPropiedad2'); // Reparado: Aquí estaba el error
+                const res = await fetch(`${API_URL}/propiedades/`); 
+                memoriaPropiedades = await res.json(); 
+                
+                const cuerpo = document.getElementById('cuerpoTablaPropiedades'); 
+                if(cuerpo) cuerpo.innerHTML = ''; 
+                
+                const sel = document.getElementById('selectPropiedad2'); // PARCHE: Buscar en el formulario de ventas
                 if(sel) sel.innerHTML = '<option value="">-- Selecciona --</option>'; 
+                
                 memoriaPropiedades.forEach(p => { 
-                    const cl = memoriaClientes.find(c => String(c.id) === String(p.cliente_id)); const nD = cl ? `${cl.nombre} ${cl.apellidos}` : 'N/A'; 
-                    cuerpo.innerHTML += `<tr><td class="px-6 py-4"><p class="font-bold text-sm">${p.nombre_propiedad}</p><p class="text-[11px] text-gray-500">${p.direccion} - Prop: ${nD}</p></td><td class="px-6 py-4 text-center"><span class="bg-[#1b6b43] text-white px-3 py-1 rounded-full text-[10px] font-bold">${p.tipo_cultivo}</span></td><td class="px-6 py-4 text-center"><p class="text-xl font-extrabold">${p.superficie_has}</p></td><td class="px-6 py-4 text-center"><button onclick="ajustarEdicionPropiedad('${p.id}')" class="bg-amber-400 text-white text-xs px-4 py-2 rounded-full mr-1"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="eliminarPropiedad('${p.id}')" class="bg-rose-600 text-white text-xs px-4 py-2 rounded-full"><i class="fa-solid fa-trash"></i></button></td></tr>`; 
-                    if(sel) sel.innerHTML += `<option value="${p.id}">${nD} - ${p.nombre_propiedad}</option>`; 
+                    const cl = memoriaClientes.find(c => String(c.id) === String(p.cliente_id)); 
+                    const nD = cl ? `${cl.nombre} ${cl.apellidos}` : 'N/A'; 
+                    
+                    if(cuerpo) {
+                        cuerpo.innerHTML += `<tr><td class="px-6 py-4"><p class="font-bold text-sm">${p.nombre_propiedad}</p><p class="text-[11px] text-gray-500">${p.direccion} - Prop: ${nD}</p></td><td class="px-6 py-4 text-center"><span class="bg-[#1b6b43] text-white px-3 py-1 rounded-full text-[10px] font-bold">${p.tipo_cultivo}</span></td><td class="px-6 py-4 text-center"><p class="text-xl font-extrabold">${p.superficie_has}</p></td><td class="px-6 py-4 text-center"><button onclick="ajustarEdicionPropiedad('${p.id}')" class="bg-amber-400 text-white text-xs px-4 py-2 rounded-full mr-1"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="eliminarPropiedad('${p.id}')" class="bg-rose-600 text-white text-xs px-4 py-2 rounded-full"><i class="fa-solid fa-trash"></i></button></td></tr>`; 
+                    }
+                    if(sel) {
+                        sel.innerHTML += `<option value="${p.id}">${nD} - ${p.nombre_propiedad}</option>`; 
+                    }
                 }); 
             } catch (e) { console.error(e); } 
         }
@@ -1635,9 +1653,13 @@
         async function cargarServicios() { 
             try { 
                 const res = await fetch(`${API_URL}/servicios/`); memoriaServicios = await res.json(); 
-                const cuerpoVentas = document.getElementById('cuerpoTablaServicios'); cuerpoVentas.innerHTML = ''; 
-                const cuerpoGastos = document.getElementById('cuerpoTablaGastos'); cuerpoGastos.innerHTML = ''; 
-                const cuerpoIngresos = document.getElementById('cuerpoTablaIngresos'); cuerpoIngresos.innerHTML = ''; 
+                const cuerpoVentas = document.getElementById('cuerpoTablaServicios'); 
+                const cuerpoGastos = document.getElementById('cuerpoTablaGastos'); 
+                const cuerpoIngresos = document.getElementById('cuerpoTablaIngresos'); 
+                
+                if(cuerpoVentas) cuerpoVentas.innerHTML = ''; 
+                if(cuerpoGastos) cuerpoGastos.innerHTML = ''; 
+                if(cuerpoIngresos) cuerpoIngresos.innerHTML = ''; 
 
                 memoriaServicios.forEach(s => { 
                     const pr = memoriaPropiedades.find(p => String(p.id) === String(s.propiedad_id)); 
@@ -1651,17 +1673,21 @@
                         ? `<span class="ml-2 text-[9px] font-extrabold text-blue-600 bg-blue-50 px-1 rounded border border-blue-200 uppercase tracking-tight">SPEI</span>`
                         : `<span class="ml-2 text-[9px] font-extrabold text-emerald-600 bg-emerald-50 px-1 rounded border border-emerald-200 uppercase tracking-tight">EFEC</span>`;
 
-                    cuerpoVentas.innerHTML += `<tr><td class="td-excel bg-gray-50 font-extrabold text-emerald-800">${noControl}</td><td class="td-excel">${cl?cl.nombre:'N/A'}</td><td class="td-excel">${cl?cl.apellidos:'N/A'}</td><td class="td-excel">${cl?cl.telefono:'N/A'}</td><td class="td-excel">${pr?pr.tipo_cultivo:'N/A'}</td><td class="td-excel text-center">${s.ha_trabajadas || (pr?pr.superficie_has:'0')}</td><td class="td-excel">${pr?pr.direccion:'N/A'}</td><td class="td-excel">${s.no_cotizacion||'S/N'}</td><td class="td-excel">${s.no_orden||'S/N'}</td><td class="td-excel">${s.fecha_aplicacion||'S/N'}</td><td class="td-excel text-right text-green-700 font-bold">$${totalIngreso.toLocaleString()}</td><td class="td-excel text-right text-red-600 font-bold">$${totalGasto.toLocaleString()}</td><td class="td-excel text-right text-blue-700 font-bold">$${(totalIngreso-totalGasto).toLocaleString()}</td><td class="td-excel text-center">${s.fecha_seguimiento||'S/N'}</td><td class="td-excel text-center">${s.no_factura||'S/N'}</td><td class="td-excel max-w-[150px] truncate">${s.observaciones||''}</td><td class="td-excel text-center space-x-2">
-                        <button onclick="verDetalleServicio('${s.id}')" class="text-blue-500 bg-blue-50 px-2 py-1 rounded shadow-sm"><i class="fa-solid fa-magnifying-glass"></i></button>
-                        <button onclick="prepararEdicionServicio('${s.id}')" class="text-amber-500"><i class="fa-solid fa-pen-to-square"></i></button>
-                        <button onclick="eliminarServio('${s.id}')" class="text-rose-500"><i class="fa-solid fa-trash"></i></button>
-                    </td></tr>`; 
-                    
-                    cuerpoIngresos.innerHTML += `<tr class="hover:bg-emerald-50"><td class="td-excel font-bold text-emerald-800">${noControl}</td><td class="td-excel font-semibold">${nomProd}</td><td class="td-excel text-gray-600">${pr?pr.tipo_cultivo:'N/A'}</td><td class="td-excel text-center font-bold">${s.ha_trabajadas||0} Ha</td><td class="td-excel text-right">$${(s.precio_por_ha||0).toLocaleString()}</td><td class="td-excel text-right text-emerald-600">$${(s.ingreso_viaticos||0).toLocaleString()}</td><td class="td-excel text-right text-emerald-600">$${(s.ingreso_suministros||0).toLocaleString()}</td><td class="td-excel text-right text-emerald-700 font-extrabold bg-emerald-50 border-l border-emerald-200 flex items-center justify-end">$${totalIngreso.toLocaleString()}${badgePago}</td></tr>`;
-
-                    cuerpoGastos.innerHTML += `<tr class="hover:bg-rose-50"><td class="td-excel font-bold text-emerald-800">${noControl}</td><td class="td-excel font-semibold">${nomProd}</td><td class="td-excel text-gray-600">${pr?pr.tipo_cultivo:'N/A'}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_gasolina_unidad||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_gasolina_generador||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_sueldos||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_insumos||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_comidas||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_oxxo||0).toLocaleString()}</td><td class="td-excel text-right text-red-700 font-extrabold bg-red-50 border-l border-red-200">$${totalGasto.toLocaleString()}</td></tr>`;
+                    if(cuerpoVentas) {
+                        cuerpoVentas.innerHTML += `<tr><td class="td-excel bg-gray-50 font-extrabold text-emerald-800">${noControl}</td><td class="td-excel">${cl?cl.nombre:'N/A'}</td><td class="td-excel">${cl?cl.apellidos:'N/A'}</td><td class="td-excel">${cl?cl.telefono:'N/A'}</td><td class="td-excel">${pr?pr.tipo_cultivo:'N/A'}</td><td class="td-excel text-center">${s.ha_trabajadas || (pr?pr.superficie_has:'0')}</td><td class="td-excel">${pr?pr.direccion:'N/A'}</td><td class="td-excel">${s.no_cotizacion||'S/N'}</td><td class="td-excel">${s.no_orden||'S/N'}</td><td class="td-excel">${s.fecha_aplicacion||'S/N'}</td><td class="td-excel text-right text-green-700 font-bold">$${totalIngreso.toLocaleString()}</td><td class="td-excel text-right text-red-600 font-bold">$${totalGasto.toLocaleString()}</td><td class="td-excel text-right text-blue-700 font-bold">$${(totalIngreso-totalGasto).toLocaleString()}</td><td class="td-excel text-center">${s.fecha_seguimiento||'S/N'}</td><td class="td-excel text-center">${s.no_factura||'S/N'}</td><td class="td-excel max-w-[150px] truncate">${s.observaciones||''}</td><td class="td-excel text-center space-x-2">
+                            <button onclick="verDetalleServicio('${s.id}')" class="text-blue-500 bg-blue-50 px-2 py-1 rounded shadow-sm"><i class="fa-solid fa-magnifying-glass"></i></button>
+                            <button onclick="prepararEdicionServicio('${s.id}')" class="text-amber-500"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button onclick="eliminarServio('${s.id}')" class="text-rose-500"><i class="fa-solid fa-trash"></i></button>
+                        </td></tr>`; 
+                    }
+                    if(cuerpoIngresos) {
+                        cuerpoIngresos.innerHTML += `<tr class="hover:bg-emerald-50"><td class="td-excel font-bold text-emerald-800">${noControl}</td><td class="td-excel font-semibold">${nomProd}</td><td class="td-excel text-gray-600">${pr?pr.tipo_cultivo:'N/A'}</td><td class="td-excel text-center font-bold">${s.ha_trabajadas||0} Ha</td><td class="td-excel text-right">$${(s.precio_por_ha||0).toLocaleString()}</td><td class="td-excel text-right text-emerald-600">$${(s.ingreso_viaticos||0).toLocaleString()}</td><td class="td-excel text-right text-emerald-600">$${(s.ingreso_suministros||0).toLocaleString()}</td><td class="td-excel text-right text-emerald-700 font-extrabold bg-emerald-50 border-l border-emerald-200 flex items-center justify-end">$${totalIngreso.toLocaleString()}${badgePago}</td></tr>`;
+                    }
+                    if(cuerpoGastos) {
+                        cuerpoGastos.innerHTML += `<tr class="hover:bg-rose-50"><td class="td-excel font-bold text-emerald-800">${noControl}</td><td class="td-excel font-semibold">${nomProd}</td><td class="td-excel text-gray-600">${pr?pr.tipo_cultivo:'N/A'}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_gasolina_unidad||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_gasolina_generador||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_sueldos||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_insumos||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_comidas||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_oxxo||0).toLocaleString()}</td><td class="td-excel text-right text-red-700 font-extrabold bg-red-50 border-l border-red-200">$${totalGasto.toLocaleString()}</td></tr>`;
+                    }
                 }); 
-            } catch (e) {} 
+            } catch (e) { console.error(e); } 
         }
 
         document.getElementById('servicioForm').addEventListener('submit', async function(e) { 
@@ -1669,7 +1695,7 @@
             const datos = { 
                 propiedad_id: document.getElementById('selectPropiedad2').value, fecha_aplicacion: document.getElementById('fecha_aplicacion').value, 
                 costo_servicio: parseFloat(document.getElementById('costo_servicio').value || 0), estado_cuenta: 'Cobrado', satisfaccion: 5,
-                no_cotizacion: document.getElementById('no_cotizacion').value, no_orden: document.getElementById('no_orden').value,
+                no_cotizacion: document.getElementById('no_cotizacion_venta').value, no_orden: document.getElementById('no_orden').value,
                 gastos: parseFloat(document.getElementById('gastos').value || 0), fecha_seguimiento: document.getElementById('fecha_seguimiento').value,
                 no_factura: document.getElementById('no_factura').value, observaciones: document.getElementById('observaciones').value,
                 gasto_gasolina_unidad: parseFloat(document.getElementById('h_gas_unidad').value || 0), gasto_gasolina_generador: parseFloat(document.getElementById('h_gas_gen').value || 0), gasto_sueldos: parseFloat(document.getElementById('h_sueldos').value || 0), gasto_insumos: parseFloat(document.getElementById('h_insumos').value || 0), gasto_comidas: parseFloat(document.getElementById('h_comidas').value || 0), gasto_oxxo: parseFloat(document.getElementById('h_oxxo').value || 0),
@@ -1738,7 +1764,7 @@
         function prepararEdicionServicio(id) { 
             const s = memoriaServicios.find(x => String(x.id) === String(id)); 
             if(!s) return;
-            document.getElementById('editServioId').value = s.id; document.getElementById('selectPropiedad2').value = s.propiedad_id; document.getElementById('fecha_aplicacion').value = s.fecha_aplicacion||''; document.getElementById('costo_servicio').value = s.costo_servicio||''; document.getElementById('no_cotizacion').value = s.no_cotizacion||''; document.getElementById('no_orden').value = s.no_orden||''; document.getElementById('gastos').value = s.gastos||''; document.getElementById('fecha_seguimiento').value = s.fecha_seguimiento||''; document.getElementById('no_factura').value = s.no_factura||''; document.getElementById('observaciones').value = s.observaciones||''; 
+            document.getElementById('editServioId').value = s.id; document.getElementById('selectPropiedad2').value = s.propiedad_id; document.getElementById('fecha_aplicacion').value = s.fecha_aplicacion||''; document.getElementById('costo_servicio').value = s.costo_servicio||''; document.getElementById('no_cotizacion_venta').value = s.no_cotizacion||''; document.getElementById('no_orden').value = s.no_orden||''; document.getElementById('gastos').value = s.gastos||''; document.getElementById('fecha_seguimiento').value = s.fecha_seguimiento||''; document.getElementById('no_factura').value = s.no_factura||''; document.getElementById('observaciones').value = s.observaciones||''; 
             document.getElementById('h_gas_unidad').value = s.gasto_gasolina_unidad || 0; document.getElementById('h_gas_gen').value = s.gasto_gasolina_generador || 0; document.getElementById('h_sueldos').value = s.gasto_sueldos || 0; document.getElementById('h_insumos').value = s.gasto_insumos || 0; document.getElementById('h_comidas').value = s.gasto_comidas || 0; document.getElementById('h_oxxo').value = s.gasto_oxxo || 0;
             document.getElementById('h_ha_trabajadas').value = s.ha_trabajadas || 0; document.getElementById('h_precio_por_ha').value = s.precio_por_ha || 0; document.getElementById('h_ingreso_viaticos').value = s.ingreso_viaticos || 0; document.getElementById('h_ingreso_suministros').value = s.ingreso_suministros || 0;
             document.getElementById('h_metodo_pago').value = s.metodo_pago || 'Efectivo';

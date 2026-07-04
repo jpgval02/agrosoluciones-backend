@@ -6,6 +6,10 @@ from supabase import create_client, Client
 import os
 from dotenv import load_dotenv
 
+# --- NUEVAS IMPORTACIONES PARA GOOGLE CALENDAR ---
+from google.oauth2 import service_account
+from googleapiclient.discovery import build
+
 load_dotenv()
 url: str = os.environ.get("SUPABASE_URL")
 key: str = os.environ.get("SUPABASE_KEY")
@@ -125,6 +129,36 @@ class CotizacionNueva(BaseModel):
     total: float
     estado: Optional[str] = "Pendiente"
     observaciones: Optional[str] = ""
+
+
+# --- FUNCIÓN DE GOOGLE CALENDAR ---
+def agendar_en_google_calendar(fecha, no_cotizacion, observaciones, nombre_productor, parcela):
+    # ¡IMPORTANTE! Cambia esto por el correo dueño del calendario
+    CORREO_CALENDARIO = 'facturacion@asoa.com.mx' 
+    ARCHIVO_CREDENCIALES = 'credenciales_calendario.json'
+    
+    if not os.path.exists(ARCHIVO_CREDENCIALES):
+        print("No se encontró la llave del calendario (JSON).")
+        return None
+
+    try:
+        creds = service_account.Credentials.from_service_account_file(
+            ARCHIVO_CREDENCIALES, scopes=['https://www.googleapis.com/auth/calendar'])
+        servicio = build('calendar', 'v3', credentials=creds)
+        
+        evento = {
+            'summary': f'🚜 Vuelo: {nombre_productor}',
+            'location': parcela,
+            'description': f'Cotización/OS: {no_cotizacion}\nObservaciones: {observaciones}',
+            'start': {'date': fecha, 'timeZone': 'America/Mexico_City'},
+            'end': {'date': fecha, 'timeZone': 'America/Mexico_City'},
+        }
+        
+        servicio.events().insert(calendarId=CORREO_CALENDARIO, body=evento).execute()
+        print("¡Cita agendada en Google Calendar con éxito!")
+    except Exception as e:
+        print(f"Error con Google Calendar: {e}")
+
 
 # --- RUTA DE LOGIN PRINCIPAL ---
 @app.post("/login/")
@@ -272,19 +306,46 @@ async def eliminar_propiedad(propiedad_id: str):
         return {"mensaje": "Eliminado exitosamente"}
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
 
-# --- RUTAS DE SERVICIOS ---
+# --- RUTAS DE SERVICIOS (MODIFICADA CON GOOGLE CALENDAR) ---
 @app.post("/servicios/")
 async def registrar_servicio(servicio: ServicioNuevo):
     try:
         respuesta = supabase.table('servicios_aplicacion').insert(servicio.dict()).execute()
+        
+        # 1. Buscamos el nombre de la Parcela y el Cliente para el Calendario
+        nombre_productor = "Productor Desconocido"
+        nombre_parcela = "Ubicación Desconocida"
+        
         try:
-            prop_data = supabase.table('propiedades').select('cliente_id').eq('id', servicio.propiedad_id).execute()
+            prop_data = supabase.table('propiedades').select('cliente_id, nombre_propiedad, direccion').eq('id', servicio.propiedad_id).execute()
             if len(prop_data.data) > 0:
                 cl_id = prop_data.data[0]['cliente_id']
+                nombre_parcela = f"{prop_data.data[0]['nombre_propiedad']} ({prop_data.data[0]['direccion']})"
+                
+                # Actualizamos al cliente a "Cliente Real"
                 supabase.table('clientes').update({'estado': 'Cliente'}).eq('id', cl_id).execute()
-        except Exception:
-            pass
+                
+                # Sacamos los datos del cliente
+                cliente_data = supabase.table('clientes').select('nombre, apellidos').eq('id', cl_id).execute()
+                if len(cliente_data.data) > 0:
+                    nombre_productor = f"{cliente_data.data[0]['nombre']} {cliente_data.data[0]['apellidos']}"
+        except Exception as query_err:
+            print(f"Error consultando detalles del cliente para el calendario: {query_err}")
+
+        # 2. Refrescamos el panel de todos los usuarios
         await manager.broadcast("update")
+        
+        # 3. Disparamos la agenda a Google Calendar
+        fecha_cita = servicio.fecha_seguimiento or servicio.fecha_aplicacion
+        if fecha_cita:
+            agendar_en_google_calendar(
+                fecha=fecha_cita,
+                no_cotizacion=servicio.no_cotizacion or 'S/N',
+                observaciones=servicio.observaciones or 'Sin detalles',
+                nombre_productor=nombre_productor,
+                parcela=nombre_parcela
+            )
+            
         return {"mensaje": "Guardado", "datos": respuesta.data[0]}
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
 

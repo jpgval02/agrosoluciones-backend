@@ -199,7 +199,6 @@
                         <form id="cotizacionForm" class="space-y-4">
                             <input type="hidden" id="editCotId">
                             
-                            <!-- AQUI ESTA LA CASILLA DEL NUMERO MANUAL -->
                             <div class="grid grid-cols-1 lg:grid-cols-3 gap-3">
                                 <div class="lg:col-span-2">
                                     <label class="text-[10px] text-gray-500 font-bold uppercase">Productor / Cliente</label>
@@ -315,13 +314,43 @@
                 </div>
             </div>
 
-            <!-- VISTA: TABLAS GENERALES -->
+            <!-- VISTAS ORIGINALES DE TABLAS -->
             <div id="vista-tablas" class="hidden max-w-[1600px] mx-auto mt-6 px-4 md:px-6 pb-12">
                 <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-6" id="titulo-seccion-tablas">Base de Datos Operativa</h2>
 
-                <!-- KPIs Superiores -->
+                <!-- KPIs Superiores con Filtro de AÑO incorporado -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-200 flex items-center space-x-4"><div class="bg-indigo-100 w-12 h-12 rounded-full flex items-center justify-center text-indigo-600 shrink-0"><i class="fa-solid fa-calendar-days text-lg"></i></div><div class="w-full"><p class="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-1">Filtrar por Mes</p><select id="filtroMes" onchange="actualizarEstadisticasYMetas()" class="w-full bg-gray-50 border text-sm font-bold text-gray-700 py-1.5 px-2 outline-none cursor-pointer"><option value="todos">Histórico Total</option><option value="01">Enero</option><option value="02">Febrero</option><option value="03">Marzo</option><option value="04">Abril</option><option value="05">Mayo</option><option value="06">Junio</option><option value="07">Julio</option><option value="08">Agosto</option><option value="09">Septiembre</option><option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option></select></div></div>
+                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-200 flex items-center space-x-4">
+                        <div class="bg-indigo-100 w-12 h-12 rounded-full flex items-center justify-center text-indigo-600 shrink-0"><i class="fa-solid fa-calendar-days text-lg"></i></div>
+                        <div class="flex gap-2 w-full">
+                            <div class="w-1/2">
+                                <p class="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-1">Mes</p>
+                                <select id="filtroMes" onchange="actualizarEstadisticasYMetas()" class="w-full bg-gray-50 border text-sm font-bold text-gray-700 py-1.5 px-2 outline-none cursor-pointer">
+                                    <option value="todos">Todos</option>
+                                    <option value="01">Enero</option>
+                                    <option value="02">Febrero</option>
+                                    <option value="03">Marzo</option>
+                                    <option value="04">Abril</option>
+                                    <option value="05">Mayo</option>
+                                    <option value="06">Junio</option>
+                                    <option value="07">Julio</option>
+                                    <option value="08">Agosto</option>
+                                    <option value="09">Septiembre</option>
+                                    <option value="10">Octubre</option>
+                                    <option value="11">Noviembre</option>
+                                    <option value="12">Diciembre</option>
+                                </select>
+                            </div>
+                            <div class="w-1/2">
+                                <p class="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-1">Año</p>
+                                <select id="filtroAnio" onchange="actualizarEstadisticasYMetas()" class="w-full bg-gray-50 border text-sm font-bold text-gray-700 py-1.5 px-2 outline-none cursor-pointer">
+                                    <option value="2026">2026</option>
+                                    <option value="2027">2027</option>
+                                    <option value="2028">2028</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
                     <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex items-center space-x-4"><div class="bg-yellow-100 w-12 h-12 rounded-full flex items-center justify-center text-yellow-600 shrink-0"><i class="fa-solid fa-ruler-combined text-lg"></i></div><div><p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Ha. Fumigadas</p><p id="stat-hectareas" class="text-2xl font-extrabold text-gray-800 leading-none mt-1">0</p></div></div>
                     <div class="bg-white p-4 rounded-2xl shadow-sm border border-green-200 flex items-center space-x-4"><div class="bg-green-100 w-12 h-12 rounded-full flex items-center justify-center text-green-600 shrink-0"><i class="fa-solid fa-arrow-trend-up text-lg"></i></div><div><p class="text-[10px] text-green-600/80 font-bold uppercase tracking-wider">Ingresos Mensuales</p><p id="stat-ingresos" class="text-2xl font-extrabold text-green-700 leading-none mt-1">$0</p></div></div>
                     <div class="relative w-full h-full">
@@ -408,7 +437,7 @@
                     
                     <div class="bg-white rounded-xl shadow-lg border border-gray-300 overflow-hidden">
                         <div class="tabla-header px-4 py-3 flex flex-col md:flex-row justify-between items-center text-white gap-2">
-                            <h2 id="titulo-bd-ventas" class="text-xs md:text-sm font-bold uppercase tracking-wider"><i class="fa-solid fa-table border border-white/30 p-1.5 rounded bg-white/10 mr-2"></i> BD Ventas 2026</h2>
+                            <h2 id="titulo-bd-ventas" class="text-xs md:text-sm font-bold uppercase tracking-wider"><i class="fa-solid fa-table border border-white/30 p-1.5 rounded bg-white/10 mr-2"></i> BD Ventas</h2>
                             <button onclick="abrirModalMetas()" class="bg-white text-green-900 hover:bg-gray-100 px-4 py-1.5 rounded-md text-[10px] md:text-xs font-bold transition-colors shadow-sm w-full md:w-auto"><i class="fa-solid fa-gear mr-2"></i> Configurar Metas</button>
                         </div>
                         <div class="overflow-x-auto custom-scrollbar max-h-[600px] relative">
@@ -904,21 +933,16 @@
         function configurarFechasAutomaticas() {
             const hoy = new Date();
             const mesStr = String(hoy.getMonth() + 1).padStart(2, '0');
-            const anioStr = hoy.getFullYear();
-            const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+            const anioStr = String(hoy.getFullYear());
             
-            const tituloObj = document.getElementById('titulo-objetivos');
-            if(tituloObj) tituloObj.innerText = `Objetivos Operativos - ${meses[hoy.getMonth()]} ${anioStr}`;
-            
-            const tituloBd = document.getElementById('titulo-bd-ventas');
-            if(tituloBd) tituloBd.innerHTML = `<i class="fa-solid fa-table border border-white/30 p-1.5 rounded bg-white/10 mr-2"></i> BD Ventas ${anioStr}`;
+            const filtroAnio = document.getElementById('filtroAnio');
+            if(filtroAnio) filtroAnio.value = anioStr;
 
-            const filtro = document.getElementById('filtroMes');
-            if(filtro && filtro.value === 'todos') {
-                filtro.value = mesStr;
+            const filtroMes = document.getElementById('filtroMes');
+            if(filtroMes && filtroMes.value === 'todos') {
+                filtroMes.value = mesStr;
             }
 
-            // Poner fecha de hoy en los formularios para ahorrar tiempo
             const hoyStr = hoy.toISOString().split('T')[0];
             const inpCotFecha = document.getElementById('cot_fecha');
             if(inpCotFecha) inpCotFecha.value = hoyStr;
@@ -1367,7 +1391,6 @@
             }
         }
 
-        // FUNCION PARA FECHAS ELEGANTES EN EL PDF
         function formatearFechaEspanol(fechaStr) {
             if(!fechaStr) return '';
             const partes = fechaStr.split('-');
@@ -1464,9 +1487,10 @@
 
         async function registrarVisitaCampo() {
             let mesBusqueda = document.getElementById('filtroMes').value; 
+            const anioBusqueda = document.getElementById('filtroAnio').value;
             const hoy = new Date();
             if(mesBusqueda === 'todos') mesBusqueda = String(hoy.getMonth() + 1).padStart(2, '0'); 
-            const mesActual = `${mesBusqueda}-${hoy.getFullYear()}`;
+            const mesActual = `${mesBusqueda}-${anioBusqueda}`;
             const btn = document.getElementById('btn-registrar-visita'); const txt = btn.innerHTML;
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Guardando...'; btn.disabled = true;
             try {
@@ -1481,7 +1505,20 @@
 
         function actualizarEstadisticasYMetas() {
             const mesSeleccionado = document.getElementById('filtroMes').value;
-            let serviciosFiltrados = memoriaServicios; if (mesSeleccionado !== 'todos') { serviciosFiltrados = memoriaServicios.filter(s => s.fecha_aplicacion && s.fecha_aplicacion.split('-')[1] === mesSeleccionado); }
+            const anioSeleccionado = document.getElementById('filtroAnio').value;
+            
+            let serviciosFiltrados = memoriaServicios.filter(s => {
+                if (!s.fecha_aplicacion) return false;
+                const partes = s.fecha_aplicacion.split('-');
+                const sAnio = partes[0];
+                const sMes = partes[1];
+                if (mesSeleccionado === 'todos') {
+                    return sAnio === anioSeleccionado;
+                } else {
+                    return sAnio === anioSeleccionado && sMes === mesSeleccionado;
+                }
+            });
+            
             let totalHaFumigadas = 0; let totalIngresos = 0; let totalGastos = 0;
             serviciosFiltrados.forEach(s => {
                 let prop = memoriaPropiedades.find(p => String(p.id) === String(s.propiedad_id)); if(prop) totalHaFumigadas += (s.ha_trabajadas || prop.superficie_has || 0);
@@ -1503,10 +1540,27 @@
         async function actualizarMetasCEO() {
             try {
                 let mesBusqueda = document.getElementById('filtroMes').value; 
+                const anioBusqueda = document.getElementById('filtroAnio').value;
                 const hoy = new Date();
+                
                 if(mesBusqueda === 'todos') mesBusqueda = String(hoy.getMonth() + 1).padStart(2, '0'); 
-                const mesActual = `${mesBusqueda}-${hoy.getFullYear()}`; 
+                
+                const mesActual = `${mesBusqueda}-${anioBusqueda}`; 
                 document.getElementById('meta_mes_anio').value = mesActual;
+                
+                const mesesNombres = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+                const tituloObj = document.getElementById('titulo-objetivos');
+                if(tituloObj) {
+                    if(document.getElementById('filtroMes').value === 'todos') {
+                        tituloObj.innerText = `Objetivos Operativos - Histórico Anual ${anioBusqueda}`;
+                    } else {
+                        tituloObj.innerText = `Objetivos Operativos - ${mesesNombres[parseInt(mesBusqueda)-1]} ${anioBusqueda}`;
+                    }
+                }
+                
+                const tituloBd = document.getElementById('titulo-bd-ventas');
+                if(tituloBd) tituloBd.innerHTML = `<i class="fa-solid fa-table border border-white/30 p-1.5 rounded bg-white/10 mr-2"></i> BD Ventas ${anioBusqueda}`;
+
                 const res = await fetch(API_URL + "/api/dashboard/" + mesActual); const datos = await res.json();
                 visitasCampoRealizadas = datos.reales.visitas || 0; 
                 let mV = datos.metas.meta_ventas || 1, mS = datos.metas.meta_servicios || 1, mC = datos.metas.meta_clientes || 1, mP = datos.metas.meta_prospectos || 1, mVis = datos.metas.meta_prospectos_visitas || 1;
@@ -1518,9 +1572,10 @@
         function abrirModalMetas() {
             document.getElementById('modal-metas').classList.remove('hidden');
             let mesBusqueda = document.getElementById('filtroMes').value; 
+            const anioBusqueda = document.getElementById('filtroAnio').value;
             const hoy = new Date();
             if(mesBusqueda === 'todos') mesBusqueda = String(hoy.getMonth() + 1).padStart(2, '0'); 
-            document.getElementById('meta_mes_anio').value = `${mesBusqueda}-${hoy.getFullYear()}`;
+            document.getElementById('meta_mes_anio').value = `${mesBusqueda}-${anioBusqueda}`;
         }
 
         function cerrarModalMetas() {
@@ -1702,6 +1757,9 @@
                 if(cuerpoGastos) cuerpoGastos.innerHTML = ''; 
                 if(cuerpoIngresos) cuerpoIngresos.innerHTML = ''; 
 
+                const mesSeleccionado = document.getElementById('filtroMes') ? document.getElementById('filtroMes').value : 'todos';
+                const anioSeleccionado = document.getElementById('filtroAnio') ? document.getElementById('filtroAnio').value : String(new Date().getFullYear());
+
                 memoriaServicios.forEach(s => { 
                     const pr = memoriaPropiedades.find(p => String(p.id) === String(s.propiedad_id)); 
                     const cl = pr ? memoriaClientes.find(c => String(c.id) === String(pr.cliente_id)) : null; 
@@ -1714,18 +1772,33 @@
                         ? `<span class="ml-2 text-[9px] font-extrabold text-blue-600 bg-blue-50 px-1 rounded border border-blue-200 uppercase tracking-tight">SPEI</span>`
                         : `<span class="ml-2 text-[9px] font-extrabold text-emerald-600 bg-emerald-50 px-1 rounded border border-emerald-200 uppercase tracking-tight">EFEC</span>`;
 
-                    if(cuerpoVentas) {
-                        cuerpoVentas.innerHTML += `<tr><td class="td-excel bg-gray-50 font-extrabold text-emerald-800">${noControl}</td><td class="td-excel">${cl?cl.nombre:'N/A'}</td><td class="td-excel">${cl?cl.apellidos:'N/A'}</td><td class="td-excel">${cl?cl.telefono:'N/A'}</td><td class="td-excel">${pr?pr.tipo_cultivo:'N/A'}</td><td class="td-excel text-center">${s.ha_trabajadas || (pr?pr.superficie_has:'0')}</td><td class="td-excel">${pr?pr.direccion:'N/A'}</td><td class="td-excel">${s.no_cotizacion||'S/N'}</td><td class="td-excel">${s.no_orden||'S/N'}</td><td class="td-excel">${s.fecha_aplicacion||'S/N'}</td><td class="td-excel text-right text-green-700 font-bold">$${totalIngreso.toLocaleString()}</td><td class="td-excel text-right text-red-600 font-bold">$${totalGasto.toLocaleString()}</td><td class="td-excel text-right text-blue-700 font-bold">$${(totalIngreso-totalGasto).toLocaleString()}</td><td class="td-excel text-center">${s.fecha_seguimiento||'S/N'}</td><td class="td-excel text-center">${s.no_factura||'S/N'}</td><td class="td-excel max-w-[150px] truncate">${s.observaciones||''}</td><td class="td-excel text-center space-x-2">
-                            <button onclick="verDetalleServicio('${s.id}')" class="text-blue-500 bg-blue-50 px-2 py-1 rounded shadow-sm"><i class="fa-solid fa-magnifying-glass"></i></button>
-                            <button onclick="prepararEdicionServicio('${s.id}')" class="text-amber-500"><i class="fa-solid fa-pen-to-square"></i></button>
-                            <button onclick="eliminarServio('${s.id}')" class="text-rose-500"><i class="fa-solid fa-trash"></i></button>
-                        </td></tr>`; 
+                    // Lógica para filtrar las tablas según el mes y año seleccionado
+                    let mostrarFila = true;
+                    if (s.fecha_aplicacion) {
+                        const partes = s.fecha_aplicacion.split('-');
+                        const sAnio = partes[0];
+                        const sMes = partes[1];
+                        if (mesSeleccionado === 'todos') {
+                            mostrarFila = (sAnio === anioSeleccionado);
+                        } else {
+                            mostrarFila = (sAnio === anioSeleccionado && sMes === mesSeleccionado);
+                        }
                     }
-                    if(cuerpoIngresos) {
-                        cuerpoIngresos.innerHTML += `<tr class="hover:bg-emerald-50"><td class="td-excel font-bold text-emerald-800">${noControl}</td><td class="td-excel font-semibold">${nomProd}</td><td class="td-excel text-gray-600">${pr?pr.tipo_cultivo:'N/A'}</td><td class="td-excel text-center font-bold">${s.ha_trabajadas||0} Ha</td><td class="td-excel text-right">$${(s.precio_por_ha||0).toLocaleString()}</td><td class="td-excel text-right text-emerald-600">$${(s.ingreso_viaticos||0).toLocaleString()}</td><td class="td-excel text-right text-emerald-600">$${(s.ingreso_suministros||0).toLocaleString()}</td><td class="td-excel text-right text-emerald-700 font-extrabold bg-emerald-50 border-l border-emerald-200 flex items-center justify-end">$${totalIngreso.toLocaleString()}${badgePago}</td></tr>`;
-                    }
-                    if(cuerpoGastos) {
-                        cuerpoGastos.innerHTML += `<tr class="hover:bg-rose-50"><td class="td-excel font-bold text-emerald-800">${noControl}</td><td class="td-excel font-semibold">${nomProd}</td><td class="td-excel text-gray-600">${pr?pr.tipo_cultivo:'N/A'}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_gasolina_unidad||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_gasolina_generador||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_sueldos||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_insumos||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_comidas||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_oxxo||0).toLocaleString()}</td><td class="td-excel text-right text-red-700 font-extrabold bg-red-50 border-l border-red-200">$${totalGasto.toLocaleString()}</td></tr>`;
+
+                    if (mostrarFila) {
+                        if(cuerpoVentas) {
+                            cuerpoVentas.innerHTML += `<tr><td class="td-excel bg-gray-50 font-extrabold text-emerald-800">${noControl}</td><td class="td-excel">${cl?cl.nombre:'N/A'}</td><td class="td-excel">${cl?cl.apellidos:'N/A'}</td><td class="td-excel">${cl?cl.telefono:'N/A'}</td><td class="td-excel">${pr?pr.tipo_cultivo:'N/A'}</td><td class="td-excel text-center">${s.ha_trabajadas || (pr?pr.superficie_has:'0')}</td><td class="td-excel">${pr?pr.direccion:'N/A'}</td><td class="td-excel">${s.no_cotizacion||'S/N'}</td><td class="td-excel">${s.no_orden||'S/N'}</td><td class="td-excel">${s.fecha_aplicacion||'S/N'}</td><td class="td-excel text-right text-green-700 font-bold">$${totalIngreso.toLocaleString()}</td><td class="td-excel text-right text-red-600 font-bold">$${totalGasto.toLocaleString()}</td><td class="td-excel text-right text-blue-700 font-bold">$${(totalIngreso-totalGasto).toLocaleString()}</td><td class="td-excel text-center">${s.fecha_seguimiento||'S/N'}</td><td class="td-excel text-center">${s.no_factura||'S/N'}</td><td class="td-excel max-w-[150px] truncate">${s.observaciones||''}</td><td class="td-excel text-center space-x-2">
+                                <button onclick="verDetalleServicio('${s.id}')" class="text-blue-500 bg-blue-50 px-2 py-1 rounded shadow-sm"><i class="fa-solid fa-magnifying-glass"></i></button>
+                                <button onclick="prepararEdicionServicio('${s.id}')" class="text-amber-500"><i class="fa-solid fa-pen-to-square"></i></button>
+                                <button onclick="eliminarServio('${s.id}')" class="text-rose-500"><i class="fa-solid fa-trash"></i></button>
+                            </td></tr>`; 
+                        }
+                        if(cuerpoIngresos) {
+                            cuerpoIngresos.innerHTML += `<tr class="hover:bg-emerald-50"><td class="td-excel font-bold text-emerald-800">${noControl}</td><td class="td-excel font-semibold">${nomProd}</td><td class="td-excel text-gray-600">${pr?pr.tipo_cultivo:'N/A'}</td><td class="td-excel text-center font-bold">${s.ha_trabajadas||0} Ha</td><td class="td-excel text-right">$${(s.precio_por_ha||0).toLocaleString()}</td><td class="td-excel text-right text-emerald-600">$${(s.ingreso_viaticos||0).toLocaleString()}</td><td class="td-excel text-right text-emerald-600">$${(s.ingreso_suministros||0).toLocaleString()}</td><td class="td-excel text-right text-emerald-700 font-extrabold bg-emerald-50 border-l border-emerald-200 flex items-center justify-end">$${totalIngreso.toLocaleString()}${badgePago}</td></tr>`;
+                        }
+                        if(cuerpoGastos) {
+                            cuerpoGastos.innerHTML += `<tr class="hover:bg-rose-50"><td class="td-excel font-bold text-emerald-800">${noControl}</td><td class="td-excel font-semibold">${nomProd}</td><td class="td-excel text-gray-600">${pr?pr.tipo_cultivo:'N/A'}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_gasolina_unidad||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_gasolina_generador||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_sueldos||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_insumos||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_comidas||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_oxxo||0).toLocaleString()}</td><td class="td-excel text-right text-red-700 font-extrabold bg-red-50 border-l border-red-200">$${totalGasto.toLocaleString()}</td></tr>`;
+                        }
                     }
                 }); 
             } catch (e) { console.error(e); } 

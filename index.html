@@ -1759,9 +1759,6 @@
                 if(cuerpoGastos) cuerpoGastos.innerHTML = ''; 
                 if(cuerpoIngresos) cuerpoIngresos.innerHTML = ''; 
 
-                const mesSeleccionado = document.getElementById('filtroMes') ? document.getElementById('filtroMes').value : 'todos';
-                const anioSeleccionado = document.getElementById('filtroAnio') ? document.getElementById('filtroAnio').value : String(new Date().getFullYear());
-
                 memoriaServicios.forEach(s => { 
                     const pr = memoriaPropiedades.find(p => String(p.id) === String(s.propiedad_id)); 
                     const cl = pr ? memoriaClientes.find(c => String(c.id) === String(pr.cliente_id)) : null; 
@@ -1774,24 +1771,8 @@
                         ? `<span class="ml-2 text-[9px] font-extrabold text-blue-600 bg-blue-50 px-1 rounded border border-blue-200 uppercase tracking-tight">SPEI</span>`
                         : `<span class="ml-2 text-[9px] font-extrabold text-emerald-600 bg-emerald-50 px-1 rounded border border-emerald-200 uppercase tracking-tight">EFEC</span>`;
 
-                    // --- CÓDIGO CORREGIDO PARA FILTRAR FECHAS EN LA TABLA ---
-                    let mostrarFila = true;
-                    if (s.fecha_aplicacion) {
-                        const partes = s.fecha_aplicacion.split('-');
-                        if(partes.length >= 2) {
-                            const sAnio = partes[0];
-                            const sMes = partes[1];
-                            if (mesSeleccionado === 'todos') {
-                                mostrarFila = (sAnio === anioSeleccionado);
-                            } else {
-                                mostrarFila = (sAnio === anioSeleccionado && sMes === mesSeleccionado);
-                            }
-                        }
-                    } else {
-                        mostrarFila = false;
-                    }
-
-                    if (mostrarFila) {
+                    // --- Estas tablas siempre muestran todos los registros, sin filtrar por mes/año ---
+                    {
                         if(cuerpoVentas) {
                             cuerpoVentas.innerHTML += `<tr><td class="td-excel bg-gray-50 font-extrabold text-emerald-800">${noControl}</td><td class="td-excel">${cl?cl.nombre:'N/A'}</td><td class="td-excel">${cl?cl.apellidos:'N/A'}</td><td class="td-excel">${cl?cl.telefono:'N/A'}</td><td class="td-excel">${pr?pr.tipo_cultivo:'N/A'}</td><td class="td-excel text-center">${s.ha_trabajadas || (pr?pr.superficie_has:'0')}</td><td class="td-excel">${pr?pr.direccion:'N/A'}</td><td class="td-excel">${s.no_cotizacion||'S/N'}</td><td class="td-excel">${s.no_orden||'S/N'}</td><td class="td-excel">${s.fecha_aplicacion||'S/N'}</td><td class="td-excel text-right text-green-700 font-bold">$${totalIngreso.toLocaleString()}</td><td class="td-excel text-right text-red-600 font-bold">$${totalGasto.toLocaleString()}</td><td class="td-excel text-right text-blue-700 font-bold">$${(totalIngreso-totalGasto).toLocaleString()}</td><td class="td-excel text-center">${s.fecha_seguimiento||'S/N'}</td><td class="td-excel text-center">${s.no_factura||'S/N'}</td><td class="td-excel max-w-[150px] truncate">${s.observaciones||''}</td><td class="td-excel text-center space-x-2">
                                 <button onclick="verDetalleServicio('${s.id}')" class="text-blue-500 bg-blue-50 px-2 py-1 rounded shadow-sm"><i class="fa-solid fa-magnifying-glass"></i></button>

@@ -1772,16 +1772,16 @@
                         ? `<span class="ml-2 text-[9px] font-extrabold text-blue-600 bg-blue-50 px-1 rounded border border-blue-200 uppercase tracking-tight">SPEI</span>`
                         : `<span class="ml-2 text-[9px] font-extrabold text-emerald-600 bg-emerald-50 px-1 rounded border border-emerald-200 uppercase tracking-tight">EFEC</span>`;
 
-                    // --- CÓDIGO CORREGIDO PARA FILTRAR FECHAS ---
+                    // Lógica para filtrar las tablas según el mes y año seleccionado
                     let mostrarFila = true;
-                    // Ya no somos estrictos con el "-" y el "split". Revisamos si la fecha contiene el año y mes.
                     if (s.fecha_aplicacion) {
+                        const partes = s.fecha_aplicacion.split('-');
+                        const sAnio = partes[0];
+                        const sMes = partes[1];
                         if (mesSeleccionado === 'todos') {
-                            // Si dice "todos", solo revisamos que la fecha tenga "2026"
-                            mostrarFila = s.fecha_aplicacion.includes(anioSeleccionado);
+                            mostrarFila = (sAnio === anioSeleccionado);
                         } else {
-                            // Si dice "06", revisamos que tenga "2026-06"
-                            mostrarFila = s.fecha_aplicacion.includes(`${anioSeleccionado}-${mesSeleccionado}`);
+                            mostrarFila = (sAnio === anioSeleccionado && sMes === mesSeleccionado);
                         }
                     }
 

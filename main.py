@@ -139,7 +139,7 @@ def agendar_en_google_calendar(fecha, no_cotizacion, observaciones, nombre_produ
     
     # --- AQUÍ PONES LOS CORREOS DE TU EQUIPO ---
     correos_equipo = [
-        {'email': 'piloto1@gmail.com'},
+        {'email': 'jpgval02@gmail.com'},
         {'email': 'tecnico@asoa.com.mx'},
         {'email': 'otro_companero@gmail.com'}
     ]
@@ -490,3 +490,4 @@ async def guardar_metas(metas: MetasMensuales):
         await manager.broadcast("update")
         return {"mensaje": "Metas guardadas correctamente"}
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
+        

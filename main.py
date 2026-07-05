@@ -131,11 +131,18 @@ class CotizacionNueva(BaseModel):
     observaciones: Optional[str] = ""
 
 
-# --- FUNCIÓN DE GOOGLE CALENDAR ---
+# --- FUNCIÓN DE GOOGLE CALENDAR (ACTUALIZADA PARA INVITADOS) ---
 def agendar_en_google_calendar(fecha, no_cotizacion, observaciones, nombre_productor, parcela):
     # ¡IMPORTANTE! Cambia esto por el correo dueño del calendario
     CORREO_CALENDARIO = 'facturacion@asoa.com.mx' 
     ARCHIVO_CREDENCIALES = 'credenciales_calendario.json'
+    
+    # --- AQUÍ PONES LOS CORREOS DE TU EQUIPO ---
+    correos_equipo = [
+        {'email': 'piloto1@gmail.com'},
+        {'email': 'tecnico@asoa.com.mx'},
+        {'email': 'otro_companero@gmail.com'}
+    ]
     
     if not os.path.exists(ARCHIVO_CREDENCIALES):
         print("No se encontró la llave del calendario (JSON).")
@@ -152,10 +159,17 @@ def agendar_en_google_calendar(fecha, no_cotizacion, observaciones, nombre_produ
             'description': f'Cotización/OS: {no_cotizacion}\nObservaciones: {observaciones}',
             'start': {'date': fecha, 'timeZone': 'America/Mexico_City'},
             'end': {'date': fecha, 'timeZone': 'America/Mexico_City'},
+            'attendees': correos_equipo,  # <-- ESTO AGREGA A TU EQUIPO
         }
         
-        servicio.events().insert(calendarId=CORREO_CALENDARIO, body=evento).execute()
-        print("¡Cita agendada en Google Calendar con éxito!")
+        # Insertamos y forzamos el correo de invitación
+        servicio.events().insert(
+            calendarId=CORREO_CALENDARIO, 
+            body=evento,
+            sendUpdates='all'  # <-- ESTO LES AVISA POR CORREO
+        ).execute()
+        
+        print("¡Cita agendada y equipo notificado con éxito!")
     except Exception as e:
         print(f"Error con Google Calendar: {e}")
 

@@ -325,7 +325,8 @@
                         <div class="flex gap-2 w-full">
                             <div class="w-1/2">
                                 <p class="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-1">Mes</p>
-                                <select id="filtroMes" onchange="actualizarEstadisticasYMetas()" class="w-full bg-gray-50 border text-sm font-bold text-gray-700 py-1.5 px-2 outline-none cursor-pointer">
+                                <!-- ¡CORRECCIÓN APLICADA AQUÍ! -->
+                                <select id="filtroMes" onchange="actualizarEstadisticasYMetas(); cargarServicios();" class="w-full bg-gray-50 border text-sm font-bold text-gray-700 py-1.5 px-2 outline-none cursor-pointer">
                                     <option value="todos">Todos</option>
                                     <option value="01">Enero</option>
                                     <option value="02">Febrero</option>
@@ -343,7 +344,8 @@
                             </div>
                             <div class="w-1/2">
                                 <p class="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-1">Año</p>
-                                <select id="filtroAnio" onchange="actualizarEstadisticasYMetas()" class="w-full bg-gray-50 border text-sm font-bold text-gray-700 py-1.5 px-2 outline-none cursor-pointer">
+                                <!-- ¡CORRECCIÓN APLICADA AQUÍ! -->
+                                <select id="filtroAnio" onchange="actualizarEstadisticasYMetas(); cargarServicios();" class="w-full bg-gray-50 border text-sm font-bold text-gray-700 py-1.5 px-2 outline-none cursor-pointer">
                                     <option value="2026">2026</option>
                                     <option value="2027">2027</option>
                                     <option value="2028">2028</option>
@@ -1772,17 +1774,21 @@
                         ? `<span class="ml-2 text-[9px] font-extrabold text-blue-600 bg-blue-50 px-1 rounded border border-blue-200 uppercase tracking-tight">SPEI</span>`
                         : `<span class="ml-2 text-[9px] font-extrabold text-emerald-600 bg-emerald-50 px-1 rounded border border-emerald-200 uppercase tracking-tight">EFEC</span>`;
 
-                    // Lógica para filtrar las tablas según el mes y año seleccionado
+                    // --- CÓDIGO CORREGIDO PARA FILTRAR FECHAS EN LA TABLA ---
                     let mostrarFila = true;
                     if (s.fecha_aplicacion) {
                         const partes = s.fecha_aplicacion.split('-');
-                        const sAnio = partes[0];
-                        const sMes = partes[1];
-                        if (mesSeleccionado === 'todos') {
-                            mostrarFila = (sAnio === anioSeleccionado);
-                        } else {
-                            mostrarFila = (sAnio === anioSeleccionado && sMes === mesSeleccionado);
+                        if(partes.length >= 2) {
+                            const sAnio = partes[0];
+                            const sMes = partes[1];
+                            if (mesSeleccionado === 'todos') {
+                                mostrarFila = (sAnio === anioSeleccionado);
+                            } else {
+                                mostrarFila = (sAnio === anioSeleccionado && sMes === mesSeleccionado);
+                            }
                         }
+                    } else {
+                        mostrarFila = false;
                     }
 
                     if (mostrarFila) {

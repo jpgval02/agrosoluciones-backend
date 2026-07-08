@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 # --- NUEVAS IMPORTACIONES PARA GOOGLE CALENDAR ---
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
+from datetime import datetime, date
 
 load_dotenv()
 url: str = os.environ.get("SUPABASE_URL")
@@ -132,44 +133,65 @@ class CotizacionNueva(BaseModel):
 
 
 # --- FUNCIÓN DE GOOGLE CALENDAR (ACTUALIZADA PARA INVITADOS) ---
-def agendar_en_google_calendar(fecha, no_cotizacion, observaciones, nombre_productor, parcela):
+def agendar_en_google_calendar(fecha, no_cotizacion, observaciones, nombre_productor, parcela, hectareas):
     # ¡IMPORTANTE! Cambia esto por el correo dueño del calendario
     CORREO_CALENDARIO = 'facturacion@asoa.com.mx' 
     ARCHIVO_CREDENCIALES = 'credenciales_calendario.json'
-    
+
     # --- AQUÍ PONES LOS CORREOS DE TU EQUIPO ---
     correos_equipo = [
         {'email': 'jpgval02@gmail.com'},
         {'email': 'tecnico@asoa.com.mx'},
         {'email': 'otro_companero@gmail.com'}
     ]
-    
+
+    # --- Solo agendamos si la fecha es hoy o a futuro ---
+    try:
+        fecha_evento = datetime.strptime(fecha, '%Y-%m-%d').date()
+        if fecha_evento < date.today():
+            print(f"Fecha {fecha} ya pasó, no se agenda en el calendario.")
+            return None
+    except ValueError:
+        print(f"Fecha inválida para el calendario: {fecha}")
+        return None
+
     if not os.path.exists(ARCHIVO_CREDENCIALES):
-        print("No se encontró la llave del calendario (JSON).")
+        print(f"No se encontró la llave del calendario en '{ARCHIVO_CREDENCIALES}'. Revisa el nombre exacto del archivo.")
         return None
 
     try:
         creds = service_account.Credentials.from_service_account_file(
-            ARCHIVO_CREDENCIALES, scopes=['https://www.googleapis.com/auth/calendar'])
+            ARCHIVO_CREDENCIALES, scopes=['https://www.googleapis.com/auth/calendar']
+        ).with_subject('facturacion@asoa.com.mx')
         servicio = build('calendar', 'v3', credentials=creds)
-        
+
         evento = {
-            'summary': f'🚜 Vuelo: {nombre_productor}',
+            'summary': f'🚜 Vuelo: {nombre_productor} ({hectareas} Ha.)',
             'location': parcela,
-            'description': f'Cotización/OS: {no_cotizacion}\nObservaciones: {observaciones}',
+            'description': f'Cotización/OS: {no_cotizacion}\nHectáreas: {hectareas} Ha.\nObservaciones: {observaciones}',
             'start': {'date': fecha, 'timeZone': 'America/Mexico_City'},
             'end': {'date': fecha, 'timeZone': 'America/Mexico_City'},
-            'attendees': correos_equipo,  # <-- ESTO AGREGA A TU EQUIPO
         }
-        
-        # Insertamos y forzamos el correo de invitación
-        servicio.events().insert(
-            calendarId=CORREO_CALENDARIO, 
-            body=evento,
-            sendUpdates='all'  # <-- ESTO LES AVISA POR CORREO
-        ).execute()
-        
-        print("¡Cita agendada y equipo notificado con éxito!")
+
+        # Primero intentamos con invitados (requiere Domain-Wide Delegation).
+        # Si falla por permisos, creamos el evento sin invitados en vez de perderlo por completo.
+        try:
+            evento['attendees'] = correos_equipo
+            servicio.events().insert(
+                calendarId=CORREO_CALENDARIO,
+                body=evento,
+                sendUpdates='all'  # <-- ESTO LES AVISA POR CORREO
+            ).execute()
+            print("¡Cita agendada y equipo notificado con éxito!")
+        except Exception as invite_err:
+            if 'forbiddenForServiceAccounts' in str(invite_err) or 'Domain-Wide Delegation' in str(invite_err):
+                print("No se pudo invitar al equipo (falta Domain-Wide Delegation). Se crea la cita sin invitados.")
+                evento.pop('attendees', None)
+                servicio.events().insert(calendarId=CORREO_CALENDARIO, body=evento).execute()
+                print("¡Cita agendada sin invitados!")
+            else:
+                raise
+
     except Exception as e:
         print(f"Error con Google Calendar: {e}")
 
@@ -357,7 +379,8 @@ async def registrar_servicio(servicio: ServicioNuevo):
                 no_cotizacion=servicio.no_cotizacion or 'S/N',
                 observaciones=servicio.observaciones or 'Sin detalles',
                 nombre_productor=nombre_productor,
-                parcela=nombre_parcela
+                parcela=nombre_parcela,
+                hectareas=servicio.ha_trabajadas or 0
             )
             
         return {"mensaje": "Guardado", "datos": respuesta.data[0]}
@@ -489,5 +512,4 @@ async def guardar_metas(metas: MetasMensuales):
             supabase.table('metas_mensuales').insert(metas.dict()).execute()
         await manager.broadcast("update")
         return {"mensaje": "Metas guardadas correctamente"}
-    except Exception as e: raise HTTPException(status_code=500, detail=str(e))
-        
+    except Exception as e: raise HTTPException(status_code=500, detail=str(e))       

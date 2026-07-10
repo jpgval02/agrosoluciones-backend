@@ -371,8 +371,8 @@ async def registrar_servicio(servicio: ServicioNuevo):
         # 2. Refrescamos el panel de todos los usuarios
         await manager.broadcast("update")
         
-        # 3. Disparamos la agenda a Google Calendar
-        fecha_cita = servicio.fecha_seguimiento or servicio.fecha_aplicacion
+        # 3. Disparamos la agenda a Google Calendar (usa la fecha real de la venta/servicio)
+        fecha_cita = servicio.fecha_aplicacion
         if fecha_cita:
             agendar_en_google_calendar(
                 fecha=fecha_cita,
@@ -512,4 +512,4 @@ async def guardar_metas(metas: MetasMensuales):
             supabase.table('metas_mensuales').insert(metas.dict()).execute()
         await manager.broadcast("update")
         return {"mensaje": "Metas guardadas correctamente"}
-    except Exception as e: raise HTTPException(status_code=500, detail=str(e))       
+    except Exception as e: raise HTTPException(status_code=500, detail=str(e))    

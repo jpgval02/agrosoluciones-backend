@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional, List
@@ -407,6 +407,32 @@ async def eliminar_servicio(servicio_id: str):
         return {"mensaje": "Eliminado exitosamente"}
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
 
+# --- SUBIR ENCUESTA DE SATISFACCIÓN (ARCHIVO) PARA UN SERVICIO ---
+@app.post("/servicios/{servicio_id}/encuesta")
+async def subir_encuesta(servicio_id: str, archivo: UploadFile = File(...)):
+    try:
+        contenido = await archivo.read()
+        extension = archivo.filename.split('.')[-1] if '.' in archivo.filename else 'pdf'
+        nombre_archivo = f"{servicio_id}.{extension}"
+
+        # Sube el archivo al bucket 'encuestas' (upsert=true permite reemplazar si ya existía una)
+        supabase.storage.from_('encuestas').upload(
+            nombre_archivo,
+            contenido,
+            {"content-type": archivo.content_type, "upsert": "true"}
+        )
+
+        url_publica = supabase.storage.from_('encuestas').get_public_url(nombre_archivo)
+
+        supabase.table('servicios_aplicacion').update({
+            'url_encuesta': url_publica
+        }).eq('id', servicio_id).execute()
+
+        await manager.broadcast("update")
+        return {"mensaje": "Encuesta subida con éxito", "url": url_publica}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 # --- RUTA DE BOTON "HECHO" EN SEGUIMIENTOS ---
 @app.post("/api/servicios/{servicio_id}/hecho")
 async def marcar_seguimiento_hecho(servicio_id: str, req: SeguimientoHecho):
@@ -512,4 +538,4 @@ async def guardar_metas(metas: MetasMensuales):
             supabase.table('metas_mensuales').insert(metas.dict()).execute()
         await manager.broadcast("update")
         return {"mensaje": "Metas guardadas correctamente"}
-    except Exception as e: raise HTTPException(status_code=500, detail=str(e))    
+    except Exception as e: raise HTTPException(status_code=500, detail=str(e))   

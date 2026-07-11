@@ -462,6 +462,7 @@
                                         <th class="th-excel">Seguimiento</th>
                                         <th class="th-excel">Factura</th>
                                         <th class="th-excel">Observaciones</th>
+                                        <th class="th-excel bg-purple-50 text-purple-900">Encuesta</th>
                                         <th class="th-excel bg-gray-200 text-center"><i class="fa-solid fa-gears"></i></th>
                                     </tr>
                                 </thead>
@@ -532,6 +533,29 @@
                         <div class="flex justify-between items-center mt-4 pt-3 border-t border-gray-200"><label class="text-sm font-extrabold text-gray-800 uppercase">Suma Total</label><span id="m_total_display" class="text-xl font-extrabold text-red-600">$0.00</span></div>
                     </div>
                     <button type="button" onclick="confirmarDesgloseGastos()" class="w-full mt-5 py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg shadow-md"><i class="fa-solid fa-check mr-1"></i> Confirmar y Sumar</button>
+                </div>
+            </div>
+
+            <div id="modal-encuesta" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 p-4">
+                <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md border border-gray-200 overflow-hidden">
+                    <div class="bg-[#064e3b] px-4 md:px-6 py-4 flex justify-between items-center text-white shadow-md">
+                        <h3 class="text-base md:text-lg font-bold tracking-wide flex items-center"><i class="fa-solid fa-file-arrow-up text-purple-300 mr-2 md:mr-3"></i> Encuesta de Satisfacción</h3>
+                        <button onclick="cerrarModalEncuesta()" class="text-gray-300 hover:text-white transition-colors"><i class="fa-solid fa-xmark text-xl"></i></button>
+                    </div>
+                    <div class="p-5 md:p-6">
+                        <input type="hidden" id="encuestaServicioId">
+                        <div id="zonaDropEncuesta" class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center cursor-pointer hover:border-purple-500 hover:bg-purple-50 transition-colors">
+                            <i class="fa-solid fa-cloud-arrow-up text-4xl text-gray-400 mb-3"></i>
+                            <p class="text-sm text-gray-600 font-semibold">Arrastra el documento aquí</p>
+                            <p class="text-xs text-gray-400 mt-1">o haz clic para seleccionarlo (PDF, JPG, PNG)</p>
+                            <input type="file" id="inputArchivoEncuesta" accept=".pdf,.jpg,.jpeg,.png" class="hidden">
+                        </div>
+                        <p id="nombreArchivoSeleccionado" class="text-xs text-center text-gray-500 mt-3 hidden"></p>
+                        <div id="progresoEncuesta" class="hidden mt-4 text-center text-sm text-purple-600 font-semibold">
+                            <i class="fa-solid fa-spinner fa-spin mr-2"></i> Subiendo...
+                        </div>
+                        <button id="btnSubirEncuesta" onclick="subirEncuestaArchivo()" disabled class="mt-5 w-full bg-gray-300 text-gray-500 font-bold py-2.5 rounded-lg cursor-not-allowed transition-colors">Selecciona un archivo primero</button>
+                    </div>
                 </div>
             </div>
 
@@ -1571,6 +1595,90 @@
             } catch (error) {}
         }
 
+        // --- MODAL DE ENCUESTA DE SATISFACCIÓN (ARRASTRAR / SELECCIONAR ARCHIVO) ---
+        let archivoEncuestaSeleccionado = null;
+
+        function abrirModalEncuesta(servicioId) {
+            document.getElementById('encuestaServicioId').value = servicioId;
+            archivoEncuestaSeleccionado = null;
+            document.getElementById('inputArchivoEncuesta').value = '';
+            document.getElementById('nombreArchivoSeleccionado').classList.add('hidden');
+            document.getElementById('progresoEncuesta').classList.add('hidden');
+            const btn = document.getElementById('btnSubirEncuesta');
+            btn.disabled = true;
+            btn.textContent = 'Selecciona un archivo primero';
+            btn.className = 'mt-5 w-full bg-gray-300 text-gray-500 font-bold py-2.5 rounded-lg cursor-not-allowed transition-colors';
+            document.getElementById('modal-encuesta').classList.remove('hidden');
+        }
+
+        function cerrarModalEncuesta() {
+            document.getElementById('modal-encuesta').classList.add('hidden');
+        }
+
+        function manejarArchivoEncuestaSeleccionado(archivo) {
+            if (!archivo) return;
+            archivoEncuestaSeleccionado = archivo;
+            const p = document.getElementById('nombreArchivoSeleccionado');
+            p.textContent = "📎 " + archivo.name;
+            p.classList.remove('hidden');
+            const btn = document.getElementById('btnSubirEncuesta');
+            btn.disabled = false;
+            btn.textContent = 'Subir Encuesta';
+            btn.className = 'mt-5 w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2.5 rounded-lg transition-colors';
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const zona = document.getElementById('zonaDropEncuesta');
+            const input = document.getElementById('inputArchivoEncuesta');
+            if (!zona || !input) return;
+
+            zona.addEventListener('click', () => input.click());
+            input.addEventListener('change', (e) => manejarArchivoEncuestaSeleccionado(e.target.files[0]));
+
+            zona.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                zona.classList.add('border-purple-500', 'bg-purple-50');
+            });
+            zona.addEventListener('dragleave', (e) => {
+                e.preventDefault();
+                zona.classList.remove('border-purple-500', 'bg-purple-50');
+            });
+            zona.addEventListener('drop', (e) => {
+                e.preventDefault();
+                zona.classList.remove('border-purple-500', 'bg-purple-50');
+                if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                    manejarArchivoEncuestaSeleccionado(e.dataTransfer.files[0]);
+                }
+            });
+        });
+
+        async function subirEncuestaArchivo() {
+            if (!archivoEncuestaSeleccionado) return;
+            const servicioId = document.getElementById('encuestaServicioId').value;
+            const btn = document.getElementById('btnSubirEncuesta');
+            btn.disabled = true;
+            document.getElementById('progresoEncuesta').classList.remove('hidden');
+
+            const formData = new FormData();
+            formData.append('archivo', archivoEncuestaSeleccionado);
+
+            try {
+                const res = await fetch(`${API_URL}/servicios/${servicioId}/encuesta`, {
+                    method: 'POST',
+                    body: formData
+                });
+                if (!res.ok) throw new Error('Error al subir el archivo');
+                cerrarModalEncuesta();
+                cargarServicios();
+            } catch (error) {
+                alert('No se pudo subir la encuesta. Intenta de nuevo.');
+                console.error(error);
+            } finally {
+                document.getElementById('progresoEncuesta').classList.add('hidden');
+                btn.disabled = false;
+            }
+        }
+
         function abrirModalMetas() {
             document.getElementById('modal-metas').classList.remove('hidden');
             let mesBusqueda = document.getElementById('filtroMes').value; 
@@ -1774,7 +1882,12 @@
                     // --- Estas tablas siempre muestran todos los registros, sin filtrar por mes/año ---
                     {
                         if(cuerpoVentas) {
-                            cuerpoVentas.innerHTML += `<tr><td class="td-excel bg-gray-50 font-extrabold text-emerald-800">${noControl}</td><td class="td-excel">${cl?cl.nombre:'N/A'}</td><td class="td-excel">${cl?cl.apellidos:'N/A'}</td><td class="td-excel">${cl?cl.telefono:'N/A'}</td><td class="td-excel">${pr?pr.tipo_cultivo:'N/A'}</td><td class="td-excel text-center">${s.ha_trabajadas || (pr?pr.superficie_has:'0')}</td><td class="td-excel">${pr?pr.direccion:'N/A'}</td><td class="td-excel">${s.no_cotizacion||'S/N'}</td><td class="td-excel">${s.no_orden||'S/N'}</td><td class="td-excel">${s.fecha_aplicacion||'S/N'}</td><td class="td-excel text-right text-green-700 font-bold">$${totalIngreso.toLocaleString()}</td><td class="td-excel text-right text-red-600 font-bold">$${totalGasto.toLocaleString()}</td><td class="td-excel text-right text-blue-700 font-bold">$${(totalIngreso-totalGasto).toLocaleString()}</td><td class="td-excel text-center">${s.fecha_seguimiento||'S/N'}</td><td class="td-excel text-center">${s.no_factura||'S/N'}</td><td class="td-excel max-w-[150px] truncate">${s.observaciones||''}</td><td class="td-excel text-center space-x-2">
+                            cuerpoVentas.innerHTML += `<tr><td class="td-excel bg-gray-50 font-extrabold text-emerald-800">${noControl}</td><td class="td-excel">${cl?cl.nombre:'N/A'}</td><td class="td-excel">${cl?cl.apellidos:'N/A'}</td><td class="td-excel">${cl?cl.telefono:'N/A'}</td><td class="td-excel">${pr?pr.tipo_cultivo:'N/A'}</td><td class="td-excel text-center">${s.ha_trabajadas || (pr?pr.superficie_has:'0')}</td><td class="td-excel">${pr?pr.direccion:'N/A'}</td><td class="td-excel">${s.no_cotizacion||'S/N'}</td><td class="td-excel">${s.no_orden||'S/N'}</td><td class="td-excel">${s.fecha_aplicacion||'S/N'}</td><td class="td-excel text-right text-green-700 font-bold">$${totalIngreso.toLocaleString()}</td><td class="td-excel text-right text-red-600 font-bold">$${totalGasto.toLocaleString()}</td><td class="td-excel text-right text-blue-700 font-bold">$${(totalIngreso-totalGasto).toLocaleString()}</td><td class="td-excel text-center">${s.fecha_seguimiento||'S/N'}</td><td class="td-excel text-center">${s.no_factura||'S/N'}</td><td class="td-excel max-w-[150px] truncate">${s.observaciones||''}</td><td class="td-excel text-center">
+                                ${s.url_encuesta 
+                                    ? `<a href="${s.url_encuesta}" target="_blank" class="text-emerald-600 hover:text-emerald-800 mr-2" title="Ver encuesta"><i class="fa-solid fa-file-circle-check text-lg"></i></a><button onclick="abrirModalEncuesta('${s.id}')" class="text-gray-400 hover:text-purple-600" title="Reemplazar encuesta"><i class="fa-solid fa-rotate text-sm"></i></button>`
+                                    : `<button onclick="abrirModalEncuesta('${s.id}')" class="text-gray-400 hover:text-purple-600" title="Subir encuesta"><i class="fa-solid fa-file-arrow-up text-lg"></i></button>`
+                                }
+                            </td><td class="td-excel text-center space-x-2">
                                 <button onclick="verDetalleServicio('${s.id}')" class="text-blue-500 bg-blue-50 px-2 py-1 rounded shadow-sm"><i class="fa-solid fa-magnifying-glass"></i></button>
                                 <button onclick="prepararEdicionServicio('${s.id}')" class="text-amber-500"><i class="fa-solid fa-pen-to-square"></i></button>
                                 <button onclick="eliminarServio('${s.id}')" class="text-rose-500"><i class="fa-solid fa-trash"></i></button>

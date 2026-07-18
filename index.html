@@ -24,6 +24,8 @@
         .kpi-card { background-color: #ffffff; border: 2px solid #000000; border-radius: 8px; padding: 12px; text-align: center; box-shadow: 2px 2px 5px rgba(0,0,0,0.05); }
         .kpi-title { font-size: 14px; font-weight: bold; color: #000000; margin-bottom: 5px; }
         .kpi-text-real { font-size: 16px; font-weight: bold; color: #000000; }
+        /* Oculta los botones de "eliminar" para cualquier rol distinto de admin */
+        body.rol-no-admin .btn-eliminar-rol { display: none !important; }
     </style>
 </head>
 <body class="text-gray-800">
@@ -78,7 +80,7 @@
                 <button onclick="cambiarVista('operaciones'); toggleSidebar();" class="w-full text-left px-4 py-3.5 hover:bg-green-800/60 rounded-xl transition-colors flex items-center gap-3 font-semibold text-sm tracking-wide group">
                     <div class="bg-green-900 group-hover:bg-green-700 p-2 rounded-lg transition-colors"><i class="fa-solid fa-gears text-green-400 w-5 text-center"></i></div> Operaciones
                 </button>
-                <button onclick="cambiarVista('financieros'); toggleSidebar();" class="w-full text-left px-4 py-3.5 hover:bg-green-800/60 rounded-xl transition-colors flex items-center gap-3 font-semibold text-sm tracking-wide group">
+                <button id="nav-financieros" onclick="cambiarVista('financieros'); toggleSidebar();" class="w-full text-left px-4 py-3.5 hover:bg-green-800/60 rounded-xl transition-colors flex items-center gap-3 font-semibold text-sm tracking-wide group">
                     <div class="bg-green-900 group-hover:bg-green-700 p-2 rounded-lg transition-colors"><i class="fa-solid fa-wallet text-green-400 w-5 text-center"></i></div> Financieros
                 </button>
                 <button onclick="cambiarVista('ventas-crm'); toggleSidebar();" class="w-full text-left px-4 py-3.5 hover:bg-green-800/60 rounded-xl transition-colors flex items-center gap-3 font-semibold text-sm tracking-wide group">
@@ -354,8 +356,8 @@
                         </div>
                     </div>
                     <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex items-center space-x-4"><div class="bg-yellow-100 w-12 h-12 rounded-full flex items-center justify-center text-yellow-600 shrink-0"><i class="fa-solid fa-ruler-combined text-lg"></i></div><div><p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Ha. Fumigadas</p><p id="stat-hectareas" class="text-2xl font-extrabold text-gray-800 leading-none mt-1">0</p></div></div>
-                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-green-200 flex items-center space-x-4"><div class="bg-green-100 w-12 h-12 rounded-full flex items-center justify-center text-green-600 shrink-0"><i class="fa-solid fa-arrow-trend-up text-lg"></i></div><div><p class="text-[10px] text-green-600/80 font-bold uppercase tracking-wider">Ingresos Mensuales</p><p id="stat-ingresos" class="text-2xl font-extrabold text-green-700 leading-none mt-1">$0</p></div></div>
-                    <div class="relative w-full h-full">
+                    <div id="card-ingresos-mensuales" class="bg-white p-4 rounded-2xl shadow-sm border border-green-200 flex items-center space-x-4"><div class="bg-green-100 w-12 h-12 rounded-full flex items-center justify-center text-green-600 shrink-0"><i class="fa-solid fa-arrow-trend-up text-lg"></i></div><div><p class="text-[10px] text-green-600/80 font-bold uppercase tracking-wider">Ingresos Mensuales</p><p id="stat-ingresos" class="text-2xl font-extrabold text-green-700 leading-none mt-1">$0</p></div></div>
+                    <div id="card-utilidad-neta" class="relative w-full h-full">
                         <button id="btn-registrar-visita" onclick="registrarVisitaCampo()" class="hidden absolute -top-10 right-0 bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] font-bold py-1.5 px-3 rounded-lg shadow-md transition-all flex items-center gap-1.5 border border-emerald-400 z-10 whitespace-nowrap"><i class="fa-solid fa-map-location-dot"></i> Visita Realizada</button>
                         <div class="bg-white p-4 rounded-2xl shadow-sm border border-blue-200 flex items-center space-x-4 h-full"><div class="bg-blue-100 w-12 h-12 rounded-full flex items-center justify-center text-blue-600 shrink-0"><i class="fa-solid fa-sack-dollar text-lg"></i></div><div><p class="text-[10px] text-blue-600/80 font-bold uppercase tracking-wider">Utilidad Neta</p><p id="stat-utilidad" class="text-2xl font-extrabold text-blue-700 leading-none mt-1">$0</p></div></div>
                     </div>
@@ -939,11 +941,19 @@
     <script>
         const API_URL = "https://agrosoluciones-backend.onrender.com";
         let memoriaClientes = [], memoriaPropiedades = [], memoriaServicios = [], memoriaCotizaciones = [];
-        let rolUsuario = 'trabajador'; 
+        let rolUsuario = localStorage.getItem('rolUsuario') || 'operador';
+        let tokenSesion = localStorage.getItem('tokenSesion') || null;
         let visitasCampoRealizadas = 0; 
         let metodoPagoSeleccionado = 'Efectivo';
         let currentServiceIdForPDF = null;
         let currentCotIdForPDF = null;
+
+        // --- Helper: manda todas las peticiones al backend con el token de sesión ---
+        function fetchAPI(url, options = {}) {
+            const headers = options.headers || {};
+            if (tokenSesion) headers['Authorization'] = `Bearer ${tokenSesion}`;
+            return fetch(url, { ...options, headers });
+        }
         
         let factorIdActual = null;
         let emailLoginActual = null;
@@ -1065,7 +1075,10 @@
                 if(res.ok) {
                     const data = await res.json();
                     document.getElementById('modal-2fa').classList.add('hidden');
-                    rolUsuario = data.rol || 'trabajador';
+                    rolUsuario = data.rol || 'operador';
+                    tokenSesion = data.access_token || null;
+                    localStorage.setItem('rolUsuario', rolUsuario);
+                    if (tokenSesion) localStorage.setItem('tokenSesion', tokenSesion);
                     iniciarDashboard();
                 } else {
                     alert("Código de seguridad incorrecto. Intenta de nuevo.");
@@ -1088,6 +1101,9 @@
                 if(rolUsuario === 'admin') {
                     badge.innerHTML = '<i class="fa-solid fa-crown mr-1 text-amber-400"></i> ADMIN';
                     badge.className = "hidden md:inline-block ml-4 text-xs font-bold px-2 py-1 bg-amber-950 text-amber-400 rounded-md border border-amber-600 tracking-wider";
+                } else if(rolUsuario === 'financiero') {
+                    badge.innerHTML = '<i class="fa-solid fa-sack-dollar mr-1 text-blue-300"></i> FINANCIERO';
+                    badge.className = "hidden md:inline-block ml-4 text-xs font-bold px-2 py-1 bg-blue-950 text-blue-300 rounded-md border border-blue-600 tracking-wider";
                 } else {
                     badge.innerHTML = '<i class="fa-solid fa-user-gear mr-1 text-green-300"></i> OPERADOR';
                     badge.className = "hidden md:inline-block ml-4 text-xs font-bold px-2 py-1 bg-green-950 text-green-300 rounded-md border border-green-600 tracking-wider";
@@ -1095,10 +1111,39 @@
             }
             document.getElementById('login-container').classList.add('hidden'); 
             document.getElementById('dashboard-container').classList.remove('hidden');
+            aplicarRestriccionesDeRol();
             await inicializarPanel(); 
         }
 
-        function cerrarSesion() { window.location.reload(); }
+        // --- Oculta secciones/botones que el rol actual no debería ver ---
+        function aplicarRestriccionesDeRol() {
+            const esOperador = (rolUsuario === 'operador');
+
+            const navFinancieros = document.getElementById('nav-financieros');
+            const cardIngresos = document.getElementById('card-ingresos-mensuales');
+            const cardUtilidad = document.getElementById('card-utilidad-neta');
+
+            if (navFinancieros) navFinancieros.classList.toggle('hidden', esOperador);
+            if (cardIngresos) cardIngresos.classList.toggle('hidden', esOperador);
+            if (cardUtilidad) cardUtilidad.classList.toggle('hidden', esOperador);
+
+            // Si un Operador quedó parado en la vista financiera (o llega por URL), lo regresamos al inicio
+            if (esOperador) {
+                const vistaFinanciera = document.getElementById('vista-tabla-financieros');
+                if (vistaFinanciera && !vistaFinanciera.classList.contains('hidden')) {
+                    cambiarVista('inicio');
+                }
+            }
+
+            document.body.classList.toggle('rol-operador', esOperador);
+            document.body.classList.toggle('rol-no-admin', rolUsuario !== 'admin');
+        }
+
+        function cerrarSesion() {
+            localStorage.removeItem('tokenSesion');
+            localStorage.removeItem('rolUsuario');
+            window.location.reload();
+        }
         
         async function inicializarPanel() { 
             configurarFechasAutomaticas();
@@ -1237,7 +1282,7 @@
             const fechaHoy = new Date().toLocaleDateString('es-MX');
             
             try {
-                const res = await fetch(`${API_URL}/api/servicios/${id}/hecho`, {
+                const res = await fetchAPI(`${API_URL}/api/servicios/${id}/hecho`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ fecha_completado: fechaHoy })
@@ -1309,7 +1354,7 @@
             btn.disabled = true;
 
             try {
-                await fetch(id ? `${API_URL}/cotizaciones/${id}` : `${API_URL}/cotizaciones/`, { 
+                await fetchAPI(id ? `${API_URL}/cotizaciones/${id}` : `${API_URL}/cotizaciones/`, { 
                     method: id ? 'PUT' : 'POST', 
                     headers: { 'Content-Type': 'application/json' }, 
                     body: JSON.stringify(datos) 
@@ -1324,7 +1369,7 @@
 
         async function cargarCotizaciones() {
             try {
-                const res = await fetch(`${API_URL}/cotizaciones/`);
+                const res = await fetchAPI(`${API_URL}/cotizaciones/`);
                 memoriaCotizaciones = await res.json();
                 
                 const cuerpo = document.getElementById('cuerpoTablaCotizaciones');
@@ -1357,7 +1402,7 @@
                                 <td class="px-6 py-4 text-center space-x-1 whitespace-nowrap">
                                     <button onclick="imprimirCotizacion('${c.id}')" class="bg-indigo-600 text-white hover:bg-indigo-500 px-3 py-1.5 rounded-md text-xs shadow-sm"><i class="fa-solid fa-file-pdf"></i></button>
                                     <button onclick="editarCotizacion('${c.id}')" class="bg-amber-400 text-white hover:bg-amber-300 px-3 py-1.5 rounded-md text-xs shadow-sm"><i class="fa-solid fa-pen"></i></button>
-                                    <button onclick="eliminarCotizacion('${c.id}')" class="bg-rose-600 text-white hover:bg-rose-500 px-3 py-1.5 rounded-md text-xs shadow-sm"><i class="fa-solid fa-trash"></i></button>
+                                    <button onclick="eliminarCotizacion('${c.id}')" class="btn-eliminar-rol bg-rose-600 text-white hover:bg-rose-500 px-3 py-1.5 rounded-md text-xs shadow-sm"><i class="fa-solid fa-trash"></i></button>
                                 </td>
                             </tr>
                         `;
@@ -1412,7 +1457,7 @@
 
         async function eliminarCotizacion(id) {
             if(confirm("¿Estás seguro de eliminar esta cotización?")) {
-                await fetch(`${API_URL}/cotizaciones/${id}`, { method: 'DELETE' });
+                await fetchAPI(`${API_URL}/cotizaciones/${id}`, { method: 'DELETE' });
                 await cargarCotizaciones();
             }
         }
@@ -1520,7 +1565,7 @@
             const btn = document.getElementById('btn-registrar-visita'); const txt = btn.innerHTML;
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Guardando...'; btn.disabled = true;
             try {
-                const res = await fetch(`${API_URL}/api/visitas/${mesActual}`, { method: 'POST' });
+                const res = await fetchAPI(`${API_URL}/api/visitas/${mesActual}`, { method: 'POST' });
                 if(res.ok) {
                     const data = await res.json(); visitasCampoRealizadas = data.visitas_reales; actualizarMetasCEO(); 
                     btn.innerHTML = '<i class="fa-solid fa-check"></i> ¡Registrada!';
@@ -1587,7 +1632,7 @@
                 const tituloBd = document.getElementById('titulo-bd-ventas');
                 if(tituloBd) tituloBd.innerHTML = `<i class="fa-solid fa-table border border-white/30 p-1.5 rounded bg-white/10 mr-2"></i> BD Ventas ${anioBusqueda}`;
 
-                const res = await fetch(API_URL + "/api/dashboard/" + mesActual); const datos = await res.json();
+                const res = await fetchAPI(API_URL + "/api/dashboard/" + mesActual); const datos = await res.json();
                 visitasCampoRealizadas = datos.reales.visitas || 0; 
                 let mV = datos.metas.meta_ventas || 1, mS = datos.metas.meta_servicios || 1, mC = datos.metas.meta_clientes || 1, mP = datos.metas.meta_prospectos || 1, mVis = datos.metas.meta_prospectos_visitas || 1;
                 chartVentas.updateSeries([Math.min((datos.reales.ventas / mV) * 100, 100)]); chartServicios.updateSeries([Math.min((datos.reales.servicios / mS) * 100, 100)]); chartClientes.updateSeries([Math.min((datos.reales.clientes / mC) * 100, 100)]); chartProspectos.updateSeries([Math.min((datos.reales.prospectos / mP) * 100, 100)]); chartVisitas.updateSeries([Math.min((visitasCampoRealizadas / mVis) * 100, 100)]);
@@ -1663,7 +1708,7 @@
             formData.append('archivo', archivoEncuestaSeleccionado);
 
             try {
-                const res = await fetch(`${API_URL}/servicios/${servicioId}/encuesta`, {
+                const res = await fetchAPI(`${API_URL}/servicios/${servicioId}/encuesta`, {
                     method: 'POST',
                     body: formData
                 });
@@ -1711,7 +1756,7 @@
             };
 
             try {
-                const res = await fetch(`${API_URL}/api/metas/`, {
+                const res = await fetchAPI(`${API_URL}/api/metas/`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(datos)
@@ -1737,14 +1782,14 @@
             lista.forEach(c => {
                 let badge = c.estado === 'Cliente' ? `<span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-300">Cliente Real 🟢</span>` : `<span class="bg-blue-100 text-blue-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-blue-300">Prospecto 🟡</span>`;
                 let folioCliente = c.no_cliente ? `<span class="text-emerald-700 font-extrabold mr-1">[${c.no_cliente}]</span>` : '';
-                cuerpo.innerHTML += `<tr class="hover:bg-gray-50"><td class="px-6 py-4"><div class="flex items-center space-x-4"><div class="bg-green-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold"><i class="fa-solid fa-user"></i></div><div><p class="font-bold text-gray-800">${folioCliente}${c.nombre} ${c.apellidos}</p><p class="text-[10px] text-gray-400 mt-1">RFC: ${c.rfc || 'S/N'} | ${badge}</p></div></div></td><td class="px-6 py-4"><p class="text-sm text-gray-800 font-medium"><i class="fa-solid fa-phone text-green-600 mr-2"></i>${c.telefono}</p></td><td class="px-6 py-4 text-center whitespace-nowrap space-x-1"><button onclick="tabularEdicionCliente('${c.id}')" class="bg-amber-400 text-white text-xs px-4 py-2 rounded-full"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="eliminarCliente('${c.id}')" class="bg-rose-600 text-white text-xs px-4 py-2 rounded-full"><i class="fa-solid fa-trash"></i></button></td></tr>`; 
+                cuerpo.innerHTML += `<tr class="hover:bg-gray-50"><td class="px-6 py-4"><div class="flex items-center space-x-4"><div class="bg-green-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold"><i class="fa-solid fa-user"></i></div><div><p class="font-bold text-gray-800">${folioCliente}${c.nombre} ${c.apellidos}</p><p class="text-[10px] text-gray-400 mt-1">RFC: ${c.rfc || 'S/N'} | ${badge}</p></div></div></td><td class="px-6 py-4"><p class="text-sm text-gray-800 font-medium"><i class="fa-solid fa-phone text-green-600 mr-2"></i>${c.telefono}</p></td><td class="px-6 py-4 text-center whitespace-nowrap space-x-1"><button onclick="tabularEdicionCliente('${c.id}')" class="bg-amber-400 text-white text-xs px-4 py-2 rounded-full"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="eliminarCliente('${c.id}')" class="btn-eliminar-rol bg-rose-600 text-white text-xs px-4 py-2 rounded-full"><i class="fa-solid fa-trash"></i></button></td></tr>`; 
             }); 
         }
         function filtrarClientes() { renderizarTablaClientes(memoriaClientes.filter(c => `${c.nombre} ${c.apellidos} ${c.no_cliente}`.toLowerCase().includes(document.getElementById('buscadorClientes').value.toLowerCase()))); }
         
         async function cargarClientes() { 
             try { 
-                const res = await fetch(`${API_URL}/clientes/`); 
+                const res = await fetchAPI(`${API_URL}/clientes/`); 
                 memoriaClientes = await res.json(); 
                 
                 const sel = document.getElementById('selectCliente'); 
@@ -1770,11 +1815,11 @@
                 rfc: document.getElementById('rfc').value, estado: document.getElementById('estado_cliente').value,
                 no_cliente: document.getElementById('no_cliente').value 
             }; 
-            await fetch(id ? `${API_URL}/clientes/${id}` : `${API_URL}/clientes/`, { method: id ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos) }); 
+            await fetchAPI(id ? `${API_URL}/clientes/${id}` : `${API_URL}/clientes/`, { method: id ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos) }); 
             limpiarFormCliente(); await inicializarPanel(); 
         });
         
-        async function eliminarCliente(id) { if(confirm("¿Eliminar productor?")) { await fetch(`${API_URL}/clientes/${id}`, { method: 'DELETE' }); await inicializarPanel(); } }
+        async function eliminarCliente(id) { if(confirm("¿Eliminar productor?")) { await fetchAPI(`${API_URL}/clientes/${id}`, { method: 'DELETE' }); await inicializarPanel(); } }
         
         function tabularEdicionCliente(id) { 
             const c = memoriaClientes.find(x => String(x.id) === String(id)); 
@@ -1800,7 +1845,7 @@
 
         async function cargarPropiedades() { 
             try { 
-                const res = await fetch(`${API_URL}/propiedades/`); 
+                const res = await fetchAPI(`${API_URL}/propiedades/`); 
                 memoriaPropiedades = await res.json(); 
                 
                 const cuerpo = document.getElementById('cuerpoTablaPropiedades'); 
@@ -1814,7 +1859,7 @@
                     const nD = cl ? `${cl.nombre} ${cl.apellidos}` : 'N/A'; 
                     
                     if(cuerpo) {
-                        cuerpo.innerHTML += `<tr><td class="px-6 py-4"><p class="font-bold text-sm">${p.nombre_propiedad}</p><p class="text-[11px] text-gray-500">${p.direccion} - Prop: ${nD}</p></td><td class="px-6 py-4 text-center"><span class="bg-[#1b6b43] text-white px-3 py-1 rounded-full text-[10px] font-bold">${p.tipo_cultivo}</span></td><td class="px-6 py-4 text-center"><p class="text-xl font-extrabold">${p.superficie_has}</p></td><td class="px-6 py-4 text-center"><button onclick="ajustarEdicionPropiedad('${p.id}')" class="bg-amber-400 text-white text-xs px-4 py-2 rounded-full mr-1"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="eliminarPropiedad('${p.id}')" class="bg-rose-600 text-white text-xs px-4 py-2 rounded-full"><i class="fa-solid fa-trash"></i></button></td></tr>`; 
+                        cuerpo.innerHTML += `<tr><td class="px-6 py-4"><p class="font-bold text-sm">${p.nombre_propiedad}</p><p class="text-[11px] text-gray-500">${p.direccion} - Prop: ${nD}</p></td><td class="px-6 py-4 text-center"><span class="bg-[#1b6b43] text-white px-3 py-1 rounded-full text-[10px] font-bold">${p.tipo_cultivo}</span></td><td class="px-6 py-4 text-center"><p class="text-xl font-extrabold">${p.superficie_has}</p></td><td class="px-6 py-4 text-center"><button onclick="ajustarEdicionPropiedad('${p.id}')" class="bg-amber-400 text-white text-xs px-4 py-2 rounded-full mr-1"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="eliminarPropiedad('${p.id}')" class="btn-eliminar-rol bg-rose-600 text-white text-xs px-4 py-2 rounded-full"><i class="fa-solid fa-trash"></i></button></td></tr>`; 
                     }
                     if(sel) {
                         sel.innerHTML += `<option value="${p.id}">${nD} - ${p.nombre_propiedad}</option>`; 
@@ -1831,11 +1876,11 @@
                 tipo_cultivo: document.getElementById('tipo_cultivo').value, superficie_has: parseFloat(document.getElementById('superficie_has').value), 
                 sistema_riego: 'N/A', comentarios: '' 
             }; 
-            await fetch(id ? `${API_URL}/propiedades/${id}` : `${API_URL}/propiedades/`, { method: id ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos) }); 
+            await fetchAPI(id ? `${API_URL}/propiedades/${id}` : `${API_URL}/propiedades/`, { method: id ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos) }); 
             limpiarFormPropiedad(); await inicializarPanel(); 
         });
         
-        async function eliminarPropiedad(id) { if(confirm("¿Eliminar parcela?")) { await fetch(`${API_URL}/propiedades/${id}`, { method: 'DELETE' }); await inicializarPanel(); } }
+        async function eliminarPropiedad(id) { if(confirm("¿Eliminar parcela?")) { await fetchAPI(`${API_URL}/propiedades/${id}`, { method: 'DELETE' }); await inicializarPanel(); } }
         
         function ajustarEdicionPropiedad(id) { 
             const p = memoriaPropiedades.find(x => String(x.id) === String(id)); 
@@ -1858,7 +1903,7 @@
 
         async function cargarServicios() { 
             try { 
-                const res = await fetch(`${API_URL}/servicios/`); memoriaServicios = await res.json(); 
+                const res = await fetchAPI(`${API_URL}/servicios/`); memoriaServicios = await res.json(); 
                 const cuerpoVentas = document.getElementById('cuerpoTablaServicios'); 
                 const cuerpoGastos = document.getElementById('cuerpoTablaGastos'); 
                 const cuerpoIngresos = document.getElementById('cuerpoTablaIngresos'); 
@@ -1890,7 +1935,7 @@
                             </td><td class="td-excel text-center space-x-2">
                                 <button onclick="verDetalleServicio('${s.id}')" class="text-blue-500 bg-blue-50 px-2 py-1 rounded shadow-sm"><i class="fa-solid fa-magnifying-glass"></i></button>
                                 <button onclick="prepararEdicionServicio('${s.id}')" class="text-amber-500"><i class="fa-solid fa-pen-to-square"></i></button>
-                                <button onclick="eliminarServio('${s.id}')" class="text-rose-500"><i class="fa-solid fa-trash"></i></button>
+                                <button onclick="eliminarServio('${s.id}')" class="btn-eliminar-rol text-rose-500"><i class="fa-solid fa-trash"></i></button>
                             </td></tr>`; 
                         }
                         if(cuerpoIngresos) {
@@ -1916,11 +1961,11 @@
                 ha_trabajadas: parseFloat(document.getElementById('h_ha_trabajadas').value || 0), precio_por_ha: parseFloat(document.getElementById('h_precio_por_ha').value || 0), ingreso_viaticos: parseFloat(document.getElementById('h_ingreso_viaticos').value || 0), ingreso_suministros: parseFloat(document.getElementById('h_ingreso_suministros').value || 0),
                 metodo_pago: document.getElementById('h_metodo_pago').value 
             }; 
-            await fetch(id ? `${API_URL}/servicios/${id}` : `${API_URL}/servicios/`, { method: id ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos) }); 
+            await fetchAPI(id ? `${API_URL}/servicios/${id}` : `${API_URL}/servicios/`, { method: id ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos) }); 
             limpiarFormService(); await inicializarPanel(); 
         });
 
-        async function eliminarServio(id) { if(confirm("¿Eliminar registro?")) { await fetch(`${API_URL}/servicios/${id}`, { method: 'DELETE' }); await inicializarPanel(); } }
+        async function eliminarServio(id) { if(confirm("¿Eliminar registro?")) { await fetchAPI(`${API_URL}/servicios/${id}`, { method: 'DELETE' }); await inicializarPanel(); } }
 
         function seleccionarMetodoPago(metodo) {
             metodoPagoSeleccionado = metodo;

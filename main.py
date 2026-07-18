@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect, UploadFile, File
+from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect, UploadFile, File, Header, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional, List
@@ -66,6 +66,37 @@ class Verifica2FA(BaseModel):
     factor_id: str
     codigo: str
     email: str
+
+# --- SISTEMA DE PERMISOS POR ROL ---
+def obtener_usuario_actual(authorization: str = Header(None)):
+    """Valida el token que manda el frontend y devuelve el correo + rol del usuario."""
+    if not authorization or not authorization.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="No has iniciado sesión.")
+    token = authorization.replace("Bearer ", "")
+    try:
+        usuario_resp = supabase.auth.get_user(token)
+        email = usuario_resp.user.email
+    except Exception:
+        raise HTTPException(status_code=401, detail="Sesión inválida o expirada. Vuelve a iniciar sesión.")
+
+    rol = "operador"
+    try:
+        datos_rol = supabase.table('roles').select('rol').eq('email', email).execute()
+        if len(datos_rol.data) > 0:
+            rol = datos_rol.data[0]['rol']
+    except Exception:
+        pass
+
+    return {"email": email, "rol": rol}
+
+
+def requiere_rol(*roles_permitidos):
+    """Úsalo como Depends(requiere_rol('admin')) o Depends(requiere_rol('admin', 'financiero'))."""
+    def verificador(usuario: dict = Depends(obtener_usuario_actual)):
+        if usuario["rol"] not in roles_permitidos:
+            raise HTTPException(status_code=403, detail="No tienes permiso para realizar esta acción.")
+        return usuario
+    return verificador
 
 class ClienteNuevo(BaseModel):
     nombre: str
@@ -270,21 +301,23 @@ async def verificar_2fa(req: Verifica2FA):
             "code": req.codigo
         })
         
-        rol_usuario = "trabajador"
+        rol_usuario = "operador"
         try:
             datos_rol = supabase.table('roles').select('rol').eq('email', req.email).execute()
             if len(datos_rol.data) > 0:
                 rol_usuario = datos_rol.data[0]['rol']
         except Exception:
             pass
-            
-        return {"mensaje": "Acceso concedido", "rol": rol_usuario}
+
+        access_token = getattr(verificacion, 'access_token', None) if hasattr(verificacion, 'access_token') else verificacion.get('access_token')
+
+        return {"mensaje": "Acceso concedido", "rol": rol_usuario, "access_token": access_token}
     except Exception as e:
         raise HTTPException(status_code=401, detail="Código 2FA incorrecto o expirado.")
 
 # --- RUTAS DE CLIENTES ---
 @app.post("/clientes/")
-async def registrar_cliente(cliente: ClienteNuevo):
+async def registrar_cliente(cliente: ClienteNuevo, usuario: dict = Depends(requiere_rol("admin", "operador"))):
     try:
         respuesta = supabase.table('clientes').insert(cliente.dict()).execute()
         await manager.broadcast("update") 
@@ -292,12 +325,12 @@ async def registrar_cliente(cliente: ClienteNuevo):
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/clientes/")
-async def obtener_clientes():
+async def obtener_clientes(usuario: dict = Depends(obtener_usuario_actual)):
     respuesta = supabase.table('clientes').select("*").execute()
     return respuesta.data
 
 @app.put("/clientes/{cliente_id}")
-async def actualizar_cliente(cliente_id: str, cliente: ClienteNuevo):
+async def actualizar_cliente(cliente_id: str, cliente: ClienteNuevo, usuario: dict = Depends(requiere_rol("admin", "operador"))):
     try:
         respuesta = supabase.table('clientes').update(cliente.dict()).eq('id', cliente_id).execute()
         await manager.broadcast("update")
@@ -305,7 +338,7 @@ async def actualizar_cliente(cliente_id: str, cliente: ClienteNuevo):
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
 
 @app.delete("/clientes/{cliente_id}")
-async def eliminar_cliente(cliente_id: str):
+async def eliminar_cliente(cliente_id: str, usuario: dict = Depends(requiere_rol("admin"))):
     try:
         supabase.table('clientes').delete().eq('id', cliente_id).execute()
         await manager.broadcast("update")
@@ -314,7 +347,7 @@ async def eliminar_cliente(cliente_id: str):
 
 # --- RUTAS DE PROPIEDADES ---
 @app.post("/propiedades/")
-async def registrar_propiedad(propiedad: PropiedadNueva):
+async def registrar_propiedad(propiedad: PropiedadNueva, usuario: dict = Depends(requiere_rol("admin", "operador"))):
     try:
         respuesta = supabase.table('propiedades').insert(propiedad.dict()).execute()
         await manager.broadcast("update")
@@ -322,12 +355,12 @@ async def registrar_propiedad(propiedad: PropiedadNueva):
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/propiedades/")
-async def obtener_propiedades():
+async def obtener_propiedades(usuario: dict = Depends(obtener_usuario_actual)):
     respuesta = supabase.table('propiedades').select("*").execute()
     return respuesta.data
 
 @app.put("/propiedades/{propiedad_id}")
-async def actualizar_propiedad(propiedad_id: str, propiedad: PropiedadNueva):
+async def actualizar_propiedad(propiedad_id: str, propiedad: PropiedadNueva, usuario: dict = Depends(requiere_rol("admin", "operador"))):
     try:
         respuesta = supabase.table('propiedades').update(propiedad.dict()).eq('id', propiedad_id).execute()
         await manager.broadcast("update")
@@ -335,7 +368,7 @@ async def actualizar_propiedad(propiedad_id: str, propiedad: PropiedadNueva):
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
 
 @app.delete("/propiedades/{propiedad_id}")
-async def eliminar_propiedad(propiedad_id: str):
+async def eliminar_propiedad(propiedad_id: str, usuario: dict = Depends(requiere_rol("admin"))):
     try:
         supabase.table('propiedades').delete().eq('id', propiedad_id).execute()
         await manager.broadcast("update")
@@ -343,8 +376,14 @@ async def eliminar_propiedad(propiedad_id: str):
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
 
 # --- RUTAS DE SERVICIOS (MODIFICADA CON GOOGLE CALENDAR) ---
+CAMPOS_FINANCIEROS_SERVICIO = [
+    'costo_servicio', 'gastos', 'gasto_gasolina_unidad', 'gasto_gasolina_generador',
+    'gasto_sueldos', 'gasto_insumos', 'gasto_comidas', 'gasto_oxxo',
+    'precio_por_ha', 'ingreso_viaticos', 'ingreso_suministros'
+]
+
 @app.post("/servicios/")
-async def registrar_servicio(servicio: ServicioNuevo):
+async def registrar_servicio(servicio: ServicioNuevo, usuario: dict = Depends(requiere_rol("admin", "operador"))):
     try:
         respuesta = supabase.table('servicios_aplicacion').insert(servicio.dict()).execute()
         
@@ -387,12 +426,17 @@ async def registrar_servicio(servicio: ServicioNuevo):
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/servicios/")
-async def obtener_servicios():
+async def obtener_servicios(usuario: dict = Depends(obtener_usuario_actual)):
     respuesta = supabase.table('servicios_aplicacion').select("*").execute()
-    return respuesta.data
+    datos = respuesta.data
+    if usuario["rol"] == "operador":
+        for fila in datos:
+            for campo in CAMPOS_FINANCIEROS_SERVICIO:
+                fila.pop(campo, None)
+    return datos
 
 @app.put("/servicios/{servicio_id}")
-async def actualizar_servicio(servicio_id: str, servicio: ServicioNuevo):
+async def actualizar_servicio(servicio_id: str, servicio: ServicioNuevo, usuario: dict = Depends(requiere_rol("admin", "operador"))):
     try:
         respuesta = supabase.table('servicios_aplicacion').update(servicio.dict()).eq('id', servicio_id).execute()
         await manager.broadcast("update")
@@ -400,7 +444,7 @@ async def actualizar_servicio(servicio_id: str, servicio: ServicioNuevo):
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
 
 @app.delete("/servicios/{servicio_id}")
-async def eliminar_servicio(servicio_id: str):
+async def eliminar_servicio(servicio_id: str, usuario: dict = Depends(requiere_rol("admin"))):
     try:
         supabase.table('servicios_aplicacion').delete().eq('id', servicio_id).execute()
         await manager.broadcast("update")
@@ -409,7 +453,7 @@ async def eliminar_servicio(servicio_id: str):
 
 # --- SUBIR ENCUESTA DE SATISFACCIÓN (ARCHIVO) PARA UN SERVICIO ---
 @app.post("/servicios/{servicio_id}/encuesta")
-async def subir_encuesta(servicio_id: str, archivo: UploadFile = File(...)):
+async def subir_encuesta(servicio_id: str, archivo: UploadFile = File(...), usuario: dict = Depends(obtener_usuario_actual)):
     try:
         contenido = await archivo.read()
         extension = archivo.filename.split('.')[-1] if '.' in archivo.filename else 'pdf'
@@ -435,7 +479,7 @@ async def subir_encuesta(servicio_id: str, archivo: UploadFile = File(...)):
 
 # --- RUTA DE BOTON "HECHO" EN SEGUIMIENTOS ---
 @app.post("/api/servicios/{servicio_id}/hecho")
-async def marcar_seguimiento_hecho(servicio_id: str, req: SeguimientoHecho):
+async def marcar_seguimiento_hecho(servicio_id: str, req: SeguimientoHecho, usuario: dict = Depends(obtener_usuario_actual)):
     try:
         res = supabase.table('servicios_aplicacion').select('observaciones').eq('id', servicio_id).execute()
         obs_actual = ""
@@ -457,7 +501,7 @@ async def marcar_seguimiento_hecho(servicio_id: str, req: SeguimientoHecho):
 
 # --- RUTAS DE COTIZACIONES ---
 @app.post("/cotizaciones/")
-async def registrar_cotizacion(cot: CotizacionNueva):
+async def registrar_cotizacion(cot: CotizacionNueva, usuario: dict = Depends(requiere_rol("admin", "operador"))):
     try:
         respuesta = supabase.table('cotizaciones').insert(cot.dict()).execute()
         await manager.broadcast("update")
@@ -465,12 +509,12 @@ async def registrar_cotizacion(cot: CotizacionNueva):
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/cotizaciones/")
-async def obtener_cotizaciones():
+async def obtener_cotizaciones(usuario: dict = Depends(obtener_usuario_actual)):
     respuesta = supabase.table('cotizaciones').select("*").execute()
     return respuesta.data
 
 @app.put("/cotizaciones/{cot_id}")
-async def actualizar_cotizacion(cot_id: str, cot: CotizacionNueva):
+async def actualizar_cotizacion(cot_id: str, cot: CotizacionNueva, usuario: dict = Depends(requiere_rol("admin", "operador"))):
     try:
         respuesta = supabase.table('cotizaciones').update(cot.dict()).eq('id', cot_id).execute()
         await manager.broadcast("update")
@@ -478,7 +522,7 @@ async def actualizar_cotizacion(cot_id: str, cot: CotizacionNueva):
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
 
 @app.delete("/cotizaciones/{cot_id}")
-async def eliminar_cotizacion(cot_id: str):
+async def eliminar_cotizacion(cot_id: str, usuario: dict = Depends(requiere_rol("admin"))):
     try:
         supabase.table('cotizaciones').delete().eq('id', cot_id).execute()
         await manager.broadcast("update")
@@ -487,7 +531,7 @@ async def eliminar_cotizacion(cot_id: str):
 
 # --- VISITAS, METAS Y DASHBOARD ---
 @app.post("/api/visitas/{mes_anio}")
-async def registrar_visita(mes_anio: str):
+async def registrar_visita(mes_anio: str, usuario: dict = Depends(obtener_usuario_actual)):
     try:
         existe = supabase.table('metas_mensuales').select('id, visitas_reales').eq('mes_anio', mes_anio).execute()
         if len(existe.data) > 0:
@@ -505,7 +549,7 @@ async def registrar_visita(mes_anio: str):
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/api/dashboard/{mes_anio}")
-async def obtener_dashboard(mes_anio: str):
+async def obtener_dashboard(mes_anio: str, usuario: dict = Depends(requiere_rol("admin", "financiero"))):
     try:
         respuesta_metas = supabase.table('metas_mensuales').select('*').eq('mes_anio', mes_anio).execute()
         metas = respuesta_metas.data[0] if len(respuesta_metas.data) > 0 else { "meta_ventas": 0, "meta_servicios": 0, "meta_clientes": 0, "meta_prospectos": 0, "meta_prospectos_visitas": 0, "visitas_reales": 0 }
@@ -529,7 +573,7 @@ async def obtener_dashboard(mes_anio: str):
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/api/metas/")
-async def guardar_metas(metas: MetasMensuales):
+async def guardar_metas(metas: MetasMensuales, usuario: dict = Depends(requiere_rol("admin", "financiero"))):
     try:
         existe = supabase.table('metas_mensuales').select('id').eq('mes_anio', metas.mes_anio).execute()
         if len(existe.data) > 0:
@@ -538,4 +582,4 @@ async def guardar_metas(metas: MetasMensuales):
             supabase.table('metas_mensuales').insert(metas.dict()).execute()
         await manager.broadcast("update")
         return {"mensaje": "Metas guardadas correctamente"}
-    except Exception as e: raise HTTPException(status_code=500, detail=str(e))   
+    except Exception as e: raise HTTPException(status_code=500, detail=str(e))

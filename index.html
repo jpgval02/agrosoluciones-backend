@@ -74,7 +74,7 @@
                 <button onclick="cambiarVista('inicio'); toggleSidebar();" class="w-full text-left px-4 py-3.5 hover:bg-green-800/60 rounded-xl transition-colors flex items-center gap-3 font-semibold text-sm tracking-wide group">
                     <div class="bg-green-900 group-hover:bg-green-700 p-2 rounded-lg transition-colors"><i class="fa-solid fa-house text-green-400 w-5 text-center"></i></div> Inicio
                 </button>
-                <button onclick="cambiarVista('cotizaciones'); toggleSidebar();" class="w-full text-left px-4 py-3.5 hover:bg-green-800/60 rounded-xl transition-colors flex items-center gap-3 font-semibold text-sm tracking-wide group">
+                <button id="nav-cotizaciones" onclick="cambiarVista('cotizaciones'); toggleSidebar();" class="w-full text-left px-4 py-3.5 hover:bg-green-800/60 rounded-xl transition-colors flex items-center gap-3 font-semibold text-sm tracking-wide group">
                     <div class="bg-green-900 group-hover:bg-green-700 p-2 rounded-lg transition-colors"><i class="fa-solid fa-file-signature text-green-400 w-5 text-center"></i></div> Cotizaciones
                 </button>
                 <button onclick="cambiarVista('operaciones'); toggleSidebar();" class="w-full text-left px-4 py-3.5 hover:bg-green-800/60 rounded-xl transition-colors flex items-center gap-3 font-semibold text-sm tracking-wide group">
@@ -83,7 +83,7 @@
                 <button id="nav-financieros" onclick="cambiarVista('financieros'); toggleSidebar();" class="w-full text-left px-4 py-3.5 hover:bg-green-800/60 rounded-xl transition-colors flex items-center gap-3 font-semibold text-sm tracking-wide group">
                     <div class="bg-green-900 group-hover:bg-green-700 p-2 rounded-lg transition-colors"><i class="fa-solid fa-wallet text-green-400 w-5 text-center"></i></div> Financieros
                 </button>
-                <button onclick="cambiarVista('ventas-crm'); toggleSidebar();" class="w-full text-left px-4 py-3.5 hover:bg-green-800/60 rounded-xl transition-colors flex items-center gap-3 font-semibold text-sm tracking-wide group">
+                <button id="nav-ventas-crm" onclick="cambiarVista('ventas-crm'); toggleSidebar();" class="w-full text-left px-4 py-3.5 hover:bg-green-800/60 rounded-xl transition-colors flex items-center gap-3 font-semibold text-sm tracking-wide group">
                     <div class="bg-green-900 group-hover:bg-green-700 p-2 rounded-lg transition-colors"><i class="fa-solid fa-chart-line text-green-400 w-5 text-center"></i></div> Ventas CRM
                 </button>
             </div>
@@ -1120,17 +1120,25 @@
             const esOperador = (rolUsuario === 'operador');
 
             const navFinancieros = document.getElementById('nav-financieros');
+            const navVentasCrm = document.getElementById('nav-ventas-crm');
+            const navCotizaciones = document.getElementById('nav-cotizaciones');
             const cardIngresos = document.getElementById('card-ingresos-mensuales');
             const cardUtilidad = document.getElementById('card-utilidad-neta');
 
             if (navFinancieros) navFinancieros.classList.toggle('hidden', esOperador);
+            if (navVentasCrm) navVentasCrm.classList.toggle('hidden', esOperador);
+            if (navCotizaciones) navCotizaciones.classList.toggle('hidden', esOperador);
             if (cardIngresos) cardIngresos.classList.toggle('hidden', esOperador);
             if (cardUtilidad) cardUtilidad.classList.toggle('hidden', esOperador);
 
-            // Si un Operador quedó parado en la vista financiera (o llega por URL), lo regresamos al inicio
+            // Si un Operador quedó parado en una vista restringida (o llega por URL), lo regresamos al inicio
             if (esOperador) {
-                const vistaFinanciera = document.getElementById('vista-tabla-financieros');
-                if (vistaFinanciera && !vistaFinanciera.classList.contains('hidden')) {
+                const vistasRestringidas = ['vista-tabla-financieros', 'vista-tabla-ventas-crm', 'vista-tabla-cotizaciones'];
+                const enVistaRestringida = vistasRestringidas.some(id => {
+                    const el = document.getElementById(id);
+                    return el && !el.classList.contains('hidden');
+                });
+                if (enVistaRestringida) {
                     cambiarVista('inicio');
                 }
             }
@@ -1155,7 +1163,13 @@
             revisarSeguimientos(); 
         }
 
+        const VISTAS_RESTRINGIDAS_OPERADOR = ['financieros', 'ventas-crm', 'cotizaciones'];
+
         function cambiarVista(vista) {
+            if (rolUsuario === 'operador' && VISTAS_RESTRINGIDAS_OPERADOR.includes(vista)) {
+                alert('🔒 Tu usuario (Operador) no tiene permiso para entrar a esta sección.');
+                return;
+            }
             ['inicio', 'financieros', 'operaciones', 'ventas-crm', 'cotizaciones'].forEach(sec => {
                 const tabla = document.getElementById('vista-tabla-' + sec);
                 if(tabla) { tabla.classList.add('hidden'); tabla.classList.remove('block'); }

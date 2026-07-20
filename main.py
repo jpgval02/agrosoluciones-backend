@@ -123,6 +123,7 @@ class ServicioNuevo(BaseModel):
     estado_cuenta: str
     satisfaccion: int
     no_cotizacion: Optional[str] = None
+    cotizacion_id: Optional[str] = None
     no_orden: Optional[str] = None
     gastos: Optional[float] = 0.0
     fecha_seguimiento: Optional[str] = None
@@ -386,6 +387,13 @@ CAMPOS_FINANCIEROS_SERVICIO = [
 async def registrar_servicio(servicio: ServicioNuevo, usuario: dict = Depends(requiere_rol("admin", "operador"))):
     try:
         respuesta = supabase.table('servicios_aplicacion').insert(servicio.dict()).execute()
+
+        # Si esta venta viene de una cotización, la marcamos como convertida (relación real, no por texto)
+        if servicio.cotizacion_id:
+            try:
+                supabase.table('cotizaciones').update({'estado': 'Convertida'}).eq('id', servicio.cotizacion_id).execute()
+            except Exception as cot_err:
+                print(f"No se pudo marcar la cotización como convertida: {cot_err}")
         
         # 1. Buscamos el nombre de la Parcela y el Cliente para el Calendario
         nombre_productor = "Productor Desconocido"
@@ -438,7 +446,20 @@ async def obtener_servicios(usuario: dict = Depends(obtener_usuario_actual)):
 @app.put("/servicios/{servicio_id}")
 async def actualizar_servicio(servicio_id: str, servicio: ServicioNuevo, usuario: dict = Depends(requiere_rol("admin", "operador"))):
     try:
+        # Vemos si esta venta ya tenía otra cotización ligada, para poder liberarla si cambió
+        anterior = supabase.table('servicios_aplicacion').select('cotizacion_id').eq('id', servicio_id).execute()
+        cotizacion_id_anterior = anterior.data[0].get('cotizacion_id') if len(anterior.data) > 0 else None
+
         respuesta = supabase.table('servicios_aplicacion').update(servicio.dict()).eq('id', servicio_id).execute()
+
+        if cotizacion_id_anterior and cotizacion_id_anterior != servicio.cotizacion_id:
+            try: supabase.table('cotizaciones').update({'estado': 'Pendiente'}).eq('id', cotizacion_id_anterior).execute()
+            except Exception as cot_err: print(f"No se pudo liberar la cotización anterior: {cot_err}")
+
+        if servicio.cotizacion_id and servicio.cotizacion_id != cotizacion_id_anterior:
+            try: supabase.table('cotizaciones').update({'estado': 'Convertida'}).eq('id', servicio.cotizacion_id).execute()
+            except Exception as cot_err: print(f"No se pudo marcar la cotización como convertida: {cot_err}")
+
         await manager.broadcast("update")
         return {"mensaje": "Actualizado", "datos": respuesta.data[0]}
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
@@ -446,6 +467,12 @@ async def actualizar_servicio(servicio_id: str, servicio: ServicioNuevo, usuario
 @app.delete("/servicios/{servicio_id}")
 async def eliminar_servicio(servicio_id: str, usuario: dict = Depends(requiere_rol("admin"))):
     try:
+        # Si esta venta tenía una cotización ligada, la regresamos a "Pendiente" al borrarla
+        existente = supabase.table('servicios_aplicacion').select('cotizacion_id').eq('id', servicio_id).execute()
+        if len(existente.data) > 0 and existente.data[0].get('cotizacion_id'):
+            try: supabase.table('cotizaciones').update({'estado': 'Pendiente'}).eq('id', existente.data[0]['cotizacion_id']).execute()
+            except Exception as cot_err: print(f"No se pudo liberar la cotización: {cot_err}")
+
         supabase.table('servicios_aplicacion').delete().eq('id', servicio_id).execute()
         await manager.broadcast("update")
         return {"mensaje": "Eliminado exitosamente"}

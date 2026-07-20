@@ -143,6 +143,7 @@
                     <div class="kpi-card"><div class="kpi-title">Nuevos Clientes</div><div id="velocimetro-clientes"></div><div class="kpi-text-real" id="texto-clientes-real">0 / 0</div></div>
                     <div class="kpi-card"><div class="kpi-title">Prospectos Alcanzados</div><div id="velocimetro-prospectos"></div><div class="kpi-text-real" id="texto-prospectos-real">0 / 0</div></div>
                     <div class="kpi-card"><div class="kpi-title">Visitas a Campo</div><div id="velocimetro-visitas"></div><div class="kpi-text-real" id="texto-visitas-real">0 / 0</div></div>
+                    <div class="kpi-card"><div class="kpi-title">Cotización → Venta</div><div id="velocimetro-conversion"></div><div class="kpi-text-real" id="texto-conversion-real">0 / 0</div></div>
                 </div>
 
                 <h2 class="text-xl md:text-2xl font-bold text-gray-800 mt-10 mb-6 tracking-tight">Panel de Captura Rápida</h2>
@@ -228,8 +229,17 @@
                                 <textarea id="cot_suministros_detalle" rows="2" placeholder="Detalle (Ej. Paso D, Feudo...)" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-xs"></textarea>
                             </div>
 
-                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-3 border-t border-dashed border-gray-200 pt-3 items-end">
-                                <div><label class="text-[10px] text-gray-500 font-bold uppercase">Descuento ($)</label><input type="number" step="0.01" id="cot_descuento" placeholder="0.00" class="w-full px-3 py-2 bg-rose-50 border border-rose-200 rounded-lg text-sm font-bold text-rose-600"></div>
+                            <div class="border-t border-dashed border-gray-200 pt-3">
+                                <label class="text-[10px] text-gray-500 font-bold uppercase flex items-center justify-between">
+                                    ¿Aplicarás un descuento?
+                                    <span class="flex items-center gap-2 normal-case">
+                                        <button type="button" id="btnDescuentoSi" onclick="toggleDescuentoCot(true)" class="px-3 py-1 rounded-md text-[11px] font-bold border border-gray-300 bg-white text-gray-500">Sí</button>
+                                        <button type="button" id="btnDescuentoNo" onclick="toggleDescuentoCot(false)" class="px-3 py-1 rounded-md text-[11px] font-bold border border-rose-500 bg-rose-500 text-white">No</button>
+                                    </span>
+                                </label>
+                            </div>
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-3 items-end">
+                                <div id="wrapDescuentoMonto" class="hidden"><label class="text-[10px] text-gray-500 font-bold uppercase">Monto del descuento ($)</label><input type="number" step="0.01" id="cot_descuento" placeholder="0.00" class="w-full px-3 py-2 bg-rose-50 border border-rose-200 rounded-lg text-sm font-bold text-rose-600"></div>
                                 <div>
                                     <label class="text-[10px] text-gray-500 font-bold uppercase">TOTAL COTIZADO</label>
                                     <input type="text" id="cot_total_display" readonly placeholder="$0.00" class="w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-lg text-sm font-extrabold text-gray-800 outline-none cursor-not-allowed">
@@ -252,7 +262,7 @@
 
                             <div><label class="text-[10px] text-gray-500 font-bold uppercase">Productor / Parcela</label><select id="selectPropiedad2" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm"><option value="">-- Selecciona --</option></select></div>
                             <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
-                                <div><label class="text-[10px] text-gray-500 font-bold uppercase">No. Cotización</label><input type="text" id="no_cotizacion_venta" placeholder="Ej. 1292" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 text-sm rounded-lg"></div>
+                                <div><label class="text-[10px] text-gray-500 font-bold uppercase">Cotización Relacionada</label><select id="cotizacion_id_venta" onchange="autocompletarNumeroCotizacion()" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 text-sm rounded-lg"><option value="">-- Venta directa (sin cotización) --</option></select><input type="hidden" id="no_cotizacion_venta"></div>
                                 <div><label class="text-[10px] text-gray-500 font-bold uppercase">No. Orden Serv.</label><input type="text" id="no_orden" placeholder="Ej. OS-001" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 text-sm rounded-lg"></div>
                             </div>
                             <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
@@ -592,6 +602,7 @@
                                     <div class="flex justify-between text-gray-600"><span>Fumigación (<span id="det_ha">0</span> Ha)</span><span id="det_sub_fumi" class="font-medium">$0.00</span></div>
                                     <div class="flex justify-between text-gray-600"><span>Viáticos Cobrados</span><span id="det_in_viat" class="font-medium">$0.00</span></div>
                                     <div class="flex justify-between text-gray-600"><span>Suministros</span><span id="det_in_sumi" class="font-medium">$0.00</span></div>
+                                    <div id="det_descuento_row" class="hidden flex justify-between text-rose-600"><span>Descuento aplicado (<span id="det_descuento_cot">---</span>)</span><span id="det_descuento" class="font-medium">-$0.00</span></div>
                                     <div class="flex justify-between pt-2 border-t border-emerald-200 mt-2"><span class="font-bold text-emerald-800 text-[10px] md:text-xs uppercase">Total Cobrado</span><span id="det_in_total" class="font-extrabold text-emerald-700">$0.00</span></div>
                                 </div>
                             </div>
@@ -1407,7 +1418,7 @@
                     try { if(c.observaciones) obs = JSON.parse(c.observaciones); } catch(e){}
                     
                     let numCot = obs.no_cotizacion ? obs.no_cotizacion : String(c.id).substring(0,4).toUpperCase();
-                    let badgeColor = c.estado === 'Aprobada' ? 'bg-emerald-100 text-emerald-800 border-emerald-300' : 'bg-amber-100 text-amber-800 border-amber-300';
+                    let badgeColor = c.estado === 'Convertida' ? 'bg-purple-100 text-purple-800 border-purple-300' : (c.estado === 'Aprobada' ? 'bg-emerald-100 text-emerald-800 border-emerald-300' : 'bg-amber-100 text-amber-800 border-amber-300');
 
                     if(cuerpo) {
                         cuerpo.innerHTML += `
@@ -1421,7 +1432,7 @@
                                 <td class="px-6 py-4 text-gray-600">${c.cultivo}</td>
                                 <td class="px-6 py-4 text-center font-bold">${c.hectareas} Ha</td>
                                 <td class="px-6 py-4 text-right font-extrabold text-blue-700">$${(c.total||0).toLocaleString('es-MX', {minimumFractionDigits:2})}</td>
-                                <td class="px-6 py-4 text-center"><span class="text-[10px] font-bold px-2 py-0.5 rounded-full border ${badgeColor}">${c.estado}</span></td>
+                                <td class="px-6 py-4 text-center"><span class="text-[10px] font-bold px-2 py-0.5 rounded-full border ${badgeColor}">${c.estado}</span>${(cotizacionEstaConvertida(c) && c.estado !== 'Convertida') ? '<br><span class="text-[9px] font-bold px-2 py-0.5 rounded-full border bg-purple-100 text-purple-700 border-purple-300 mt-1 inline-block">✅ Convertida a Venta</span>' : ''}</td>
                                 <td class="px-6 py-4 text-center space-x-1 whitespace-nowrap">
                                     <button onclick="imprimirCotizacion('${c.id}')" class="bg-indigo-600 text-white hover:bg-indigo-500 px-3 py-1.5 rounded-md text-xs shadow-sm"><i class="fa-solid fa-file-pdf"></i></button>
                                     <button onclick="editarCotizacion('${c.id}')" class="bg-amber-400 text-white hover:bg-amber-300 px-3 py-1.5 rounded-md text-xs shadow-sm"><i class="fa-solid fa-pen"></i></button>
@@ -1432,6 +1443,99 @@
                     }
                 });
             } catch(e) { console.error(e); }
+            actualizarVelocimetroConversion();
+            poblarSelectCotizaciones();
+        }
+
+        function toggleDescuentoCot(aplica) {
+            const wrap = document.getElementById('wrapDescuentoMonto');
+            const btnSi = document.getElementById('btnDescuentoSi');
+            const btnNo = document.getElementById('btnDescuentoNo');
+            const activo = "px-3 py-1 rounded-md text-[11px] font-bold border border-rose-500 bg-rose-500 text-white";
+            const inactivo = "px-3 py-1 rounded-md text-[11px] font-bold border border-gray-300 bg-white text-gray-500";
+            if (aplica) {
+                wrap.classList.remove('hidden');
+                btnSi.className = activo;
+                btnNo.className = inactivo;
+            } else {
+                wrap.classList.add('hidden');
+                document.getElementById('cot_descuento').value = '';
+                btnNo.className = activo;
+                btnSi.className = inactivo;
+            }
+            calcularTotalCotizacion();
+        }
+
+        // --- Devuelve el número de cotización guardado dentro de sus observaciones (JSON) ---
+        function obtenerNumeroCotizacion(c) {
+            try {
+                const obs = c.observaciones ? JSON.parse(c.observaciones) : {};
+                return (obs.no_cotizacion || '').toString().trim();
+            } catch(e) { return ''; }
+        }
+
+        // --- ¿Ya existe una venta ligada a esta cotización? (relación real por id; respaldo por texto para registros viejos) ---
+        function cotizacionEstaConvertida(c) {
+            if (c.estado === 'Convertida') return true;
+            const numero = obtenerNumeroCotizacion(c);
+            if (!numero) return false;
+            return memoriaServicios.some(s => !s.cotizacion_id && (s.no_cotizacion || '').toString().trim() === numero);
+        }
+
+        // --- Encuentra la cotización realmente ligada a una venta (por id; respaldo por texto para registros viejos) ---
+        function obtenerCotizacionLigada(s) {
+            if (s.cotizacion_id) {
+                const porId = memoriaCotizaciones.find(c => String(c.id) === String(s.cotizacion_id));
+                if (porId) return porId;
+            }
+            if (s.no_cotizacion) {
+                return memoriaCotizaciones.find(c => obtenerNumeroCotizacion(c) === String(s.no_cotizacion).trim());
+            }
+            return null;
+        }
+
+        // --- Llena el select de "Cotización Relacionada" con las que aún no se han convertido ---
+        function poblarSelectCotizaciones(cotizacionIdActual) {
+            const sel = document.getElementById('cotizacion_id_venta');
+            if (!sel) return;
+            const valorPrevio = cotizacionIdActual || sel.value;
+            sel.innerHTML = '<option value="">-- Venta directa (sin cotización) --</option>';
+            memoriaCotizaciones.forEach(c => {
+                const yaConvertida = cotizacionEstaConvertida(c);
+                // Si ya está convertida, solo la mostramos si es justo la que esta venta (en edición) ya trae ligada
+                if (yaConvertida && String(c.id) !== String(valorPrevio)) return;
+                const numero = obtenerNumeroCotizacion(c);
+                const cl = memoriaClientes.find(x => String(x.id) === String(c.cliente_id));
+                const nombre = cl ? `${cl.nombre} ${cl.apellidos}` : 'N/A';
+                const opt = document.createElement('option');
+                opt.value = c.id;
+                opt.textContent = `COT-${numero || String(c.id).substring(0,4).toUpperCase()} - ${nombre} - $${(c.total||0).toLocaleString('es-MX')}`;
+                sel.appendChild(opt);
+            });
+            if (valorPrevio) sel.value = valorPrevio;
+        }
+
+        // --- Al elegir una cotización en la venta, reflejamos su número en el campo oculto (para PDFs/calendario/detalle) ---
+        function autocompletarNumeroCotizacion() {
+            const sel = document.getElementById('cotizacion_id_venta');
+            const cot = memoriaCotizaciones.find(c => String(c.id) === String(sel.value));
+            document.getElementById('no_cotizacion_venta').value = cot ? obtenerNumeroCotizacion(cot) : '';
+        }
+
+        // --- Calcula el % de cotizaciones que ya se convirtieron en venta real, y actualiza el velocímetro ---
+        function actualizarVelocimetroConversion() {
+            if (typeof chartConversion === 'undefined' || !memoriaCotizaciones.length) {
+                if (typeof chartConversion !== 'undefined') chartConversion.updateSeries([0]);
+                const txt = document.getElementById('texto-conversion-real');
+                if (txt) txt.innerText = "0 / 0";
+                return;
+            }
+            const totalCot = memoriaCotizaciones.length;
+            const convertidas = memoriaCotizaciones.filter(cotizacionEstaConvertida).length;
+            const porcentaje = totalCot > 0 ? (convertidas / totalCot) * 100 : 0;
+            chartConversion.updateSeries([porcentaje]);
+            const txt = document.getElementById('texto-conversion-real');
+            if (txt) txt.innerText = convertidas + " / " + totalCot;
         }
 
         function editarCotizacion(id) {
@@ -1451,6 +1555,7 @@
             document.getElementById('cot_suministros_costo').value = obs.suministros || '';
             document.getElementById('cot_suministros_detalle').value = obs.detalles_suministros || '';
             document.getElementById('cot_descuento').value = obs.descuento || '';
+            toggleDescuentoCot((obs.descuento || 0) > 0);
             
             calcularTotalCotizacion();
 
@@ -1470,6 +1575,7 @@
             document.getElementById('tituloFormCotizacion').innerHTML = `<i class="fa-solid fa-file-signature text-amber-500 mr-2 text-xl md:text-2xl"></i> Nueva Cotización`;
             document.getElementById('btnSubmitCotizacion').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-amber-600 hover:bg-amber-500 transition-colors shadow-sm";
             document.getElementById('btnCancelarCot').classList.add('hidden');
+            toggleDescuentoCot(false);
             
             // Volver a poner la fecha de hoy al limpiar
             const hoy = new Date();
@@ -1630,6 +1736,7 @@
         var chartClientes = new ApexCharts(document.querySelector("#velocimetro-clientes"), crearVelocimetro("#velocimetro-clientes", "#00E396", "Clientes")); chartClientes.render();
         var chartProspectos = new ApexCharts(document.querySelector("#velocimetro-prospectos"), crearVelocimetro("#velocimetro-prospectos", "#00E396", "Prospectos")); chartProspectos.render();
         var chartVisitas = new ApexCharts(document.querySelector("#velocimetro-visitas"), crearVelocimetro("#velocimetro-visitas", "#00E396", "Visitas")); chartVisitas.render();
+        var chartConversion = new ApexCharts(document.querySelector("#velocimetro-conversion"), crearVelocimetro("#velocimetro-conversion", "#8b5cf6", "Conversión")); chartConversion.render();
 
         async function actualizarMetasCEO() {
             try {
@@ -1970,6 +2077,8 @@
                     }
                 }); 
             } catch (e) { console.error(e); } 
+            actualizarVelocimetroConversion();
+            poblarSelectCotizaciones();
         }
 
         document.getElementById('servicioForm').addEventListener('submit', async function(e) { 
@@ -1977,7 +2086,7 @@
             const datos = { 
                 propiedad_id: document.getElementById('selectPropiedad2').value, fecha_aplicacion: document.getElementById('fecha_aplicacion').value, 
                 costo_servicio: parseFloat(document.getElementById('costo_servicio').value || 0), estado_cuenta: 'Cobrado', satisfaccion: 5,
-                no_cotizacion: document.getElementById('no_cotizacion_venta').value, no_orden: document.getElementById('no_orden').value,
+                no_cotizacion: document.getElementById('no_cotizacion_venta').value, cotizacion_id: document.getElementById('cotizacion_id_venta').value || null, no_orden: document.getElementById('no_orden').value,
                 gastos: parseFloat(document.getElementById('gastos').value || 0), fecha_seguimiento: document.getElementById('fecha_seguimiento').value,
                 no_factura: document.getElementById('no_factura').value, observaciones: document.getElementById('observaciones').value,
                 gasto_gasolina_unidad: parseFloat(document.getElementById('h_gas_unidad').value || 0), gasto_gasolina_generador: parseFloat(document.getElementById('h_gas_gen').value || 0), gasto_sueldos: parseFloat(document.getElementById('h_sueldos').value || 0), gasto_insumos: parseFloat(document.getElementById('h_insumos').value || 0), gasto_comidas: parseFloat(document.getElementById('h_comidas').value || 0), gasto_oxxo: parseFloat(document.getElementById('h_oxxo').value || 0),
@@ -2047,6 +2156,8 @@
             const s = memoriaServicios.find(x => String(x.id) === String(id)); 
             if(!s) return;
             document.getElementById('editServioId').value = s.id; document.getElementById('selectPropiedad2').value = s.propiedad_id; document.getElementById('fecha_aplicacion').value = s.fecha_aplicacion||''; document.getElementById('costo_servicio').value = s.costo_servicio||''; document.getElementById('no_cotizacion_venta').value = s.no_cotizacion||''; document.getElementById('no_orden').value = s.no_orden||''; document.getElementById('gastos').value = s.gastos||''; document.getElementById('fecha_seguimiento').value = s.fecha_seguimiento||''; document.getElementById('no_factura').value = s.no_factura||''; document.getElementById('observaciones').value = s.observaciones||''; 
+            poblarSelectCotizaciones(s.cotizacion_id || '');
+            document.getElementById('cotizacion_id_venta').value = s.cotizacion_id || '';
             document.getElementById('h_gas_unidad').value = s.gasto_gasolina_unidad || 0; document.getElementById('h_gas_gen').value = s.gasto_gasolina_generador || 0; document.getElementById('h_sueldos').value = s.gasto_sueldos || 0; document.getElementById('h_insumos').value = s.gasto_insumos || 0; document.getElementById('h_comidas').value = s.gasto_comidas || 0; document.getElementById('h_oxxo').value = s.gasto_oxxo || 0;
             document.getElementById('h_ha_trabajadas').value = s.ha_trabajadas || 0; document.getElementById('h_precio_por_ha').value = s.precio_por_ha || 0; document.getElementById('h_ingreso_viaticos').value = s.ingreso_viaticos || 0; document.getElementById('h_ingreso_suministros').value = s.ingreso_suministros || 0;
             document.getElementById('h_metodo_pago').value = s.metodo_pago || 'Efectivo';
@@ -2059,6 +2170,7 @@
             ['h_gas_unidad', 'h_gas_gen', 'h_sueldos', 'h_insumos', 'h_comidas', 'h_oxxo', 'h_ha_trabajadas', 'h_precio_por_ha', 'h_ingreso_viaticos', 'h_ingreso_suministros'].forEach(id => document.getElementById(id).value = 0); 
             document.getElementById('h_metodo_pago').value = 'Efectivo';
             document.getElementById('tituloFormServio').innerHTML = `<i class="fa-solid fa-file-invoice-dollar text-green-600 mr-2 text-xl md:text-2xl"></i> Registrar Venta`; 
+            poblarSelectCotizaciones();
         }
 
         function verDetalleServicio(id) {
@@ -2084,6 +2196,23 @@
             document.getElementById('det_in_viat').innerText = "$" + (s.ingreso_viaticos || 0).toLocaleString('es-MX', {minimumFractionDigits: 2});
             document.getElementById('det_in_sumi').innerText = "$" + (s.ingreso_suministros || 0).toLocaleString('es-MX', {minimumFractionDigits: 2});
             document.getElementById('det_in_total').innerText = "$" + (s.costo_servicio || 0).toLocaleString('es-MX', {minimumFractionDigits: 2});
+
+            // --- Descuento heredado de la cotización ligada a esta venta (si existe) ---
+            const cotLigada = obtenerCotizacionLigada(s);
+            const filaDescuento = document.getElementById('det_descuento_row');
+            if (cotLigada) {
+                let obsCot = {};
+                try { obsCot = cotLigada.observaciones ? JSON.parse(cotLigada.observaciones) : {}; } catch(e){}
+                if (obsCot.descuento > 0) {
+                    filaDescuento.classList.remove('hidden');
+                    document.getElementById('det_descuento_cot').innerText = "COT-" + obtenerNumeroCotizacion(cotLigada);
+                    document.getElementById('det_descuento').innerText = "-$" + obsCot.descuento.toLocaleString('es-MX', {minimumFractionDigits: 2});
+                } else {
+                    filaDescuento.classList.add('hidden');
+                }
+            } else {
+                filaDescuento.classList.add('hidden');
+            }
 
             let gasolinas = (s.gasto_gasolina_unidad || 0) + (s.gasto_gasolina_generador || 0);
             let alimentos = (s.gasto_comidas || 0) + (s.gasto_oxxo || 0);

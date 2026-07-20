@@ -610,3 +610,4 @@ async def guardar_metas(metas: MetasMensuales, usuario: dict = Depends(requiere_
         await manager.broadcast("update")
         return {"mensaje": "Metas guardadas correctamente"}
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
+    

@@ -124,6 +124,7 @@ class ServicioNuevo(BaseModel):
     satisfaccion: int
     no_cotizacion: Optional[str] = None
     cotizacion_id: Optional[str] = None
+    descuento: Optional[float] = 0
     no_orden: Optional[str] = None
     gastos: Optional[float] = 0.0
     fecha_seguimiento: Optional[str] = None
@@ -380,7 +381,7 @@ async def eliminar_propiedad(propiedad_id: str, usuario: dict = Depends(requiere
 CAMPOS_FINANCIEROS_SERVICIO = [
     'costo_servicio', 'gastos', 'gasto_gasolina_unidad', 'gasto_gasolina_generador',
     'gasto_sueldos', 'gasto_insumos', 'gasto_comidas', 'gasto_oxxo',
-    'precio_por_ha', 'ingreso_viaticos', 'ingreso_suministros'
+    'precio_por_ha', 'ingreso_viaticos', 'ingreso_suministros', 'descuento'
 ]
 
 @app.post("/servicios/")

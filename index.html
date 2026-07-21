@@ -285,6 +285,16 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="border-t border-dashed border-gray-200 pt-3">
+                                <label class="text-[10px] text-gray-500 font-bold uppercase flex items-center justify-between">
+                                    ¿Aplicarás un descuento?
+                                    <span class="flex items-center gap-2 normal-case">
+                                        <button type="button" id="btnDescuentoVentaSi" onclick="toggleDescuentoVenta(true)" class="px-3 py-1 rounded-md text-[11px] font-bold border border-gray-300 bg-white text-gray-500">Sí</button>
+                                        <button type="button" id="btnDescuentoVentaNo" onclick="toggleDescuentoVenta(false)" class="px-3 py-1 rounded-md text-[11px] font-bold border border-rose-500 bg-rose-500 text-white">No</button>
+                                    </span>
+                                </label>
+                            </div>
+                            <div id="wrapDescuentoVenta" class="hidden"><label class="text-[10px] text-gray-500 font-bold uppercase">Monto del descuento ($)</label><input type="number" step="0.01" id="venta_descuento" placeholder="0.00" class="w-full px-3 py-2 bg-rose-50 border border-rose-200 rounded-lg text-sm font-bold text-rose-600"><input type="hidden" id="h_ingreso_bruto" value="0"></div>
                             <div><label class="text-[10px] text-gray-500 font-bold uppercase">Observaciones</label><textarea id="observaciones" rows="1" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm"></textarea></div>
                             <div class="hidden"><input type="text" id="no_factura" value="S/N"><select id="estado_cuenta"><option value="Cobrado">Cobrado</option></select><input type="number" id="satisfaccion" value="5"></div>
                             
@@ -602,6 +612,7 @@
                                     <div class="flex justify-between text-gray-600"><span>Fumigación (<span id="det_ha">0</span> Ha)</span><span id="det_sub_fumi" class="font-medium">$0.00</span></div>
                                     <div class="flex justify-between text-gray-600"><span>Viáticos Cobrados</span><span id="det_in_viat" class="font-medium">$0.00</span></div>
                                     <div class="flex justify-between text-gray-600"><span>Suministros</span><span id="det_in_sumi" class="font-medium">$0.00</span></div>
+                                    <div id="det_descuento_venta_row" class="hidden flex justify-between text-rose-600"><span>Descuento en esta venta</span><span id="det_descuento_venta" class="font-medium">-$0.00</span></div>
                                     <div id="det_descuento_row" class="hidden flex justify-between text-rose-600"><span>Descuento aplicado (<span id="det_descuento_cot">---</span>)</span><span id="det_descuento" class="font-medium">-$0.00</span></div>
                                     <div class="flex justify-between pt-2 border-t border-emerald-200 mt-2"><span class="font-bold text-emerald-800 text-[10px] md:text-xs uppercase">Total Cobrado</span><span id="det_in_total" class="font-extrabold text-emerald-700">$0.00</span></div>
                                 </div>
@@ -2086,7 +2097,7 @@
             const datos = { 
                 propiedad_id: document.getElementById('selectPropiedad2').value, fecha_aplicacion: document.getElementById('fecha_aplicacion').value, 
                 costo_servicio: parseFloat(document.getElementById('costo_servicio').value || 0), estado_cuenta: 'Cobrado', satisfaccion: 5,
-                no_cotizacion: document.getElementById('no_cotizacion_venta').value, cotizacion_id: document.getElementById('cotizacion_id_venta').value || null, no_orden: document.getElementById('no_orden').value,
+                no_cotizacion: document.getElementById('no_cotizacion_venta').value, cotizacion_id: document.getElementById('cotizacion_id_venta').value || null, descuento: parseFloat(document.getElementById('venta_descuento').value) || 0, no_orden: document.getElementById('no_orden').value,
                 gastos: parseFloat(document.getElementById('gastos').value || 0), fecha_seguimiento: document.getElementById('fecha_seguimiento').value,
                 no_factura: document.getElementById('no_factura').value, observaciones: document.getElementById('observaciones').value,
                 gasto_gasolina_unidad: parseFloat(document.getElementById('h_gas_unidad').value || 0), gasto_gasolina_generador: parseFloat(document.getElementById('h_gas_gen').value || 0), gasto_sueldos: parseFloat(document.getElementById('h_sueldos').value || 0), gasto_insumos: parseFloat(document.getElementById('h_insumos').value || 0), gasto_comidas: parseFloat(document.getElementById('h_comidas').value || 0), gasto_oxxo: parseFloat(document.getElementById('h_oxxo').value || 0),
@@ -2143,8 +2154,36 @@
             document.getElementById('h_ingreso_viaticos').value = document.getElementById('m_ingreso_viaticos').value || 0;
             document.getElementById('h_ingreso_suministros').value = document.getElementById('m_ingreso_suministros').value || 0;
             document.getElementById('h_metodo_pago').value = metodoPagoSeleccionado; 
-            document.getElementById('costo_servicio').value = totalIngreso; cerrarModalIngresos();
+            document.getElementById('h_ingreso_bruto').value = totalIngreso;
+            recalcularIngresoNeto();
+            cerrarModalIngresos();
         }
+
+        // --- Toggle del descuento en Registrar Venta (independiente del de Cotizaciones) ---
+        function toggleDescuentoVenta(aplica) {
+            const wrap = document.getElementById('wrapDescuentoVenta');
+            const btnSi = document.getElementById('btnDescuentoVentaSi');
+            const btnNo = document.getElementById('btnDescuentoVentaNo');
+            const activo = "px-3 py-1 rounded-md text-[11px] font-bold border border-rose-500 bg-rose-500 text-white";
+            const inactivo = "px-3 py-1 rounded-md text-[11px] font-bold border border-gray-300 bg-white text-gray-500";
+            if (aplica) {
+                wrap.classList.remove('hidden');
+                btnSi.className = activo; btnNo.className = inactivo;
+            } else {
+                wrap.classList.add('hidden');
+                document.getElementById('venta_descuento').value = '';
+                btnNo.className = activo; btnSi.className = inactivo;
+            }
+            recalcularIngresoNeto();
+        }
+
+        // --- El "Ingresos Total" que se guarda = ingreso bruto (de la calculadora) - descuento de esta venta ---
+        function recalcularIngresoNeto() {
+            const bruto = parseFloat(document.getElementById('h_ingreso_bruto').value) || 0;
+            const descuento = parseFloat(document.getElementById('venta_descuento').value) || 0;
+            document.getElementById('costo_servicio').value = (bruto - descuento).toFixed(2);
+        }
+        document.getElementById('venta_descuento').addEventListener('input', recalcularIngresoNeto);
 
         function abrirModalDesgloseGastos() { document.getElementById('m_gas_unidad').value = document.getElementById('h_gas_unidad').value || 0; document.getElementById('m_gas_gen').value = document.getElementById('h_gas_gen').value || 0; document.getElementById('m_sueldos').value = document.getElementById('h_sueldos').value || 0; document.getElementById('m_insumos').value = document.getElementById('h_insumos').value || 0; document.getElementById('m_comidas').value = document.getElementById('h_comidas').value || 0; document.getElementById('m_oxxo').value = document.getElementById('h_oxxo').value || 0; calcularTotalModal(); document.getElementById('modal-gastos').classList.remove('hidden'); }
         function cerrarModalGastos() { document.getElementById('modal-gastos').classList.add('hidden'); }
@@ -2158,6 +2197,10 @@
             document.getElementById('editServioId').value = s.id; document.getElementById('selectPropiedad2').value = s.propiedad_id; document.getElementById('fecha_aplicacion').value = s.fecha_aplicacion||''; document.getElementById('costo_servicio').value = s.costo_servicio||''; document.getElementById('no_cotizacion_venta').value = s.no_cotizacion||''; document.getElementById('no_orden').value = s.no_orden||''; document.getElementById('gastos').value = s.gastos||''; document.getElementById('fecha_seguimiento').value = s.fecha_seguimiento||''; document.getElementById('no_factura').value = s.no_factura||''; document.getElementById('observaciones').value = s.observaciones||''; 
             poblarSelectCotizaciones(s.cotizacion_id || '');
             document.getElementById('cotizacion_id_venta').value = s.cotizacion_id || '';
+            const brutoEdicion = (parseFloat(s.ha_trabajadas)||0) * (parseFloat(s.precio_por_ha)||0) + (parseFloat(s.ingreso_viaticos)||0) + (parseFloat(s.ingreso_suministros)||0);
+            document.getElementById('h_ingreso_bruto').value = brutoEdicion;
+            document.getElementById('venta_descuento').value = s.descuento || '';
+            toggleDescuentoVenta((s.descuento || 0) > 0);
             document.getElementById('h_gas_unidad').value = s.gasto_gasolina_unidad || 0; document.getElementById('h_gas_gen').value = s.gasto_gasolina_generador || 0; document.getElementById('h_sueldos').value = s.gasto_sueldos || 0; document.getElementById('h_insumos').value = s.gasto_insumos || 0; document.getElementById('h_comidas').value = s.gasto_comidas || 0; document.getElementById('h_oxxo').value = s.gasto_oxxo || 0;
             document.getElementById('h_ha_trabajadas').value = s.ha_trabajadas || 0; document.getElementById('h_precio_por_ha').value = s.precio_por_ha || 0; document.getElementById('h_ingreso_viaticos').value = s.ingreso_viaticos || 0; document.getElementById('h_ingreso_suministros').value = s.ingreso_suministros || 0;
             document.getElementById('h_metodo_pago').value = s.metodo_pago || 'Efectivo';
@@ -2171,6 +2214,8 @@
             document.getElementById('h_metodo_pago').value = 'Efectivo';
             document.getElementById('tituloFormServio').innerHTML = `<i class="fa-solid fa-file-invoice-dollar text-green-600 mr-2 text-xl md:text-2xl"></i> Registrar Venta`; 
             poblarSelectCotizaciones();
+            document.getElementById('h_ingreso_bruto').value = 0;
+            toggleDescuentoVenta(false);
         }
 
         function verDetalleServicio(id) {
@@ -2196,6 +2241,15 @@
             document.getElementById('det_in_viat').innerText = "$" + (s.ingreso_viaticos || 0).toLocaleString('es-MX', {minimumFractionDigits: 2});
             document.getElementById('det_in_sumi').innerText = "$" + (s.ingreso_suministros || 0).toLocaleString('es-MX', {minimumFractionDigits: 2});
             document.getElementById('det_in_total').innerText = "$" + (s.costo_servicio || 0).toLocaleString('es-MX', {minimumFractionDigits: 2});
+
+            // --- Descuento propio de esta venta (independiente del de la cotización) ---
+            const filaDescuentoVenta = document.getElementById('det_descuento_venta_row');
+            if (s.descuento > 0) {
+                filaDescuentoVenta.classList.remove('hidden');
+                document.getElementById('det_descuento_venta').innerText = "-$" + parseFloat(s.descuento).toLocaleString('es-MX', {minimumFractionDigits: 2});
+            } else {
+                filaDescuentoVenta.classList.add('hidden');
+            }
 
             // --- Descuento heredado de la cotización ligada a esta venta (si existe) ---
             const cotLigada = obtenerCotizacionLigada(s);

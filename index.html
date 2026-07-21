@@ -455,7 +455,13 @@
                     </div>
                     
                     <div class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
-                        <div class="tabla-header px-4 md:px-6 py-4 flex justify-between items-center text-white"><h2 class="text-xs md:text-sm font-bold uppercase tracking-wider"><i class="fa-solid fa-map mr-2"></i> Inventario Parcelas</h2></div>
+                        <div class="tabla-header px-4 md:px-6 py-4 flex flex-col md:flex-row md:justify-between items-center text-white gap-3">
+                            <h2 class="text-xs md:text-sm font-bold uppercase tracking-wider whitespace-nowrap"><i class="fa-solid fa-map mr-2"></i> Inventario Parcelas</h2>
+                            <div class="relative w-full md:w-72">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><i class="fa-solid fa-search text-gray-400"></i></div>
+                                <input type="text" id="buscadorPropiedades" onkeyup="filtrarPropiedades()" placeholder="Buscar por terreno o propietario..." class="w-full pl-10 pr-4 py-1.5 bg-white text-gray-800 rounded-full text-sm outline-none shadow-inner">
+                            </div>
+                        </div>
                         <div class="overflow-x-auto custom-scrollbar"><table class="min-w-full divide-y divide-gray-100 text-sm"><thead class="bg-[#187547] text-white"><tr><th class="px-6 py-3 text-left text-xs font-semibold tracking-wider">PROPIEDAD / PREDIO</th><th class="px-6 py-3 text-center text-xs font-semibold tracking-wider">CULTIVO</th><th class="px-6 py-3 text-center text-xs font-semibold tracking-wider">SUPERFICIE</th><th class="px-6 py-3 text-center text-xs font-semibold tracking-wider">ACCIONES</th></tr></thead><tbody id="cuerpoTablaPropiedades" class="bg-white divide-y divide-gray-100"></tbody></table></div>
                     </div>
                     
@@ -1984,13 +1990,31 @@
             document.getElementById('btnCancelarCliente').classList.add('hidden'); 
         }
 
+        function renderizarTablaPropiedades(lista) {
+            const cuerpo = document.getElementById('cuerpoTablaPropiedades');
+            if (!cuerpo) return;
+            cuerpo.innerHTML = '';
+            lista.forEach(p => {
+                const cl = memoriaClientes.find(c => String(c.id) === String(p.cliente_id));
+                const nD = cl ? `${cl.nombre} ${cl.apellidos}` : 'N/A';
+                cuerpo.innerHTML += `<tr><td class="px-6 py-4"><p class="font-bold text-sm">${p.nombre_propiedad}</p><p class="text-[11px] text-gray-500">${p.direccion} - Prop: ${nD}</p></td><td class="px-6 py-4 text-center"><span class="bg-[#1b6b43] text-white px-3 py-1 rounded-full text-[10px] font-bold">${p.tipo_cultivo}</span></td><td class="px-6 py-4 text-center"><p class="text-xl font-extrabold">${p.superficie_has}</p></td><td class="px-6 py-4 text-center"><button onclick="ajustarEdicionPropiedad('${p.id}')" class="bg-amber-400 text-white text-xs px-4 py-2 rounded-full mr-1"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="eliminarPropiedad('${p.id}')" class="btn-eliminar-rol bg-rose-600 text-white text-xs px-4 py-2 rounded-full"><i class="fa-solid fa-trash"></i></button></td></tr>`;
+            });
+        }
+
+        // --- Busca tanto por nombre del terreno/predio como por nombre del propietario ---
+        function filtrarPropiedades() {
+            const q = document.getElementById('buscadorPropiedades').value.toLowerCase();
+            renderizarTablaPropiedades(memoriaPropiedades.filter(p => {
+                const cl = memoriaClientes.find(c => String(c.id) === String(p.cliente_id));
+                const nombrePropietario = cl ? `${cl.nombre} ${cl.apellidos}` : '';
+                return `${p.nombre_propiedad} ${p.direccion || ''} ${nombrePropietario}`.toLowerCase().includes(q);
+            }));
+        }
+
         async function cargarPropiedades() { 
             try { 
                 const res = await fetchAPI(`${API_URL}/propiedades/`); 
                 memoriaPropiedades = await res.json(); 
-                
-                const cuerpo = document.getElementById('cuerpoTablaPropiedades'); 
-                if(cuerpo) cuerpo.innerHTML = ''; 
                 
                 const sel = document.getElementById('selectPropiedad2'); 
                 if(sel) sel.innerHTML = '<option value="">-- Selecciona --</option>'; 
@@ -1999,13 +2023,12 @@
                     const cl = memoriaClientes.find(c => String(c.id) === String(p.cliente_id)); 
                     const nD = cl ? `${cl.nombre} ${cl.apellidos}` : 'N/A'; 
                     
-                    if(cuerpo) {
-                        cuerpo.innerHTML += `<tr><td class="px-6 py-4"><p class="font-bold text-sm">${p.nombre_propiedad}</p><p class="text-[11px] text-gray-500">${p.direccion} - Prop: ${nD}</p></td><td class="px-6 py-4 text-center"><span class="bg-[#1b6b43] text-white px-3 py-1 rounded-full text-[10px] font-bold">${p.tipo_cultivo}</span></td><td class="px-6 py-4 text-center"><p class="text-xl font-extrabold">${p.superficie_has}</p></td><td class="px-6 py-4 text-center"><button onclick="ajustarEdicionPropiedad('${p.id}')" class="bg-amber-400 text-white text-xs px-4 py-2 rounded-full mr-1"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="eliminarPropiedad('${p.id}')" class="btn-eliminar-rol bg-rose-600 text-white text-xs px-4 py-2 rounded-full"><i class="fa-solid fa-trash"></i></button></td></tr>`; 
-                    }
                     if(sel) {
                         sel.innerHTML += `<option value="${p.id}">${nD} - ${p.nombre_propiedad}</option>`; 
                     }
                 }); 
+
+                renderizarTablaPropiedades(memoriaPropiedades);
             } catch (e) { console.error(e); } 
         }
         

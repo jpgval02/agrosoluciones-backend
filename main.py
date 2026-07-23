@@ -141,6 +141,11 @@ class ServicioNuevo(BaseModel):
     ingreso_viaticos: Optional[float] = 0.0
     ingreso_suministros: Optional[float] = 0.0
     metodo_pago: Optional[str] = "Efectivo"
+    notificar_a: Optional[List[str]] = []
+
+class ContactoNuevo(BaseModel):
+    nombre: str
+    email: str
 
 class MetasMensuales(BaseModel):
     mes_anio: str
@@ -166,17 +171,13 @@ class CotizacionNueva(BaseModel):
 
 
 # --- FUNCIÓN DE GOOGLE CALENDAR (ACTUALIZADA PARA INVITADOS) ---
-def agendar_en_google_calendar(fecha, no_cotizacion, observaciones, nombre_productor, parcela, hectareas):
+def agendar_en_google_calendar(fecha, no_cotizacion, observaciones, nombre_productor, parcela, hectareas, notificar_a=None):
     # ¡IMPORTANTE! Cambia esto por el correo dueño del calendario
     CORREO_CALENDARIO = 'facturacion@asoa.com.mx' 
     ARCHIVO_CREDENCIALES = 'credenciales_calendario.json'
 
-    # --- AQUÍ PONES LOS CORREOS DE TU EQUIPO ---
-    correos_equipo = [
-        {'email': 'jpgval02@gmail.com'},
-        {'email': 'tecnico@asoa.com.mx'},
-        {'email': 'otro_companero@gmail.com'}
-    ]
+    # --- Correos elegidos por el usuario al registrar la venta (ya no están fijos en el código) ---
+    correos_equipo = [{'email': e} for e in (notificar_a or []) if e]
 
     # --- Solo agendamos si la fecha es hoy o a futuro ---
     try:
@@ -206,7 +207,13 @@ def agendar_en_google_calendar(fecha, no_cotizacion, observaciones, nombre_produ
             'end': {'date': fecha, 'timeZone': 'America/Mexico_City'},
         }
 
-        # Primero intentamos con invitados (requiere Domain-Wide Delegation).
+        # Si el usuario no seleccionó a nadie, creamos el evento directo sin invitados.
+        if not correos_equipo:
+            servicio.events().insert(calendarId=CORREO_CALENDARIO, body=evento).execute()
+            print("¡Cita agendada sin invitados (no se seleccionó a nadie)!")
+            return
+
+        # Si sí eligió gente: primero intentamos con invitados (requiere Domain-Wide Delegation).
         # Si falla por permisos, creamos el evento sin invitados en vez de perderlo por completo.
         try:
             evento['attendees'] = correos_equipo
@@ -387,7 +394,7 @@ CAMPOS_FINANCIEROS_SERVICIO = [
 @app.post("/servicios/")
 async def registrar_servicio(servicio: ServicioNuevo, usuario: dict = Depends(requiere_rol("admin", "operador"))):
     try:
-        respuesta = supabase.table('servicios_aplicacion').insert(servicio.dict()).execute()
+        respuesta = supabase.table('servicios_aplicacion').insert(servicio.dict(exclude={'notificar_a'})).execute()
 
         # Si esta venta viene de una cotización, la marcamos como convertida (relación real, no por texto)
         if servicio.cotizacion_id:
@@ -428,7 +435,8 @@ async def registrar_servicio(servicio: ServicioNuevo, usuario: dict = Depends(re
                 observaciones=servicio.observaciones or 'Sin detalles',
                 nombre_productor=nombre_productor,
                 parcela=nombre_parcela,
-                hectareas=servicio.ha_trabajadas or 0
+                hectareas=servicio.ha_trabajadas or 0,
+                notificar_a=servicio.notificar_a
             )
             
         return {"mensaje": "Guardado", "datos": respuesta.data[0]}
@@ -444,6 +452,26 @@ async def obtener_servicios(usuario: dict = Depends(obtener_usuario_actual)):
                 fila.pop(campo, None)
     return datos
 
+# --- DIRECTORIO DE CONTACTOS PARA NOTIFICAR EN EL CALENDARIO (no requiere cuenta en el sistema) ---
+@app.get("/contactos-notificacion/")
+async def obtener_contactos(usuario: dict = Depends(obtener_usuario_actual)):
+    respuesta = supabase.table('contactos_notificacion').select("*").order('nombre').execute()
+    return respuesta.data
+
+@app.post("/contactos-notificacion/")
+async def crear_contacto(contacto: ContactoNuevo, usuario: dict = Depends(requiere_rol("admin"))):
+    try:
+        respuesta = supabase.table('contactos_notificacion').insert(contacto.dict()).execute()
+        return {"mensaje": "Contacto agregado", "datos": respuesta.data[0]}
+    except Exception as e: raise HTTPException(status_code=500, detail=str(e))
+
+@app.delete("/contactos-notificacion/{contacto_id}")
+async def eliminar_contacto(contacto_id: str, usuario: dict = Depends(requiere_rol("admin"))):
+    try:
+        supabase.table('contactos_notificacion').delete().eq('id', contacto_id).execute()
+        return {"mensaje": "Contacto eliminado"}
+    except Exception as e: raise HTTPException(status_code=500, detail=str(e))
+
 @app.put("/servicios/{servicio_id}")
 async def actualizar_servicio(servicio_id: str, servicio: ServicioNuevo, usuario: dict = Depends(requiere_rol("admin", "operador"))):
     try:
@@ -451,7 +479,7 @@ async def actualizar_servicio(servicio_id: str, servicio: ServicioNuevo, usuario
         anterior = supabase.table('servicios_aplicacion').select('cotizacion_id').eq('id', servicio_id).execute()
         cotizacion_id_anterior = anterior.data[0].get('cotizacion_id') if len(anterior.data) > 0 else None
 
-        respuesta = supabase.table('servicios_aplicacion').update(servicio.dict()).eq('id', servicio_id).execute()
+        respuesta = supabase.table('servicios_aplicacion').update(servicio.dict(exclude={'notificar_a'})).eq('id', servicio_id).execute()
 
         if cotizacion_id_anterior and cotizacion_id_anterior != servicio.cotizacion_id:
             try: supabase.table('cotizaciones').update({'estado': 'Pendiente'}).eq('id', cotizacion_id_anterior).execute()

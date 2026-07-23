@@ -295,6 +295,15 @@
                                 </label>
                             </div>
                             <div id="wrapDescuentoVenta" class="hidden"><label class="text-[10px] text-gray-500 font-bold uppercase">Monto del descuento ($)</label><input type="number" step="0.01" id="venta_descuento" placeholder="0.00" class="w-full px-3 py-2 bg-rose-50 border border-rose-200 rounded-lg text-sm font-bold text-rose-600"><input type="hidden" id="h_ingreso_bruto" value="0"></div>
+                            <div class="border-t border-dashed border-gray-200 pt-3">
+                                <label class="text-[10px] text-gray-500 font-bold uppercase flex items-center justify-between">
+                                    ¿A quién avisamos? (Calendario)
+                                    <button type="button" id="btnAdminContactos" onclick="abrirModalContactos()" class="hidden text-[10px] font-bold text-blue-600 hover:underline normal-case"><i class="fa-solid fa-gear"></i> Administrar</button>
+                                </label>
+                                <div id="listaContactosVenta" class="mt-1 max-h-28 overflow-y-auto bg-gray-50 border border-gray-200 rounded-lg p-2 space-y-1 text-sm text-gray-500">
+                                    Cargando contactos...
+                                </div>
+                            </div>
                             <div><label class="text-[10px] text-gray-500 font-bold uppercase">Observaciones</label><textarea id="observaciones" rows="1" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm"></textarea></div>
                             <div class="hidden"><input type="text" id="no_factura" value="S/N"><select id="estado_cuenta"><option value="Cobrado">Cobrado</option></select><input type="number" id="satisfaccion" value="5"></div>
                             
@@ -563,6 +572,24 @@
                         <div class="flex justify-between items-center mt-4 pt-3 border-t border-gray-200"><label class="text-sm font-extrabold text-gray-800 uppercase">Suma Total</label><span id="m_total_display" class="text-xl font-extrabold text-red-600">$0.00</span></div>
                     </div>
                     <button type="button" onclick="confirmarDesgloseGastos()" class="w-full mt-5 py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg shadow-md"><i class="fa-solid fa-check mr-1"></i> Confirmar y Sumar</button>
+                </div>
+            </div>
+
+            <div id="modal-contactos" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 p-4">
+                <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md border border-gray-200 overflow-hidden">
+                    <div class="bg-[#064e3b] px-4 md:px-6 py-4 flex justify-between items-center text-white shadow-md">
+                        <h3 class="text-base md:text-lg font-bold tracking-wide flex items-center"><i class="fa-solid fa-address-book text-emerald-300 mr-2 md:mr-3"></i> Directorio de Notificaciones</h3>
+                        <button onclick="cerrarModalContactos()" class="text-gray-300 hover:text-white transition-colors"><i class="fa-solid fa-xmark text-xl"></i></button>
+                    </div>
+                    <div class="p-5 md:p-6">
+                        <p class="text-xs text-gray-500 mb-3">Estas personas no necesitan cuenta en el sistema — solo se usan para elegir a quién avisarle por correo/calendario de cada vuelo.</p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-3">
+                            <input type="text" id="nuevoContactoNombre" placeholder="Nombre" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+                            <input type="email" id="nuevoContactoEmail" placeholder="correo@ejemplo.com" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+                        </div>
+                        <button onclick="agregarContacto()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 rounded-lg text-sm mb-4"><i class="fa-solid fa-plus mr-1"></i> Agregar contacto</button>
+                        <div id="listaAdminContactos" class="max-h-64 overflow-y-auto divide-y divide-gray-100 border border-gray-200 rounded-lg"></div>
+                    </div>
                 </div>
             </div>
 
@@ -1171,6 +1198,10 @@
             const btnMetas = document.getElementById('btn-configurar-metas');
             if (btnMetas) btnMetas.classList.toggle('hidden', rolUsuario !== 'admin');
 
+            // "Administrar" el directorio de contactos, también solo Admin
+            const btnContactos = document.getElementById('btnAdminContactos');
+            if (btnContactos) btnContactos.classList.toggle('hidden', rolUsuario !== 'admin');
+
             // Si el usuario quedó parado en una vista que ya no le corresponde (o llega por URL), lo regresamos al inicio
             const enVistaRestringida = restringidas.some(vista => {
                 const el = document.getElementById('vista-tabla-' + vista);
@@ -1190,14 +1221,85 @@
             window.location.reload();
         }
         
+        let memoriaContactos = [];
+
         async function inicializarPanel() { 
             configurarFechasAutomaticas();
             await cargarClientes(); 
             await cargarPropiedades(); 
             await cargarServicios(); 
             await cargarCotizaciones();
+            await cargarContactos();
             cambiarVista('inicio'); 
             revisarSeguimientos(); 
+        }
+
+        // --- Directorio de contactos para notificar en el calendario (no requieren cuenta en el sistema) ---
+        async function cargarContactos() {
+            try {
+                const res = await fetchAPI(`${API_URL}/contactos-notificacion/`);
+                memoriaContactos = await res.json();
+            } catch (e) { console.error(e); memoriaContactos = []; }
+            renderizarChecklistContactos();
+            renderizarListaAdminContactos();
+        }
+
+        function renderizarChecklistContactos() {
+            const cont = document.getElementById('listaContactosVenta');
+            if (!cont) return;
+            if (!memoriaContactos.length) {
+                cont.innerHTML = '<p class="text-xs text-gray-400">Aún no hay contactos. Un Administrador puede agregarlos en "Administrar".</p>';
+                return;
+            }
+            cont.innerHTML = memoriaContactos.map(c => `
+                <label class="flex items-center gap-2 text-xs text-gray-700 cursor-pointer">
+                    <input type="checkbox" class="chk-contacto-venta" value="${c.email}" data-nombre="${c.nombre}">
+                    <span>${c.nombre} <span class="text-gray-400">(${c.email})</span></span>
+                </label>
+            `).join('');
+        }
+
+        function abrirModalContactos() {
+            document.getElementById('nuevoContactoNombre').value = '';
+            document.getElementById('nuevoContactoEmail').value = '';
+            renderizarListaAdminContactos();
+            document.getElementById('modal-contactos').classList.remove('hidden');
+        }
+        function cerrarModalContactos() { document.getElementById('modal-contactos').classList.add('hidden'); }
+
+        function renderizarListaAdminContactos() {
+            const cont = document.getElementById('listaAdminContactos');
+            if (!cont) return;
+            if (!memoriaContactos.length) {
+                cont.innerHTML = '<p class="text-xs text-gray-400 p-3">Aún no has agregado a nadie.</p>';
+                return;
+            }
+            cont.innerHTML = memoriaContactos.map(c => `
+                <div class="flex justify-between items-center px-3 py-2">
+                    <div><p class="text-sm font-semibold text-gray-800">${c.nombre}</p><p class="text-xs text-gray-400">${c.email}</p></div>
+                    <button onclick="eliminarContacto('${c.id}')" class="text-rose-500 hover:text-rose-700"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            `).join('');
+        }
+
+        async function agregarContacto() {
+            const nombre = document.getElementById('nuevoContactoNombre').value.trim();
+            const email = document.getElementById('nuevoContactoEmail').value.trim();
+            if (!nombre || !email) { alert('Pon nombre y correo.'); return; }
+            try {
+                await fetchAPI(`${API_URL}/contactos-notificacion/`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ nombre, email }) });
+                document.getElementById('nuevoContactoNombre').value = '';
+                document.getElementById('nuevoContactoEmail').value = '';
+                await cargarContactos();
+            } catch (e) { alert('No se pudo agregar el contacto.'); console.error(e); }
+        }
+
+        async function eliminarContacto(id) {
+            if (!confirm('¿Quitar este contacto del directorio?')) return;
+            try {
+                await fetchAPI(`${API_URL}/contactos-notificacion/${id}`, { method: 'DELETE' });
+                await cargarContactos();
+            } catch (e) { alert('No se pudo eliminar.'); console.error(e); }
         }
 
         // --- Qué botones de menú (por su vista) NO puede ver cada rol ---
@@ -2126,7 +2228,7 @@
             const datos = { 
                 propiedad_id: document.getElementById('selectPropiedad2').value, fecha_aplicacion: document.getElementById('fecha_aplicacion').value, 
                 costo_servicio: parseFloat(document.getElementById('costo_servicio').value || 0), estado_cuenta: 'Cobrado', satisfaccion: 5,
-                no_cotizacion: document.getElementById('no_cotizacion_venta').value, cotizacion_id: document.getElementById('cotizacion_id_venta').value || null, descuento: parseFloat(document.getElementById('venta_descuento').value) || 0, no_orden: document.getElementById('no_orden').value,
+                no_cotizacion: document.getElementById('no_cotizacion_venta').value, cotizacion_id: document.getElementById('cotizacion_id_venta').value || null, descuento: parseFloat(document.getElementById('venta_descuento').value) || 0, notificar_a: Array.from(document.querySelectorAll('.chk-contacto-venta:checked')).map(el => el.value), no_orden: document.getElementById('no_orden').value,
                 gastos: parseFloat(document.getElementById('gastos').value || 0), fecha_seguimiento: document.getElementById('fecha_seguimiento').value,
                 no_factura: document.getElementById('no_factura').value, observaciones: document.getElementById('observaciones').value,
                 gasto_gasolina_unidad: parseFloat(document.getElementById('h_gas_unidad').value || 0), gasto_gasolina_generador: parseFloat(document.getElementById('h_gas_gen').value || 0), gasto_sueldos: parseFloat(document.getElementById('h_sueldos').value || 0), gasto_insumos: parseFloat(document.getElementById('h_insumos').value || 0), gasto_comidas: parseFloat(document.getElementById('h_comidas').value || 0), gasto_oxxo: parseFloat(document.getElementById('h_oxxo').value || 0),
@@ -2245,6 +2347,7 @@
             poblarSelectCotizaciones();
             document.getElementById('h_ingreso_bruto').value = 0;
             toggleDescuentoVenta(false);
+            renderizarChecklistContactos();
         }
 
         function verDetalleServicio(id) {

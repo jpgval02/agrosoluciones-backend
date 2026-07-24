@@ -477,7 +477,7 @@
                         <div class="overflow-x-auto custom-scrollbar"><table class="min-w-full divide-y divide-gray-100 text-sm"><thead class="bg-[#187547] text-white"><tr><th class="px-6 py-3 text-left text-xs font-semibold tracking-wider">PROPIEDAD / PREDIO</th><th class="px-6 py-3 text-center text-xs font-semibold tracking-wider">CULTIVO</th><th class="px-6 py-3 text-center text-xs font-semibold tracking-wider">SUPERFICIE</th><th class="px-6 py-3 text-center text-xs font-semibold tracking-wider">ACCIONES</th></tr></thead><tbody id="cuerpoTablaPropiedades" class="bg-white divide-y divide-gray-100"></tbody></table></div>
                     </div>
                     
-                    <div class="bg-white rounded-xl shadow-lg border border-gray-300 overflow-hidden">
+                    <div id="bloque-bd-ventas" class="bg-white rounded-xl shadow-lg border border-gray-300 overflow-hidden">
                         <div class="tabla-header px-4 py-3 flex flex-col md:flex-row justify-between items-center text-white gap-2">
                             <h2 id="titulo-bd-ventas" class="text-xs md:text-sm font-bold uppercase tracking-wider"><i class="fa-solid fa-table border border-white/30 p-1.5 rounded bg-white/10 mr-2"></i> BD Ventas</h2>
                         </div>
@@ -1161,6 +1161,9 @@
                 } else if(rolUsuario === 'financiero') {
                     badge.innerHTML = '<i class="fa-solid fa-sack-dollar mr-1 text-blue-300"></i> FINANCIERO';
                     badge.className = "hidden md:inline-block ml-4 text-xs font-bold px-2 py-1 bg-blue-950 text-blue-300 rounded-md border border-blue-600 tracking-wider";
+                } else if(rolUsuario === 'auxiliar_del_auxiliar') {
+                    badge.innerHTML = '<i class="fa-solid fa-user-plus mr-1 text-purple-300"></i> AUXILIAR DEL AUXILIAR';
+                    badge.className = "hidden md:inline-block ml-4 text-xs font-bold px-2 py-1 bg-purple-950 text-purple-300 rounded-md border border-purple-600 tracking-wider";
                 } else {
                     badge.innerHTML = '<i class="fa-solid fa-user-gear mr-1 text-green-300"></i> OPERADOR';
                     badge.className = "hidden md:inline-block ml-4 text-xs font-bold px-2 py-1 bg-green-950 text-green-300 rounded-md border border-green-600 tracking-wider";
@@ -1175,6 +1178,7 @@
         // --- Oculta secciones/botones que el rol actual no debería ver ---
         function aplicarRestriccionesDeRol() {
             const esOperador = (rolUsuario === 'operador');
+            const sinDinero = (rolUsuario === 'operador' || rolUsuario === 'auxiliar_del_auxiliar');
             const restringidas = VISTAS_RESTRINGIDAS_POR_ROL[rolUsuario] || [];
 
             const botonesPorVista = {
@@ -1191,8 +1195,12 @@
 
             const cardIngresos = document.getElementById('card-ingresos-mensuales');
             const cardUtilidad = document.getElementById('card-utilidad-neta');
-            if (cardIngresos) cardIngresos.classList.toggle('hidden', esOperador);
-            if (cardUtilidad) cardUtilidad.classList.toggle('hidden', esOperador);
+            if (cardIngresos) cardIngresos.classList.toggle('hidden', sinDinero);
+            if (cardUtilidad) cardUtilidad.classList.toggle('hidden', sinDinero);
+
+            // Dentro de "Ventas CRM", Auxiliar del Auxiliar solo ve Directorio Clientes e Inventario Parcelas (no BD Ventas, trae dinero)
+            const bloqueBdVentas = document.getElementById('bloque-bd-ventas');
+            if (bloqueBdVentas) bloqueBdVentas.classList.toggle('hidden', rolUsuario === 'auxiliar_del_auxiliar');
 
             // "Configurar Metas" solo lo puede ver y usar el Administrador, sin importar en qué vista esté
             const btnMetas = document.getElementById('btn-configurar-metas');
@@ -1212,7 +1220,8 @@
             }
 
             document.body.classList.toggle('rol-operador', esOperador);
-            document.body.classList.toggle('rol-no-admin', rolUsuario !== 'admin');
+            // Auxiliar del Auxiliar SÍ puede borrar registros, aunque no vea dinero
+            document.body.classList.toggle('rol-no-admin', rolUsuario !== 'admin' && rolUsuario !== 'auxiliar_del_auxiliar');
         }
 
         function cerrarSesion() {
@@ -1306,6 +1315,7 @@
         const VISTAS_RESTRINGIDAS_POR_ROL = {
             'operador': ['financieros', 'ventas-crm', 'cotizaciones'],
             'financiero': ['ventas-crm', 'operaciones'],
+            'auxiliar_del_auxiliar': ['financieros'],
             'admin': []
         };
 

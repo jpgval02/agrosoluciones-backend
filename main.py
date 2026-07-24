@@ -560,6 +560,16 @@ async def marcar_seguimiento_hecho(servicio_id: str, req: SeguimientoHecho, usua
 async def registrar_cotizacion(cot: CotizacionNueva, usuario: dict = Depends(requiere_rol("admin", "operador", "auxiliar_del_auxiliar"))):
     try:
         respuesta = supabase.table('cotizaciones').insert(cot.dict()).execute()
+
+        # Semáforo de clientes: si estaba en "Prospecto", lo subimos a "Negociación".
+        # Si ya era "Cliente" (venta real), lo dejamos así, no lo bajamos de categoría.
+        try:
+            cliente_actual = supabase.table('clientes').select('estado').eq('id', cot.cliente_id).execute()
+            if len(cliente_actual.data) > 0 and cliente_actual.data[0].get('estado') != 'Cliente':
+                supabase.table('clientes').update({'estado': 'Negociación'}).eq('id', cot.cliente_id).execute()
+        except Exception as est_err:
+            print(f"No se pudo actualizar el semáforo del cliente: {est_err}")
+
         await manager.broadcast("update")
         return {"mensaje": "Cotización guardada", "datos": respuesta.data[0]}
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))

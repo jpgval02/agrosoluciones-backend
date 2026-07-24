@@ -326,7 +326,7 @@ async def verificar_2fa(req: Verifica2FA):
 
 # --- RUTAS DE CLIENTES ---
 @app.post("/clientes/")
-async def registrar_cliente(cliente: ClienteNuevo, usuario: dict = Depends(requiere_rol("admin", "operador"))):
+async def registrar_cliente(cliente: ClienteNuevo, usuario: dict = Depends(requiere_rol("admin", "operador", "auxiliar_del_auxiliar"))):
     try:
         respuesta = supabase.table('clientes').insert(cliente.dict()).execute()
         await manager.broadcast("update") 
@@ -339,7 +339,7 @@ async def obtener_clientes(usuario: dict = Depends(obtener_usuario_actual)):
     return respuesta.data
 
 @app.put("/clientes/{cliente_id}")
-async def actualizar_cliente(cliente_id: str, cliente: ClienteNuevo, usuario: dict = Depends(requiere_rol("admin", "operador"))):
+async def actualizar_cliente(cliente_id: str, cliente: ClienteNuevo, usuario: dict = Depends(requiere_rol("admin", "operador", "auxiliar_del_auxiliar"))):
     try:
         respuesta = supabase.table('clientes').update(cliente.dict()).eq('id', cliente_id).execute()
         await manager.broadcast("update")
@@ -347,7 +347,7 @@ async def actualizar_cliente(cliente_id: str, cliente: ClienteNuevo, usuario: di
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
 
 @app.delete("/clientes/{cliente_id}")
-async def eliminar_cliente(cliente_id: str, usuario: dict = Depends(requiere_rol("admin"))):
+async def eliminar_cliente(cliente_id: str, usuario: dict = Depends(requiere_rol("admin", "auxiliar_del_auxiliar"))):
     try:
         supabase.table('clientes').delete().eq('id', cliente_id).execute()
         await manager.broadcast("update")
@@ -356,7 +356,7 @@ async def eliminar_cliente(cliente_id: str, usuario: dict = Depends(requiere_rol
 
 # --- RUTAS DE PROPIEDADES ---
 @app.post("/propiedades/")
-async def registrar_propiedad(propiedad: PropiedadNueva, usuario: dict = Depends(requiere_rol("admin", "operador"))):
+async def registrar_propiedad(propiedad: PropiedadNueva, usuario: dict = Depends(requiere_rol("admin", "operador", "auxiliar_del_auxiliar"))):
     try:
         respuesta = supabase.table('propiedades').insert(propiedad.dict()).execute()
         await manager.broadcast("update")
@@ -369,7 +369,7 @@ async def obtener_propiedades(usuario: dict = Depends(obtener_usuario_actual)):
     return respuesta.data
 
 @app.put("/propiedades/{propiedad_id}")
-async def actualizar_propiedad(propiedad_id: str, propiedad: PropiedadNueva, usuario: dict = Depends(requiere_rol("admin", "operador"))):
+async def actualizar_propiedad(propiedad_id: str, propiedad: PropiedadNueva, usuario: dict = Depends(requiere_rol("admin", "operador", "auxiliar_del_auxiliar"))):
     try:
         respuesta = supabase.table('propiedades').update(propiedad.dict()).eq('id', propiedad_id).execute()
         await manager.broadcast("update")
@@ -377,7 +377,7 @@ async def actualizar_propiedad(propiedad_id: str, propiedad: PropiedadNueva, usu
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
 
 @app.delete("/propiedades/{propiedad_id}")
-async def eliminar_propiedad(propiedad_id: str, usuario: dict = Depends(requiere_rol("admin"))):
+async def eliminar_propiedad(propiedad_id: str, usuario: dict = Depends(requiere_rol("admin", "auxiliar_del_auxiliar"))):
     try:
         supabase.table('propiedades').delete().eq('id', propiedad_id).execute()
         await manager.broadcast("update")
@@ -392,7 +392,7 @@ CAMPOS_FINANCIEROS_SERVICIO = [
 ]
 
 @app.post("/servicios/")
-async def registrar_servicio(servicio: ServicioNuevo, usuario: dict = Depends(requiere_rol("admin", "operador"))):
+async def registrar_servicio(servicio: ServicioNuevo, usuario: dict = Depends(requiere_rol("admin", "operador", "auxiliar_del_auxiliar"))):
     try:
         respuesta = supabase.table('servicios_aplicacion').insert(servicio.dict(exclude={'notificar_a'})).execute()
 
@@ -446,7 +446,7 @@ async def registrar_servicio(servicio: ServicioNuevo, usuario: dict = Depends(re
 async def obtener_servicios(usuario: dict = Depends(obtener_usuario_actual)):
     respuesta = supabase.table('servicios_aplicacion').select("*").execute()
     datos = respuesta.data
-    if usuario["rol"] == "operador":
+    if usuario["rol"] in ("operador", "auxiliar_del_auxiliar"):
         for fila in datos:
             for campo in CAMPOS_FINANCIEROS_SERVICIO:
                 fila.pop(campo, None)
@@ -473,7 +473,7 @@ async def eliminar_contacto(contacto_id: str, usuario: dict = Depends(requiere_r
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
 
 @app.put("/servicios/{servicio_id}")
-async def actualizar_servicio(servicio_id: str, servicio: ServicioNuevo, usuario: dict = Depends(requiere_rol("admin", "operador"))):
+async def actualizar_servicio(servicio_id: str, servicio: ServicioNuevo, usuario: dict = Depends(requiere_rol("admin", "operador", "auxiliar_del_auxiliar"))):
     try:
         # Vemos si esta venta ya tenía otra cotización ligada, para poder liberarla si cambió
         anterior = supabase.table('servicios_aplicacion').select('cotizacion_id').eq('id', servicio_id).execute()
@@ -494,7 +494,7 @@ async def actualizar_servicio(servicio_id: str, servicio: ServicioNuevo, usuario
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
 
 @app.delete("/servicios/{servicio_id}")
-async def eliminar_servicio(servicio_id: str, usuario: dict = Depends(requiere_rol("admin"))):
+async def eliminar_servicio(servicio_id: str, usuario: dict = Depends(requiere_rol("admin", "auxiliar_del_auxiliar"))):
     try:
         # Si esta venta tenía una cotización ligada, la regresamos a "Pendiente" al borrarla
         existente = supabase.table('servicios_aplicacion').select('cotizacion_id').eq('id', servicio_id).execute()
@@ -557,7 +557,7 @@ async def marcar_seguimiento_hecho(servicio_id: str, req: SeguimientoHecho, usua
 
 # --- RUTAS DE COTIZACIONES ---
 @app.post("/cotizaciones/")
-async def registrar_cotizacion(cot: CotizacionNueva, usuario: dict = Depends(requiere_rol("admin", "operador"))):
+async def registrar_cotizacion(cot: CotizacionNueva, usuario: dict = Depends(requiere_rol("admin", "operador", "auxiliar_del_auxiliar"))):
     try:
         respuesta = supabase.table('cotizaciones').insert(cot.dict()).execute()
         await manager.broadcast("update")
@@ -570,7 +570,7 @@ async def obtener_cotizaciones(usuario: dict = Depends(obtener_usuario_actual)):
     return respuesta.data
 
 @app.put("/cotizaciones/{cot_id}")
-async def actualizar_cotizacion(cot_id: str, cot: CotizacionNueva, usuario: dict = Depends(requiere_rol("admin", "operador"))):
+async def actualizar_cotizacion(cot_id: str, cot: CotizacionNueva, usuario: dict = Depends(requiere_rol("admin", "operador", "auxiliar_del_auxiliar"))):
     try:
         respuesta = supabase.table('cotizaciones').update(cot.dict()).eq('id', cot_id).execute()
         await manager.broadcast("update")
@@ -578,7 +578,7 @@ async def actualizar_cotizacion(cot_id: str, cot: CotizacionNueva, usuario: dict
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
 
 @app.delete("/cotizaciones/{cot_id}")
-async def eliminar_cotizacion(cot_id: str, usuario: dict = Depends(requiere_rol("admin"))):
+async def eliminar_cotizacion(cot_id: str, usuario: dict = Depends(requiere_rol("admin", "auxiliar_del_auxiliar"))):
     try:
         supabase.table('cotizaciones').delete().eq('id', cot_id).execute()
         await manager.broadcast("update")

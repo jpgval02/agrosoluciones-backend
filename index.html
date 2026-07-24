@@ -934,7 +934,7 @@
                 <!-- Fila Fumigación -->
                 <tr>
                     <td style="padding: 12px; border: 1px solid #ddd; vertical-align: top;">
-                        <strong style="color: #222;">Servicio de fumigación aérea especializada con dron agrícola en potrero.</strong><br>
+                        <strong style="color: #222;" id="pdfcot_descripcion">Servicio de fumigación aérea especializada con dron agrícola en potrero.</strong><br>
                         <span style="color: #666;">Superficie a trabajar: <span id="pdfcot_ha_txt"></span> Ha.</span>
                     </td>
                     <td style="padding: 12px; border: 1px solid #ddd; text-align: center; vertical-align: top;" id="pdfcot_pu"></td>
@@ -1754,6 +1754,7 @@
             document.getElementById('pdfcot_cliente').innerText = nomCliente;
             document.getElementById('pdfcot_ubicacion').innerText = c.cultivo;
             document.getElementById('pdfcot_tel').innerText = telCliente;
+            document.getElementById('pdfcot_descripcion').innerText = `Servicio de fumigación aérea especializada con dron agrícola en ${c.cultivo || 'cultivo'}.`;
             
             document.getElementById('pdfcot_ha_txt').innerText = c.hectareas;
             document.getElementById('pdfcot_cant').innerText = c.hectareas;

@@ -217,6 +217,7 @@
                                 <div><label class="text-[10px] text-gray-500 font-bold uppercase">Fecha Emisión</label><input type="date" id="cot_fecha" required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm"></div>
                                 <div><label class="text-[10px] text-gray-500 font-bold uppercase">Ubicación / Predio</label><input type="text" id="cot_cultivo" placeholder="Ej. Loc. Loma" required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm"></div>
                             </div>
+                            <div><label class="text-[10px] text-gray-500 font-bold uppercase">Tipo de Cultivo</label><input type="text" id="cot_tipo_cultivo" placeholder="Ej. Caña, Maíz, Trigo..." required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm"></div>
                             
                             <div class="grid grid-cols-1 lg:grid-cols-2 gap-3 border-t border-dashed border-gray-200 pt-3">
                                 <div><label class="text-[10px] text-gray-500 font-bold uppercase">Hectáreas (Ha)</label><input type="number" step="0.01" id="cot_ha" required placeholder="0.00" class="w-full px-3 py-2 bg-blue-50 border border-blue-200 rounded-lg text-sm font-bold text-blue-800"></div>
@@ -1510,6 +1511,7 @@
                 cliente_id: document.getElementById('cot_cliente').value,
                 fecha: document.getElementById('cot_fecha').value,
                 cultivo: document.getElementById('cot_cultivo').value,
+                tipo_cultivo: document.getElementById('cot_tipo_cultivo').value,
                 hectareas: parseFloat(document.getElementById('cot_ha').value || 0),
                 precio_ha: parseFloat(document.getElementById('cot_precio_ha').value || 0),
                 total: calcularTotalCotizacion(),
@@ -1685,6 +1687,7 @@
             document.getElementById('cot_numero').value = obs.no_cotizacion || '';
             document.getElementById('cot_fecha').value = c.fecha;
             document.getElementById('cot_cultivo').value = c.cultivo;
+            document.getElementById('cot_tipo_cultivo').value = c.tipo_cultivo || '';
             document.getElementById('cot_ha').value = c.hectareas;
             document.getElementById('cot_precio_ha').value = c.precio_ha;
             document.getElementById('cot_suministros_costo').value = obs.suministros || '';
@@ -1754,7 +1757,7 @@
             document.getElementById('pdfcot_cliente').innerText = nomCliente;
             document.getElementById('pdfcot_ubicacion').innerText = c.cultivo;
             document.getElementById('pdfcot_tel').innerText = telCliente;
-            document.getElementById('pdfcot_descripcion').innerText = `Servicio de fumigación aérea especializada con dron agrícola en ${c.cultivo || 'cultivo'}.`;
+            document.getElementById('pdfcot_descripcion').innerText = `Servicio de fumigación aérea especializada con dron agrícola en ${c.tipo_cultivo || 'cultivo'}.`;
             
             document.getElementById('pdfcot_ha_txt').innerText = c.hectareas;
             document.getElementById('pdfcot_cant').innerText = c.hectareas;

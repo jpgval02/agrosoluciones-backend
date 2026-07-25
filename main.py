@@ -163,6 +163,7 @@ class CotizacionNueva(BaseModel):
     cliente_id: str
     fecha: str
     cultivo: str
+    tipo_cultivo: Optional[str] = None
     hectareas: float
     precio_ha: float
     total: float

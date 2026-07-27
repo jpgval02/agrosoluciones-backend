@@ -351,7 +351,7 @@
                 <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-6" id="titulo-seccion-tablas">Base de Datos Operativa</h2>
 
                 <!-- KPIs Superiores con Filtro de AÑO incorporado -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4 mb-8">
                     <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-200 flex items-center space-x-4">
                         <div class="bg-indigo-100 w-12 h-12 rounded-full flex items-center justify-center text-indigo-600 shrink-0"><i class="fa-solid fa-calendar-days text-lg"></i></div>
                         <div class="flex gap-2 w-full">
@@ -387,6 +387,7 @@
                     </div>
                     <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex items-center space-x-4"><div class="bg-yellow-100 w-12 h-12 rounded-full flex items-center justify-center text-yellow-600 shrink-0"><i class="fa-solid fa-ruler-combined text-lg"></i></div><div><p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Ha. Fumigadas</p><p id="stat-hectareas" class="text-2xl font-extrabold text-gray-800 leading-none mt-1">0</p></div></div>
                     <div id="card-ingresos-mensuales" class="bg-white p-4 rounded-2xl shadow-sm border border-green-200 flex items-center space-x-4"><div class="bg-green-100 w-12 h-12 rounded-full flex items-center justify-center text-green-600 shrink-0"><i class="fa-solid fa-arrow-trend-up text-lg"></i></div><div><p class="text-[10px] text-green-600/80 font-bold uppercase tracking-wider">Ingresos Mensuales</p><p id="stat-ingresos" class="text-2xl font-extrabold text-green-700 leading-none mt-1">$0</p></div></div>
+                    <div id="card-egresos-mensuales" class="bg-white p-4 rounded-2xl shadow-sm border border-red-200 flex items-center space-x-4"><div class="bg-red-100 w-12 h-12 rounded-full flex items-center justify-center text-red-600 shrink-0"><i class="fa-solid fa-arrow-trend-down text-lg"></i></div><div><p class="text-[10px] text-red-600/80 font-bold uppercase tracking-wider">Egresos Mensuales</p><p id="stat-egresos" class="text-2xl font-extrabold text-red-700 leading-none mt-1">$0</p></div></div>
                     <div id="card-utilidad-neta" class="relative w-full h-full">
                         <div class="absolute -top-10 right-0 z-10 flex items-center gap-2 whitespace-nowrap">
                             <button id="btn-configurar-metas" onclick="abrirModalMetas()" class="bg-white text-green-900 hover:bg-gray-100 text-[10px] font-bold py-1.5 px-3 rounded-lg shadow-md border border-gray-200 transition-all flex items-center gap-1.5"><i class="fa-solid fa-gear"></i> Configurar Metas</button>
@@ -1194,10 +1195,15 @@
                 if (boton) boton.classList.toggle('hidden', restringidas.includes(vista));
             });
 
+            const esFinanciero = (rolUsuario === 'admin' || rolUsuario === 'financiero');
+
             const cardIngresos = document.getElementById('card-ingresos-mensuales');
             const cardUtilidad = document.getElementById('card-utilidad-neta');
+            const cardEgresos = document.getElementById('card-egresos-mensuales');
             if (cardIngresos) cardIngresos.classList.toggle('hidden', sinDinero);
             if (cardUtilidad) cardUtilidad.classList.toggle('hidden', sinDinero);
+            // Egresos: solo Admin y Financiero, aunque en el futuro se agreguen más roles con acceso a Ingresos/Utilidad
+            if (cardEgresos) cardEgresos.classList.toggle('hidden', !esFinanciero);
 
             // Dentro de "Ventas CRM", Auxiliar del Auxiliar solo ve Directorio Clientes e Inventario Parcelas (no BD Ventas, trae dinero)
             const bloqueBdVentas = document.getElementById('bloque-bd-ventas');
@@ -1865,6 +1871,7 @@
             });
             document.getElementById('stat-hectareas').textContent = totalHaFumigadas.toFixed(2);
             document.getElementById('stat-ingresos').textContent = "$" + totalIngresos.toLocaleString('es-MX', {minimumFractionDigits: 2});
+            document.getElementById('stat-egresos').textContent = "$" + totalGastos.toLocaleString('es-MX', {minimumFractionDigits: 2});
             document.getElementById('stat-utilidad').textContent = "$" + (totalIngresos - totalGastos).toLocaleString('es-MX', {minimumFractionDigits: 2});
             actualizarMetasCEO();
         }

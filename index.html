@@ -26,6 +26,9 @@
         .kpi-text-real { font-size: 16px; font-weight: bold; color: #000000; }
         /* Oculta los botones de "eliminar" para cualquier rol distinto de admin */
         body.rol-no-admin .btn-eliminar-rol { display: none !important; }
+        .tab-crm { padding: 6px 14px; border-radius: 999px; font-weight: 700; color: #6b7280; background: #fff; border: 1px solid #e5e7eb; cursor: pointer; transition: all .15s; }
+        .tab-crm:hover { background: #f3f4f6; }
+        .tab-crm.tab-crm-activo { background: #187547; color: #fff; border-color: #187547; }
     </style>
 </head>
 <body class="text-gray-800">
@@ -456,6 +459,12 @@
 
                 <!-- Tablas Ventas CRM -->
                 <div id="vista-tabla-ventas-crm" class="hidden space-y-10">
+                    <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-4 flex flex-col md:flex-row items-center gap-3">
+                        <span class="text-xs font-bold text-gray-600 uppercase whitespace-nowrap"><i class="fa-solid fa-filter mr-1"></i> Filtro de Ventas CRM:</span>
+                        <select id="crmFiltroMes" onchange="aplicarFiltrosCRM()" class="px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-lg text-sm"></select>
+                        <select id="crmFiltroAnio" onchange="aplicarFiltrosCRM()" class="px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-lg text-sm"></select>
+                        <span class="text-[11px] text-gray-400">Este filtro solo afecta las pestañas "Nuevos/Trabajados del mes" de las tablas de abajo — no toca las tarjetas de arriba.</span>
+                    </div>
                     <div class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
                         <div class="tabla-header px-4 md:px-6 py-4 flex flex-col md:flex-row md:justify-between items-center text-white gap-3">
                             <h2 class="text-xs md:text-sm font-bold uppercase tracking-wider whitespace-nowrap"><i class="fa-solid fa-list mr-2"></i> Directorio Clientes</h2>
@@ -464,6 +473,11 @@
                                 <input type="text" id="buscadorClientes" onkeyup="filtrarClientes()" placeholder="Buscar..." class="w-full pl-10 pr-4 py-1.5 bg-white text-gray-800 rounded-full text-sm outline-none shadow-inner">
                             </div>
                             <span id="contadorClientes" class="bg-white text-green-800 text-xs font-bold px-3 py-1 rounded-full shadow-sm whitespace-nowrap hidden md:inline-block">0 REGISTRADOS</span>
+                        </div>
+                        <div class="px-4 md:px-6 py-2 bg-gray-50 border-b border-gray-200 flex gap-2 text-xs">
+                            <button id="tabCli_todos" onclick="cambiarPestanaClientes('todos')" class="tab-crm tab-crm-activo">Todos</button>
+                            <button id="tabCli_nuevos" onclick="cambiarPestanaClientes('nuevos')" class="tab-crm">Nuevos del mes</button>
+                            <button id="tabCli_trabajados" onclick="cambiarPestanaClientes('trabajados')" class="tab-crm">Trabajados el mes</button>
                         </div>
                         <div class="overflow-x-auto custom-scrollbar"><table class="min-w-full divide-y divide-gray-100 text-sm"><thead class="bg-[#187547] text-white"><tr><th class="px-6 py-3 text-left text-xs font-semibold tracking-wider">CLIENTE</th><th class="px-6 py-3 text-left text-xs font-semibold tracking-wider">TELÉFONO DE CONTACTO</th><th class="px-6 py-3 text-center text-xs font-semibold tracking-wider">ACCIONES</th></tr></thead><tbody id="cuerpoTabla" class="bg-white divide-y divide-gray-100"></tbody></table></div>
                     </div>
@@ -476,12 +490,21 @@
                                 <input type="text" id="buscadorPropiedades" onkeyup="filtrarPropiedades()" placeholder="Buscar por terreno o propietario..." class="w-full pl-10 pr-4 py-1.5 bg-white text-gray-800 rounded-full text-sm outline-none shadow-inner">
                             </div>
                         </div>
+                        <div class="px-4 md:px-6 py-2 bg-gray-50 border-b border-gray-200 flex gap-2 text-xs">
+                            <button id="tabProp_todos" onclick="cambiarPestanaPropiedades('todos')" class="tab-crm tab-crm-activo">Todas</button>
+                            <button id="tabProp_nuevas" onclick="cambiarPestanaPropiedades('nuevas')" class="tab-crm">Nuevas del mes</button>
+                            <button id="tabProp_trabajadas" onclick="cambiarPestanaPropiedades('trabajadas')" class="tab-crm">Trabajadas el mes</button>
+                        </div>
                         <div class="overflow-x-auto custom-scrollbar"><table class="min-w-full divide-y divide-gray-100 text-sm"><thead class="bg-[#187547] text-white"><tr><th class="px-6 py-3 text-left text-xs font-semibold tracking-wider">PROPIEDAD / PREDIO</th><th class="px-6 py-3 text-center text-xs font-semibold tracking-wider">CULTIVO</th><th class="px-6 py-3 text-center text-xs font-semibold tracking-wider">SUPERFICIE</th><th class="px-6 py-3 text-center text-xs font-semibold tracking-wider">ACCIONES</th></tr></thead><tbody id="cuerpoTablaPropiedades" class="bg-white divide-y divide-gray-100"></tbody></table></div>
                     </div>
                     
                     <div id="bloque-bd-ventas" class="bg-white rounded-xl shadow-lg border border-gray-300 overflow-hidden">
                         <div class="tabla-header px-4 py-3 flex flex-col md:flex-row justify-between items-center text-white gap-2">
                             <h2 id="titulo-bd-ventas" class="text-xs md:text-sm font-bold uppercase tracking-wider"><i class="fa-solid fa-table border border-white/30 p-1.5 rounded bg-white/10 mr-2"></i> BD Ventas</h2>
+                        </div>
+                        <div class="px-4 py-2 bg-gray-50 border-b border-gray-200 flex gap-2 text-xs">
+                            <button id="tabVenta_todos" onclick="cambiarPestanaVentasBD('todos')" class="tab-crm tab-crm-activo">Todas</button>
+                            <button id="tabVenta_mes" onclick="cambiarPestanaVentasBD('mes')" class="tab-crm">Ventas del mes</button>
                         </div>
                         <div class="overflow-x-auto custom-scrollbar max-h-[600px] relative">
                             <table class="w-full divide-y divide-gray-200 text-sm border-collapse">
@@ -1241,6 +1264,7 @@
 
         async function inicializarPanel() { 
             configurarFechasAutomaticas();
+            inicializarFiltroCRM();
             await cargarClientes(); 
             await cargarPropiedades(); 
             await cargarServicios(); 
@@ -2065,7 +2089,84 @@
                 cuerpo.innerHTML += `<tr class="hover:bg-gray-50"><td class="px-6 py-4"><div class="flex items-center space-x-4"><div class="bg-green-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold"><i class="fa-solid fa-user"></i></div><div><p class="font-bold text-gray-800">${folioCliente}${c.nombre} ${c.apellidos}</p><p class="text-[10px] text-gray-400 mt-1">RFC: ${c.rfc || 'S/N'} | ${badge}</p></div></div></td><td class="px-6 py-4"><p class="text-sm text-gray-800 font-medium"><i class="fa-solid fa-phone text-green-600 mr-2"></i>${c.telefono}</p></td><td class="px-6 py-4 text-center whitespace-nowrap space-x-1"><button onclick="tabularEdicionCliente('${c.id}')" class="bg-amber-400 text-white text-xs px-4 py-2 rounded-full"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="eliminarCliente('${c.id}')" class="btn-eliminar-rol bg-rose-600 text-white text-xs px-4 py-2 rounded-full"><i class="fa-solid fa-trash"></i></button></td></tr>`; 
             }); 
         }
-        function filtrarClientes() { renderizarTablaClientes(memoriaClientes.filter(c => `${c.nombre} ${c.apellidos} ${c.no_cliente}`.toLowerCase().includes(document.getElementById('buscadorClientes').value.toLowerCase()))); }
+        // --- Filtro nuevo de Ventas CRM (independiente del Mes/Año de las tarjetas de arriba) ---
+        let pestanaClientesCRM = 'todos';
+        let pestanaPropiedadesCRM = 'todos';
+        let pestanaVentasCRM = 'todos';
+
+        function inicializarFiltroCRM() {
+            const selMes = document.getElementById('crmFiltroMes');
+            const selAnio = document.getElementById('crmFiltroAnio');
+            if (!selMes || selMes.options.length) return; // ya inicializado
+            const meses = ['01-Enero','02-Febrero','03-Marzo','04-Abril','05-Mayo','06-Junio','07-Julio','08-Agosto','09-Septiembre','10-Octubre','11-Noviembre','12-Diciembre'];
+            meses.forEach(m => { const [val, nombre] = m.split('-'); selMes.innerHTML += `<option value="${val}">${nombre}</option>`; });
+            const anioActual = new Date().getFullYear();
+            for (let a = anioActual - 2; a <= anioActual + 1; a++) selAnio.innerHTML += `<option value="${a}">${a}</option>`;
+            selMes.value = String(new Date().getMonth() + 1).padStart(2, '0');
+            selAnio.value = String(anioActual);
+        }
+
+        function cambiarPestanaClientes(tab) {
+            pestanaClientesCRM = tab;
+            ['todos','nuevos','trabajados'].forEach(t => document.getElementById('tabCli_' + t)?.classList.toggle('tab-crm-activo', t === tab));
+            filtrarClientes();
+        }
+        function cambiarPestanaPropiedades(tab) {
+            pestanaPropiedadesCRM = tab;
+            ['todos','nuevas','trabajadas'].forEach(t => document.getElementById('tabProp_' + t)?.classList.toggle('tab-crm-activo', t === tab));
+            filtrarPropiedades();
+        }
+        function cambiarPestanaVentasBD(tab) {
+            pestanaVentasCRM = tab;
+            ['todos','mes'].forEach(t => document.getElementById('tabVenta_' + t)?.classList.toggle('tab-crm-activo', t === tab));
+            aplicarFiltroVentasCRM();
+        }
+        function aplicarFiltrosCRM() {
+            filtrarClientes();
+            filtrarPropiedades();
+            aplicarFiltroVentasCRM();
+        }
+
+        function obtenerClienteIdsTrabajadosEnMes(mes, anio) {
+            const ids = new Set();
+            memoriaServicios.forEach(s => {
+                if (!s.fecha_aplicacion) return;
+                const [a, m] = s.fecha_aplicacion.split('-');
+                if (a === anio && m === mes) {
+                    const pr = memoriaPropiedades.find(p => String(p.id) === String(s.propiedad_id));
+                    if (pr) ids.add(String(pr.cliente_id));
+                }
+            });
+            return ids;
+        }
+        function obtenerPropiedadIdsTrabajadasEnMes(mes, anio) {
+            const ids = new Set();
+            memoriaServicios.forEach(s => {
+                if (!s.fecha_aplicacion) return;
+                const [a, m] = s.fecha_aplicacion.split('-');
+                if (a === anio && m === mes) ids.add(String(s.propiedad_id));
+            });
+            return ids;
+        }
+        function coincideMesAnio(fechaISO, mes, anio) {
+            if (!fechaISO) return false;
+            const d = new Date(fechaISO);
+            return String(d.getMonth() + 1).padStart(2, '0') === mes && String(d.getFullYear()) === anio;
+        }
+
+        function filtrarClientes() { 
+            const texto = document.getElementById('buscadorClientes').value.toLowerCase();
+            let lista = memoriaClientes.filter(c => `${c.nombre} ${c.apellidos} ${c.no_cliente}`.toLowerCase().includes(texto));
+            const mes = document.getElementById('crmFiltroMes')?.value;
+            const anio = document.getElementById('crmFiltroAnio')?.value;
+            if (pestanaClientesCRM === 'nuevos' && mes) {
+                lista = lista.filter(c => coincideMesAnio(c.creado_en, mes, anio));
+            } else if (pestanaClientesCRM === 'trabajados' && mes) {
+                const ids = obtenerClienteIdsTrabajadosEnMes(mes, anio);
+                lista = lista.filter(c => ids.has(String(c.id)));
+            }
+            renderizarTablaClientes(lista);
+        }
         
         async function cargarClientes() { 
             try { 
@@ -2083,7 +2184,7 @@
                     if(sel) sel.innerHTML += optHTML; 
                     if(selCot) selCot.innerHTML += optHTML;
                 }); 
-                renderizarTablaClientes(memoriaClientes); 
+                filtrarClientes(); 
             } catch (e) { console.error(e); } 
         }
         
@@ -2137,11 +2238,20 @@
         // --- Busca tanto por nombre del terreno/predio como por nombre del propietario ---
         function filtrarPropiedades() {
             const q = document.getElementById('buscadorPropiedades').value.toLowerCase();
-            renderizarTablaPropiedades(memoriaPropiedades.filter(p => {
+            let lista = memoriaPropiedades.filter(p => {
                 const cl = memoriaClientes.find(c => String(c.id) === String(p.cliente_id));
                 const nombrePropietario = cl ? `${cl.nombre} ${cl.apellidos}` : '';
                 return `${p.nombre_propiedad} ${p.direccion || ''} ${nombrePropietario}`.toLowerCase().includes(q);
-            }));
+            });
+            const mes = document.getElementById('crmFiltroMes')?.value;
+            const anio = document.getElementById('crmFiltroAnio')?.value;
+            if (pestanaPropiedadesCRM === 'nuevas' && mes) {
+                lista = lista.filter(p => coincideMesAnio(p.creado_en, mes, anio));
+            } else if (pestanaPropiedadesCRM === 'trabajadas' && mes) {
+                const ids = obtenerPropiedadIdsTrabajadasEnMes(mes, anio);
+                lista = lista.filter(p => ids.has(String(p.id)));
+            }
+            renderizarTablaPropiedades(lista);
         }
 
         async function cargarPropiedades() { 
@@ -2161,7 +2271,7 @@
                     }
                 }); 
 
-                renderizarTablaPropiedades(memoriaPropiedades);
+                filtrarPropiedades();
             } catch (e) { console.error(e); } 
         }
         
@@ -2201,11 +2311,9 @@
         async function cargarServicios() { 
             try { 
                 const res = await fetchAPI(`${API_URL}/servicios/`); memoriaServicios = await res.json(); 
-                const cuerpoVentas = document.getElementById('cuerpoTablaServicios'); 
                 const cuerpoGastos = document.getElementById('cuerpoTablaGastos'); 
                 const cuerpoIngresos = document.getElementById('cuerpoTablaIngresos'); 
                 
-                if(cuerpoVentas) cuerpoVentas.innerHTML = ''; 
                 if(cuerpoGastos) cuerpoGastos.innerHTML = ''; 
                 if(cuerpoIngresos) cuerpoIngresos.innerHTML = ''; 
 
@@ -2221,20 +2329,8 @@
                         ? `<span class="ml-2 text-[9px] font-extrabold text-blue-600 bg-blue-50 px-1 rounded border border-blue-200 uppercase tracking-tight">SPEI</span>`
                         : `<span class="ml-2 text-[9px] font-extrabold text-emerald-600 bg-emerald-50 px-1 rounded border border-emerald-200 uppercase tracking-tight">EFEC</span>`;
 
-                    // --- Estas tablas siempre muestran todos los registros, sin filtrar por mes/año ---
+                    // --- Estas tablas (Módulo Financiero) siempre muestran todos los registros, sin filtrar por mes/año ---
                     {
-                        if(cuerpoVentas) {
-                            cuerpoVentas.innerHTML += `<tr><td class="td-excel bg-gray-50 font-extrabold text-emerald-800">${noControl}</td><td class="td-excel">${cl?cl.nombre:'N/A'}</td><td class="td-excel">${cl?cl.apellidos:'N/A'}</td><td class="td-excel">${cl?cl.telefono:'N/A'}</td><td class="td-excel">${pr?pr.tipo_cultivo:'N/A'}</td><td class="td-excel text-center">${s.ha_trabajadas || (pr?pr.superficie_has:'0')}</td><td class="td-excel">${pr?pr.direccion:'N/A'}</td><td class="td-excel">${s.no_cotizacion||'S/N'}</td><td class="td-excel">${s.no_orden||'S/N'}</td><td class="td-excel">${s.fecha_aplicacion||'S/N'}</td><td class="td-excel text-right text-green-700 font-bold">$${totalIngreso.toLocaleString()}</td><td class="td-excel text-right text-red-600 font-bold">$${totalGasto.toLocaleString()}</td><td class="td-excel text-right text-blue-700 font-bold">$${(totalIngreso-totalGasto).toLocaleString()}</td><td class="td-excel text-center">${s.fecha_seguimiento||'S/N'}</td><td class="td-excel text-center">${s.no_factura||'S/N'}</td><td class="td-excel max-w-[150px] truncate">${s.observaciones||''}</td><td class="td-excel text-center">
-                                ${s.url_encuesta 
-                                    ? `<a href="${s.url_encuesta}" target="_blank" class="text-emerald-600 hover:text-emerald-800 mr-2" title="Ver encuesta"><i class="fa-solid fa-file-circle-check text-lg"></i></a><button onclick="abrirModalEncuesta('${s.id}')" class="text-gray-400 hover:text-purple-600" title="Reemplazar encuesta"><i class="fa-solid fa-rotate text-sm"></i></button>`
-                                    : `<button onclick="abrirModalEncuesta('${s.id}')" class="text-gray-400 hover:text-purple-600" title="Subir encuesta"><i class="fa-solid fa-file-arrow-up text-lg"></i></button>`
-                                }
-                            </td><td class="td-excel text-center space-x-2">
-                                <button onclick="verDetalleServicio('${s.id}')" class="text-blue-500 bg-blue-50 px-2 py-1 rounded shadow-sm"><i class="fa-solid fa-magnifying-glass"></i></button>
-                                <button onclick="prepararEdicionServicio('${s.id}')" class="text-amber-500"><i class="fa-solid fa-pen-to-square"></i></button>
-                                <button onclick="eliminarServio('${s.id}')" class="btn-eliminar-rol text-rose-500"><i class="fa-solid fa-trash"></i></button>
-                            </td></tr>`; 
-                        }
                         if(cuerpoIngresos) {
                             cuerpoIngresos.innerHTML += `<tr class="hover:bg-emerald-50"><td class="td-excel font-bold text-emerald-800">${noControl}</td><td class="td-excel font-semibold">${nomProd}</td><td class="td-excel text-gray-600">${pr?pr.tipo_cultivo:'N/A'}</td><td class="td-excel text-center font-bold">${s.ha_trabajadas||0} Ha</td><td class="td-excel text-right">$${(s.precio_por_ha||0).toLocaleString()}</td><td class="td-excel text-right text-emerald-600">$${(s.ingreso_viaticos||0).toLocaleString()}</td><td class="td-excel text-right text-emerald-600">$${(s.ingreso_suministros||0).toLocaleString()}</td><td class="td-excel text-right text-emerald-700 font-extrabold bg-emerald-50 border-l border-emerald-200 flex items-center justify-end">$${totalIngreso.toLocaleString()}${badgePago}</td></tr>`;
                         }
@@ -2244,8 +2340,47 @@
                     }
                 }); 
             } catch (e) { console.error(e); } 
+            aplicarFiltroVentasCRM();
             actualizarVelocimetroConversion();
             poblarSelectCotizaciones();
+        }
+
+        // --- Tabla BD Ventas (dentro de Ventas CRM): separada para poder filtrar por "Ventas del mes" sin tocar el Módulo Financiero ---
+        function filaBDVenta(s) {
+            const pr = memoriaPropiedades.find(p => String(p.id) === String(s.propiedad_id)); 
+            const cl = pr ? memoriaClientes.find(c => String(c.id) === String(pr.cliente_id)) : null; 
+            let noControl = (cl && cl.no_cliente) ? cl.no_cliente : (s.id ? String(s.id).substring(0,6).toUpperCase() : 'S/N');
+            let totalGasto = s.gastos || 0; let totalIngreso = s.costo_servicio || 0;
+            return `<tr><td class="td-excel bg-gray-50 font-extrabold text-emerald-800">${noControl}</td><td class="td-excel">${cl?cl.nombre:'N/A'}</td><td class="td-excel">${cl?cl.apellidos:'N/A'}</td><td class="td-excel">${cl?cl.telefono:'N/A'}</td><td class="td-excel">${pr?pr.tipo_cultivo:'N/A'}</td><td class="td-excel text-center">${s.ha_trabajadas || (pr?pr.superficie_has:'0')}</td><td class="td-excel">${pr?pr.direccion:'N/A'}</td><td class="td-excel">${s.no_cotizacion||'S/N'}</td><td class="td-excel">${s.no_orden||'S/N'}</td><td class="td-excel">${s.fecha_aplicacion||'S/N'}</td><td class="td-excel text-right text-green-700 font-bold">$${totalIngreso.toLocaleString()}</td><td class="td-excel text-right text-red-600 font-bold">$${totalGasto.toLocaleString()}</td><td class="td-excel text-right text-blue-700 font-bold">$${(totalIngreso-totalGasto).toLocaleString()}</td><td class="td-excel text-center">${s.fecha_seguimiento||'S/N'}</td><td class="td-excel text-center">${s.no_factura||'S/N'}</td><td class="td-excel max-w-[150px] truncate">${s.observaciones||''}</td><td class="td-excel text-center">
+                ${s.url_encuesta 
+                    ? `<a href="${s.url_encuesta}" target="_blank" class="text-emerald-600 hover:text-emerald-800 mr-2" title="Ver encuesta"><i class="fa-solid fa-file-circle-check text-lg"></i></a><button onclick="abrirModalEncuesta('${s.id}')" class="text-gray-400 hover:text-purple-600" title="Reemplazar encuesta"><i class="fa-solid fa-rotate text-sm"></i></button>`
+                    : `<button onclick="abrirModalEncuesta('${s.id}')" class="text-gray-400 hover:text-purple-600" title="Subir encuesta"><i class="fa-solid fa-file-arrow-up text-lg"></i></button>`
+                }
+            </td><td class="td-excel text-center space-x-2">
+                <button onclick="verDetalleServicio('${s.id}')" class="text-blue-500 bg-blue-50 px-2 py-1 rounded shadow-sm"><i class="fa-solid fa-magnifying-glass"></i></button>
+                <button onclick="prepararEdicionServicio('${s.id}')" class="text-amber-500"><i class="fa-solid fa-pen-to-square"></i></button>
+                <button onclick="eliminarServio('${s.id}')" class="btn-eliminar-rol text-rose-500"><i class="fa-solid fa-trash"></i></button>
+            </td></tr>`;
+        }
+
+        function renderizarTablaBDVentas(lista) {
+            const cuerpoVentas = document.getElementById('cuerpoTablaServicios');
+            if (!cuerpoVentas) return;
+            cuerpoVentas.innerHTML = lista.map(filaBDVenta).join('');
+        }
+
+        function aplicarFiltroVentasCRM() {
+            let lista = memoriaServicios;
+            const mes = document.getElementById('crmFiltroMes')?.value;
+            const anio = document.getElementById('crmFiltroAnio')?.value;
+            if (pestanaVentasCRM === 'mes' && mes) {
+                lista = memoriaServicios.filter(s => {
+                    if (!s.fecha_aplicacion) return false;
+                    const [a, m] = s.fecha_aplicacion.split('-');
+                    return a === anio && m === mes;
+                });
+            }
+            renderizarTablaBDVentas(lista);
         }
 
         document.getElementById('servicioForm').addEventListener('submit', async function(e) { 

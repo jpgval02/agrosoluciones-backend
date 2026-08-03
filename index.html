@@ -641,6 +641,58 @@
                 </div>
             </div>
 
+            <div id="modal-cliente-360" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 p-2 md:p-4">
+                <div class="bg-gray-50 rounded-2xl shadow-2xl w-full max-w-5xl max-h-[92vh] border border-gray-200 overflow-hidden flex flex-col">
+                    <div class="bg-gradient-to-r from-[#0a4a2e] to-[#187547] px-5 md:px-8 py-5 flex justify-between items-start text-white shrink-0">
+                        <div class="flex items-center gap-4">
+                            <div class="bg-white/15 text-white rounded-full w-14 h-14 flex items-center justify-center text-2xl shrink-0"><i class="fa-solid fa-user"></i></div>
+                            <div>
+                                <h3 id="c360_nombre" class="text-lg md:text-xl font-extrabold tracking-wide"></h3>
+                                <p class="text-xs text-emerald-100 mt-1"><span id="c360_folio"></span> · RFC: <span id="c360_rfc"></span></p>
+                                <div id="c360_badge" class="mt-2"></div>
+                            </div>
+                        </div>
+                        <button onclick="cerrarVista360Cliente()" class="text-emerald-100 hover:text-white transition-colors text-xl"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+
+                    <div class="overflow-y-auto custom-scrollbar p-5 md:p-8 space-y-6">
+                        <!-- Datos de contacto + resumen rápido -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 flex items-center gap-3">
+                                <div class="bg-blue-100 text-blue-600 w-10 h-10 rounded-full flex items-center justify-center"><i class="fa-solid fa-phone"></i></div>
+                                <div><p class="text-[10px] text-gray-400 font-bold uppercase">Teléfono</p><p id="c360_telefono" class="font-bold text-gray-800"></p></div>
+                            </div>
+                            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 flex items-center gap-3">
+                                <div class="bg-amber-100 text-amber-600 w-10 h-10 rounded-full flex items-center justify-center"><i class="fa-solid fa-map"></i></div>
+                                <div><p class="text-[10px] text-gray-400 font-bold uppercase">Parcelas registradas</p><p id="c360_total_parcelas" class="font-bold text-gray-800"></p></div>
+                            </div>
+                            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 flex items-center gap-3">
+                                <div class="bg-emerald-100 text-emerald-600 w-10 h-10 rounded-full flex items-center justify-center"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+                                <div><p class="text-[10px] text-gray-400 font-bold uppercase">Ventas registradas</p><p id="c360_total_ventas" class="font-bold text-gray-800"></p></div>
+                            </div>
+                        </div>
+
+                        <!-- Parcelas -->
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                            <div class="bg-[#187547] text-white px-4 py-2.5 text-xs font-bold uppercase tracking-wider"><i class="fa-solid fa-map mr-2"></i> Parcelas de este cliente</div>
+                            <div class="overflow-x-auto custom-scrollbar"><table class="min-w-full divide-y divide-gray-100 text-sm">
+                                <thead class="bg-gray-50 text-gray-500"><tr><th class="px-4 py-2 text-left text-[11px] font-semibold uppercase">Predio</th><th class="px-4 py-2 text-center text-[11px] font-semibold uppercase">Cultivo</th><th class="px-4 py-2 text-center text-[11px] font-semibold uppercase">Superficie</th></tr></thead>
+                                <tbody id="c360_cuerpo_parcelas" class="divide-y divide-gray-100"></tbody>
+                            </table></div>
+                        </div>
+
+                        <!-- Historial de ventas -->
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                            <div class="bg-[#187547] text-white px-4 py-2.5 text-xs font-bold uppercase tracking-wider"><i class="fa-solid fa-clock-rotate-left mr-2"></i> Historial de ventas</div>
+                            <div class="overflow-x-auto custom-scrollbar"><table class="min-w-full divide-y divide-gray-100 text-sm">
+                                <thead class="bg-gray-50 text-gray-500"><tr><th class="px-4 py-2 text-left text-[11px] font-semibold uppercase">Fecha</th><th class="px-4 py-2 text-left text-[11px] font-semibold uppercase">Predio / Cultivo</th><th class="px-4 py-2 text-center text-[11px] font-semibold uppercase">Ha.</th><th id="c360_th_ingreso" class="px-4 py-2 text-right text-[11px] font-semibold uppercase">Ingreso</th><th class="px-4 py-2 text-center text-[11px] font-semibold uppercase"></th></tr></thead>
+                                <tbody id="c360_cuerpo_ventas" class="divide-y divide-gray-100"></tbody>
+                            </table></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div id="modal-detalle" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 p-4">
                 <div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl border border-gray-200 overflow-hidden flex flex-col max-h-[90vh]">
                     <div class="bg-[#064e3b] px-4 md:px-6 py-4 flex justify-between items-center text-white shadow-md z-10">
@@ -2086,10 +2138,70 @@
                         ? `<span class="bg-orange-100 text-orange-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-orange-300">Negociación 🟠</span>` 
                         : `<span class="bg-blue-100 text-blue-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-blue-300">Prospecto 🟡</span>`);
                 let folioCliente = c.no_cliente ? `<span class="text-emerald-700 font-extrabold mr-1">[${c.no_cliente}]</span>` : '';
-                cuerpo.innerHTML += `<tr class="hover:bg-gray-50"><td class="px-6 py-4"><div class="flex items-center space-x-4"><div class="bg-green-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold"><i class="fa-solid fa-user"></i></div><div><p class="font-bold text-gray-800">${folioCliente}${c.nombre} ${c.apellidos}</p><p class="text-[10px] text-gray-400 mt-1">RFC: ${c.rfc || 'S/N'} | ${badge}</p></div></div></td><td class="px-6 py-4"><p class="text-sm text-gray-800 font-medium"><i class="fa-solid fa-phone text-green-600 mr-2"></i>${c.telefono}</p></td><td class="px-6 py-4 text-center whitespace-nowrap space-x-1"><button onclick="tabularEdicionCliente('${c.id}')" class="bg-amber-400 text-white text-xs px-4 py-2 rounded-full"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="eliminarCliente('${c.id}')" class="btn-eliminar-rol bg-rose-600 text-white text-xs px-4 py-2 rounded-full"><i class="fa-solid fa-trash"></i></button></td></tr>`; 
+                cuerpo.innerHTML += `<tr class="hover:bg-gray-50 cursor-pointer" onclick="abrirVista360Cliente('${c.id}')"><td class="px-6 py-4"><div class="flex items-center space-x-4"><div class="bg-green-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold"><i class="fa-solid fa-user"></i></div><div><p class="font-bold text-gray-800">${folioCliente}${c.nombre} ${c.apellidos}</p><p class="text-[10px] text-gray-400 mt-1">RFC: ${c.rfc || 'S/N'} | ${badge}</p></div></div></td><td class="px-6 py-4"><p class="text-sm text-gray-800 font-medium"><i class="fa-solid fa-phone text-green-600 mr-2"></i>${c.telefono}</p></td><td class="px-6 py-4 text-center whitespace-nowrap space-x-1" onclick="event.stopPropagation()"><button onclick="tabularEdicionCliente('${c.id}')" class="bg-amber-400 text-white text-xs px-4 py-2 rounded-full"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="eliminarCliente('${c.id}')" class="btn-eliminar-rol bg-rose-600 text-white text-xs px-4 py-2 rounded-full"><i class="fa-solid fa-trash"></i></button></td></tr>`; 
             }); 
         }
-        // --- Filtro nuevo de Ventas CRM (independiente del Mes/Año de las tarjetas de arriba) ---
+
+        // --- Expediente 360 del cliente: sus datos, sus parcelas, y su historial de ventas ---
+        function abrirVista360Cliente(clienteId) {
+            const c = memoriaClientes.find(x => String(x.id) === String(clienteId));
+            if (!c) return;
+
+            document.getElementById('c360_nombre').innerText = `${c.nombre} ${c.apellidos}`;
+            document.getElementById('c360_folio').innerText = c.no_cliente ? `Cliente #${c.no_cliente}` : 'Sin folio';
+            document.getElementById('c360_rfc').innerText = c.rfc || 'S/N';
+            document.getElementById('c360_telefono').innerText = c.telefono || 'S/N';
+
+            const badge = c.estado === 'Cliente' 
+                ? `<span class="bg-emerald-500/20 text-emerald-100 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-300">Cliente Real 🟢</span>` 
+                : (c.estado === 'Negociación' 
+                    ? `<span class="bg-orange-500/20 text-orange-100 text-[10px] font-bold px-2 py-0.5 rounded-full border border-orange-300">Negociación 🟠</span>` 
+                    : `<span class="bg-blue-500/20 text-blue-100 text-[10px] font-bold px-2 py-0.5 rounded-full border border-blue-300">Prospecto 🟡</span>`);
+            document.getElementById('c360_badge').innerHTML = badge;
+
+            // --- Parcelas de este cliente ---
+            const parcelasCliente = memoriaPropiedades.filter(p => String(p.cliente_id) === String(clienteId));
+            document.getElementById('c360_total_parcelas').innerText = parcelasCliente.length;
+            const cuerpoParcelas = document.getElementById('c360_cuerpo_parcelas');
+            cuerpoParcelas.innerHTML = parcelasCliente.length 
+                ? parcelasCliente.map(p => `<tr><td class="px-4 py-2.5 font-semibold text-gray-700">${p.nombre_propiedad}</td><td class="px-4 py-2.5 text-center"><span class="bg-[#1b6b43] text-white px-2 py-0.5 rounded-full text-[10px] font-bold">${p.tipo_cultivo}</span></td><td class="px-4 py-2.5 text-center font-bold">${p.superficie_has} Ha</td></tr>`).join('')
+                : `<tr><td colspan="3" class="px-4 py-4 text-center text-gray-400 text-sm">Este cliente todavía no tiene parcelas registradas.</td></tr>`;
+
+            // --- Ventas hechas a este cliente (a través de todas sus parcelas) ---
+            const idsParcelas = new Set(parcelasCliente.map(p => String(p.id)));
+            const ventasCliente = memoriaServicios.filter(s => idsParcelas.has(String(s.propiedad_id)))
+                .sort((a, b) => (b.fecha_aplicacion || '').localeCompare(a.fecha_aplicacion || ''));
+            document.getElementById('c360_total_ventas').innerText = ventasCliente.length;
+
+            // El backend ya oculta los montos a Operador/Auxiliar del Auxiliar - si no vienen, ocultamos la columna
+            const puedeVerDinero = ventasCliente.length ? typeof ventasCliente[0].costo_servicio !== 'undefined' : true;
+            document.getElementById('c360_th_ingreso').classList.toggle('hidden', !puedeVerDinero);
+
+            const cuerpoVentas = document.getElementById('c360_cuerpo_ventas');
+            cuerpoVentas.innerHTML = ventasCliente.length 
+                ? ventasCliente.map(s => {
+                    const pr = memoriaPropiedades.find(p => String(p.id) === String(s.propiedad_id));
+                    const celdaIngreso = puedeVerDinero ? `<td class="px-4 py-2.5 text-right font-bold text-emerald-700">$${(s.costo_servicio||0).toLocaleString('es-MX')}</td>` : '';
+                    return `<tr class="hover:bg-gray-50 cursor-pointer" onclick="verVentaDesdeExpediente('${s.id}')">
+                        <td class="px-4 py-2.5 text-gray-600">${s.fecha_aplicacion || 'S/N'}</td>
+                        <td class="px-4 py-2.5 font-semibold text-gray-700">${pr ? pr.nombre_propiedad : 'N/A'} <span class="text-gray-400 font-normal">(${pr ? pr.tipo_cultivo : 'N/A'})</span></td>
+                        <td class="px-4 py-2.5 text-center">${s.ha_trabajadas || (pr ? pr.superficie_has : '0')}</td>
+                        ${celdaIngreso}
+                        <td class="px-4 py-2.5 text-center text-blue-500"><i class="fa-solid fa-arrow-up-right-from-square"></i></td>
+                    </tr>`;
+                }).join('')
+                : `<tr><td colspan="5" class="px-4 py-4 text-center text-gray-400 text-sm">Este cliente todavía no tiene ventas registradas.</td></tr>`;
+
+            document.getElementById('modal-cliente-360').classList.remove('hidden');
+        }
+
+        function cerrarVista360Cliente() { document.getElementById('modal-cliente-360').classList.add('hidden'); }
+
+        // --- Desde el historial del expediente, brinca directo al detalle de esa venta específica ---
+        function verVentaDesdeExpediente(ventaId) {
+            cerrarVista360Cliente();
+            verDetalleServicio(ventaId);
+        }
         let pestanaClientesCRM = 'todos';
         let pestanaPropiedadesCRM = 'todos';
         let pestanaVentasCRM = 'todos';

@@ -459,6 +459,10 @@
 
                 <!-- Tablas Ventas CRM -->
                 <div id="vista-tabla-ventas-crm" class="hidden space-y-10">
+                    <div class="bg-gradient-to-r from-[#0a4a2e] to-[#187547] rounded-2xl shadow-md p-4 flex flex-col md:flex-row items-center justify-between gap-3">
+                        <div class="text-white"><h3 class="font-extrabold text-sm"><i class="fa-solid fa-chart-pie mr-2"></i>Reporte Ejecutivo Mensual</h3><p class="text-[11px] text-emerald-100">Resumen completo del mes para el Director Ejecutivo.</p></div>
+                        <button id="btnReporteEjecutivo" onclick="abrirModalReporte()" class="hidden bg-white text-green-900 hover:bg-gray-100 px-4 py-2 rounded-lg text-xs font-bold transition-colors shadow-sm whitespace-nowrap"><i class="fa-solid fa-file-lines mr-2"></i> Generar Reporte</button>
+                    </div>
                     <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-4 flex flex-col md:flex-row items-center gap-3">
                         <span class="text-xs font-bold text-gray-600 uppercase whitespace-nowrap"><i class="fa-solid fa-filter mr-1"></i> Filtro de Ventas CRM:</span>
                         <select id="crmFiltroMes" onchange="aplicarFiltrosCRM()" class="px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-lg text-sm"></select>
@@ -637,6 +641,70 @@
                             <i class="fa-solid fa-spinner fa-spin mr-2"></i> Subiendo...
                         </div>
                         <button id="btnSubirEncuesta" onclick="subirEncuestaArchivo()" disabled class="mt-5 w-full bg-gray-300 text-gray-500 font-bold py-2.5 rounded-lg cursor-not-allowed transition-colors">Selecciona un archivo primero</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="modal-reporte" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 p-2 md:p-4">
+                <div class="bg-gray-50 rounded-2xl shadow-2xl w-full max-w-4xl max-h-[92vh] border border-gray-200 overflow-hidden flex flex-col">
+                    <div class="bg-gradient-to-r from-[#0a4a2e] to-[#187547] px-5 md:px-8 py-5 flex justify-between items-center text-white shrink-0">
+                        <h3 class="text-lg md:text-xl font-extrabold tracking-wide"><i class="fa-solid fa-chart-pie mr-2"></i> Reporte Ejecutivo Mensual</h3>
+                        <button onclick="cerrarModalReporte()" class="text-emerald-100 hover:text-white transition-colors text-xl"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+
+                    <div id="reporte_paso_filtro" class="p-6 md:p-10 flex flex-col items-center gap-4">
+                        <p class="text-sm text-gray-500 text-center max-w-sm">Elige el mes y año que quieres reportar. Se junta todo lo indispensable del negocio en un solo lugar.</p>
+                        <div class="flex gap-3">
+                            <select id="reporteMes" class="px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm font-semibold"></select>
+                            <select id="reporteAnio" class="px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm font-semibold"></select>
+                        </div>
+                        <button onclick="generarReporteEjecutivo()" class="bg-[#187547] hover:bg-[#0a4a2e] text-white font-bold py-2.5 px-8 rounded-lg text-sm shadow-md transition-colors"><i class="fa-solid fa-bolt mr-2"></i> Generar Reporte</button>
+                    </div>
+
+                    <div id="reporte_resultado" class="hidden overflow-y-auto custom-scrollbar p-5 md:p-8 space-y-6">
+                        <div class="flex justify-between items-center">
+                            <button onclick="document.getElementById('reporte_paso_filtro').classList.remove('hidden'); document.getElementById('reporte_resultado').classList.add('hidden');" class="text-xs text-gray-500 hover:text-gray-800 font-semibold"><i class="fa-solid fa-arrow-left mr-1"></i> Cambiar mes</button>
+                            <button onclick="descargarReportePDF()" class="bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold py-2 px-4 rounded-lg shadow-sm"><i class="fa-solid fa-file-pdf mr-2"></i> Descargar PDF</button>
+                        </div>
+
+                        <div id="reporte_contenido">
+                            <h2 id="rep_titulo" class="text-xl font-extrabold text-gray-800 text-center mb-1">Reporte Ejecutivo</h2>
+                            <p class="text-center text-xs text-gray-400 mb-6">Agrosoluciones Aéreas · Generado el <span id="rep_fecha_gen"></span></p>
+
+                            <h3 class="text-xs font-bold uppercase text-gray-500 tracking-wider mb-2 border-b border-gray-200 pb-1"><i class="fa-solid fa-sack-dollar mr-1"></i> Resumen Financiero</h3>
+                            <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mb-6">
+                                <div class="bg-white rounded-xl border border-gray-200 p-3"><p class="text-[10px] text-gray-400 font-bold uppercase">Ingresos</p><p id="rep_ingresos" class="text-lg font-extrabold text-emerald-700"></p><p id="rep_ingresos_cmp" class="text-[10px] font-semibold"></p></div>
+                                <div class="bg-white rounded-xl border border-gray-200 p-3"><p class="text-[10px] text-gray-400 font-bold uppercase">Egresos</p><p id="rep_egresos" class="text-lg font-extrabold text-rose-700"></p><p id="rep_egresos_cmp" class="text-[10px] font-semibold"></p></div>
+                                <div class="bg-white rounded-xl border border-gray-200 p-3"><p class="text-[10px] text-gray-400 font-bold uppercase">Utilidad Neta</p><p id="rep_utilidad" class="text-lg font-extrabold text-blue-700"></p><p id="rep_utilidad_cmp" class="text-[10px] font-semibold"></p></div>
+                            </div>
+
+                            <h3 class="text-xs font-bold uppercase text-gray-500 tracking-wider mb-2 border-b border-gray-200 pb-1"><i class="fa-solid fa-tractor mr-1"></i> Resumen Operativo</h3>
+                            <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mb-4">
+                                <div class="bg-white rounded-xl border border-gray-200 p-3"><p class="text-[10px] text-gray-400 font-bold uppercase">Hectáreas Fumigadas</p><p id="rep_hectareas" class="text-lg font-extrabold text-gray-800"></p></div>
+                                <div class="bg-white rounded-xl border border-gray-200 p-3"><p class="text-[10px] text-gray-400 font-bold uppercase">Vuelos / Servicios</p><p id="rep_vuelos" class="text-lg font-extrabold text-gray-800"></p></div>
+                            </div>
+                            <div id="rep_cultivos" class="mb-6 text-sm text-gray-600"></div>
+
+                            <h3 class="text-xs font-bold uppercase text-gray-500 tracking-wider mb-2 border-b border-gray-200 pb-1"><i class="fa-solid fa-funnel-dollar mr-1"></i> Embudo de Ventas</h3>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+                                <div class="bg-white rounded-xl border border-gray-200 p-3"><p class="text-[10px] text-gray-400 font-bold uppercase">Cotizaciones</p><p id="rep_cotizaciones" class="text-lg font-extrabold text-amber-600"></p></div>
+                                <div class="bg-white rounded-xl border border-gray-200 p-3"><p class="text-[10px] text-gray-400 font-bold uppercase">Conversión</p><p id="rep_conversion" class="text-lg font-extrabold text-purple-600"></p></div>
+                                <div class="bg-white rounded-xl border border-gray-200 p-3"><p class="text-[10px] text-gray-400 font-bold uppercase">Clientes Nuevos</p><p id="rep_clientes_nuevos" class="text-lg font-extrabold text-blue-600"></p></div>
+                                <div class="bg-white rounded-xl border border-gray-200 p-3"><p class="text-[10px] text-gray-400 font-bold uppercase">Subieron de Etapa</p><p id="rep_clientes_subieron" class="text-lg font-extrabold text-orange-600"></p></div>
+                            </div>
+
+                            <h3 class="text-xs font-bold uppercase text-gray-500 tracking-wider mb-2 border-b border-gray-200 pb-1"><i class="fa-solid fa-address-book mr-1"></i> Clientes y Parcelas</h3>
+                            <div class="grid grid-cols-2 gap-3 mb-6">
+                                <div class="bg-white rounded-xl border border-gray-200 p-3"><p class="text-[10px] text-gray-400 font-bold uppercase">Total Clientes Activos</p><p id="rep_total_clientes" class="text-lg font-extrabold text-gray-800"></p></div>
+                                <div class="bg-white rounded-xl border border-gray-200 p-3"><p class="text-[10px] text-gray-400 font-bold uppercase">Parcelas Nuevas</p><p id="rep_parcelas_nuevas" class="text-lg font-extrabold text-gray-800"></p></div>
+                            </div>
+
+                            <h3 class="text-xs font-bold uppercase text-gray-500 tracking-wider mb-2 border-b border-gray-200 pb-1"><i class="fa-solid fa-star mr-1"></i> Top 5 Clientes del Mes</h3>
+                            <table class="w-full text-sm mb-6"><tbody id="rep_top5"></tbody></table>
+
+                            <h3 class="text-xs font-bold uppercase text-gray-500 tracking-wider mb-2 border-b border-gray-200 pb-1"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Alertas / Pendientes</h3>
+                            <ul id="rep_alertas" class="text-sm text-gray-700 space-y-1.5"></ul>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1291,6 +1359,10 @@
             // "Administrar" el directorio de contactos, también solo Admin
             const btnContactos = document.getElementById('btnAdminContactos');
             if (btnContactos) btnContactos.classList.toggle('hidden', rolUsuario !== 'admin');
+
+            // "Reporte Ejecutivo" también solo Admin
+            const btnReporte = document.getElementById('btnReporteEjecutivo');
+            if (btnReporte) btnReporte.classList.toggle('hidden', rolUsuario !== 'admin');
 
             // Si el usuario quedó parado en una vista que ya no le corresponde (o llega por URL), lo regresamos al inicio
             const enVistaRestringida = restringidas.some(vista => {
@@ -2196,6 +2268,153 @@
         }
 
         function cerrarVista360Cliente() { document.getElementById('modal-cliente-360').classList.add('hidden'); }
+
+        // ================== REPORTE EJECUTIVO MENSUAL (solo Admin) ==================
+        function abrirModalReporte() {
+            const selMes = document.getElementById('reporteMes');
+            const selAnio = document.getElementById('reporteAnio');
+            if (!selMes.options.length) {
+                const meses = ['01-Enero','02-Febrero','03-Marzo','04-Abril','05-Mayo','06-Junio','07-Julio','08-Agosto','09-Septiembre','10-Octubre','11-Noviembre','12-Diciembre'];
+                meses.forEach(m => { const [val, nombre] = m.split('-'); selMes.innerHTML += `<option value="${val}">${nombre}</option>`; });
+                const anioActual = new Date().getFullYear();
+                for (let a = anioActual - 2; a <= anioActual + 1; a++) selAnio.innerHTML += `<option value="${a}">${a}</option>`;
+                selMes.value = String(new Date().getMonth() + 1).padStart(2, '0');
+                selAnio.value = String(anioActual);
+            }
+            document.getElementById('reporte_paso_filtro').classList.remove('hidden');
+            document.getElementById('reporte_resultado').classList.add('hidden');
+            document.getElementById('modal-reporte').classList.remove('hidden');
+        }
+        function cerrarModalReporte() { document.getElementById('modal-reporte').classList.add('hidden'); }
+
+        function generarReporteEjecutivo() {
+            const mes = document.getElementById('reporteMes').value;
+            const anio = document.getElementById('reporteAnio').value;
+            const nombresMeses = {'01':'Enero','02':'Febrero','03':'Marzo','04':'Abril','05':'Mayo','06':'Junio','07':'Julio','08':'Agosto','09':'Septiembre','10':'Octubre','11':'Noviembre','12':'Diciembre'};
+
+            // Mes anterior (para las comparaciones), cuidando el cambio de año en enero
+            let mesAntNum = parseInt(mes) - 1, anioAnt = parseInt(anio);
+            if (mesAntNum === 0) { mesAntNum = 12; anioAnt -= 1; }
+            const mesAnt = String(mesAntNum).padStart(2, '0');
+            const anioAntStr = String(anioAnt);
+
+            const serviciosMes = memoriaServicios.filter(s => s.fecha_aplicacion && s.fecha_aplicacion.split('-')[0] === anio && s.fecha_aplicacion.split('-')[1] === mes);
+            const serviciosMesAnt = memoriaServicios.filter(s => s.fecha_aplicacion && s.fecha_aplicacion.split('-')[0] === anioAntStr && s.fecha_aplicacion.split('-')[1] === mesAnt);
+
+            const sumar = (lista, campo) => lista.reduce((acc, s) => acc + (parseFloat(s[campo]) || 0), 0);
+            const ingresos = sumar(serviciosMes, 'costo_servicio'), egresos = sumar(serviciosMes, 'gastos'), utilidad = ingresos - egresos;
+            const ingresosAnt = sumar(serviciosMesAnt, 'costo_servicio'), egresosAnt = sumar(serviciosMesAnt, 'gastos'), utilidadAnt = ingresosAnt - egresosAnt;
+
+            const variacion = (actual, anterior) => {
+                if (!anterior) return actual > 0 ? '▲ Nuevo' : 'Sin cambio';
+                const pct = ((actual - anterior) / Math.abs(anterior)) * 100;
+                return (pct >= 0 ? `▲ +${pct.toFixed(1)}%` : `▼ ${pct.toFixed(1)}%`) + ' vs mes anterior';
+            };
+
+            document.getElementById('rep_titulo').innerText = `Reporte Ejecutivo — ${nombresMeses[mes]} ${anio}`;
+            document.getElementById('rep_fecha_gen').innerText = new Date().toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' });
+
+            document.getElementById('rep_ingresos').innerText = '$' + ingresos.toLocaleString('es-MX');
+            document.getElementById('rep_egresos').innerText = '$' + egresos.toLocaleString('es-MX');
+            document.getElementById('rep_utilidad').innerText = '$' + utilidad.toLocaleString('es-MX');
+            const claseVar = (actual, anterior) => actual >= anterior ? 'text-emerald-600' : 'text-rose-600';
+            document.getElementById('rep_ingresos_cmp').innerText = variacion(ingresos, ingresosAnt);
+            document.getElementById('rep_ingresos_cmp').className = 'text-[10px] font-semibold ' + claseVar(ingresos, ingresosAnt);
+            document.getElementById('rep_egresos_cmp').innerText = variacion(egresos, egresosAnt);
+            document.getElementById('rep_egresos_cmp').className = 'text-[10px] font-semibold ' + claseVar(egresosAnt, egresos);
+            document.getElementById('rep_utilidad_cmp').innerText = variacion(utilidad, utilidadAnt);
+            document.getElementById('rep_utilidad_cmp').className = 'text-[10px] font-semibold ' + claseVar(utilidad, utilidadAnt);
+
+            // --- Operativo ---
+            const hectareas = serviciosMes.reduce((acc, s) => {
+                const pr = memoriaPropiedades.find(p => String(p.id) === String(s.propiedad_id));
+                return acc + (parseFloat(s.ha_trabajadas) || (pr ? parseFloat(pr.superficie_has) || 0 : 0));
+            }, 0);
+            document.getElementById('rep_hectareas').innerText = hectareas.toFixed(1) + ' Ha';
+            document.getElementById('rep_vuelos').innerText = serviciosMes.length;
+
+            const porCultivo = {};
+            serviciosMes.forEach(s => {
+                const pr = memoriaPropiedades.find(p => String(p.id) === String(s.propiedad_id));
+                const cultivo = pr ? pr.tipo_cultivo : 'Sin especificar';
+                const ha = parseFloat(s.ha_trabajadas) || (pr ? parseFloat(pr.superficie_has) || 0 : 0);
+                porCultivo[cultivo] = (porCultivo[cultivo] || 0) + ha;
+            });
+            document.getElementById('rep_cultivos').innerHTML = Object.keys(porCultivo).length 
+                ? 'Por cultivo: ' + Object.entries(porCultivo).map(([c, ha]) => `<strong>${c}</strong>: ${ha.toFixed(1)} Ha`).join(' · ')
+                : 'No hubo vuelos registrados este mes.';
+
+            // --- Embudo de ventas ---
+            const cotizacionesMes = memoriaCotizaciones.filter(c => c.fecha && c.fecha.split('-')[0] === anio && c.fecha.split('-')[1] === mes);
+            const convertidasMes = cotizacionesMes.filter(cotizacionEstaConvertida).length;
+            const pctConversion = cotizacionesMes.length ? ((convertidasMes / cotizacionesMes.length) * 100).toFixed(0) + '%' : 'N/A';
+            document.getElementById('rep_cotizaciones').innerText = cotizacionesMes.length;
+            document.getElementById('rep_conversion').innerText = pctConversion;
+
+            const clientesNuevosMes = memoriaClientes.filter(c => coincideMesAnio(c.creado_en, mes, anio));
+            document.getElementById('rep_clientes_nuevos').innerText = clientesNuevosMes.length;
+
+            // Aproximado: clientes con actividad nueva este mes (cotización o venta) que ya no están como Prospecto
+            const idsClientesConActividad = new Set();
+            cotizacionesMes.forEach(c => idsClientesConActividad.add(String(c.cliente_id)));
+            serviciosMes.forEach(s => { const pr = memoriaPropiedades.find(p => String(p.id) === String(s.propiedad_id)); if (pr) idsClientesConActividad.add(String(pr.cliente_id)); });
+            const clientesSubieron = memoriaClientes.filter(c => idsClientesConActividad.has(String(c.id)) && c.estado !== 'Prospecto').length;
+            document.getElementById('rep_clientes_subieron').innerText = clientesSubieron;
+
+            // --- Clientes y parcelas ---
+            document.getElementById('rep_total_clientes').innerText = memoriaClientes.length;
+            const parcelasNuevasMes = memoriaPropiedades.filter(p => coincideMesAnio(p.creado_en, mes, anio));
+            document.getElementById('rep_parcelas_nuevas').innerText = parcelasNuevasMes.length;
+
+            // --- Top 5 clientes del mes (por ingreso) ---
+            const ingresoPorCliente = {};
+            serviciosMes.forEach(s => {
+                const pr = memoriaPropiedades.find(p => String(p.id) === String(s.propiedad_id));
+                if (!pr) return;
+                const cl = memoriaClientes.find(c => String(c.id) === String(pr.cliente_id));
+                if (!cl) return;
+                const nombre = `${cl.nombre} ${cl.apellidos}`;
+                ingresoPorCliente[nombre] = (ingresoPorCliente[nombre] || 0) + (parseFloat(s.costo_servicio) || 0);
+            });
+            const top5 = Object.entries(ingresoPorCliente).sort((a, b) => b[1] - a[1]).slice(0, 5);
+            document.getElementById('rep_top5').innerHTML = top5.length 
+                ? top5.map(([nombre, monto], i) => `<tr class="border-b border-gray-100"><td class="py-1.5 text-gray-500 w-8">#${i+1}</td><td class="py-1.5 font-semibold text-gray-700">${nombre}</td><td class="py-1.5 text-right font-bold text-emerald-700">$${monto.toLocaleString('es-MX')}</td></tr>`).join('')
+                : '<tr><td class="py-2 text-gray-400 text-sm">Sin ventas registradas este mes.</td></tr>';
+
+            // --- Alertas ---
+            const hoy = new Date(); hoy.setHours(0,0,0,0);
+            const seguimientosVencidos = memoriaServicios.filter(s => {
+                if (!s.fecha_seguimiento) return false;
+                const [a, m, d] = s.fecha_seguimiento.split('-');
+                return new Date(a, m - 1, d) < hoy;
+            });
+            const cotizacionesViejas = memoriaCotizaciones.filter(c => {
+                if (c.estado !== 'Pendiente' || !c.fecha) return false;
+                const [a, m, d] = c.fecha.split('-');
+                const dias = Math.floor((hoy - new Date(a, m - 1, d)) / (1000*60*60*24));
+                return dias > 15;
+            });
+            const alertas = [];
+            if (seguimientosVencidos.length) alertas.push(`<li><i class="fa-solid fa-circle-exclamation text-rose-500 mr-2"></i> ${seguimientosVencidos.length} seguimiento(s) de venta vencidos sin atender.</li>`);
+            if (cotizacionesViejas.length) alertas.push(`<li><i class="fa-solid fa-circle-exclamation text-amber-500 mr-2"></i> ${cotizacionesViejas.length} cotización(es) llevan más de 15 días como "Pendiente" sin convertirse.</li>`);
+            if (!alertas.length) alertas.push(`<li><i class="fa-solid fa-circle-check text-emerald-500 mr-2"></i> Sin pendientes urgentes por el momento.</li>`);
+            document.getElementById('rep_alertas').innerHTML = alertas.join('');
+
+            document.getElementById('reporte_paso_filtro').classList.add('hidden');
+            document.getElementById('reporte_resultado').classList.remove('hidden');
+        }
+
+        function descargarReportePDF() {
+            const template = document.getElementById('reporte_contenido');
+            const opt = {
+                margin: 0.4,
+                filename: `Reporte_Ejecutivo_${document.getElementById('reporteMes').value}_${document.getElementById('reporteAnio').value}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(template).save();
+        }
 
         // --- Desde el historial del expediente, brinca directo al detalle de esa venta específica ---
         function verVentaDesdeExpediente(ventaId) {

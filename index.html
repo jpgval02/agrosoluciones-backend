@@ -234,6 +234,11 @@
                             </div>
 
                             <div class="border-t border-dashed border-gray-200 pt-3">
+                                <label class="text-[10px] text-gray-500 font-bold uppercase flex items-center justify-between">Viáticos ($) <span class="text-amber-500 font-normal normal-case">Opcional</span></label>
+                                <input type="number" step="0.01" id="cot_viaticos" placeholder="0.00" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm font-bold text-gray-700">
+                            </div>
+
+                            <div class="border-t border-dashed border-gray-200 pt-3">
                                 <label class="text-[10px] text-gray-500 font-bold uppercase flex items-center justify-between">
                                     ¿Aplicarás un descuento?
                                     <span class="flex items-center gap-2 normal-case">
@@ -1098,6 +1103,16 @@
                     <td style="padding: 12px; border: 1px solid #ddd; text-align: center; vertical-align: top;">Serv</td>
                     <td style="padding: 12px; border: 1px solid #ddd; text-align: right; vertical-align: top; font-weight: bold;" id="pdfcot_total_sum"></td>
                 </tr>
+                <!-- Fila Viáticos -->
+                <tr id="pdfcot_row_viaticos" style="display: none;">
+                    <td style="padding: 12px; border: 1px solid #ddd; vertical-align: top;">
+                        <strong style="color: #222;">Viáticos.</strong>
+                    </td>
+                    <td style="padding: 12px; border: 1px solid #ddd; text-align: center; vertical-align: top;" id="pdfcot_pu_viat"></td>
+                    <td style="padding: 12px; border: 1px solid #ddd; text-align: center; vertical-align: top;">1</td>
+                    <td style="padding: 12px; border: 1px solid #ddd; text-align: center; vertical-align: top;">Serv</td>
+                    <td style="padding: 12px; border: 1px solid #ddd; text-align: right; vertical-align: top; font-weight: bold;" id="pdfcot_total_viat"></td>
+                </tr>
             </tbody>
         </table>
 
@@ -1639,14 +1654,15 @@
             const ha = parseFloat(document.getElementById('cot_ha').value) || 0;
             const precio = parseFloat(document.getElementById('cot_precio_ha').value) || 0;
             const sumi = parseFloat(document.getElementById('cot_suministros_costo').value) || 0;
+            const viat = parseFloat(document.getElementById('cot_viaticos').value) || 0;
             const desc = parseFloat(document.getElementById('cot_descuento').value) || 0;
             
-            const total = (ha * precio) + sumi - desc;
+            const total = (ha * precio) + sumi + viat - desc;
             document.getElementById('cot_total_display').value = "$" + total.toLocaleString('es-MX', {minimumFractionDigits: 2});
             return total;
         }
 
-        ['cot_ha', 'cot_precio_ha', 'cot_suministros_costo', 'cot_descuento'].forEach(id => {
+        ['cot_ha', 'cot_precio_ha', 'cot_suministros_costo', 'cot_viaticos', 'cot_descuento'].forEach(id => {
             document.getElementById(id).addEventListener('input', calcularTotalCotizacion);
         });
 
@@ -1658,6 +1674,7 @@
                 no_cotizacion: document.getElementById('cot_numero').value,
                 suministros: parseFloat(document.getElementById('cot_suministros_costo').value || 0),
                 detalles_suministros: document.getElementById('cot_suministros_detalle').value,
+                viaticos: parseFloat(document.getElementById('cot_viaticos').value || 0),
                 descuento: parseFloat(document.getElementById('cot_descuento').value || 0)
             };
 
@@ -1846,6 +1863,7 @@
             document.getElementById('cot_precio_ha').value = c.precio_ha;
             document.getElementById('cot_suministros_costo').value = obs.suministros || '';
             document.getElementById('cot_suministros_detalle').value = obs.detalles_suministros || '';
+            document.getElementById('cot_viaticos').value = obs.viaticos || '';
             document.getElementById('cot_descuento').value = obs.descuento || '';
             toggleDescuentoCot((obs.descuento || 0) > 0);
             
@@ -1930,7 +1948,16 @@
                 rowSuministros.style.display = 'none';
             }
 
-            let subtotalBruto = subtotalFumi + (obs.suministros || 0);
+            const rowViaticos = document.getElementById('pdfcot_row_viaticos');
+            if (obs.viaticos > 0) {
+                rowViaticos.style.display = 'table-row';
+                document.getElementById('pdfcot_pu_viat').innerText = "$" + obs.viaticos.toLocaleString('es-MX', {minimumFractionDigits: 2});
+                document.getElementById('pdfcot_total_viat').innerText = "$" + obs.viaticos.toLocaleString('es-MX', {minimumFractionDigits: 2});
+            } else {
+                rowViaticos.style.display = 'none';
+            }
+
+            let subtotalBruto = subtotalFumi + (obs.suministros || 0) + (obs.viaticos || 0);
             document.getElementById('pdfcot_subtotal').innerText = "$" + subtotalBruto.toLocaleString('es-MX', {minimumFractionDigits: 2}) + " MN";
 
             const rowDesc = document.getElementById('pdfcot_row_descuento');

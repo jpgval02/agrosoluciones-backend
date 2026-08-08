@@ -1106,7 +1106,8 @@
     </div>
 
     <!-- NUEVA PLANTILLA PDF: COTIZACIÓN -->
-    <div id="pdf-cotizacion-template" style="display: none; width: 800px; background-color: white; padding: 30px 40px; font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; color: #333;">
+    <div id="pdf-cotizacion-template" style="display: none; width: 800px; background-color: white; padding: 30px 40px; font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; color: #333; position: relative;">
+        <div id="pdfcot_watermark" style="display: none; position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%) rotate(-30deg); font-size: 52px; font-weight: 900; color: rgba(220, 38, 38, 0.18); z-index: 999; pointer-events: none; white-space: nowrap;">BORRADOR — PENDIENTE DE AUTORIZAR</div>
         
         <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px; border-bottom: 2px solid #1b6b43; padding-bottom: 15px;">
             <div style="width: 40%;">
@@ -2154,7 +2155,7 @@
             const c = memoriaCotizaciones.find(x => String(x.id) === String(id));
             if (!c) return;
 
-            if (c.estado_autorizacion !== 'aprobada') {
+            if (c.estado_autorizacion !== 'aprobada' && rolUsuario !== 'admin') {
                 alert('🔒 Esta cotización todavía no ha sido autorizada por el jefe. No se puede descargar el PDF hasta que se apruebe.');
                 return;
             }
@@ -2215,6 +2216,9 @@
 
             document.getElementById('pdfcot_total').innerText = "$" + (c.total || 0).toLocaleString('es-MX', {minimumFractionDigits: 2}) + " MN";
 
+            const watermark = document.getElementById('pdfcot_watermark');
+            watermark.style.display = (c.estado_autorizacion !== 'aprobada') ? 'block' : 'none';
+
             document.getElementById('pdfcot_elaboro_nombre').innerText = c.creado_por_nombre || c.creado_por_email || 'N/A';
             document.getElementById('pdfcot_autorizo_nombre').innerText = c.aprobado_por_nombre || 'N/A';
 
@@ -2244,7 +2248,7 @@
             setTimeout(() => {
                 const opt = {
                     margin:       0.15,
-                    filename:     `Cotizacion_${numCot}_${nomCliente.split(' ')[0]}.pdf`,
+                    filename:     `${c.estado_autorizacion !== 'aprobada' ? 'BORRADOR_' : ''}Cotizacion_${numCot}_${nomCliente.split(' ')[0]}.pdf`,
                     image:        { type: 'jpeg', quality: 1.0 },
                     html2canvas:  { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
                     jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }

@@ -80,14 +80,16 @@ def obtener_usuario_actual(authorization: str = Header(None)):
         raise HTTPException(status_code=401, detail="Sesión inválida o expirada. Vuelve a iniciar sesión.")
 
     rol = "operador"
+    nombre = None
     try:
-        datos_rol = supabase.table('roles').select('rol').eq('email', email).execute()
+        datos_rol = supabase.table('roles').select('rol, nombre').eq('email', email).execute()
         if len(datos_rol.data) > 0:
             rol = datos_rol.data[0]['rol']
+            nombre = datos_rol.data[0].get('nombre')
     except Exception:
         pass
 
-    return {"email": email, "rol": rol}
+    return {"email": email, "rol": rol, "nombre": nombre or email}
 
 
 def requiere_rol(*roles_permitidos):
@@ -560,7 +562,19 @@ async def marcar_seguimiento_hecho(servicio_id: str, req: SeguimientoHecho, usua
 @app.post("/cotizaciones/")
 async def registrar_cotizacion(cot: CotizacionNueva, usuario: dict = Depends(requiere_rol("admin", "operador", "auxiliar_del_auxiliar"))):
     try:
-        respuesta = supabase.table('cotizaciones').insert(cot.dict()).execute()
+        datos = cot.dict()
+        datos["creado_por_email"] = usuario["email"]
+        datos["creado_por_nombre"] = usuario["nombre"]
+
+        # Si quien la crea ya es el jefe (Admin), se autoriza sola. Si no, queda pendiente de que el jefe la revise.
+        if usuario["rol"] == "admin":
+            datos["estado_autorizacion"] = "aprobada"
+            datos["aprobado_por_email"] = usuario["email"]
+            datos["aprobado_por_nombre"] = usuario["nombre"]
+        else:
+            datos["estado_autorizacion"] = "pendiente"
+
+        respuesta = supabase.table('cotizaciones').insert(datos).execute()
 
         # Semáforo de clientes: si estaba en "Prospecto", lo subimos a "Negociación".
         # Si ya era "Cliente" (venta real), lo dejamos así, no lo bajamos de categoría.
@@ -583,10 +597,71 @@ async def obtener_cotizaciones(usuario: dict = Depends(obtener_usuario_actual)):
 @app.put("/cotizaciones/{cot_id}")
 async def actualizar_cotizacion(cot_id: str, cot: CotizacionNueva, usuario: dict = Depends(requiere_rol("admin", "operador", "auxiliar_del_auxiliar"))):
     try:
-        respuesta = supabase.table('cotizaciones').update(cot.dict()).eq('id', cot_id).execute()
+        datos = cot.dict()
+        # Si quien edita no es Admin, cualquier corrección regresa la cotización a "pendiente" de revisión
+        if usuario["rol"] != "admin":
+            datos["estado_autorizacion"] = "pendiente"
+            datos["comentario_rechazo"] = None
+        respuesta = supabase.table('cotizaciones').update(datos).eq('id', cot_id).execute()
         await manager.broadcast("update")
         return {"mensaje": "Actualizado", "datos": respuesta.data[0]}
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
+
+class RechazoCotizacion(BaseModel):
+    comentario: str
+
+@app.put("/cotizaciones/{cot_id}/autorizar")
+async def autorizar_cotizacion(cot_id: str, usuario: dict = Depends(requiere_rol("admin"))):
+    try:
+        supabase.table('cotizaciones').update({
+            'estado_autorizacion': 'aprobada',
+            'aprobado_por_email': usuario["email"],
+            'aprobado_por_nombre': usuario["nombre"],
+            'comentario_rechazo': None
+        }).eq('id', cot_id).execute()
+        await manager.broadcast("update")
+        return {"mensaje": "Cotización autorizada"}
+    except Exception as e: raise HTTPException(status_code=500, detail=str(e))
+
+@app.put("/cotizaciones/{cot_id}/rechazar")
+async def rechazar_cotizacion(cot_id: str, cuerpo: RechazoCotizacion, usuario: dict = Depends(requiere_rol("admin"))):
+    try:
+        supabase.table('cotizaciones').update({
+            'estado_autorizacion': 'rechazada',
+            'comentario_rechazo': cuerpo.comentario
+        }).eq('id', cot_id).execute()
+        await manager.broadcast("update")
+        return {"mensaje": "Cotización rechazada"}
+    except Exception as e: raise HTTPException(status_code=500, detail=str(e))
+
+# --- FIRMA DIGITAL DEL JEFE (Admin) ---
+@app.get("/firmas/mia")
+async def obtener_mi_firma(usuario: dict = Depends(requiere_rol("admin"))):
+    respuesta = supabase.table('firmas').select("*").eq('email', usuario["email"]).execute()
+    return respuesta.data[0] if respuesta.data else None
+
+@app.get("/firmas/{email}")
+async def obtener_firma_de(email: str, usuario: dict = Depends(obtener_usuario_actual)):
+    respuesta = supabase.table('firmas').select("*").eq('email', email).execute()
+    return respuesta.data[0] if respuesta.data else None
+
+@app.post("/firmas/")
+async def subir_firma(archivo: UploadFile = File(...), usuario: dict = Depends(requiere_rol("admin"))):
+    try:
+        contenido = await archivo.read()
+        extension = archivo.filename.split('.')[-1] if '.' in archivo.filename else 'png'
+        nombre_archivo = f"{usuario['email']}.{extension}"
+
+        supabase.storage.from_('firmas').upload(
+            nombre_archivo, contenido,
+            {"content-type": archivo.content_type, "upsert": "true"}
+        )
+        url_publica = supabase.storage.from_('firmas').get_public_url(nombre_archivo)
+
+        supabase.table('firmas').upsert({'email': usuario["email"], 'url_firma': url_publica}).execute()
+        return {"mensaje": "Firma guardada", "url": url_publica}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.delete("/cotizaciones/{cot_id}")
 async def eliminar_cotizacion(cot_id: str, usuario: dict = Depends(requiere_rol("admin", "auxiliar_del_auxiliar"))):

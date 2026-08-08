@@ -325,9 +325,18 @@
 
             <!-- VISTA: TABLA COTIZACIONES -->
             <div id="vista-tabla-cotizaciones" class="hidden max-w-[1600px] mx-auto mt-6 px-4 md:px-6 pb-12 space-y-8">
-                <div class="flex items-center gap-3 border-b border-gray-200 pb-4">
-                    <div class="bg-amber-100 p-3 rounded-xl text-amber-600 text-xl"><i class="fa-solid fa-file-signature"></i></div>
-                    <div><h2 class="text-xl md:text-2xl font-bold text-gray-800">Centro de Cotizaciones</h2><p class="text-xs text-gray-500 mt-0.5">Historial y emisión de PDF de propuestas comerciales</p></div>
+                <div class="flex items-center justify-between gap-3 border-b border-gray-200 pb-4 flex-wrap">
+                    <div class="flex items-center gap-3">
+                        <div class="bg-amber-100 p-3 rounded-xl text-amber-600 text-xl"><i class="fa-solid fa-file-signature"></i></div>
+                        <div><h2 class="text-xl md:text-2xl font-bold text-gray-800">Centro de Cotizaciones</h2><p class="text-xs text-gray-500 mt-0.5">Historial y emisión de PDF de propuestas comerciales</p></div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button id="btnPorAutorizar" onclick="abrirModalPorAutorizar()" class="hidden relative bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold py-2.5 px-4 rounded-lg shadow-sm transition-colors">
+                            <i class="fa-solid fa-stamp mr-2"></i> Por Autorizar
+                            <span id="badgePorAutorizar" class="hidden absolute -top-2 -right-2 bg-white text-rose-600 text-[10px] font-extrabold w-5 h-5 rounded-full flex items-center justify-center border-2 border-rose-600">0</span>
+                        </button>
+                        <button id="btnMiFirma" onclick="abrirModalFirma()" class="hidden bg-[#064e3b] hover:bg-[#0a4a2e] text-white text-xs font-bold py-2.5 px-4 rounded-lg shadow-sm transition-colors"><i class="fa-solid fa-signature mr-2"></i> Mi Firma</button>
+                    </div>
                 </div>
 
                 <div class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden w-full">
@@ -345,11 +354,58 @@
                                     <th class="th-excel text-center">Hectáreas</th>
                                     <th class="th-excel text-right">Total Propuesto</th>
                                     <th class="th-excel text-center">Estado</th>
+                                    <th class="th-excel text-center">Autorización</th>
                                     <th class="th-excel text-center"><i class="fa-solid fa-gears"></i> Acciones</th>
                                 </tr>
                             </thead>
                             <tbody id="cuerpoTablaCotizaciones" class="bg-white divide-y divide-gray-200"></tbody>
                         </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal: cotizaciones pendientes de autorizar (solo Admin) -->
+            <div id="modal-por-autorizar" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 p-2 md:p-4">
+                <div class="bg-gray-50 rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] border border-gray-200 overflow-hidden flex flex-col">
+                    <div class="bg-gradient-to-r from-rose-700 to-rose-600 px-5 md:px-8 py-5 flex justify-between items-center text-white shrink-0">
+                        <h3 class="text-lg font-extrabold tracking-wide"><i class="fa-solid fa-stamp mr-2"></i> Cotizaciones por Autorizar</h3>
+                        <button onclick="cerrarModalPorAutorizar()" class="text-rose-100 hover:text-white text-xl"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                    <div id="lista_por_autorizar" class="overflow-y-auto custom-scrollbar p-5 md:p-6 space-y-4"></div>
+                </div>
+            </div>
+
+            <!-- Modal: rechazar cotización con comentario -->
+            <div id="modal-rechazar-cot" class="fixed inset-0 bg-black/70 hidden flex items-center justify-center z-[60] p-4">
+                <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-5">
+                    <h4 class="font-bold text-gray-800 mb-2"><i class="fa-solid fa-triangle-exclamation text-rose-500 mr-2"></i>¿Por qué se rechaza?</h4>
+                    <input type="hidden" id="rechazarCotId">
+                    <textarea id="rechazarComentario" rows="3" placeholder="Ej. Falta ajustar el precio por hectárea..." class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm mb-3"></textarea>
+                    <div class="flex gap-2">
+                        <button onclick="cerrarModalRechazar()" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold py-2 rounded-lg text-sm">Cancelar</button>
+                        <button onclick="confirmarRechazoCotizacion()" class="flex-1 bg-rose-600 hover:bg-rose-700 text-white font-bold py-2 rounded-lg text-sm">Rechazar</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal: subir/actualizar la firma del jefe -->
+            <div id="modal-firma" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 p-4">
+                <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md border border-gray-200 overflow-hidden">
+                    <div class="bg-[#064e3b] px-5 py-4 flex justify-between items-center text-white">
+                        <h3 class="text-base font-bold flex items-center"><i class="fa-solid fa-signature text-emerald-300 mr-2"></i> Mi Firma</h3>
+                        <button onclick="cerrarModalFirma()" class="text-gray-300 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+                    </div>
+                    <div class="p-5">
+                        <p class="text-xs text-gray-500 mb-3">Esta firma se agrega automáticamente a cada cotización que autorices.</p>
+                        <div id="firma_actual_preview" class="mb-3 hidden"><img id="firma_actual_img" class="max-h-24 mx-auto border border-gray-200 rounded-lg p-2"></div>
+                        <div id="zonaDropFirma" class="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center cursor-pointer hover:border-emerald-500 hover:bg-emerald-50 transition-colors">
+                            <i class="fa-solid fa-cloud-arrow-up text-3xl text-gray-400 mb-2"></i>
+                            <p class="text-xs text-gray-600 font-semibold">Arrastra tu firma aquí (foto o escaneo)</p>
+                            <p class="text-[10px] text-gray-400">o haz clic para seleccionarla</p>
+                            <input type="file" id="inputArchivoFirma" accept=".jpg,.jpeg,.png" class="hidden">
+                        </div>
+                        <p id="nombreArchivoFirma" class="text-xs text-center text-gray-500 mt-2 hidden"></p>
+                        <button id="btnSubirFirma" onclick="subirFirmaArchivo()" disabled class="mt-4 w-full bg-gray-300 text-gray-500 font-bold py-2 rounded-lg cursor-not-allowed">Selecciona una imagen primero</button>
                     </div>
                 </div>
             </div>
@@ -1146,10 +1202,21 @@
             </ul>
         </div>
 
-        <div style="text-align: center; margin-top: 50px;">
-            <div style="width: 250px; border-bottom: 1px solid #000; margin: 0 auto 10px auto;"></div>
-            <p style="margin: 0; font-weight: bold; font-size: 14px;">Juan Carlos Godinez Valenzuela</p>
-            <p style="margin: 2px 0; font-size: 12px; color: #666;">Director Comercial</p>
+        <div style="display: flex; justify-content: space-between; margin-top: 60px; text-align: center;">
+            <div style="width: 45%;">
+                <div style="width: 90%; margin: 0 auto 10px auto; height: 50px;"></div>
+                <div style="width: 100%; border-bottom: 1px solid #000; margin-bottom: 10px;"></div>
+                <p style="margin: 0; font-weight: bold; font-size: 13px;" id="pdfcot_elaboro_nombre">---</p>
+                <p style="margin: 2px 0; font-size: 11px; color: #666;">Elaboró</p>
+            </div>
+            <div style="width: 45%;">
+                <div id="pdfcot_firma_wrap" style="width: 90%; margin: 0 auto 10px auto; height: 50px; display: flex; align-items: flex-end; justify-content: center;"></div>
+                <div style="width: 100%; border-bottom: 1px solid #000; margin-bottom: 10px;"></div>
+                <p style="margin: 0; font-weight: bold; font-size: 13px;" id="pdfcot_autorizo_nombre">---</p>
+                <p style="margin: 2px 0; font-size: 11px; color: #666;">Autorizó</p>
+            </div>
+        </div>
+        <div style="text-align: center; margin-top: 25px;">
             <p style="margin: 2px 0; font-size: 12px; color: #666;"><i class="fa-solid fa-phone"></i> 924-130-9760 | <i class="fa-solid fa-envelope"></i> facturacion@asoa.com.mx</p>
         </div>
 
@@ -1374,6 +1441,12 @@
             // "Administrar" el directorio de contactos, también solo Admin
             const btnContactos = document.getElementById('btnAdminContactos');
             if (btnContactos) btnContactos.classList.toggle('hidden', rolUsuario !== 'admin');
+
+            // "Por Autorizar" y "Mi Firma" (cotizaciones), también solo Admin
+            const btnPorAutorizar = document.getElementById('btnPorAutorizar');
+            if (btnPorAutorizar) btnPorAutorizar.classList.toggle('hidden', rolUsuario !== 'admin');
+            const btnMiFirma = document.getElementById('btnMiFirma');
+            if (btnMiFirma) btnMiFirma.classList.toggle('hidden', rolUsuario !== 'admin');
 
             // "Reporte Ejecutivo" también solo Admin
             const btnReporte = document.getElementById('btnReporteEjecutivo');
@@ -1728,6 +1801,17 @@
                     let numCot = obs.no_cotizacion ? obs.no_cotizacion : String(c.id).substring(0,4).toUpperCase();
                     let badgeColor = c.estado === 'Convertida' ? 'bg-purple-100 text-purple-800 border-purple-300' : (c.estado === 'Aprobada' ? 'bg-emerald-100 text-emerald-800 border-emerald-300' : 'bg-amber-100 text-amber-800 border-amber-300');
 
+                    let celdaAutorizacion = '';
+                    if (c.estado_autorizacion === 'aprobada') {
+                        celdaAutorizacion = `<span class="text-[10px] font-bold px-2 py-0.5 rounded-full border bg-emerald-100 text-emerald-800 border-emerald-300">✅ Autorizada</span><br><span class="text-[9px] text-gray-400">por ${c.aprobado_por_nombre || 'Admin'}</span>`;
+                    } else if (c.estado_autorizacion === 'rechazada') {
+                        celdaAutorizacion = `<span class="text-[10px] font-bold px-2 py-0.5 rounded-full border bg-rose-100 text-rose-800 border-rose-300 cursor-help" title="${(c.comentario_rechazo || '').replace(/"/g,'&quot;')}">❌ Rechazada</span>`;
+                        if (rolUsuario === 'admin') celdaAutorizacion += `<br><button onclick="autorizarCotizacion('${c.id}')" class="text-[9px] text-emerald-600 hover:underline font-bold">Autorizar de todos modos</button>`;
+                    } else {
+                        celdaAutorizacion = `<span class="text-[10px] font-bold px-2 py-0.5 rounded-full border bg-amber-100 text-amber-800 border-amber-300">⏳ Pendiente</span>`;
+                        if (rolUsuario === 'admin') celdaAutorizacion += `<div class="flex gap-1 justify-center mt-1"><button onclick="autorizarCotizacion('${c.id}')" class="text-[9px] bg-emerald-600 text-white px-2 py-0.5 rounded font-bold">Aprobar</button><button onclick="abrirModalRechazar('${c.id}')" class="text-[9px] bg-rose-600 text-white px-2 py-0.5 rounded font-bold">Rechazar</button></div>`;
+                    }
+
                     if(cuerpo) {
                         cuerpo.innerHTML += `
                             <tr class="hover:bg-amber-50/50">
@@ -1741,8 +1825,9 @@
                                 <td class="px-6 py-4 text-center font-bold">${c.hectareas} Ha</td>
                                 <td class="px-6 py-4 text-right font-extrabold text-blue-700">$${(c.total||0).toLocaleString('es-MX', {minimumFractionDigits:2})}</td>
                                 <td class="px-6 py-4 text-center"><span class="text-[10px] font-bold px-2 py-0.5 rounded-full border ${badgeColor}">${c.estado}</span>${(cotizacionEstaConvertida(c) && c.estado !== 'Convertida') ? '<br><span class="text-[9px] font-bold px-2 py-0.5 rounded-full border bg-purple-100 text-purple-700 border-purple-300 mt-1 inline-block">✅ Convertida a Venta</span>' : ''}</td>
+                                <td class="px-6 py-4 text-center">${celdaAutorizacion}</td>
                                 <td class="px-6 py-4 text-center space-x-1 whitespace-nowrap">
-                                    <button onclick="imprimirCotizacion('${c.id}')" class="bg-indigo-600 text-white hover:bg-indigo-500 px-3 py-1.5 rounded-md text-xs shadow-sm"><i class="fa-solid fa-file-pdf"></i></button>
+                                    <button onclick="imprimirCotizacion('${c.id}')" class="bg-indigo-600 text-white hover:bg-indigo-500 px-3 py-1.5 rounded-md text-xs shadow-sm" title="${c.estado_autorizacion === 'aprobada' ? 'Descargar PDF' : 'Necesita autorización del jefe primero'}"><i class="fa-solid fa-file-pdf"></i></button>
                                     <button onclick="editarCotizacion('${c.id}')" class="bg-amber-400 text-white hover:bg-amber-300 px-3 py-1.5 rounded-md text-xs shadow-sm"><i class="fa-solid fa-pen"></i></button>
                                     <button onclick="eliminarCotizacion('${c.id}')" class="btn-eliminar-rol bg-rose-600 text-white hover:bg-rose-500 px-3 py-1.5 rounded-md text-xs shadow-sm"><i class="fa-solid fa-trash"></i></button>
                                 </td>
@@ -1753,6 +1838,160 @@
             } catch(e) { console.error(e); }
             actualizarVelocimetroConversion();
             poblarSelectCotizaciones();
+            actualizarBadgePorAutorizar();
+        }
+
+        // ================== AUTORIZACIÓN DE COTIZACIONES (solo Admin aprueba/rechaza) ==================
+        function actualizarBadgePorAutorizar() {
+            const pendientes = memoriaCotizaciones.filter(c => c.estado_autorizacion === 'pendiente');
+            const badge = document.getElementById('badgePorAutorizar');
+            if (!badge) return;
+            if (pendientes.length > 0) {
+                badge.innerText = pendientes.length;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
+        async function autorizarCotizacion(id) {
+            try {
+                await fetchAPI(`${API_URL}/cotizaciones/${id}/autorizar`, { method: 'PUT' });
+                await cargarCotizaciones();
+                renderizarListaPorAutorizar();
+            } catch (e) { alert('No se pudo autorizar la cotización.'); console.error(e); }
+        }
+
+        function abrirModalRechazar(id) {
+            document.getElementById('rechazarCotId').value = id;
+            document.getElementById('rechazarComentario').value = '';
+            document.getElementById('modal-rechazar-cot').classList.remove('hidden');
+        }
+        function cerrarModalRechazar() { document.getElementById('modal-rechazar-cot').classList.add('hidden'); }
+
+        async function confirmarRechazoCotizacion() {
+            const id = document.getElementById('rechazarCotId').value;
+            const comentario = document.getElementById('rechazarComentario').value.trim();
+            if (!comentario) { alert('Escribe qué hay que corregir.'); return; }
+            try {
+                await fetchAPI(`${API_URL}/cotizaciones/${id}/rechazar`, {
+                    method: 'PUT', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ comentario })
+                });
+                cerrarModalRechazar();
+                await cargarCotizaciones();
+                renderizarListaPorAutorizar();
+            } catch (e) { alert('No se pudo rechazar la cotización.'); console.error(e); }
+        }
+
+        // --- Fila más completa para la cotización dentro de la cola "Por Autorizar" ---
+        function abrirModalPorAutorizar() {
+            renderizarListaPorAutorizar();
+            document.getElementById('modal-por-autorizar').classList.remove('hidden');
+        }
+        function cerrarModalPorAutorizar() { document.getElementById('modal-por-autorizar').classList.add('hidden'); }
+
+        function renderizarListaPorAutorizar() {
+            const cont = document.getElementById('lista_por_autorizar');
+            if (!cont) return;
+            const pendientes = memoriaCotizaciones.filter(c => c.estado_autorizacion === 'pendiente');
+            if (!pendientes.length) {
+                cont.innerHTML = '<p class="text-center text-gray-400 text-sm py-6">No hay cotizaciones pendientes de autorizar. 🎉</p>';
+                return;
+            }
+            cont.innerHTML = pendientes.map(c => {
+                const cl = memoriaClientes.find(x => String(x.id) === String(c.cliente_id));
+                const nomCliente = cl ? `${cl.nombre} ${cl.apellidos}` : 'N/A';
+                let obs = {};
+                try { if (c.observaciones) obs = JSON.parse(c.observaciones); } catch(e){}
+                const numCot = obs.no_cotizacion ? obs.no_cotizacion : String(c.id).substring(0,4).toUpperCase();
+                return `<div class="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
+                    <div class="flex justify-between items-start gap-3">
+                        <div>
+                            <p class="font-bold text-gray-800">COT-${numCot} — ${nomCliente}</p>
+                            <p class="text-xs text-gray-500">${c.cultivo} · ${c.hectareas} Ha · $${(c.total||0).toLocaleString('es-MX')}</p>
+                            <p class="text-[11px] text-gray-400 mt-1">Elaboró: <strong>${c.creado_por_nombre || c.creado_por_email || 'N/A'}</strong> · ${c.fecha}</p>
+                        </div>
+                        <div class="flex gap-2 shrink-0">
+                            <button onclick="autorizarCotizacion('${c.id}')" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-1.5 px-3 rounded-lg"><i class="fa-solid fa-check mr-1"></i> Aprobar</button>
+                            <button onclick="cerrarModalPorAutorizar(); abrirModalRechazar('${c.id}');" class="bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold py-1.5 px-3 rounded-lg"><i class="fa-solid fa-xmark mr-1"></i> Rechazar</button>
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        // ================== FIRMA DEL JEFE (Admin) ==================
+        let archivoFirmaSeleccionado = null;
+
+        async function abrirModalFirma() {
+            archivoFirmaSeleccionado = null;
+            document.getElementById('inputArchivoFirma').value = '';
+            document.getElementById('nombreArchivoFirma').classList.add('hidden');
+            const btn = document.getElementById('btnSubirFirma');
+            btn.disabled = true;
+            btn.textContent = 'Selecciona una imagen primero';
+            btn.className = 'mt-4 w-full bg-gray-300 text-gray-500 font-bold py-2 rounded-lg cursor-not-allowed';
+
+            const preview = document.getElementById('firma_actual_preview');
+            preview.classList.add('hidden');
+            try {
+                const res = await fetchAPI(`${API_URL}/firmas/mia`);
+                const firma = await res.json();
+                if (firma && firma.url_firma) {
+                    document.getElementById('firma_actual_img').src = firma.url_firma;
+                    preview.classList.remove('hidden');
+                }
+            } catch (e) { console.error(e); }
+
+            document.getElementById('modal-firma').classList.remove('hidden');
+        }
+        function cerrarModalFirma() { document.getElementById('modal-firma').classList.add('hidden'); }
+
+        function manejarArchivoFirmaSeleccionado(archivo) {
+            if (!archivo) return;
+            archivoFirmaSeleccionado = archivo;
+            const p = document.getElementById('nombreArchivoFirma');
+            p.textContent = "📎 " + archivo.name;
+            p.classList.remove('hidden');
+            const btn = document.getElementById('btnSubirFirma');
+            btn.disabled = false;
+            btn.textContent = 'Guardar Firma';
+            btn.className = 'mt-4 w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 rounded-lg';
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const zona = document.getElementById('zonaDropFirma');
+            const input = document.getElementById('inputArchivoFirma');
+            if (!zona || !input) return;
+            zona.addEventListener('click', () => input.click());
+            input.addEventListener('change', (e) => manejarArchivoFirmaSeleccionado(e.target.files[0]));
+            zona.addEventListener('dragover', (e) => { e.preventDefault(); zona.classList.add('border-emerald-500', 'bg-emerald-50'); });
+            zona.addEventListener('dragleave', (e) => { e.preventDefault(); zona.classList.remove('border-emerald-500', 'bg-emerald-50'); });
+            zona.addEventListener('drop', (e) => {
+                e.preventDefault();
+                zona.classList.remove('border-emerald-500', 'bg-emerald-50');
+                if (e.dataTransfer.files && e.dataTransfer.files[0]) manejarArchivoFirmaSeleccionado(e.dataTransfer.files[0]);
+            });
+        });
+
+        async function subirFirmaArchivo() {
+            if (!archivoFirmaSeleccionado) return;
+            const btn = document.getElementById('btnSubirFirma');
+            btn.disabled = true;
+            const formData = new FormData();
+            formData.append('archivo', archivoFirmaSeleccionado);
+            try {
+                const res = await fetchAPI(`${API_URL}/firmas/`, { method: 'POST', body: formData });
+                if (!res.ok) throw new Error('Error al subir la firma');
+                alert('✅ Firma guardada. A partir de ahora se usará en las cotizaciones que autorices.');
+                cerrarModalFirma();
+            } catch (e) {
+                alert('No se pudo subir la firma. Intenta de nuevo.');
+                console.error(e);
+            } finally {
+                btn.disabled = false;
+            }
         }
 
         function toggleDescuentoCot(aplica) {
@@ -1914,6 +2153,12 @@
         async function imprimirCotizacion(id) {
             const c = memoriaCotizaciones.find(x => String(x.id) === String(id));
             if (!c) return;
+
+            if (c.estado_autorizacion !== 'aprobada') {
+                alert('🔒 Esta cotización todavía no ha sido autorizada por el jefe. No se puede descargar el PDF hasta que se apruebe.');
+                return;
+            }
+
             const cl = memoriaClientes.find(x => String(x.id) === String(c.cliente_id));
             
             const nomCliente = cl ? `${cl.nombre} ${cl.apellidos}` : 'Cliente Eliminado';
@@ -1969,6 +2214,21 @@
             }
 
             document.getElementById('pdfcot_total').innerText = "$" + (c.total || 0).toLocaleString('es-MX', {minimumFractionDigits: 2}) + " MN";
+
+            document.getElementById('pdfcot_elaboro_nombre').innerText = c.creado_por_nombre || c.creado_por_email || 'N/A';
+            document.getElementById('pdfcot_autorizo_nombre').innerText = c.aprobado_por_nombre || 'N/A';
+
+            const wrapFirma = document.getElementById('pdfcot_firma_wrap');
+            wrapFirma.innerHTML = '';
+            if (c.aprobado_por_email) {
+                try {
+                    const resFirma = await fetchAPI(`${API_URL}/firmas/${encodeURIComponent(c.aprobado_por_email)}`);
+                    const firma = await resFirma.json();
+                    if (firma && firma.url_firma) {
+                        wrapFirma.innerHTML = `<img src="${firma.url_firma}" style="max-height: 50px; max-width: 100%;" crossorigin="anonymous">`;
+                    }
+                } catch (e) { console.error(e); }
+            }
 
             const overlay = document.getElementById('pdf-loading-overlay');
             const appContent = document.getElementById('app-content');

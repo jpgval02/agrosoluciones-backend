@@ -1212,7 +1212,10 @@
             </div>
             <div style="width: 45%;">
                 <p style="margin: 0 0 6px 0; font-size: 11px; color: #666;">Autorizó</p>
-                <img src="firma_director.png" alt="Firma" style="max-width: 100%; max-height: 130px;">
+                <div id="pdfcot_firma_wrap" style="width: 90%; margin: 0 auto -22px auto; height: 65px; display: flex; align-items: flex-end; justify-content: center; position: relative; z-index: 2;"></div>
+                <div style="width: 100%; border-bottom: 1px solid #000; margin-bottom: 10px;"></div>
+                <p style="margin: 0; font-weight: bold; font-size: 13px;" id="pdfcot_autorizo_nombre">---</p>
+                <p style="margin: 2px 0; font-size: 11px; color: #666;">Director de Ventas</p>
             </div>
         </div>
         <div style="text-align: center; margin-top: 14px;">
@@ -2218,6 +2221,19 @@
             watermark.style.display = (c.estado_autorizacion !== 'aprobada') ? 'block' : 'none';
 
             document.getElementById('pdfcot_elaboro_nombre').innerText = c.creado_por_nombre || c.creado_por_email || 'N/A';
+            document.getElementById('pdfcot_autorizo_nombre').innerText = c.aprobado_por_nombre || 'N/A';
+
+            const wrapFirma = document.getElementById('pdfcot_firma_wrap');
+            wrapFirma.innerHTML = '';
+            if (c.aprobado_por_email) {
+                try {
+                    const resFirma = await fetchAPI(`${API_URL}/firmas/${encodeURIComponent(c.aprobado_por_email)}`);
+                    const firma = await resFirma.json();
+                    if (firma && firma.url_firma) {
+                        wrapFirma.innerHTML = `<img src="${firma.url_firma}" style="max-height: 65px; max-width: 100%;" crossorigin="anonymous">`;
+                    }
+                } catch (e) { console.error(e); }
+            }
 
             const overlay = document.getElementById('pdf-loading-overlay');
             const appContent = document.getElementById('app-content');

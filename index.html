@@ -1212,9 +1212,12 @@
             </div>
             <div style="width: 45%;">
                 <p style="margin: 0 0 6px 0; font-size: 11px; color: #666;">Autorizó</p>
-                <div id="pdfcot_firma_wrap" style="width: 90%; margin: 0 auto -22px auto; height: 65px; display: flex; align-items: flex-end; justify-content: center; position: relative; z-index: 2;"></div>
+                <div style="width: 90%; margin: 0 auto 10px auto; height: 50px;"></div>
                 <div style="width: 100%; border-bottom: 1px solid #000; margin-bottom: 10px;"></div>
-                <p style="margin: 0; font-weight: bold; font-size: 13px;" id="pdfcot_autorizo_nombre">---</p>
+                <div style="position: relative; height: 18px;">
+                    <p style="margin: 0; font-weight: bold; font-size: 13px; position: relative; z-index: 1;" id="pdfcot_autorizo_nombre">---</p>
+                    <div id="pdfcot_firma_wrap" style="position: absolute; top: 50%; left: 0; width: 100%; height: 50px; transform: translateY(-50%); display: flex; align-items: center; justify-content: center; z-index: 2; pointer-events: none; opacity: 0.92;"></div>
+                </div>
                 <p style="margin: 2px 0; font-size: 11px; color: #666;">Director de Ventas</p>
             </div>
         </div>
@@ -2232,7 +2235,7 @@
                     const resFirma = await fetchAPI(`${API_URL}/firmas/${encodeURIComponent(c.aprobado_por_email)}`);
                     const firma = await resFirma.json();
                     if (firma && firma.url_firma) {
-                        wrapFirma.innerHTML = `<img src="${firma.url_firma}" style="max-height: 65px; max-width: 100%;" crossorigin="anonymous">`;
+                        wrapFirma.innerHTML = `<img src="${firma.url_firma}" style="max-height: 55px; max-width: 110%;" crossorigin="anonymous">`;
                     }
                 } catch (e) { console.error(e); }
             }

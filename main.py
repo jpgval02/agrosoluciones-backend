@@ -4,7 +4,12 @@ from pydantic import BaseModel
 from typing import Optional, List
 from supabase import create_client, Client
 import os
+import logging
+import traceback
 from dotenv import load_dotenv
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger("agrosoluciones")
 
 # --- NUEVAS IMPORTACIONES PARA GOOGLE CALENDAR ---
 from google.oauth2 import service_account
@@ -647,21 +652,38 @@ async def obtener_firma_de(email: str, usuario: dict = Depends(obtener_usuario_a
 
 @app.post("/firmas/")
 async def subir_firma(archivo: UploadFile = File(...), usuario: dict = Depends(requiere_rol("admin"))):
-    try:
-        contenido = await archivo.read()
-        extension = archivo.filename.split('.')[-1] if '.' in archivo.filename else 'png'
-        nombre_archivo = f"{usuario['email']}.{extension}"
+    contenido = await archivo.read()
+    extension = archivo.filename.split('.')[-1] if '.' in archivo.filename else 'png'
+    nombre_archivo = f"{usuario['email']}.{extension}"
 
+    # Paso 1: subir el archivo al bucket de Storage
+    try:
         supabase.storage.from_('firmas').upload(
             nombre_archivo, contenido,
-            {"content-type": archivo.content_type, "upsert": "true"}
+            {"content-type": archivo.content_type or "image/png", "x-upsert": "true"}
         )
-        url_publica = supabase.storage.from_('firmas').get_public_url(nombre_archivo)
-
-        supabase.table('firmas').upsert({'email': usuario["email"], 'url_firma': url_publica}).execute()
-        return {"mensaje": "Firma guardada", "url": url_publica}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error("Fallo al subir a Storage bucket 'firmas': %s", traceback.format_exc())
+        raise HTTPException(status_code=500, detail=f"Error al subir a Storage: {e}")
+
+    # Paso 2: obtener la URL pública
+    try:
+        url_publica = supabase.storage.from_('firmas').get_public_url(nombre_archivo)
+    except Exception as e:
+        logger.error("Fallo al obtener URL pública: %s", traceback.format_exc())
+        raise HTTPException(status_code=500, detail=f"Error al obtener URL pública: {e}")
+
+    # Paso 3: guardar/actualizar el registro en la tabla 'firmas'
+    try:
+        supabase.table('firmas').upsert(
+            {'email': usuario["email"], 'url_firma': url_publica},
+            on_conflict="email"
+        ).execute()
+    except Exception as e:
+        logger.error("Fallo al guardar en tabla 'firmas': %s", traceback.format_exc())
+        raise HTTPException(status_code=500, detail=f"Error al guardar en la tabla: {e}")
+
+    return {"mensaje": "Firma guardada", "url": url_publica}
 
 @app.delete("/cotizaciones/{cot_id}")
 async def eliminar_cotizacion(cot_id: str, usuario: dict = Depends(requiere_rol("admin", "auxiliar_del_auxiliar"))):

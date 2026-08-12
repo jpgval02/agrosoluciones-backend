@@ -733,35 +733,36 @@
                             <p class="text-center text-xs text-gray-400 mb-6">Agrosoluciones Aéreas · Generado el <span id="rep_fecha_gen"></span></p>
 
                             <h3 class="text-xs font-bold uppercase text-gray-500 tracking-wider mb-2 border-b border-gray-200 pb-1"><i class="fa-solid fa-sack-dollar mr-1"></i> Resumen Financiero</h3>
-                            <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mb-6">
+                            <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mb-3">
                                 <div class="bg-white rounded-xl border border-gray-200 p-3"><p class="text-[10px] text-gray-400 font-bold uppercase">Ingresos</p><p id="rep_ingresos" class="text-lg font-extrabold text-emerald-700"></p><p id="rep_ingresos_cmp" class="text-[10px] font-semibold"></p></div>
                                 <div class="bg-white rounded-xl border border-gray-200 p-3"><p class="text-[10px] text-gray-400 font-bold uppercase">Egresos</p><p id="rep_egresos" class="text-lg font-extrabold text-rose-700"></p><p id="rep_egresos_cmp" class="text-[10px] font-semibold"></p></div>
                                 <div class="bg-white rounded-xl border border-gray-200 p-3"><p class="text-[10px] text-gray-400 font-bold uppercase">Utilidad Neta</p><p id="rep_utilidad" class="text-lg font-extrabold text-blue-700"></p><p id="rep_utilidad_cmp" class="text-[10px] font-semibold"></p></div>
                             </div>
+                            <p id="rep_texto_financiero" class="text-sm text-gray-600 leading-relaxed mb-6"></p>
 
                             <h3 class="text-xs font-bold uppercase text-gray-500 tracking-wider mb-2 border-b border-gray-200 pb-1"><i class="fa-solid fa-tractor mr-1"></i> Resumen Operativo</h3>
-                            <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mb-4">
+                            <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mb-3">
                                 <div class="bg-white rounded-xl border border-gray-200 p-3"><p class="text-[10px] text-gray-400 font-bold uppercase">Hectáreas Fumigadas</p><p id="rep_hectareas" class="text-lg font-extrabold text-gray-800"></p></div>
                                 <div class="bg-white rounded-xl border border-gray-200 p-3"><p class="text-[10px] text-gray-400 font-bold uppercase">Vuelos / Servicios</p><p id="rep_vuelos" class="text-lg font-extrabold text-gray-800"></p></div>
                             </div>
+                            <p id="rep_texto_operativo" class="text-sm text-gray-600 leading-relaxed mb-1"></p>
                             <div id="rep_cultivos" class="mb-6 text-sm text-gray-600"></div>
 
                             <h3 class="text-xs font-bold uppercase text-gray-500 tracking-wider mb-2 border-b border-gray-200 pb-1"><i class="fa-solid fa-funnel-dollar mr-1"></i> Embudo de Ventas</h3>
-                            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-3">
                                 <div class="bg-white rounded-xl border border-gray-200 p-3"><p class="text-[10px] text-gray-400 font-bold uppercase">Cotizaciones</p><p id="rep_cotizaciones" class="text-lg font-extrabold text-amber-600"></p></div>
                                 <div class="bg-white rounded-xl border border-gray-200 p-3"><p class="text-[10px] text-gray-400 font-bold uppercase">Conversión</p><p id="rep_conversion" class="text-lg font-extrabold text-purple-600"></p></div>
                                 <div class="bg-white rounded-xl border border-gray-200 p-3"><p class="text-[10px] text-gray-400 font-bold uppercase">Clientes Nuevos</p><p id="rep_clientes_nuevos" class="text-lg font-extrabold text-blue-600"></p></div>
                                 <div class="bg-white rounded-xl border border-gray-200 p-3"><p class="text-[10px] text-gray-400 font-bold uppercase">Subieron de Etapa</p><p id="rep_clientes_subieron" class="text-lg font-extrabold text-orange-600"></p></div>
                             </div>
+                            <p id="rep_texto_embudo" class="text-sm text-gray-600 leading-relaxed mb-6"></p>
 
                             <h3 class="text-xs font-bold uppercase text-gray-500 tracking-wider mb-2 border-b border-gray-200 pb-1"><i class="fa-solid fa-address-book mr-1"></i> Clientes y Parcelas</h3>
-                            <div class="grid grid-cols-2 gap-3 mb-6">
+                            <div class="grid grid-cols-2 gap-3 mb-3">
                                 <div class="bg-white rounded-xl border border-gray-200 p-3"><p class="text-[10px] text-gray-400 font-bold uppercase">Total Clientes Activos</p><p id="rep_total_clientes" class="text-lg font-extrabold text-gray-800"></p></div>
                                 <div class="bg-white rounded-xl border border-gray-200 p-3"><p class="text-[10px] text-gray-400 font-bold uppercase">Parcelas Nuevas</p><p id="rep_parcelas_nuevas" class="text-lg font-extrabold text-gray-800"></p></div>
                             </div>
-
-                            <h3 class="text-xs font-bold uppercase text-gray-500 tracking-wider mb-2 border-b border-gray-200 pb-1"><i class="fa-solid fa-star mr-1"></i> Top 5 Clientes del Mes</h3>
-                            <table class="w-full text-sm mb-6"><tbody id="rep_top5"></tbody></table>
+                            <p id="rep_texto_cartera" class="text-sm text-gray-600 leading-relaxed mb-6"></p>
 
                             <h3 class="text-xs font-bold uppercase text-gray-500 tracking-wider mb-2 border-b border-gray-200 pb-1"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Alertas / Pendientes</h3>
                             <ul id="rep_alertas" class="text-sm text-gray-700 space-y-1.5"></ul>
@@ -2623,6 +2624,19 @@
             document.getElementById('rep_utilidad_cmp').innerText = variacion(utilidad, utilidadAnt);
             document.getElementById('rep_utilidad_cmp').className = 'text-[10px] font-semibold ' + claseVar(utilidad, utilidadAnt);
 
+            const margen = ingresos ? ((utilidad / ingresos) * 100).toFixed(1) : '0.0';
+            const tendenciaUtilidad = utilidadAnt ? ((utilidad - utilidadAnt) / Math.abs(utilidadAnt)) * 100 : null;
+            let fraseTendencia = 'no hay datos del mes anterior para comparar.';
+            if (tendenciaUtilidad !== null) {
+                fraseTendencia = tendenciaUtilidad >= 0
+                    ? `esto representa un incremento del ${tendenciaUtilidad.toFixed(1)}% frente al mes anterior.`
+                    : `esto representa una caída del ${Math.abs(tendenciaUtilidad).toFixed(1)}% frente al mes anterior.`;
+            }
+            document.getElementById('rep_texto_financiero').innerHTML =
+                `Durante ${nombresMeses[mes]} la operación generó <strong>$${ingresos.toLocaleString('es-MX')}</strong> en ingresos contra ` +
+                `<strong>$${egresos.toLocaleString('es-MX')}</strong> en egresos, dejando una utilidad neta de <strong>$${utilidad.toLocaleString('es-MX')}</strong> ` +
+                `(margen del ${margen}% sobre ingresos); ${fraseTendencia}`;
+
             // --- Operativo ---
             const hectareas = serviciosMes.reduce((acc, s) => {
                 const pr = memoriaPropiedades.find(p => String(p.id) === String(s.propiedad_id));
@@ -2630,6 +2644,12 @@
             }, 0);
             document.getElementById('rep_hectareas').innerText = hectareas.toFixed(1) + ' Ha';
             document.getElementById('rep_vuelos').innerText = serviciosMes.length;
+
+            const promedioHaPorVuelo = serviciosMes.length ? (hectareas / serviciosMes.length).toFixed(1) : '0.0';
+            document.getElementById('rep_texto_operativo').innerHTML = serviciosMes.length
+                ? `Se realizaron <strong>${serviciosMes.length}</strong> vuelo(s)/servicio(s) cubriendo un total de <strong>${hectareas.toFixed(1)} Ha</strong>, ` +
+                  `un promedio de ${promedioHaPorVuelo} Ha por vuelo.`
+                : 'No se registraron vuelos ni servicios durante el mes.';
 
             const porCultivo = {};
             serviciosMes.forEach(s => {
@@ -2659,25 +2679,22 @@
             const clientesSubieron = memoriaClientes.filter(c => idsClientesConActividad.has(String(c.id)) && c.estado !== 'Prospecto').length;
             document.getElementById('rep_clientes_subieron').innerText = clientesSubieron;
 
+            document.getElementById('rep_texto_embudo').innerHTML = cotizacionesMes.length
+                ? `Se generaron <strong>${cotizacionesMes.length}</strong> cotización(es) este mes, de las cuales <strong>${convertidasMes}</strong> se convirtieron en venta ` +
+                  `(<strong>${pctConversion}</strong> de conversión). Se sumaron <strong>${clientesNuevosMes.length}</strong> cliente(s) nuevo(s) a la cartera, y ` +
+                  `<strong>${clientesSubieron}</strong> cliente(s) avanzaron de etapa dentro del embudo comercial este mes.`
+                : 'No se generaron cotizaciones nuevas durante el mes.';
+
             // --- Clientes y parcelas ---
             document.getElementById('rep_total_clientes').innerText = memoriaClientes.length;
             const parcelasNuevasMes = memoriaPropiedades.filter(p => coincideMesAnio(p.creado_en, mes, anio));
             document.getElementById('rep_parcelas_nuevas').innerText = parcelasNuevasMes.length;
 
-            // --- Top 5 clientes del mes (por ingreso) ---
-            const ingresoPorCliente = {};
-            serviciosMes.forEach(s => {
-                const pr = memoriaPropiedades.find(p => String(p.id) === String(s.propiedad_id));
-                if (!pr) return;
-                const cl = memoriaClientes.find(c => String(c.id) === String(pr.cliente_id));
-                if (!cl) return;
-                const nombre = `${cl.nombre} ${cl.apellidos}`;
-                ingresoPorCliente[nombre] = (ingresoPorCliente[nombre] || 0) + (parseFloat(s.costo_servicio) || 0);
-            });
-            const top5 = Object.entries(ingresoPorCliente).sort((a, b) => b[1] - a[1]).slice(0, 5);
-            document.getElementById('rep_top5').innerHTML = top5.length 
-                ? top5.map(([nombre, monto], i) => `<tr class="border-b border-gray-100"><td class="py-1.5 text-gray-500 w-8">#${i+1}</td><td class="py-1.5 font-semibold text-gray-700">${nombre}</td><td class="py-1.5 text-right font-bold text-emerald-700">$${monto.toLocaleString('es-MX')}</td></tr>`).join('')
-                : '<tr><td class="py-2 text-gray-400 text-sm">Sin ventas registradas este mes.</td></tr>';
+            document.getElementById('rep_texto_cartera').innerHTML =
+                `La cartera activa asciende a <strong>${memoriaClientes.length}</strong> cliente(s) en total. ` +
+                (parcelasNuevasMes.length
+                    ? `Se dieron de alta <strong>${parcelasNuevasMes.length}</strong> parcela(s) nueva(s) durante el mes, ampliando la base de propiedades atendidas.`
+                    : 'No se registraron parcelas nuevas durante el mes.');
 
             // --- Alertas ---
             const hoy = new Date(); hoy.setHours(0,0,0,0);

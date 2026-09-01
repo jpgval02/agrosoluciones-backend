@@ -177,6 +177,19 @@ class CotizacionNueva(BaseModel):
     estado: Optional[str] = "Pendiente"
     observaciones: Optional[str] = ""
 
+class BitacoraMantenimientoNueva(BaseModel):
+    equipo: str  # "Dron" o "Generador"
+    tipo_mantenimiento: str
+    fecha: str
+    costo: Optional[float] = 0
+    horas_uso: Optional[float] = None
+    proximo_fecha: Optional[str] = None
+    proximo_horas: Optional[float] = None
+    notas: Optional[str] = ""
+
+class HorometroActualizado(BaseModel):
+    horas_actuales: float
+
 
 # --- FUNCIÓN DE GOOGLE CALENDAR (ACTUALIZADA PARA INVITADOS) ---
 def agendar_en_google_calendar(fecha, no_cotizacion, observaciones, nombre_productor, parcela, hectareas, notificar_a=None):
@@ -746,4 +759,66 @@ async def guardar_metas(metas: MetasMensuales, usuario: dict = Depends(requiere_
             supabase.table('metas_mensuales').insert(metas.dict()).execute()
         await manager.broadcast("update")
         return {"mensaje": "Metas guardadas correctamente"}
+    except Exception as e: raise HTTPException(status_code=500, detail=str(e))
+
+
+# ============================================================
+# --- OPERACIONES: BITÁCORAS DE MANTENIMIENTO (Dron / Generador) ---
+# Registran: admin y jefe_operaciones. Ven: cualquier usuario logueado.
+# ============================================================
+@app.get("/operaciones/bitacoras/")
+async def obtener_bitacoras(usuario: dict = Depends(obtener_usuario_actual)):
+    respuesta = supabase.table('bitacoras_mantenimiento').select("*").order('fecha', desc=True).execute()
+    return respuesta.data
+
+@app.post("/operaciones/bitacoras/")
+async def registrar_bitacora(bit: BitacoraMantenimientoNueva, usuario: dict = Depends(requiere_rol("admin", "jefe_operaciones"))):
+    try:
+        if bit.equipo not in ("Dron", "Generador"):
+            raise HTTPException(status_code=400, detail="Equipo inválido.")
+        datos = bit.dict()
+        datos["realizado_por_email"] = usuario["email"]
+        datos["realizado_por_nombre"] = usuario["nombre"]
+        respuesta = supabase.table('bitacoras_mantenimiento').insert(datos).execute()
+        await manager.broadcast("update")
+        return {"mensaje": "Bitácora guardada", "datos": respuesta.data[0]}
+    except HTTPException: raise
+    except Exception as e: raise HTTPException(status_code=500, detail=str(e))
+
+@app.put("/operaciones/bitacoras/{bitacora_id}")
+async def actualizar_bitacora(bitacora_id: str, bit: BitacoraMantenimientoNueva, usuario: dict = Depends(requiere_rol("admin", "jefe_operaciones"))):
+    try:
+        respuesta = supabase.table('bitacoras_mantenimiento').update(bit.dict()).eq('id', bitacora_id).execute()
+        await manager.broadcast("update")
+        return {"mensaje": "Actualizada", "datos": respuesta.data[0]}
+    except Exception as e: raise HTTPException(status_code=500, detail=str(e))
+
+@app.delete("/operaciones/bitacoras/{bitacora_id}")
+async def eliminar_bitacora(bitacora_id: str, usuario: dict = Depends(requiere_rol("admin", "jefe_operaciones"))):
+    try:
+        supabase.table('bitacoras_mantenimiento').delete().eq('id', bitacora_id).execute()
+        await manager.broadcast("update")
+        return {"mensaje": "Eliminada"}
+    except Exception as e: raise HTTPException(status_code=500, detail=str(e))
+
+# --- Horómetro actual de cada equipo (para la alerta por horas de uso) ---
+@app.get("/operaciones/equipos-estado/")
+async def obtener_equipos_estado(usuario: dict = Depends(obtener_usuario_actual)):
+    respuesta = supabase.table('equipos_estado').select("*").execute()
+    return respuesta.data
+
+@app.put("/operaciones/equipos-estado/{equipo}")
+async def actualizar_horometro(equipo: str, cuerpo: HorometroActualizado, usuario: dict = Depends(requiere_rol("admin", "jefe_operaciones"))):
+    try:
+        if equipo not in ("Dron", "Generador"):
+            raise HTTPException(status_code=400, detail="Equipo inválido.")
+        supabase.table('equipos_estado').upsert({
+            "equipo": equipo,
+            "horas_actuales": cuerpo.horas_actuales,
+            "actualizado_por_email": usuario["email"],
+            "actualizado_en": datetime.utcnow().isoformat()
+        }, on_conflict="equipo").execute()
+        await manager.broadcast("update")
+        return {"mensaje": "Horómetro actualizado"}
+    except HTTPException: raise
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))

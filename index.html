@@ -26,6 +26,8 @@
         .kpi-text-real { font-size: 16px; font-weight: bold; color: #000000; }
         /* Oculta los botones de "eliminar" para cualquier rol distinto de admin */
         body.rol-no-admin .btn-eliminar-rol { display: none !important; }
+        /* Operaciones: oculta editar/eliminar para roles de solo lectura (ej. financiero) */
+        body.operaciones-solo-lectura .btn-op-editar { display: none !important; }
         .tab-crm { padding: 6px 14px; border-radius: 999px; font-weight: 700; color: #6b7280; background: #fff; border: 1px solid #e5e7eb; cursor: pointer; transition: all .15s; }
         .tab-crm:hover { background: #f3f4f6; }
         .tab-crm.tab-crm-activo { background: #187547; color: #fff; border-color: #187547; }
@@ -463,8 +465,57 @@
 
                 <!-- Tabla Operaciones -->
                 <div id="vista-tabla-operaciones" class="hidden bg-white p-4 md:p-8 rounded-2xl shadow-xl border border-gray-200 min-h-[450px]">
-                    <div class="flex items-center gap-3 border-b border-gray-100 pb-4 mb-6"><div class="bg-green-100 p-3 rounded-xl text-green-700 text-xl"><i class="fa-solid fa-gears"></i></div><div><h2 class="text-lg md:text-xl font-bold text-gray-800">Módulo de Operaciones</h2><p class="text-[10px] md:text-xs text-gray-400 mt-0.5">Lienzo operativo disponible para desarrollo</p></div></div>
-                    <div class="flex flex-col items-center justify-center py-12 border border-dashed border-gray-200 rounded-xl bg-gray-50/50 text-center px-4"><div class="bg-white p-4 rounded-full shadow-sm text-gray-300 text-3xl mb-3"><i class="fa-solid fa-code"></i></div><p class="text-sm font-bold text-gray-600">Módulo Listo</p></div>
+                    <div class="flex items-center gap-3 border-b border-gray-100 pb-4 mb-6"><div class="bg-green-100 p-3 rounded-xl text-green-700 text-xl"><i class="fa-solid fa-gears"></i></div><div><h2 class="text-lg md:text-xl font-bold text-gray-800">Módulo de Operaciones</h2><p class="text-[10px] md:text-xs text-gray-400 mt-0.5">Bitácoras, checklist y seguimiento de cada servicio</p></div></div>
+
+                    <div class="flex gap-2 text-xs mb-6 flex-wrap">
+                        <button id="opTab_bitacoras" onclick="cambiarSubTabOperaciones('bitacoras')" class="tab-crm tab-crm-activo"><i class="fa-solid fa-screwdriver-wrench mr-1"></i> Bitácoras de Mantenimiento</button>
+                        <button id="opTab_checklist" onclick="cambiarSubTabOperaciones('checklist')" class="tab-crm"><i class="fa-solid fa-clipboard-check mr-1"></i> Inventario / Checklist</button>
+                        <button id="opTab_reporte" onclick="cambiarSubTabOperaciones('reporte')" class="tab-crm"><i class="fa-solid fa-file-signature mr-1"></i> Reporte de Servicio</button>
+                        <button id="opTab_otros" onclick="cambiarSubTabOperaciones('otros')" class="tab-crm"><i class="fa-solid fa-users mr-1"></i> Acompañantes y Observaciones</button>
+                    </div>
+
+                    <!-- SUB-VISTA: BITÁCORAS DE MANTENIMIENTO -->
+                    <div id="opSub-bitacoras" class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="cont-horometros"></div>
+
+                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+                            <h3 class="text-sm font-bold text-gray-700"><i class="fa-solid fa-clock-rotate-left mr-1 text-gray-400"></i> Historial de mantenimientos</h3>
+                            <div class="flex gap-2">
+                                <button onclick="descargarPDFBitacoras()" class="bg-gray-700 hover:bg-gray-800 text-white px-4 py-2 rounded-lg text-xs font-bold transition-colors shadow-sm"><i class="fa-solid fa-file-pdf mr-2"></i> Descargar PDF</button>
+                                <button id="btnNuevaBitacora" onclick="abrirModalBitacora()" class="hidden bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded-lg text-xs font-bold transition-colors shadow-sm"><i class="fa-solid fa-plus mr-2"></i> Registrar Mantenimiento</button>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
+                            <div class="overflow-x-auto custom-scrollbar max-h-[500px] relative">
+                                <table class="w-full divide-y divide-gray-200 text-sm border-collapse">
+                                    <thead class="bg-gray-100 text-gray-700 sticky top-0 z-10 shadow-sm border-b-2 border-gray-300">
+                                        <tr>
+                                            <th class="th-excel">Equipo</th>
+                                            <th class="th-excel">Tipo de Mantenimiento</th>
+                                            <th class="th-excel">Fecha</th>
+                                            <th class="th-excel">Realizó</th>
+                                            <th class="th-excel">Costo</th>
+                                            <th class="th-excel">Horas de Uso</th>
+                                            <th class="th-excel bg-amber-50 text-amber-900">Próximo Mant.</th>
+                                            <th class="th-excel">Notas</th>
+                                            <th class="th-excel bg-gray-200 text-center">Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="cuerpoTablaBitacoras" class="bg-white divide-y divide-gray-200"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SUB-VISTA: CHECKLIST (próximo desarrollo) -->
+                    <div id="opSub-checklist" class="hidden flex flex-col items-center justify-center py-12 border border-dashed border-gray-200 rounded-xl bg-gray-50/50 text-center px-4"><div class="bg-white p-4 rounded-full shadow-sm text-gray-300 text-3xl mb-3"><i class="fa-solid fa-clipboard-check"></i></div><p class="text-sm font-bold text-gray-600">Próximo desarrollo</p></div>
+
+                    <!-- SUB-VISTA: REPORTE DE SERVICIO (próximo desarrollo) -->
+                    <div id="opSub-reporte" class="hidden flex flex-col items-center justify-center py-12 border border-dashed border-gray-200 rounded-xl bg-gray-50/50 text-center px-4"><div class="bg-white p-4 rounded-full shadow-sm text-gray-300 text-3xl mb-3"><i class="fa-solid fa-file-signature"></i></div><p class="text-sm font-bold text-gray-600">Próximo desarrollo</p></div>
+
+                    <!-- SUB-VISTA: ACOMPAÑANTES / OBSERVACIONES (próximo desarrollo) -->
+                    <div id="opSub-otros" class="hidden flex flex-col items-center justify-center py-12 border border-dashed border-gray-200 rounded-xl bg-gray-50/50 text-center px-4"><div class="bg-white p-4 rounded-full shadow-sm text-gray-300 text-3xl mb-3"><i class="fa-solid fa-users"></i></div><p class="text-sm font-bold text-gray-600">Próximo desarrollo</p></div>
                 </div>
 
                 <!-- Tablas Financieros -->
@@ -599,6 +650,59 @@
                             </table>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <!-- MODAL: NUEVA/EDITAR BITÁCORA DE MANTENIMIENTO -->
+            <div id="modal-bitacora" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 p-4">
+                <div class="bg-white p-6 rounded-2xl shadow-2xl w-full max-w-md border border-gray-200 max-h-[90vh] overflow-y-auto">
+                    <div class="flex justify-between items-center mb-4"><h3 class="text-xl font-bold text-gray-800"><i class="fa-solid fa-screwdriver-wrench text-green-600 mr-2"></i> Mantenimiento</h3><button onclick="cerrarModalBitacora()" class="text-gray-400 hover:text-red-500"><i class="fa-solid fa-xmark text-xl"></i></button></div>
+                    <form id="formBitacora" class="space-y-3" onsubmit="guardarBitacora(event)">
+                        <input type="hidden" id="bit_id" value="">
+                        <div>
+                            <label class="text-xs font-bold text-gray-500">Equipo</label>
+                            <select id="bit_equipo" required class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+                                <option value="Dron">Dron</option>
+                                <option value="Generador">Generador</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-gray-500">Tipo de Mantenimiento</label>
+                            <input type="text" id="bit_tipo" required placeholder="Ej. Cambio de aceite, revisión de hélices..." class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-gray-500">Fecha</label>
+                            <input type="date" id="bit_fecha" required class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="text-xs font-bold text-gray-500">Costo</label>
+                                <input type="number" step="0.01" id="bit_costo" value="0" class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+                            </div>
+                            <div>
+                                <label class="text-xs font-bold text-gray-500">Horas de uso</label>
+                                <input type="number" step="0.1" id="bit_horas_uso" placeholder="Lectura actual" class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+                            </div>
+                        </div>
+                        <div class="border-t border-dashed border-gray-200 pt-3">
+                            <p class="text-xs font-bold text-amber-700 mb-2"><i class="fa-solid fa-bell mr-1"></i> Próximo mantenimiento (lo que llegue primero)</p>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="text-xs font-bold text-gray-500">Fecha</label>
+                                    <input type="date" id="bit_proximo_fecha" class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+                                </div>
+                                <div>
+                                    <label class="text-xs font-bold text-gray-500">Horas</label>
+                                    <input type="number" step="0.1" id="bit_proximo_horas" class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-gray-500">Notas</label>
+                            <textarea id="bit_notas" rows="2" class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm"></textarea>
+                        </div>
+                        <button type="submit" class="w-full py-3 bg-green-700 hover:bg-green-800 text-white font-bold rounded-xl shadow-md transition-colors mt-2">Guardar</button>
+                    </form>
                 </div>
             </div>
 
@@ -1229,9 +1333,37 @@
 
     </div>
 
+    <!-- PLANTILLA PDF: BITÁCORAS DE MANTENIMIENTO -->
+    <div id="pdf-bitacoras-template" style="display: none; width: 800px; background-color: white; padding: 20px 30px; font-family: sans-serif; font-size: 11px; line-height: 1.3; color: black; box-sizing: border-box; margin: 0;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+            <div style="width: 33.33%;"><img src="logo_nuevo.jpeg" alt="Logo" style="max-height: 45px;"></div>
+            <div style="width: 33.33%; text-align: center; font-weight: 800; font-size: 18px; line-height: 1.2; color: #064e3b;">AGROSOLUCIONES<br>AÉREAS</div>
+            <div style="width: 33.33%; text-align: right;">
+                <div style="font-weight: bold; font-size: 14px; color: #064e3b;">Bitácoras de Mantenimiento</div>
+                <div style="font-weight: normal; font-size: 11px; color: #6b7280;" id="pdfbit_fecha_emision"></div>
+            </div>
+        </div>
+        <table style="width: 100%; border-collapse: collapse; border: 1px solid black; text-align: left;">
+            <thead>
+                <tr style="background-color: #1b6b43; color: white;">
+                    <th style="border: 1px solid black; padding: 5px;">Equipo</th>
+                    <th style="border: 1px solid black; padding: 5px;">Tipo de Mantenimiento</th>
+                    <th style="border: 1px solid black; padding: 5px;">Fecha</th>
+                    <th style="border: 1px solid black; padding: 5px;">Realizó</th>
+                    <th style="border: 1px solid black; padding: 5px;">Costo</th>
+                    <th style="border: 1px solid black; padding: 5px;">Horas de Uso</th>
+                    <th style="border: 1px solid black; padding: 5px;">Próximo Mant.</th>
+                    <th style="border: 1px solid black; padding: 5px;">Notas</th>
+                </tr>
+            </thead>
+            <tbody id="pdfbit_cuerpo"></tbody>
+        </table>
+    </div>
+
     <script>
         const API_URL = "https://agrosoluciones-backend.onrender.com";
         let memoriaClientes = [], memoriaPropiedades = [], memoriaServicios = [], memoriaCotizaciones = [];
+        let memoriaBitacoras = [], memoriaEquiposEstado = [];
         let rolUsuario = localStorage.getItem('rolUsuario') || 'operador';
         let tokenSesion = localStorage.getItem('tokenSesion') || null;
         let visitasCampoRealizadas = 0; 
@@ -1398,6 +1530,9 @@
                 } else if(rolUsuario === 'auxiliar_del_auxiliar') {
                     badge.innerHTML = '<i class="fa-solid fa-user-plus mr-1 text-purple-300"></i> AUXILIAR DEL AUXILIAR';
                     badge.className = "hidden md:inline-block ml-4 text-xs font-bold px-2 py-1 bg-purple-950 text-purple-300 rounded-md border border-purple-600 tracking-wider";
+                } else if(rolUsuario === 'jefe_operaciones') {
+                    badge.innerHTML = '<i class="fa-solid fa-helmet-safety mr-1 text-orange-300"></i> JEFE DE OPERACIONES';
+                    badge.className = "hidden md:inline-block ml-4 text-xs font-bold px-2 py-1 bg-orange-950 text-orange-300 rounded-md border border-orange-600 tracking-wider";
                 } else {
                     badge.innerHTML = '<i class="fa-solid fa-user-gear mr-1 text-green-300"></i> OPERADOR';
                     badge.className = "hidden md:inline-block ml-4 text-xs font-bold px-2 py-1 bg-green-950 text-green-300 rounded-md border border-green-600 tracking-wider";
@@ -1459,6 +1594,14 @@
             const btnReporte = document.getElementById('btnReporteEjecutivo');
             if (btnReporte) btnReporte.classList.toggle('hidden', rolUsuario !== 'admin');
 
+            // Bitácoras de mantenimiento: solo admin y jefe_operaciones registran/editan/eliminan
+            const puedeEditarBitacoras = ROLES_BITACORAS_EDITAN.includes(rolUsuario);
+            const btnNuevaBitacora = document.getElementById('btnNuevaBitacora');
+            if (btnNuevaBitacora) btnNuevaBitacora.classList.toggle('hidden', !puedeEditarBitacoras);
+            document.body.classList.toggle('operaciones-solo-lectura', ROLES_OPERACIONES_SOLO_LECTURA.includes(rolUsuario));
+            renderizarBitacoras();
+            renderizarHorometros();
+
             // Si el usuario quedó parado en una vista que ya no le corresponde (o llega por URL), lo regresamos al inicio
             const enVistaRestringida = restringidas.some(vista => {
                 const el = document.getElementById('vista-tabla-' + vista);
@@ -1489,6 +1632,7 @@
             await cargarServicios(); 
             await cargarCotizaciones();
             await cargarContactos();
+            await cargarBitacoras();
             cambiarVista('inicio'); 
             revisarSeguimientos(); 
         }
@@ -1564,10 +1708,16 @@
         // --- Qué botones de menú (por su vista) NO puede ver cada rol ---
         const VISTAS_RESTRINGIDAS_POR_ROL = {
             'operador': ['financieros', 'ventas-crm', 'cotizaciones'],
-            'financiero': ['ventas-crm', 'operaciones'],
+            'financiero': ['ventas-crm'],
             'auxiliar_del_auxiliar': ['financieros'],
+            'jefe_operaciones': ['financieros', 'ventas-crm', 'cotizaciones'],
             'admin': []
         };
+
+        // Roles que solo pueden VER Operaciones, sin poder crear/editar/eliminar nada ahí dentro
+        const ROLES_OPERACIONES_SOLO_LECTURA = ['financiero'];
+        // Roles que pueden registrar/editar/eliminar bitácoras de mantenimiento
+        const ROLES_BITACORAS_EDITAN = ['admin', 'jefe_operaciones'];
 
         function cambiarVista(vista) {
             const restringidas = VISTAS_RESTRINGIDAS_POR_ROL[rolUsuario] || [];
@@ -1594,6 +1744,204 @@
                 const targetTabla = document.getElementById('vista-tabla-' + vista); 
                 if(targetTabla) { targetTabla.classList.remove('hidden'); targetTabla.classList.add('block'); } 
             }
+        }
+
+        // --- SUB-TABS DENTRO DE OPERACIONES ---
+        function cambiarSubTabOperaciones(sub) {
+            ['bitacoras', 'checklist', 'reporte', 'otros'].forEach(s => {
+                document.getElementById('opSub-' + s).classList.toggle('hidden', s !== sub);
+                document.getElementById('opTab_' + s).classList.toggle('tab-crm-activo', s === sub);
+            });
+        }
+
+        // --- OPERACIONES: BITÁCORAS DE MANTENIMIENTO ---
+        async function cargarBitacoras() {
+            try {
+                const [resBit, resEq] = await Promise.all([
+                    fetchAPI(`${API_URL}/operaciones/bitacoras/`),
+                    fetchAPI(`${API_URL}/operaciones/equipos-estado/`)
+                ]);
+                memoriaBitacoras = await resBit.json();
+                memoriaEquiposEstado = await resEq.json();
+            } catch (e) { console.error(e); memoriaBitacoras = []; memoriaEquiposEstado = []; }
+            renderizarBitacoras();
+            renderizarHorometros();
+        }
+
+        function proximoMantenimientoDe(equipo) {
+            // La bitácora más reciente (por fecha) de ese equipo marca cuál es el próximo mantenimiento vigente
+            const delEquipo = memoriaBitacoras.filter(b => b.equipo === equipo).sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+            return delEquipo.length ? delEquipo[0] : null;
+        }
+
+        function renderizarHorometros() {
+            const cont = document.getElementById('cont-horometros');
+            if (!cont) return;
+            const puedeEditar = ROLES_BITACORAS_EDITAN.includes(rolUsuario);
+            cont.innerHTML = ['Dron', 'Generador'].map(equipo => {
+                const estado = memoriaEquiposEstado.find(e => e.equipo === equipo);
+                const horas = estado ? (estado.horas_actuales || 0) : 0;
+                const proximo = proximoMantenimientoDe(equipo);
+                const icono = equipo === 'Dron' ? 'fa-helicopter' : 'fa-bolt';
+                return `
+                <div class="bg-gray-50 border border-gray-200 rounded-xl p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-bold text-sm text-gray-700"><i class="fa-solid ${icono} mr-2 text-green-600"></i>${equipo}</span>
+                        <span class="text-[10px] text-gray-400">Horómetro actual</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <input type="number" step="0.1" id="horometro_${equipo}" value="${horas}" ${puedeEditar ? '' : 'disabled'} class="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm font-bold">
+                        ${puedeEditar ? `<button onclick="actualizarHorometro('${equipo}')" class="bg-green-700 hover:bg-green-800 text-white px-3 py-2 rounded-lg text-xs font-bold shrink-0">Guardar</button>` : ''}
+                    </div>
+                    ${proximo ? `<p class="text-[11px] text-gray-500 mt-2">Próximo mant.: ${proximo.proximo_fecha || '—'} ${proximo.proximo_horas ? ' / ' + proximo.proximo_horas + ' hrs' : ''}</p>` : '<p class="text-[11px] text-gray-400 mt-2">Sin mantenimientos registrados aún.</p>'}
+                </div>`;
+            }).join('');
+        }
+
+        async function actualizarHorometro(equipo) {
+            const valor = parseFloat(document.getElementById(`horometro_${equipo}`).value || 0);
+            try {
+                await fetchAPI(`${API_URL}/operaciones/equipos-estado/${equipo}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ horas_actuales: valor }) });
+                await cargarBitacoras();
+            } catch (e) { alert('No se pudo actualizar el horómetro.'); console.error(e); }
+        }
+
+        function renderizarBitacoras() {
+            const cuerpo = document.getElementById('cuerpoTablaBitacoras');
+            if (!cuerpo) return;
+            const puedeEditar = ROLES_BITACORAS_EDITAN.includes(rolUsuario);
+            if (!memoriaBitacoras.length) {
+                cuerpo.innerHTML = `<tr><td colspan="9" class="text-center text-gray-400 text-xs py-8">Aún no hay mantenimientos registrados.</td></tr>`;
+                return;
+            }
+            cuerpo.innerHTML = memoriaBitacoras.map(b => `
+                <tr class="hover:bg-gray-50">
+                    <td class="td-excel font-bold">${b.equipo}</td>
+                    <td class="td-excel">${b.tipo_mantenimiento}</td>
+                    <td class="td-excel">${b.fecha}</td>
+                    <td class="td-excel">${b.realizado_por_nombre || b.realizado_por_email || 'N/A'}</td>
+                    <td class="td-excel">$${(b.costo || 0).toLocaleString()}</td>
+                    <td class="td-excel">${b.horas_uso ?? '—'}</td>
+                    <td class="td-excel bg-amber-50/50">${b.proximo_fecha || '—'}${b.proximo_horas ? ' / ' + b.proximo_horas + ' hrs' : ''}</td>
+                    <td class="td-excel max-w-[180px] truncate" title="${b.notas || ''}">${b.notas || ''}</td>
+                    <td class="td-excel text-center btn-op-editar">
+                        ${puedeEditar ? `
+                        <button onclick="editarBitacora('${b.id}')" class="text-blue-500 hover:text-blue-700 mr-2" title="Editar"><i class="fa-solid fa-pen"></i></button>
+                        <button onclick="eliminarBitacora('${b.id}')" class="text-rose-500 hover:text-rose-700" title="Eliminar"><i class="fa-solid fa-trash"></i></button>` : '—'}
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function abrirModalBitacora() {
+            document.getElementById('formBitacora').reset();
+            document.getElementById('bit_id').value = '';
+            document.getElementById('bit_fecha').value = new Date().toISOString().split('T')[0];
+            document.getElementById('bit_costo').value = 0;
+            document.getElementById('modal-bitacora').classList.remove('hidden');
+        }
+        function cerrarModalBitacora() { document.getElementById('modal-bitacora').classList.add('hidden'); }
+
+        function editarBitacora(id) {
+            const b = memoriaBitacoras.find(x => String(x.id) === String(id));
+            if (!b) return;
+            document.getElementById('bit_id').value = b.id;
+            document.getElementById('bit_equipo').value = b.equipo;
+            document.getElementById('bit_tipo').value = b.tipo_mantenimiento;
+            document.getElementById('bit_fecha').value = b.fecha;
+            document.getElementById('bit_costo').value = b.costo || 0;
+            document.getElementById('bit_horas_uso').value = b.horas_uso ?? '';
+            document.getElementById('bit_proximo_fecha').value = b.proximo_fecha || '';
+            document.getElementById('bit_proximo_horas').value = b.proximo_horas ?? '';
+            document.getElementById('bit_notas').value = b.notas || '';
+            document.getElementById('modal-bitacora').classList.remove('hidden');
+        }
+
+        async function guardarBitacora(e) {
+            e.preventDefault();
+            const id = document.getElementById('bit_id').value;
+            const payload = {
+                equipo: document.getElementById('bit_equipo').value,
+                tipo_mantenimiento: document.getElementById('bit_tipo').value,
+                fecha: document.getElementById('bit_fecha').value,
+                costo: parseFloat(document.getElementById('bit_costo').value || 0),
+                horas_uso: document.getElementById('bit_horas_uso').value ? parseFloat(document.getElementById('bit_horas_uso').value) : null,
+                proximo_fecha: document.getElementById('bit_proximo_fecha').value || null,
+                proximo_horas: document.getElementById('bit_proximo_horas').value ? parseFloat(document.getElementById('bit_proximo_horas').value) : null,
+                notas: document.getElementById('bit_notas').value
+            };
+            try {
+                if (id) {
+                    await fetchAPI(`${API_URL}/operaciones/bitacoras/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                } else {
+                    await fetchAPI(`${API_URL}/operaciones/bitacoras/`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                }
+                cerrarModalBitacora();
+                await cargarBitacoras();
+                revisarSeguimientos();
+            } catch (e) { alert('No se pudo guardar la bitácora.'); console.error(e); }
+        }
+
+        async function eliminarBitacora(id) {
+            if (!confirm('¿Eliminar este registro de mantenimiento?')) return;
+            try {
+                await fetchAPI(`${API_URL}/operaciones/bitacoras/${id}`, { method: 'DELETE' });
+                await cargarBitacoras();
+                revisarSeguimientos();
+            } catch (e) { alert('No se pudo eliminar.'); console.error(e); }
+        }
+
+        function descargarPDFBitacoras() {
+            const cuerpo = document.getElementById('pdfbit_cuerpo');
+            document.getElementById('pdfbit_fecha_emision').innerText = 'Emitido: ' + new Date().toLocaleDateString('es-MX');
+            if (!memoriaBitacoras.length) {
+                cuerpo.innerHTML = `<tr><td colspan="8" style="border: 1px solid black; padding: 8px; text-align: center;">Sin registros</td></tr>`;
+            } else {
+                cuerpo.innerHTML = memoriaBitacoras.map(b => `
+                    <tr>
+                        <td style="border: 1px solid black; padding: 4px;">${b.equipo}</td>
+                        <td style="border: 1px solid black; padding: 4px;">${b.tipo_mantenimiento}</td>
+                        <td style="border: 1px solid black; padding: 4px;">${b.fecha}</td>
+                        <td style="border: 1px solid black; padding: 4px;">${b.realizado_por_nombre || b.realizado_por_email || 'N/A'}</td>
+                        <td style="border: 1px solid black; padding: 4px;">$${(b.costo || 0).toLocaleString()}</td>
+                        <td style="border: 1px solid black; padding: 4px;">${b.horas_uso ?? '—'}</td>
+                        <td style="border: 1px solid black; padding: 4px;">${b.proximo_fecha || '—'}${b.proximo_horas ? ' / ' + b.proximo_horas + ' hrs' : ''}</td>
+                        <td style="border: 1px solid black; padding: 4px;">${b.notas || ''}</td>
+                    </tr>
+                `).join('');
+            }
+
+            const overlay = document.getElementById('pdf-loading-overlay');
+            const appContent = document.getElementById('app-content');
+            const template = document.getElementById('pdf-bitacoras-template');
+
+            overlay.classList.remove('hidden');
+            overlay.style.display = 'flex';
+            appContent.style.display = 'none';
+            template.style.display = 'block';
+            window.scrollTo(0, 0);
+
+            setTimeout(() => {
+                const opt = {
+                    margin: 0.15,
+                    filename: `Bitacoras_Mantenimiento_${new Date().toISOString().split('T')[0]}.pdf`,
+                    image: { type: 'jpeg', quality: 1.0 },
+                    html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
+                    jsPDF: { unit: 'in', format: 'letter', orientation: 'landscape' }
+                };
+                html2pdf().set(opt).from(template).save().then(() => {
+                    template.style.display = 'none';
+                    appContent.style.display = 'block';
+                    overlay.style.display = 'none';
+                    overlay.classList.add('hidden');
+                }).catch(err => {
+                    console.error(err);
+                    template.style.display = 'none';
+                    appContent.style.display = 'block';
+                    overlay.style.display = 'none';
+                    overlay.classList.add('hidden');
+                });
+            }, 200);
         }
 
         // --- SISTEMA DE NOTIFICACIONES TIPO PANEL ---
@@ -1634,8 +1982,34 @@
             });
             
             seguimientosPendientes.sort((a, b) => a.dias - b.dias);
-            
-            const total = seguimientosPendientes.length;
+
+            // --- Próximos mantenimientos (Dron / Generador): por fecha (≤10 días) u horas (≤10 hrs restantes), lo que llegue primero ---
+            let mantenimientosPendientes = [];
+            ['Dron', 'Generador'].forEach(equipo => {
+                const ultima = memoriaBitacoras.filter(b => b.equipo === equipo).sort((a, b) => new Date(b.fecha) - new Date(a.fecha))[0];
+                if (!ultima) return;
+                const estadoEquipo = memoriaEquiposEstado.find(e => e.equipo === equipo);
+                const horasActuales = estadoEquipo ? (estadoEquipo.horas_actuales || 0) : 0;
+
+                let diasFecha = null;
+                if (ultima.proximo_fecha) {
+                    const partes = ultima.proximo_fecha.split('-');
+                    if (partes.length === 3) {
+                        const fechaProx = new Date(partes[0], partes[1] - 1, partes[2]);
+                        diasFecha = Math.ceil((fechaProx - hoy) / (1000 * 60 * 60 * 24));
+                    }
+                }
+                let horasRestantes = (ultima.proximo_horas != null) ? (ultima.proximo_horas - horasActuales) : null;
+
+                const porFecha = diasFecha !== null && diasFecha <= 10;
+                const porHoras = horasRestantes !== null && horasRestantes <= 10;
+
+                if (porFecha || porHoras) {
+                    mantenimientosPendientes.push({ equipo, diasFecha, horasRestantes, proximo_fecha: ultima.proximo_fecha, proximo_horas: ultima.proximo_horas });
+                }
+            });
+
+            const total = seguimientosPendientes.length + mantenimientosPendientes.length;
             if (total > 0) {
                 badge.textContent = total;
                 badge.classList.remove('hidden');
@@ -1646,7 +2020,32 @@
                 lista.innerHTML = `<div class="p-6 text-center text-gray-400 text-xs font-bold flex flex-col items-center"><i class="fa-solid fa-mug-hot text-gray-500 text-3xl mb-3"></i>¡Todo al día! No hay seguimientos pendientes.</div>`;
                 return;
             }
-            
+
+            mantenimientosPendientes.forEach(m => {
+                let colorBorde = 'border-l-yellow-500';
+                let detalle = [];
+                if (m.diasFecha !== null && m.diasFecha <= 10) {
+                    detalle.push(m.diasFecha <= 0 ? `Fecha vencida (${m.proximo_fecha})` : `Faltan ${m.diasFecha} días (${m.proximo_fecha})`);
+                    if (m.diasFecha <= 0) colorBorde = 'border-l-red-500'; else if (m.diasFecha <= 5) colorBorde = 'border-l-orange-500';
+                }
+                if (m.horasRestantes !== null && m.horasRestantes <= 10) {
+                    detalle.push(m.horasRestantes <= 0 ? `Horas de uso rebasadas` : `Faltan ${m.horasRestantes.toFixed(1)} hrs`);
+                    if (m.horasRestantes <= 0) colorBorde = 'border-l-red-500';
+                }
+                const tarjeta = document.createElement('div');
+                tarjeta.className = `bg-gray-800 rounded-xl p-3 border-l-4 ${colorBorde} shadow-sm transition-all hover:bg-gray-750`;
+                tarjeta.innerHTML = `
+                    <div class="flex justify-between items-start mb-1">
+                        <p class="font-bold text-white text-sm truncate pr-2"><i class="fa-solid fa-screwdriver-wrench mr-1 text-amber-400"></i> Mantenimiento: ${m.equipo}</p>
+                    </div>
+                    <p class="text-[10px] text-gray-400 mb-2">${detalle.join(' · ')}</p>
+                    <div class="flex gap-2 mt-2">
+                        <button onclick="cerrarPanelNotif(); cambiarVista('operaciones'); cambiarSubTabOperaciones('bitacoras');" class="flex-1 bg-amber-600 hover:bg-amber-500 text-white text-[10px] font-bold py-1.5 rounded transition-colors shadow-sm">Ver Bitácoras</button>
+                    </div>
+                `;
+                lista.appendChild(tarjeta);
+            });
+
             seguimientosPendientes.forEach(seg => {
                 let colorBorde = 'border-l-yellow-500';
                 let textoDias = `Faltan ${seg.dias} días`;

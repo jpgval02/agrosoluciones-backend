@@ -2484,7 +2484,19 @@
             try {
                 const res = await fetchAPI(`${API_URL}/cotizaciones/`);
                 memoriaCotizaciones = await res.json();
-                
+
+                // Ordena por número de cotización (COT-XXXX), la más reciente arriba
+                memoriaCotizaciones.sort((a, b) => {
+                    const numDe = (c) => {
+                        let obs = {};
+                        try { if (c.observaciones) obs = JSON.parse(c.observaciones); } catch (e) {}
+                        const texto = obs.no_cotizacion || '';
+                        const match = texto.match(/(\d+)/);
+                        return match ? parseInt(match[1], 10) : -Infinity;
+                    };
+                    return numDe(b) - numDe(a);
+                });
+
                 const cuerpo = document.getElementById('cuerpoTablaCotizaciones');
                 if(cuerpo) cuerpo.innerHTML = '';
                 

@@ -508,8 +508,45 @@
                         </div>
                     </div>
 
-                    <!-- SUB-VISTA: CHECKLIST (próximo desarrollo) -->
-                    <div id="opSub-checklist" class="hidden flex flex-col items-center justify-center py-12 border border-dashed border-gray-200 rounded-xl bg-gray-50/50 text-center px-4"><div class="bg-white p-4 rounded-full shadow-sm text-gray-300 text-3xl mb-3"><i class="fa-solid fa-clipboard-check"></i></div><p class="text-sm font-bold text-gray-600">Próximo desarrollo</p></div>
+                    <!-- SUB-VISTA: CHECKLIST -->
+                    <div id="opSub-checklist" class="hidden space-y-5">
+                        <div id="chk_offline_banner" class="hidden bg-amber-50 border border-amber-300 text-amber-800 text-xs font-bold px-4 py-2 rounded-lg"><i class="fa-solid fa-wifi-slash mr-2"></i> Sin conexión: lo que guardes aquí se subirá solo en cuanto vuelva el internet.</div>
+                        <div id="chk_pendientes_banner" class="hidden bg-blue-50 border border-blue-300 text-blue-800 text-xs font-bold px-4 py-2 rounded-lg"><i class="fa-solid fa-clock-rotate-left mr-2"></i><span id="chk_pendientes_texto"></span></div>
+
+                        <div>
+                            <label class="text-xs font-bold text-gray-500">Servicio</label>
+                            <select id="chk_selector_servicio" onchange="seleccionarServicioChecklist()" class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm"></select>
+                        </div>
+
+                        <div id="chk_contenido" class="hidden space-y-5">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="bg-gray-50 border border-gray-200 rounded-xl p-4">
+                                    <div class="flex justify-between items-center mb-3">
+                                        <h4 class="font-bold text-sm text-gray-700"><i class="fa-solid fa-plane-departure mr-2 text-green-600"></i>Salida</h4>
+                                        <span id="chk_salida_estado" class="text-[10px] text-gray-400"></span>
+                                    </div>
+                                    <div id="chk_items_salida" class="space-y-2"></div>
+                                    <button id="chk_btn_guardar_salida" onclick="guardarParteChecklist('salida')" class="mt-4 w-full bg-green-700 hover:bg-green-800 text-white text-xs font-bold py-2 rounded-lg">Guardar Salida</button>
+                                </div>
+                                <div class="bg-gray-50 border border-gray-200 rounded-xl p-4">
+                                    <div class="flex justify-between items-center mb-3">
+                                        <h4 class="font-bold text-sm text-gray-700"><i class="fa-solid fa-plane-arrival mr-2 text-blue-600"></i>Regreso</h4>
+                                        <span id="chk_regreso_estado" class="text-[10px] text-gray-400"></span>
+                                    </div>
+                                    <div id="chk_items_regreso" class="space-y-2"></div>
+                                    <button id="chk_btn_guardar_regreso" onclick="guardarParteChecklist('regreso')" class="mt-4 w-full bg-blue-700 hover:bg-blue-800 text-white text-xs font-bold py-2 rounded-lg">Guardar Regreso</button>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 bg-white border border-gray-200 rounded-xl p-4">
+                                <div id="chk_validacion_info" class="text-xs text-gray-500"></div>
+                                <div class="flex gap-2">
+                                    <button onclick="descargarPDFChecklist()" class="bg-gray-700 hover:bg-gray-800 text-white px-4 py-2 rounded-lg text-xs font-bold"><i class="fa-solid fa-file-pdf mr-2"></i>Descargar PDF</button>
+                                    <button id="chk_btn_validar" onclick="validarYLiberarChecklist()" class="hidden bg-emerald-700 hover:bg-emerald-800 text-white px-4 py-2 rounded-lg text-xs font-bold"><i class="fa-solid fa-signature mr-2"></i>Validar y Liberar Servicio</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     <!-- SUB-VISTA: REPORTE DE SERVICIO (próximo desarrollo) -->
                     <div id="opSub-reporte" class="hidden flex flex-col items-center justify-center py-12 border border-dashed border-gray-200 rounded-xl bg-gray-50/50 text-center px-4"><div class="bg-white p-4 rounded-full shadow-sm text-gray-300 text-3xl mb-3"><i class="fa-solid fa-file-signature"></i></div><p class="text-sm font-bold text-gray-600">Próximo desarrollo</p></div>
@@ -1360,6 +1397,35 @@
         </table>
     </div>
 
+    <!-- PLANTILLA PDF: CHECKLIST DE INVENTARIO -->
+    <div id="pdf-checklist-template" style="display: none; width: 800px; background-color: white; padding: 20px 30px; font-family: sans-serif; font-size: 12px; line-height: 1.4; color: black; box-sizing: border-box; margin: 0;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+            <div style="width: 33.33%;"><img src="logo_nuevo.jpeg" alt="Logo" style="max-height: 45px;"></div>
+            <div style="width: 33.33%; text-align: center; font-weight: 800; font-size: 18px; line-height: 1.2; color: #064e3b;">AGROSOLUCIONES<br>AÉREAS</div>
+            <div style="width: 33.33%; text-align: right;">
+                <div style="font-weight: bold; font-size: 14px; color: #064e3b;">Checklist de Inventario</div>
+                <div style="font-weight: normal; font-size: 11px; color: #6b7280;" id="pdfchk_servicio"></div>
+            </div>
+        </div>
+        <table style="width: 100%; border-collapse: collapse; border: 1px solid black; text-align: left; margin-bottom: 16px;">
+            <thead>
+                <tr style="background-color: #1b6b43; color: white;">
+                    <th style="border: 1px solid black; padding: 6px;">Artículo</th>
+                    <th style="border: 1px solid black; padding: 6px; text-align:center;">Salida</th>
+                    <th style="border: 1px solid black; padding: 6px; text-align:center;">Regreso</th>
+                </tr>
+            </thead>
+            <tbody id="pdfchk_cuerpo"></tbody>
+        </table>
+        <table style="width: 100%; font-size: 11px; margin-bottom: 16px;">
+            <tr><td style="padding: 2px 0;"><strong>Salida registrada por:</strong> <span id="pdfchk_op_salida"></span></td></tr>
+            <tr><td style="padding: 2px 0;"><strong>Regreso registrado por:</strong> <span id="pdfchk_op_regreso"></span></td></tr>
+        </table>
+        <div id="pdfchk_validacion_wrap" style="border-top: 1px solid #ccc; padding-top: 12px; font-size: 11px;">
+            <strong>Validado por (Jefe de Operaciones):</strong> <span id="pdfchk_validado_por"></span>
+        </div>
+    </div>
+
     <script>
         const API_URL = "https://agrosoluciones-backend.onrender.com";
         let memoriaClientes = [], memoriaPropiedades = [], memoriaServicios = [], memoriaCotizaciones = [];
@@ -1584,11 +1650,12 @@
             const btnContactos = document.getElementById('btnAdminContactos');
             if (btnContactos) btnContactos.classList.toggle('hidden', rolUsuario !== 'admin');
 
-            // "Por Autorizar" y "Mi Firma" (cotizaciones), también solo Admin
+            // "Por Autorizar" (cotizaciones), solo Admin
             const btnPorAutorizar = document.getElementById('btnPorAutorizar');
             if (btnPorAutorizar) btnPorAutorizar.classList.toggle('hidden', rolUsuario !== 'admin');
+            // "Mi Firma": admin (cotizaciones) y jefe_operaciones (checklist de Operaciones)
             const btnMiFirma = document.getElementById('btnMiFirma');
-            if (btnMiFirma) btnMiFirma.classList.toggle('hidden', rolUsuario !== 'admin');
+            if (btnMiFirma) btnMiFirma.classList.toggle('hidden', !['admin', 'jefe_operaciones'].includes(rolUsuario));
 
             // "Reporte Ejecutivo" también solo Admin
             const btnReporte = document.getElementById('btnReporteEjecutivo');
@@ -1633,6 +1700,7 @@
             await cargarCotizaciones();
             await cargarContactos();
             await cargarBitacoras();
+            if (navigator.onLine) flushColaChecklistOffline(); else actualizarBannerOfflineChecklist();
             cambiarVista('inicio'); 
             revisarSeguimientos(); 
         }
@@ -1752,6 +1820,7 @@
                 document.getElementById('opSub-' + s).classList.toggle('hidden', s !== sub);
                 document.getElementById('opTab_' + s).classList.toggle('tab-crm-activo', s === sub);
             });
+            if (sub === 'checklist') { poblarSelectorChecklist(); actualizarBannerOfflineChecklist(); }
         }
 
         // --- OPERACIONES: BITÁCORAS DE MANTENIMIENTO ---
@@ -1940,6 +2009,229 @@
                     appContent.style.display = 'block';
                     overlay.style.display = 'none';
                     overlay.classList.add('hidden');
+                });
+            }, 200);
+        }
+
+        // --- OPERACIONES: INVENTARIO / CHECKLIST ---
+        const ITEMS_CHECKLIST = ['Dron', 'Generador', 'Vehículo', 'Lentes de protección', 'Guantes', 'Cubrebocas'];
+        const CLAVE_COLA_CHECKLIST_OFFLINE = 'asoa_checklist_cola_offline';
+        let checklistServicioActual = null;
+        let checklistActual = null;
+
+        function etiquetaServicio(s) {
+            const pr = memoriaPropiedades.find(p => String(p.id) === String(s.propiedad_id));
+            const cl = pr ? memoriaClientes.find(c => String(c.id) === String(pr.cliente_id)) : null;
+            const nombreCliente = cl ? `${cl.nombre} ${cl.apellidos}` : 'Cliente sin nombre';
+            const nombrePropiedad = pr ? pr.nombre_propiedad : 'Propiedad N/A';
+            return `${nombreCliente} — ${nombrePropiedad} — ${s.fecha_aplicacion || ''}${s.no_orden ? ' (Orden ' + s.no_orden + ')' : ''}`;
+        }
+
+        function poblarSelectorChecklist() {
+            const sel = document.getElementById('chk_selector_servicio');
+            if (!sel) return;
+            const valorPrevio = sel.value;
+            const pendientes = memoriaServicios.filter(s => !s.liberado);
+            if (!pendientes.length) {
+                sel.innerHTML = `<option value="">No hay servicios pendientes en Operaciones</option>`;
+                document.getElementById('chk_contenido').classList.add('hidden');
+                return;
+            }
+            sel.innerHTML = `<option value="">Selecciona un servicio...</option>` + pendientes.map(s => `<option value="${s.id}">${etiquetaServicio(s)}</option>`).join('');
+            if (valorPrevio && pendientes.some(s => String(s.id) === String(valorPrevio))) sel.value = valorPrevio;
+        }
+
+        async function seleccionarServicioChecklist() {
+            const sel = document.getElementById('chk_selector_servicio');
+            checklistServicioActual = sel.value || null;
+            if (!checklistServicioActual) {
+                document.getElementById('chk_contenido').classList.add('hidden');
+                return;
+            }
+            document.getElementById('chk_contenido').classList.remove('hidden');
+            await cargarChecklistServicioActual();
+        }
+
+        async function cargarChecklistServicioActual() {
+            if (!checklistServicioActual) return;
+            try {
+                const res = await fetchAPI(`${API_URL}/operaciones/checklist/${checklistServicioActual}`);
+                checklistActual = await res.json();
+            } catch (e) { console.error(e); checklistActual = null; }
+            actualizarUIChecklist();
+        }
+
+        function renderizarItemsChecklist(tipo) {
+            const cont = document.getElementById(`chk_items_${tipo}`);
+            const bloqueado = checklistActual && checklistActual.validado;
+            const guardados = checklistActual ? checklistActual[`items_${tipo}`] : null;
+            const puedeMarcar = ['admin', 'operador', 'jefe_operaciones'].includes(rolUsuario) && !bloqueado;
+            cont.innerHTML = ITEMS_CHECKLIST.map(item => {
+                const g = guardados ? guardados.find(x => x.item === item) : null;
+                const checked = g ? g.revisado : false;
+                return `<label class="flex items-center gap-2 text-sm text-gray-700 ${puedeMarcar ? '' : 'opacity-70'}">
+                    <input type="checkbox" data-item="${item}" ${checked ? 'checked' : ''} ${puedeMarcar ? '' : 'disabled'} class="w-4 h-4 accent-green-700">
+                    ${item}
+                </label>`;
+            }).join('');
+        }
+
+        function actualizarUIChecklist() {
+            if (!checklistServicioActual) return;
+            renderizarItemsChecklist('salida');
+            renderizarItemsChecklist('regreso');
+
+            const bloqueado = checklistActual && checklistActual.validado;
+            const puedeMarcar = ['admin', 'operador', 'jefe_operaciones'].includes(rolUsuario) && !bloqueado;
+
+            const estSalida = document.getElementById('chk_salida_estado');
+            const estRegreso = document.getElementById('chk_regreso_estado');
+            estSalida.textContent = checklistActual && checklistActual.items_salida ? `Guardado por ${checklistActual.operador_salida_nombre || ''}` : 'Sin guardar';
+            estRegreso.textContent = checklistActual && checklistActual.items_regreso ? `Guardado por ${checklistActual.operador_regreso_nombre || ''}` : 'Sin guardar';
+
+            document.getElementById('chk_btn_guardar_salida').classList.toggle('hidden', !puedeMarcar);
+            document.getElementById('chk_btn_guardar_regreso').classList.toggle('hidden', !puedeMarcar);
+
+            const info = document.getElementById('chk_validacion_info');
+            if (bloqueado) {
+                info.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600 mr-1"></i> Validado y liberado por <strong>${checklistActual.validado_por_nombre}</strong>`;
+            } else {
+                info.textContent = 'Pendiente de validar por el Jefe de Operaciones.';
+            }
+
+            const puedeValidar = ['admin', 'jefe_operaciones'].includes(rolUsuario);
+            const completo = checklistActual && checklistActual.items_salida && checklistActual.items_regreso;
+            document.getElementById('chk_btn_validar').classList.toggle('hidden', !(puedeValidar && completo && !bloqueado));
+
+            actualizarBannerOfflineChecklist();
+        }
+
+        function recolectarItemsChecklist(tipo) {
+            const cont = document.getElementById(`chk_items_${tipo}`);
+            return Array.from(cont.querySelectorAll('input[type="checkbox"]')).map(inp => ({ item: inp.dataset.item, revisado: inp.checked }));
+        }
+
+        async function enviarParteChecklist(payload) {
+            const res = await fetchAPI(`${API_URL}/operaciones/checklist/${payload.servicio_id}/${payload.tipo}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ items: payload.items }) });
+            if (!res.ok) { const d = await res.json().catch(() => ({})); throw new Error(d.detail || 'Error al guardar el checklist'); }
+        }
+
+        async function guardarParteChecklist(tipo) {
+            if (!checklistServicioActual) return;
+            const items = recolectarItemsChecklist(tipo);
+            const payload = { servicio_id: checklistServicioActual, tipo, items };
+
+            if (!navigator.onLine) {
+                encolarChecklistOffline(payload);
+                alert('Sin conexión: se guardó en este dispositivo y se subirá solo en cuanto vuelva el internet.');
+                return;
+            }
+            try {
+                await enviarParteChecklist(payload);
+                await cargarChecklistServicioActual();
+            } catch (e) {
+                encolarChecklistOffline(payload);
+                alert('No se pudo conectar al servidor. Se guardó en este dispositivo y se subirá solo cuando haya señal.');
+            }
+        }
+
+        function leerColaChecklistOffline() { try { return JSON.parse(localStorage.getItem(CLAVE_COLA_CHECKLIST_OFFLINE) || '[]'); } catch (e) { return []; } }
+        function guardarColaChecklistOffline(cola) { localStorage.setItem(CLAVE_COLA_CHECKLIST_OFFLINE, JSON.stringify(cola)); }
+
+        function encolarChecklistOffline(payload) {
+            const cola = leerColaChecklistOffline().filter(p => !(String(p.servicio_id) === String(payload.servicio_id) && p.tipo === payload.tipo));
+            cola.push({ ...payload, guardado_en: new Date().toISOString() });
+            guardarColaChecklistOffline(cola);
+            actualizarBannerOfflineChecklist();
+        }
+
+        async function flushColaChecklistOffline() {
+            const cola = leerColaChecklistOffline();
+            if (!cola.length) { actualizarBannerOfflineChecklist(); return; }
+            const restantes = [];
+            for (const p of cola) {
+                try { await enviarParteChecklist(p); } catch (e) { restantes.push(p); }
+            }
+            guardarColaChecklistOffline(restantes);
+            actualizarBannerOfflineChecklist();
+            if (restantes.length < cola.length && checklistServicioActual) await cargarChecklistServicioActual();
+        }
+
+        function actualizarBannerOfflineChecklist() {
+            const bannerOffline = document.getElementById('chk_offline_banner');
+            const bannerPend = document.getElementById('chk_pendientes_banner');
+            if (bannerOffline) bannerOffline.classList.toggle('hidden', navigator.onLine);
+            const cola = leerColaChecklistOffline();
+            if (bannerPend) {
+                if (cola.length) {
+                    bannerPend.classList.remove('hidden');
+                    document.getElementById('chk_pendientes_texto').textContent = `Tienes ${cola.length} checklist(s) guardados en este dispositivo, pendientes de subir.`;
+                } else {
+                    bannerPend.classList.add('hidden');
+                }
+            }
+        }
+
+        window.addEventListener('online', flushColaChecklistOffline);
+        window.addEventListener('offline', actualizarBannerOfflineChecklist);
+
+        async function validarYLiberarChecklist() {
+            if (!checklistServicioActual) return;
+            if (!confirm('¿Validar este checklist y liberar el servicio? Ya no se podrá editar después.')) return;
+            try {
+                const res = await fetchAPI(`${API_URL}/operaciones/checklist/${checklistServicioActual}/validar`, { method: 'POST' });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.detail || 'No se pudo validar');
+                await cargarServicios();
+                poblarSelectorChecklist();
+                await cargarChecklistServicioActual();
+                alert('✅ Checklist validado y servicio liberado.');
+            } catch (e) { alert('No se pudo validar: ' + e.message); }
+        }
+
+        function descargarPDFChecklist() {
+            if (!checklistServicioActual || !checklistActual) { alert('Selecciona un servicio con checklist guardado primero.'); return; }
+            const servicio = memoriaServicios.find(s => String(s.id) === String(checklistServicioActual));
+            document.getElementById('pdfchk_servicio').innerText = servicio ? etiquetaServicio(servicio) : '';
+            document.getElementById('pdfchk_op_salida').innerText = checklistActual.operador_salida_nombre || 'N/A';
+            document.getElementById('pdfchk_op_regreso').innerText = checklistActual.operador_regreso_nombre || 'N/A';
+            document.getElementById('pdfchk_validado_por').innerText = checklistActual.validado ? `${checklistActual.validado_por_nombre} — ${checklistActual.fecha_validacion || ''}` : 'Pendiente de validar';
+
+            const cuerpo = document.getElementById('pdfchk_cuerpo');
+            cuerpo.innerHTML = ITEMS_CHECKLIST.map(item => {
+                const gs = (checklistActual.items_salida || []).find(x => x.item === item);
+                const gr = (checklistActual.items_regreso || []).find(x => x.item === item);
+                return `<tr>
+                    <td style="border: 1px solid black; padding: 5px;">${item}</td>
+                    <td style="border: 1px solid black; padding: 5px; text-align:center;">${gs && gs.revisado ? '✔' : '—'}</td>
+                    <td style="border: 1px solid black; padding: 5px; text-align:center;">${gr && gr.revisado ? '✔' : '—'}</td>
+                </tr>`;
+            }).join('');
+
+            const overlay = document.getElementById('pdf-loading-overlay');
+            const appContent = document.getElementById('app-content');
+            const template = document.getElementById('pdf-checklist-template');
+
+            overlay.classList.remove('hidden'); overlay.style.display = 'flex';
+            appContent.style.display = 'none';
+            template.style.display = 'block';
+            window.scrollTo(0, 0);
+
+            setTimeout(() => {
+                const opt = {
+                    margin: 0.3,
+                    filename: `Checklist_Servicio_${checklistServicioActual}.pdf`,
+                    image: { type: 'jpeg', quality: 1.0 },
+                    html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
+                    jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+                };
+                html2pdf().set(opt).from(template).save().then(() => {
+                    template.style.display = 'none'; appContent.style.display = 'block';
+                    overlay.style.display = 'none'; overlay.classList.add('hidden');
+                }).catch(err => {
+                    console.error(err);
+                    template.style.display = 'none'; appContent.style.display = 'block';
+                    overlay.style.display = 'none'; overlay.classList.add('hidden');
                 });
             }, 200);
         }

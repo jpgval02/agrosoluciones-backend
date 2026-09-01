@@ -190,6 +190,9 @@ class BitacoraMantenimientoNueva(BaseModel):
 class HorometroActualizado(BaseModel):
     horas_actuales: float
 
+class ChecklistParte(BaseModel):
+    items: List[dict]  # [{"item": "Dron", "revisado": true}, ...]
+
 
 # --- FUNCIÓN DE GOOGLE CALENDAR (ACTUALIZADA PARA INVITADOS) ---
 def agendar_en_google_calendar(fecha, no_cotizacion, observaciones, nombre_productor, parcela, hectareas, notificar_a=None):
@@ -654,7 +657,7 @@ async def rechazar_cotizacion(cot_id: str, cuerpo: RechazoCotizacion, usuario: d
 
 # --- FIRMA DIGITAL DEL JEFE (Admin) ---
 @app.get("/firmas/mia")
-async def obtener_mi_firma(usuario: dict = Depends(requiere_rol("admin"))):
+async def obtener_mi_firma(usuario: dict = Depends(requiere_rol("admin", "jefe_operaciones"))):
     respuesta = supabase.table('firmas').select("*").eq('email', usuario["email"]).execute()
     return respuesta.data[0] if respuesta.data else None
 
@@ -664,7 +667,7 @@ async def obtener_firma_de(email: str, usuario: dict = Depends(obtener_usuario_a
     return respuesta.data[0] if respuesta.data else None
 
 @app.post("/firmas/")
-async def subir_firma(archivo: UploadFile = File(...), usuario: dict = Depends(requiere_rol("admin"))):
+async def subir_firma(archivo: UploadFile = File(...), usuario: dict = Depends(requiere_rol("admin", "jefe_operaciones"))):
     contenido = await archivo.read()
     extension = archivo.filename.split('.')[-1] if '.' in archivo.filename else 'png'
     nombre_archivo = f"{usuario['email']}.{extension}"
@@ -820,5 +823,80 @@ async def actualizar_horometro(equipo: str, cuerpo: HorometroActualizado, usuari
         }, on_conflict="equipo").execute()
         await manager.broadcast("update")
         return {"mensaje": "Horómetro actualizado"}
+    except HTTPException: raise
+    except Exception as e: raise HTTPException(status_code=500, detail=str(e))
+
+
+# ============================================================
+# --- OPERACIONES: INVENTARIO / CHECKLIST (Sale y Regresa) ---
+# Lo marca: operador. Se valida y libera el servicio con la firma
+# del jefe_operaciones (Beto), una sola vez, al completar salida + regreso.
+# ============================================================
+@app.get("/operaciones/checklist/{servicio_id}")
+async def obtener_checklist(servicio_id: str, usuario: dict = Depends(obtener_usuario_actual)):
+    respuesta = supabase.table('checklists_servicio').select("*").eq('servicio_id', servicio_id).execute()
+    return respuesta.data[0] if respuesta.data else None
+
+@app.post("/operaciones/checklist/{servicio_id}/{tipo}")
+async def guardar_checklist(servicio_id: str, tipo: str, cuerpo: ChecklistParte, usuario: dict = Depends(requiere_rol("admin", "operador", "jefe_operaciones"))):
+    try:
+        if tipo not in ("salida", "regreso"):
+            raise HTTPException(status_code=400, detail="Tipo inválido, debe ser 'salida' o 'regreso'.")
+
+        existente = supabase.table('checklists_servicio').select("id, validado").eq('servicio_id', servicio_id).execute()
+        if existente.data and existente.data[0].get("validado"):
+            raise HTTPException(status_code=400, detail="Este checklist ya fue validado y liberado, no se puede modificar.")
+
+        ahora = datetime.utcnow().isoformat()
+        datos = {
+            f"items_{tipo}": cuerpo.items,
+            f"fecha_{tipo}": ahora,
+            f"operador_{tipo}_email": usuario["email"],
+            f"operador_{tipo}_nombre": usuario["nombre"],
+        }
+        if existente.data:
+            supabase.table('checklists_servicio').update(datos).eq('servicio_id', servicio_id).execute()
+        else:
+            datos["servicio_id"] = servicio_id
+            supabase.table('checklists_servicio').insert(datos).execute()
+
+        await manager.broadcast("update")
+        return {"mensaje": f"Checklist de {tipo} guardado"}
+    except HTTPException: raise
+    except Exception as e: raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/operaciones/checklist/{servicio_id}/validar")
+async def validar_checklist(servicio_id: str, usuario: dict = Depends(requiere_rol("admin", "jefe_operaciones"))):
+    try:
+        existente = supabase.table('checklists_servicio').select("*").eq('servicio_id', servicio_id).execute()
+        if not existente.data:
+            raise HTTPException(status_code=400, detail="Aún no hay checklist de salida ni de regreso para este servicio.")
+        chk = existente.data[0]
+        if not chk.get("items_salida") or not chk.get("items_regreso"):
+            raise HTTPException(status_code=400, detail="Falta completar el checklist de salida o el de regreso.")
+        if chk.get("validado"):
+            raise HTTPException(status_code=400, detail="Este checklist ya estaba validado.")
+
+        firma = supabase.table('firmas').select("*").eq('email', usuario["email"]).execute()
+        if not firma.data:
+            raise HTTPException(status_code=400, detail="Primero debes subir tu firma en 'Mi Firma' antes de poder validar.")
+
+        ahora = datetime.utcnow().isoformat()
+        supabase.table('checklists_servicio').update({
+            "validado": True,
+            "validado_por_email": usuario["email"],
+            "validado_por_nombre": usuario["nombre"],
+            "fecha_validacion": ahora
+        }).eq('servicio_id', servicio_id).execute()
+
+        supabase.table('servicios_aplicacion').update({
+            "liberado": True,
+            "liberado_por_email": usuario["email"],
+            "liberado_por_nombre": usuario["nombre"],
+            "fecha_liberacion": ahora
+        }).eq('id', servicio_id).execute()
+
+        await manager.broadcast("update")
+        return {"mensaje": "Checklist validado y servicio liberado"}
     except HTTPException: raise
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))

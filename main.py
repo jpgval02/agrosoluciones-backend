@@ -6,6 +6,7 @@ from supabase import create_client, Client
 import os
 import logging
 import traceback
+import base64
 from dotenv import load_dotenv
 
 logging.basicConfig(level=logging.INFO)
@@ -192,6 +193,24 @@ class HorometroActualizado(BaseModel):
 
 class ChecklistParte(BaseModel):
     items: List[dict]  # [{"item": "Dron", "revisado": true}, ...]
+
+class ReporteServicioInfo(BaseModel):
+    hectareas_trabajadas: Optional[float] = None
+    incidencias: Optional[str] = ""
+    clima: Optional[str] = ""
+    observaciones: Optional[str] = ""
+
+class FirmaBase64(BaseModel):
+    imagen_base64: str  # data:image/png;base64,....
+
+class FotoAEliminar(BaseModel):
+    url: str
+
+class AcompananteNuevo(BaseModel):
+    contacto_id: int
+
+class ObservacionNueva(BaseModel):
+    texto: str
 
 
 # --- FUNCIÓN DE GOOGLE CALENDAR (ACTUALIZADA PARA INVITADOS) ---
@@ -898,5 +917,182 @@ async def validar_checklist(servicio_id: str, usuario: dict = Depends(requiere_r
 
         await manager.broadcast("update")
         return {"mensaje": "Checklist validado y servicio liberado"}
+    except HTTPException: raise
+    except Exception as e: raise HTTPException(status_code=500, detail=str(e))
+
+
+# ============================================================
+# --- OPERACIONES: REPORTE DE SERVICIO ---
+# Lo llenan: admin, operador, jefe_operaciones. Se bloquea si el
+# servicio ya fue liberado (checklist validado).
+# ============================================================
+def _verificar_servicio_no_liberado(servicio_id: str):
+    res = supabase.table('servicios_aplicacion').select('liberado').eq('id', servicio_id).execute()
+    if res.data and res.data[0].get('liberado'):
+        raise HTTPException(status_code=400, detail="Este servicio ya fue liberado, el reporte no se puede modificar.")
+
+@app.get("/operaciones/reporte/{servicio_id}")
+async def obtener_reporte_servicio(servicio_id: str, usuario: dict = Depends(obtener_usuario_actual)):
+    respuesta = supabase.table('reportes_servicio').select("*").eq('servicio_id', servicio_id).execute()
+    return respuesta.data[0] if respuesta.data else None
+
+@app.post("/operaciones/reporte/{servicio_id}")
+async def guardar_reporte_servicio(servicio_id: str, info: ReporteServicioInfo, usuario: dict = Depends(requiere_rol("admin", "operador", "jefe_operaciones"))):
+    try:
+        _verificar_servicio_no_liberado(servicio_id)
+        existente = supabase.table('reportes_servicio').select("id").eq('servicio_id', servicio_id).execute()
+        datos = info.dict()
+        datos["actualizado_en"] = datetime.utcnow().isoformat()
+        if existente.data:
+            supabase.table('reportes_servicio').update(datos).eq('servicio_id', servicio_id).execute()
+        else:
+            datos["servicio_id"] = servicio_id
+            datos["creado_por_email"] = usuario["email"]
+            datos["creado_por_nombre"] = usuario["nombre"]
+            supabase.table('reportes_servicio').insert(datos).execute()
+        await manager.broadcast("update")
+        return {"mensaje": "Reporte guardado"}
+    except HTTPException: raise
+    except Exception as e: raise HTTPException(status_code=500, detail=str(e))
+
+def _obtener_o_crear_reporte(servicio_id: str, usuario: dict):
+    existente = supabase.table('reportes_servicio').select("*").eq('servicio_id', servicio_id).execute()
+    if existente.data:
+        return existente.data[0]
+    nuevo = {"servicio_id": servicio_id, "creado_por_email": usuario["email"], "creado_por_nombre": usuario["nombre"], "fotos": []}
+    creado = supabase.table('reportes_servicio').insert(nuevo).execute()
+    return creado.data[0]
+
+@app.post("/operaciones/reporte/{servicio_id}/foto")
+async def subir_foto_reporte(servicio_id: str, archivo: UploadFile = File(...), usuario: dict = Depends(requiere_rol("admin", "operador", "jefe_operaciones"))):
+    try:
+        _verificar_servicio_no_liberado(servicio_id)
+        reporte = _obtener_o_crear_reporte(servicio_id, usuario)
+
+        contenido = await archivo.read()
+        extension = archivo.filename.split('.')[-1] if '.' in archivo.filename else 'jpg'
+        nombre_archivo = f"{servicio_id}/foto_{int(datetime.utcnow().timestamp()*1000)}.{extension}"
+
+        supabase.storage.from_('reportes_servicio').upload(
+            nombre_archivo, contenido, {"content-type": archivo.content_type, "upsert": "true"}
+        )
+        url_publica = supabase.storage.from_('reportes_servicio').get_public_url(nombre_archivo)
+
+        fotos = reporte.get("fotos") or []
+        fotos.append(url_publica)
+        supabase.table('reportes_servicio').update({"fotos": fotos, "actualizado_en": datetime.utcnow().isoformat()}).eq('servicio_id', servicio_id).execute()
+
+        await manager.broadcast("update")
+        return {"mensaje": "Foto agregada", "url": url_publica}
+    except HTTPException: raise
+    except Exception as e: raise HTTPException(status_code=500, detail=str(e))
+
+@app.delete("/operaciones/reporte/{servicio_id}/foto")
+async def eliminar_foto_reporte(servicio_id: str, cuerpo: FotoAEliminar, usuario: dict = Depends(requiere_rol("admin", "operador", "jefe_operaciones"))):
+    try:
+        _verificar_servicio_no_liberado(servicio_id)
+        existente = supabase.table('reportes_servicio').select("fotos").eq('servicio_id', servicio_id).execute()
+        if not existente.data:
+            raise HTTPException(status_code=404, detail="No hay reporte para este servicio.")
+        fotos = [f for f in (existente.data[0].get("fotos") or []) if f != cuerpo.url]
+        supabase.table('reportes_servicio').update({"fotos": fotos, "actualizado_en": datetime.utcnow().isoformat()}).eq('servicio_id', servicio_id).execute()
+        await manager.broadcast("update")
+        return {"mensaje": "Foto eliminada"}
+    except HTTPException: raise
+    except Exception as e: raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/operaciones/reporte/{servicio_id}/firma/{quien}")
+async def guardar_firma_reporte(servicio_id: str, quien: str, cuerpo: FirmaBase64, usuario: dict = Depends(requiere_rol("admin", "operador", "jefe_operaciones"))):
+    try:
+        if quien not in ("cliente", "operador"):
+            raise HTTPException(status_code=400, detail="quien debe ser 'cliente' u 'operador'.")
+        _verificar_servicio_no_liberado(servicio_id)
+        _obtener_o_crear_reporte(servicio_id, usuario)
+
+        b64 = cuerpo.imagen_base64.split(",")[-1]
+        contenido = base64.b64decode(b64)
+        nombre_archivo = f"{servicio_id}/firma_{quien}.png"
+
+        supabase.storage.from_('reportes_servicio').upload(
+            nombre_archivo, contenido, {"content-type": "image/png", "upsert": "true"}
+        )
+        url_publica = supabase.storage.from_('reportes_servicio').get_public_url(nombre_archivo)
+
+        supabase.table('reportes_servicio').update({
+            f"firma_{quien}_url": url_publica,
+            "actualizado_en": datetime.utcnow().isoformat()
+        }).eq('servicio_id', servicio_id).execute()
+
+        await manager.broadcast("update")
+        return {"mensaje": "Firma guardada", "url": url_publica}
+    except HTTPException: raise
+    except Exception as e: raise HTTPException(status_code=500, detail=str(e))
+
+
+# ============================================================
+# --- OPERACIONES: ACOMPAÑANTES ---
+# Se eligen del Directorio de Notificaciones ya existente, por cada servicio.
+# ============================================================
+@app.get("/operaciones/acompanantes/{servicio_id}")
+async def obtener_acompanantes(servicio_id: str, usuario: dict = Depends(obtener_usuario_actual)):
+    respuesta = supabase.table('servicio_acompanantes').select("*").eq('servicio_id', servicio_id).order('agregado_en').execute()
+    return respuesta.data
+
+@app.post("/operaciones/acompanantes/{servicio_id}")
+async def agregar_acompanante(servicio_id: str, cuerpo: AcompananteNuevo, usuario: dict = Depends(requiere_rol("admin", "operador", "jefe_operaciones"))):
+    try:
+        _verificar_servicio_no_liberado(servicio_id)
+        contacto = supabase.table('contactos_notificacion').select("*").eq('id', cuerpo.contacto_id).execute()
+        if not contacto.data:
+            raise HTTPException(status_code=404, detail="Contacto no encontrado en el Directorio de Notificaciones.")
+        datos = {
+            "servicio_id": servicio_id,
+            "contacto_id": cuerpo.contacto_id,
+            "contacto_nombre": contacto.data[0]["nombre"],
+            "agregado_por_email": usuario["email"],
+            "agregado_por_nombre": usuario["nombre"],
+        }
+        respuesta = supabase.table('servicio_acompanantes').insert(datos).execute()
+        await manager.broadcast("update")
+        return {"mensaje": "Acompañante agregado", "datos": respuesta.data[0]}
+    except HTTPException: raise
+    except Exception as e:
+        if "duplicate" in str(e).lower() or "unique" in str(e).lower():
+            raise HTTPException(status_code=400, detail="Ese contacto ya está agregado como acompañante de este servicio.")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.delete("/operaciones/acompanantes/{servicio_id}/{acompanante_id}")
+async def eliminar_acompanante(servicio_id: str, acompanante_id: str, usuario: dict = Depends(requiere_rol("admin", "operador", "jefe_operaciones"))):
+    try:
+        _verificar_servicio_no_liberado(servicio_id)
+        supabase.table('servicio_acompanantes').delete().eq('id', acompanante_id).execute()
+        await manager.broadcast("update")
+        return {"mensaje": "Acompañante eliminado"}
+    except HTTPException: raise
+    except Exception as e: raise HTTPException(status_code=500, detail=str(e))
+
+
+# ============================================================
+# --- OPERACIONES: OBSERVACIONES OPERATIVAS ---
+# Historial de notas con fecha, se van acumulando. Las escribe el jefe_operaciones (o admin).
+# ============================================================
+@app.get("/operaciones/observaciones/{servicio_id}")
+async def obtener_observaciones(servicio_id: str, usuario: dict = Depends(obtener_usuario_actual)):
+    respuesta = supabase.table('observaciones_operativas').select("*").eq('servicio_id', servicio_id).order('fecha', desc=True).execute()
+    return respuesta.data
+
+@app.post("/operaciones/observaciones/{servicio_id}")
+async def agregar_observacion(servicio_id: str, cuerpo: ObservacionNueva, usuario: dict = Depends(requiere_rol("admin", "jefe_operaciones"))):
+    try:
+        _verificar_servicio_no_liberado(servicio_id)
+        datos = {
+            "servicio_id": servicio_id,
+            "texto": cuerpo.texto,
+            "autor_email": usuario["email"],
+            "autor_nombre": usuario["nombre"],
+        }
+        respuesta = supabase.table('observaciones_operativas').insert(datos).execute()
+        await manager.broadcast("update")
+        return {"mensaje": "Observación agregada", "datos": respuesta.data[0]}
     except HTTPException: raise
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))

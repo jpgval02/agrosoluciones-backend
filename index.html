@@ -548,11 +548,109 @@
                         </div>
                     </div>
 
-                    <!-- SUB-VISTA: REPORTE DE SERVICIO (próximo desarrollo) -->
-                    <div id="opSub-reporte" class="hidden flex flex-col items-center justify-center py-12 border border-dashed border-gray-200 rounded-xl bg-gray-50/50 text-center px-4"><div class="bg-white p-4 rounded-full shadow-sm text-gray-300 text-3xl mb-3"><i class="fa-solid fa-file-signature"></i></div><p class="text-sm font-bold text-gray-600">Próximo desarrollo</p></div>
+                    <!-- SUB-VISTA: REPORTE DE SERVICIO -->
+                    <div id="opSub-reporte" class="hidden space-y-5">
+                        <div>
+                            <label class="text-xs font-bold text-gray-500">Servicio</label>
+                            <select id="rs_selector_servicio" onchange="seleccionarServicioReporte()" class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm"></select>
+                        </div>
 
-                    <!-- SUB-VISTA: ACOMPAÑANTES / OBSERVACIONES (próximo desarrollo) -->
-                    <div id="opSub-otros" class="hidden flex flex-col items-center justify-center py-12 border border-dashed border-gray-200 rounded-xl bg-gray-50/50 text-center px-4"><div class="bg-white p-4 rounded-full shadow-sm text-gray-300 text-3xl mb-3"><i class="fa-solid fa-users"></i></div><p class="text-sm font-bold text-gray-600">Próximo desarrollo</p></div>
+                        <div id="rs_contenido" class="hidden space-y-5">
+                            <div id="rs_bloqueado_banner" class="hidden bg-emerald-50 border border-emerald-300 text-emerald-800 text-xs font-bold px-4 py-2 rounded-lg"><i class="fa-solid fa-lock mr-2"></i> Este servicio ya fue liberado, el reporte quedó bloqueado.</div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div>
+                                    <label class="text-xs font-bold text-gray-500">Hectáreas trabajadas</label>
+                                    <input type="number" step="0.1" id="rs_hectareas" class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+                                </div>
+                                <div>
+                                    <label class="text-xs font-bold text-gray-500">Clima</label>
+                                    <input type="text" id="rs_clima" placeholder="Ej. Soleado, viento leve..." class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+                                </div>
+                                <div>
+                                    <label class="text-xs font-bold text-gray-500">Incidencias</label>
+                                    <input type="text" id="rs_incidencias" placeholder="Problemas durante el vuelo..." class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="text-xs font-bold text-gray-500">Observaciones del operador</label>
+                                <textarea id="rs_observaciones" rows="3" class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm"></textarea>
+                            </div>
+                            <button id="rs_btn_guardar_info" onclick="guardarReporteInfo()" class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded-lg text-xs font-bold"><i class="fa-solid fa-floppy-disk mr-2"></i>Guardar Datos</button>
+
+                            <div class="border-t border-gray-100 pt-4">
+                                <div class="flex justify-between items-center mb-3">
+                                    <h4 class="font-bold text-sm text-gray-700"><i class="fa-solid fa-camera mr-2 text-gray-400"></i>Fotos del trabajo terminado</h4>
+                                    <button id="rs_btn_agregar_foto" onclick="document.getElementById('rs_input_foto').click()" class="bg-gray-700 hover:bg-gray-800 text-white px-3 py-1.5 rounded-lg text-xs font-bold"><i class="fa-solid fa-plus mr-1"></i>Agregar</button>
+                                    <input type="file" id="rs_input_foto" accept="image/*" class="hidden" onchange="subirFotoReporte(event)">
+                                </div>
+                                <div id="rs_galeria_fotos" class="flex flex-wrap gap-3"></div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-gray-100 pt-4">
+                                <div>
+                                    <h4 class="font-bold text-sm text-gray-700 mb-2"><i class="fa-solid fa-user mr-2 text-gray-400"></i>Firma del Cliente</h4>
+                                    <div class="bg-gray-50 border border-gray-200 rounded-xl p-2">
+                                        <canvas id="rs_firma_cliente_canvas" width="500" height="160" class="w-full bg-white rounded-lg border border-dashed border-gray-300 touch-none"></canvas>
+                                        <img id="rs_firma_cliente_guardada" class="hidden w-full max-h-40 object-contain bg-white rounded-lg border border-gray-200">
+                                    </div>
+                                    <div id="rs_firma_cliente_botones" class="flex gap-2 mt-2">
+                                        <button onclick="limpiarFirmaCanvas('rs_firma_cliente_canvas')" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 text-xs font-bold py-1.5 rounded-lg">Limpiar</button>
+                                        <button onclick="guardarFirmaReporte('cliente')" class="flex-1 bg-green-700 hover:bg-green-800 text-white text-xs font-bold py-1.5 rounded-lg">Guardar Firma</button>
+                                    </div>
+                                    <button onclick="rehacerFirmaReporte('cliente')" class="mt-2 text-[10px] text-gray-400 hover:text-gray-600 underline">Volver a firmar</button>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-sm text-gray-700 mb-2"><i class="fa-solid fa-helmet-safety mr-2 text-gray-400"></i>Firma del Operador</h4>
+                                    <div class="bg-gray-50 border border-gray-200 rounded-xl p-2">
+                                        <canvas id="rs_firma_operador_canvas" width="500" height="160" class="w-full bg-white rounded-lg border border-dashed border-gray-300 touch-none"></canvas>
+                                        <img id="rs_firma_operador_guardada" class="hidden w-full max-h-40 object-contain bg-white rounded-lg border border-gray-200">
+                                    </div>
+                                    <div id="rs_firma_operador_botones" class="flex gap-2 mt-2">
+                                        <button onclick="limpiarFirmaCanvas('rs_firma_operador_canvas')" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 text-xs font-bold py-1.5 rounded-lg">Limpiar</button>
+                                        <button onclick="guardarFirmaReporte('operador')" class="flex-1 bg-blue-700 hover:bg-blue-800 text-white text-xs font-bold py-1.5 rounded-lg">Guardar Firma</button>
+                                    </div>
+                                    <button onclick="rehacerFirmaReporte('operador')" class="mt-2 text-[10px] text-gray-400 hover:text-gray-600 underline">Volver a firmar</button>
+                                </div>
+                            </div>
+
+                            <div class="flex justify-end border-t border-gray-100 pt-4">
+                                <button onclick="descargarPDFReporte()" class="bg-gray-700 hover:bg-gray-800 text-white px-4 py-2 rounded-lg text-xs font-bold"><i class="fa-solid fa-file-pdf mr-2"></i>Descargar PDF</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SUB-VISTA: ACOMPAÑANTES / OBSERVACIONES -->
+                    <div id="opSub-otros" class="hidden space-y-5">
+                        <div>
+                            <label class="text-xs font-bold text-gray-500">Servicio</label>
+                            <select id="ao_selector_servicio" onchange="seleccionarServicioAcompObs()" class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm"></select>
+                        </div>
+
+                        <div id="ao_contenido" class="hidden space-y-5">
+                            <div id="ao_bloqueado_banner" class="hidden bg-emerald-50 border border-emerald-300 text-emerald-800 text-xs font-bold px-4 py-2 rounded-lg"><i class="fa-solid fa-lock mr-2"></i> Este servicio ya fue liberado, ya no se pueden agregar cambios.</div>
+
+                            <div class="bg-gray-50 border border-gray-200 rounded-xl p-4">
+                                <div class="flex justify-between items-center mb-3">
+                                    <h4 class="font-bold text-sm text-gray-700"><i class="fa-solid fa-users mr-2 text-gray-400"></i>Acompañantes</h4>
+                                </div>
+                                <div id="ao_lista_acompanantes" class="space-y-2 mb-3"></div>
+                                <div id="ao_agregar_acompanante_wrap" class="flex gap-2">
+                                    <select id="ao_selector_contacto" class="flex-1 px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm"></select>
+                                    <button onclick="agregarAcompanante()" class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded-lg text-xs font-bold shrink-0"><i class="fa-solid fa-plus mr-1"></i>Agregar</button>
+                                </div>
+                            </div>
+
+                            <div class="bg-gray-50 border border-gray-200 rounded-xl p-4">
+                                <h4 class="font-bold text-sm text-gray-700 mb-3"><i class="fa-solid fa-note-sticky mr-2 text-gray-400"></i>Observaciones Operativas</h4>
+                                <div id="ao_agregar_observacion_wrap" class="flex gap-2 mb-4">
+                                    <input type="text" id="ao_nueva_observacion" placeholder="Escribe una observación..." class="flex-1 px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm">
+                                    <button onclick="agregarObservacion()" class="bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded-lg text-xs font-bold shrink-0"><i class="fa-solid fa-plus mr-1"></i>Agregar</button>
+                                </div>
+                                <div id="ao_lista_observaciones" class="space-y-3"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Tablas Financieros -->
@@ -1426,6 +1524,39 @@
         </div>
     </div>
 
+    <!-- PLANTILLA PDF: REPORTE DE SERVICIO -->
+    <div id="pdf-reporte-template" style="display: none; width: 800px; background-color: white; padding: 20px 30px; font-family: sans-serif; font-size: 12px; line-height: 1.4; color: black; box-sizing: border-box; margin: 0;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+            <div style="width: 33.33%;"><img src="logo_nuevo.jpeg" alt="Logo" style="max-height: 45px;"></div>
+            <div style="width: 33.33%; text-align: center; font-weight: 800; font-size: 18px; line-height: 1.2; color: #064e3b;">AGROSOLUCIONES<br>AÉREAS</div>
+            <div style="width: 33.33%; text-align: right;">
+                <div style="font-weight: bold; font-size: 14px; color: #064e3b;">Reporte de Servicio</div>
+                <div style="font-weight: normal; font-size: 11px; color: #6b7280;" id="pdfrep_servicio"></div>
+            </div>
+        </div>
+        <table style="width: 100%; font-size: 12px; margin-bottom: 12px; border-collapse: collapse;">
+            <tr><td style="padding: 3px 0; width: 50%;"><strong>Hectáreas trabajadas:</strong> <span id="pdfrs_hectareas"></span></td><td style="padding: 3px 0;"><strong>Clima:</strong> <span id="pdfrs_clima"></span></td></tr>
+            <tr><td colspan="2" style="padding: 3px 0;"><strong>Incidencias:</strong> <span id="pdfrs_incidencias"></span></td></tr>
+            <tr><td colspan="2" style="padding: 3px 0;"><strong>Observaciones:</strong> <span id="pdfrs_observaciones"></span></td></tr>
+        </table>
+        <div style="margin-bottom: 12px;">
+            <strong style="font-size: 12px;">Fotos:</strong>
+            <div id="pdfrep_fotos" style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px;"></div>
+        </div>
+        <table style="width: 100%; margin-top: 20px;">
+            <tr>
+                <td style="width: 50%; text-align: center; vertical-align: bottom;">
+                    <div id="pdfrep_firma_cliente" style="height: 60px; display: flex; align-items: flex-end; justify-content: center;"></div>
+                    <div style="border-top: 1px solid black; margin-top: 4px; padding-top: 4px;">Firma del Cliente</div>
+                </td>
+                <td style="width: 50%; text-align: center; vertical-align: bottom;">
+                    <div id="pdfrep_firma_operador" style="height: 60px; display: flex; align-items: flex-end; justify-content: center;"></div>
+                    <div style="border-top: 1px solid black; margin-top: 4px; padding-top: 4px;">Firma del Operador</div>
+                </td>
+            </tr>
+        </table>
+    </div>
+
     <script>
         const API_URL = "https://agrosoluciones-backend.onrender.com";
         let memoriaClientes = [], memoriaPropiedades = [], memoriaServicios = [], memoriaCotizaciones = [];
@@ -1821,6 +1952,330 @@
                 document.getElementById('opTab_' + s).classList.toggle('tab-crm-activo', s === sub);
             });
             if (sub === 'checklist') { poblarSelectorChecklist(); actualizarBannerOfflineChecklist(); }
+            if (sub === 'reporte') { poblarSelectorReporte(); inicializarFirmaCanvas('rs_firma_cliente_canvas'); inicializarFirmaCanvas('rs_firma_operador_canvas'); }
+            if (sub === 'otros') { poblarSelectorAcompObs(); }
+        }
+
+        // --- OPERACIONES: ACOMPAÑANTES Y OBSERVACIONES OPERATIVAS ---
+        let aoServicioActual = null;
+
+        function poblarSelectorAcompObs() {
+            const sel = document.getElementById('ao_selector_servicio');
+            if (!sel) return;
+            const valorPrevio = sel.value;
+            if (!memoriaServicios.length) { sel.innerHTML = `<option value="">No hay servicios registrados</option>`; return; }
+            sel.innerHTML = `<option value="">Selecciona un servicio...</option>` + memoriaServicios.map(s => `<option value="${s.id}">${etiquetaServicio(s)}${s.liberado ? ' ✅ Liberado' : ''}</option>`).join('');
+            if (valorPrevio && memoriaServicios.some(s => String(s.id) === String(valorPrevio))) sel.value = valorPrevio;
+        }
+
+        async function seleccionarServicioAcompObs() {
+            const sel = document.getElementById('ao_selector_servicio');
+            aoServicioActual = sel.value || null;
+            document.getElementById('ao_contenido').classList.toggle('hidden', !aoServicioActual);
+            if (!aoServicioActual) return;
+
+            const servicio = memoriaServicios.find(s => String(s.id) === String(aoServicioActual));
+            const bloqueado = !!(servicio && servicio.liberado);
+            document.getElementById('ao_bloqueado_banner').classList.toggle('hidden', !bloqueado);
+
+            const puedeEditarAcomp = ['admin', 'operador', 'jefe_operaciones'].includes(rolUsuario) && !bloqueado;
+            document.getElementById('ao_agregar_acompanante_wrap').classList.toggle('hidden', !puedeEditarAcomp);
+            const puedeEscribirObs = ['admin', 'jefe_operaciones'].includes(rolUsuario) && !bloqueado;
+            document.getElementById('ao_agregar_observacion_wrap').classList.toggle('hidden', !puedeEscribirObs);
+
+            const sel2 = document.getElementById('ao_selector_contacto');
+            sel2.innerHTML = memoriaContactos.map(c => `<option value="${c.id}">${c.nombre}</option>`).join('') || `<option value="">Sin contactos en el Directorio</option>`;
+
+            await cargarAcompanantes();
+            await cargarObservaciones();
+        }
+
+        async function cargarAcompanantes() {
+            if (!aoServicioActual) return;
+            try {
+                const res = await fetchAPI(`${API_URL}/operaciones/acompanantes/${aoServicioActual}`);
+                const lista = await res.json();
+                renderizarAcompanantes(lista);
+            } catch (e) { console.error(e); }
+        }
+
+        function renderizarAcompanantes(lista) {
+            const cont = document.getElementById('ao_lista_acompanantes');
+            const servicio = memoriaServicios.find(s => String(s.id) === String(aoServicioActual));
+            const bloqueado = !!(servicio && servicio.liberado);
+            const puedeEditar = ['admin', 'operador', 'jefe_operaciones'].includes(rolUsuario) && !bloqueado;
+            if (!lista.length) { cont.innerHTML = `<p class="text-xs text-gray-400">Sin acompañantes registrados.</p>`; return; }
+            cont.innerHTML = lista.map(a => `
+                <div class="flex justify-between items-center bg-white border border-gray-200 rounded-lg px-3 py-2">
+                    <span class="text-sm text-gray-700"><i class="fa-solid fa-user mr-2 text-gray-400"></i>${a.contacto_nombre}</span>
+                    ${puedeEditar ? `<button onclick="eliminarAcompanante('${a.id}')" class="text-rose-500 hover:text-rose-700 text-xs"><i class="fa-solid fa-trash"></i></button>` : ''}
+                </div>`).join('');
+        }
+
+        async function agregarAcompanante() {
+            const contactoId = document.getElementById('ao_selector_contacto').value;
+            if (!contactoId || !aoServicioActual) { alert('Selecciona un contacto del Directorio de Notificaciones.'); return; }
+            try {
+                const res = await fetchAPI(`${API_URL}/operaciones/acompanantes/${aoServicioActual}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contacto_id: parseInt(contactoId, 10) }) });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.detail || 'Error al agregar');
+                await cargarAcompanantes();
+            } catch (e) { alert('No se pudo agregar: ' + e.message); }
+        }
+
+        async function eliminarAcompanante(acompananteId) {
+            if (!confirm('¿Quitar a este acompañante del servicio?')) return;
+            try {
+                await fetchAPI(`${API_URL}/operaciones/acompanantes/${aoServicioActual}/${acompananteId}`, { method: 'DELETE' });
+                await cargarAcompanantes();
+            } catch (e) { alert('No se pudo quitar.'); }
+        }
+
+        async function cargarObservaciones() {
+            if (!aoServicioActual) return;
+            try {
+                const res = await fetchAPI(`${API_URL}/operaciones/observaciones/${aoServicioActual}`);
+                const lista = await res.json();
+                renderizarObservaciones(lista);
+            } catch (e) { console.error(e); }
+        }
+
+        function renderizarObservaciones(lista) {
+            const cont = document.getElementById('ao_lista_observaciones');
+            if (!lista.length) { cont.innerHTML = `<p class="text-xs text-gray-400">Sin observaciones registradas aún.</p>`; return; }
+            cont.innerHTML = lista.map(o => `
+                <div class="bg-white border-l-4 border-blue-400 rounded-lg px-3 py-2 shadow-sm">
+                    <p class="text-sm text-gray-700">${o.texto}</p>
+                    <p class="text-[10px] text-gray-400 mt-1">${o.autor_nombre || ''} · ${new Date(o.fecha).toLocaleString('es-MX')}</p>
+                </div>`).join('');
+        }
+
+        async function agregarObservacion() {
+            const input = document.getElementById('ao_nueva_observacion');
+            const texto = input.value.trim();
+            if (!texto || !aoServicioActual) return;
+            try {
+                const res = await fetchAPI(`${API_URL}/operaciones/observaciones/${aoServicioActual}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ texto }) });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.detail || 'Error al agregar');
+                input.value = '';
+                await cargarObservaciones();
+            } catch (e) { alert('No se pudo agregar la observación: ' + e.message); }
+        }
+
+        // --- OPERACIONES: REPORTE DE SERVICIO ---
+        let reporteServicioActual = null;
+        let reporteActual = null;
+        const canvasesInicializados = new Set();
+
+        function poblarSelectorReporte() {
+            const sel = document.getElementById('rs_selector_servicio');
+            if (!sel) return;
+            const valorPrevio = sel.value;
+            if (!memoriaServicios.length) { sel.innerHTML = `<option value="">No hay servicios registrados</option>`; return; }
+            sel.innerHTML = `<option value="">Selecciona un servicio...</option>` + memoriaServicios.map(s => `<option value="${s.id}">${etiquetaServicio(s)}${s.liberado ? ' ✅ Liberado' : ''}</option>`).join('');
+            if (valorPrevio && memoriaServicios.some(s => String(s.id) === String(valorPrevio))) sel.value = valorPrevio;
+        }
+
+        async function seleccionarServicioReporte() {
+            const sel = document.getElementById('rs_selector_servicio');
+            reporteServicioActual = sel.value || null;
+            document.getElementById('rs_contenido').classList.toggle('hidden', !reporteServicioActual);
+            if (reporteServicioActual) await cargarReporteServicioActual();
+        }
+
+        async function cargarReporteServicioActual() {
+            if (!reporteServicioActual) return;
+            try {
+                const res = await fetchAPI(`${API_URL}/operaciones/reporte/${reporteServicioActual}`);
+                reporteActual = await res.json();
+            } catch (e) { console.error(e); reporteActual = null; }
+            actualizarUIReporte();
+        }
+
+        function actualizarUIReporte() {
+            const servicio = memoriaServicios.find(s => String(s.id) === String(reporteServicioActual));
+            const bloqueado = !!(servicio && servicio.liberado);
+            const puedeEditar = ['admin', 'operador', 'jefe_operaciones'].includes(rolUsuario) && !bloqueado;
+
+            document.getElementById('rs_bloqueado_banner').classList.toggle('hidden', !bloqueado);
+
+            document.getElementById('rs_hectareas').value = reporteActual?.hectareas_trabajadas ?? '';
+            document.getElementById('rs_clima').value = reporteActual?.clima ?? '';
+            document.getElementById('rs_incidencias').value = reporteActual?.incidencias ?? '';
+            document.getElementById('rs_observaciones').value = reporteActual?.observaciones ?? '';
+            ['rs_hectareas', 'rs_clima', 'rs_incidencias', 'rs_observaciones'].forEach(id => document.getElementById(id).disabled = !puedeEditar);
+            document.getElementById('rs_btn_guardar_info').classList.toggle('hidden', !puedeEditar);
+            document.getElementById('rs_btn_agregar_foto').classList.toggle('hidden', !puedeEditar);
+
+            const galeria = document.getElementById('rs_galeria_fotos');
+            const fotos = reporteActual?.fotos || [];
+            galeria.innerHTML = fotos.length ? fotos.map(url => `
+                <div class="relative group">
+                    <img src="${url}" class="w-24 h-24 object-cover rounded-lg border border-gray-200 cursor-pointer" onclick="window.open('${url}','_blank')">
+                    ${puedeEditar ? `<button onclick="eliminarFotoReporte('${url}')" class="absolute -top-2 -right-2 bg-rose-600 hover:bg-rose-700 text-white rounded-full w-6 h-6 text-xs shadow"><i class="fa-solid fa-xmark"></i></button>` : ''}
+                </div>`).join('') : `<p class="text-xs text-gray-400">Sin fotos aún.</p>`;
+
+            mostrarFirmaGuardadaReporte('cliente', reporteActual?.firma_cliente_url, puedeEditar);
+            mostrarFirmaGuardadaReporte('operador', reporteActual?.firma_operador_url, puedeEditar);
+        }
+
+        function mostrarFirmaGuardadaReporte(quien, url, puedeEditar) {
+            const canvas = document.getElementById(`rs_firma_${quien}_canvas`);
+            const guardadaImg = document.getElementById(`rs_firma_${quien}_guardada`);
+            const botones = document.getElementById(`rs_firma_${quien}_botones`);
+            if (url) {
+                canvas.classList.add('hidden');
+                guardadaImg.src = url;
+                guardadaImg.classList.remove('hidden');
+                botones.classList.add('hidden');
+            } else {
+                canvas.classList.remove('hidden');
+                guardadaImg.classList.add('hidden');
+                botones.classList.toggle('hidden', !puedeEditar);
+            }
+        }
+
+        function rehacerFirmaReporte(quien) {
+            const servicio = memoriaServicios.find(s => String(s.id) === String(reporteServicioActual));
+            if (servicio && servicio.liberado) return;
+            document.getElementById(`rs_firma_${quien}_guardada`).classList.add('hidden');
+            document.getElementById(`rs_firma_${quien}_canvas`).classList.remove('hidden');
+            document.getElementById(`rs_firma_${quien}_botones`).classList.remove('hidden');
+            limpiarFirmaCanvas(`rs_firma_${quien}_canvas`);
+        }
+
+        async function guardarReporteInfo() {
+            if (!reporteServicioActual) return;
+            const payload = {
+                hectareas_trabajadas: document.getElementById('rs_hectareas').value ? parseFloat(document.getElementById('rs_hectareas').value) : null,
+                clima: document.getElementById('rs_clima').value,
+                incidencias: document.getElementById('rs_incidencias').value,
+                observaciones: document.getElementById('rs_observaciones').value
+            };
+            try {
+                const res = await fetchAPI(`${API_URL}/operaciones/reporte/${reporteServicioActual}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.detail || 'Error al guardar');
+                await cargarReporteServicioActual();
+                alert('✅ Reporte guardado.');
+            } catch (e) { alert('No se pudo guardar: ' + e.message); }
+        }
+
+        async function subirFotoReporte(evento) {
+            const archivo = evento.target.files[0];
+            if (!archivo || !reporteServicioActual) return;
+            const fd = new FormData();
+            fd.append('archivo', archivo);
+            try {
+                const res = await fetchAPI(`${API_URL}/operaciones/reporte/${reporteServicioActual}/foto`, { method: 'POST', body: fd });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.detail || 'Error al subir la foto');
+                await cargarReporteServicioActual();
+            } catch (e) { alert('No se pudo subir la foto: ' + e.message); }
+            evento.target.value = '';
+        }
+
+        async function eliminarFotoReporte(url) {
+            if (!confirm('¿Eliminar esta foto?')) return;
+            try {
+                await fetchAPI(`${API_URL}/operaciones/reporte/${reporteServicioActual}/foto`, { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ url }) });
+                await cargarReporteServicioActual();
+            } catch (e) { alert('No se pudo eliminar la foto.'); }
+        }
+
+        // --- Firma dibujada a mano (canvas), para cliente y operador ---
+        function inicializarFirmaCanvas(canvasId) {
+            if (canvasesInicializados.has(canvasId)) return;
+            const canvas = document.getElementById(canvasId);
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            ctx.strokeStyle = '#111827';
+            ctx.lineWidth = 2.5;
+            ctx.lineCap = 'round';
+            let dibujando = false;
+
+            function posicion(e) {
+                const rect = canvas.getBoundingClientRect();
+                return { x: (e.clientX - rect.left) * (canvas.width / rect.width), y: (e.clientY - rect.top) * (canvas.height / rect.height) };
+            }
+            canvas.addEventListener('pointerdown', e => {
+                dibujando = true;
+                const p = posicion(e);
+                ctx.beginPath(); ctx.moveTo(p.x, p.y);
+                canvas.dataset.tieneTrazo = 'true';
+            });
+            canvas.addEventListener('pointermove', e => {
+                if (!dibujando) return;
+                const p = posicion(e);
+                ctx.lineTo(p.x, p.y); ctx.stroke();
+            });
+            window.addEventListener('pointerup', () => dibujando = false);
+            canvasesInicializados.add(canvasId);
+        }
+
+        function limpiarFirmaCanvas(canvasId) {
+            const canvas = document.getElementById(canvasId);
+            if (!canvas) return;
+            canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+            canvas.dataset.tieneTrazo = 'false';
+        }
+
+        async function guardarFirmaReporte(quien) {
+            if (!reporteServicioActual) return;
+            const canvas = document.getElementById(`rs_firma_${quien}_canvas`);
+            if (canvas.dataset.tieneTrazo !== 'true') { alert('Primero dibuja la firma en el recuadro.'); return; }
+            const dataUrl = canvas.toDataURL('image/png');
+            try {
+                const res = await fetchAPI(`${API_URL}/operaciones/reporte/${reporteServicioActual}/firma/${quien}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ imagen_base64: dataUrl }) });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.detail || 'Error al guardar la firma');
+                await cargarReporteServicioActual();
+            } catch (e) { alert('No se pudo guardar la firma: ' + e.message); }
+        }
+
+        function descargarPDFReporte() {
+            if (!reporteServicioActual || !reporteActual) { alert('Selecciona un servicio con datos guardados primero.'); return; }
+            const servicio = memoriaServicios.find(s => String(s.id) === String(reporteServicioActual));
+            document.getElementById('pdfrep_servicio').innerText = servicio ? etiquetaServicio(servicio) : '';
+            document.getElementById('pdfrs_hectareas').innerText = reporteActual.hectareas_trabajadas ?? '—';
+            document.getElementById('pdfrs_clima').innerText = reporteActual.clima || '—';
+            document.getElementById('pdfrs_incidencias').innerText = reporteActual.incidencias || '—';
+            document.getElementById('pdfrs_observaciones').innerText = reporteActual.observaciones || '—';
+
+            const fotosCont = document.getElementById('pdfrep_fotos');
+            const fotos = reporteActual.fotos || [];
+            fotosCont.innerHTML = fotos.length ? fotos.map(url => `<img src="${url}" crossorigin="anonymous" style="width: 110px; height: 110px; object-fit: cover; border: 1px solid #ccc;">`).join('') : `<span style="font-size:11px; color:#888;">Sin fotos</span>`;
+
+            document.getElementById('pdfrep_firma_cliente').innerHTML = reporteActual.firma_cliente_url ? `<img src="${reporteActual.firma_cliente_url}" crossorigin="anonymous" style="max-height: 60px;">` : '';
+            document.getElementById('pdfrep_firma_operador').innerHTML = reporteActual.firma_operador_url ? `<img src="${reporteActual.firma_operador_url}" crossorigin="anonymous" style="max-height: 60px;">` : '';
+
+            const overlay = document.getElementById('pdf-loading-overlay');
+            const appContent = document.getElementById('app-content');
+            const template = document.getElementById('pdf-reporte-template');
+
+            overlay.classList.remove('hidden'); overlay.style.display = 'flex';
+            appContent.style.display = 'none';
+            template.style.display = 'block';
+            window.scrollTo(0, 0);
+
+            setTimeout(() => {
+                const opt = {
+                    margin: 0.3,
+                    filename: `Reporte_Servicio_${reporteServicioActual}.pdf`,
+                    image: { type: 'jpeg', quality: 1.0 },
+                    html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
+                    jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+                };
+                html2pdf().set(opt).from(template).save().then(() => {
+                    template.style.display = 'none'; appContent.style.display = 'block';
+                    overlay.style.display = 'none'; overlay.classList.add('hidden');
+                }).catch(err => {
+                    console.error(err);
+                    template.style.display = 'none'; appContent.style.display = 'block';
+                    overlay.style.display = 'none'; overlay.classList.add('hidden');
+                });
+            }, 200);
         }
 
         // --- OPERACIONES: BITÁCORAS DE MANTENIMIENTO ---

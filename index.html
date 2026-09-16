@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Sistema Operativo - Agrosoluciones Aéreas</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#064e3b">
+    <link rel="apple-touch-icon" href="logo_nuevo.jpeg">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
@@ -465,7 +468,7 @@
 
                 <!-- Tabla Operaciones -->
                 <div id="vista-tabla-operaciones" class="hidden bg-white p-4 md:p-8 rounded-2xl shadow-xl border border-gray-200 min-h-[450px]">
-                    <div class="flex items-center gap-3 border-b border-gray-100 pb-4 mb-6"><div class="bg-green-100 p-3 rounded-xl text-green-700 text-xl"><i class="fa-solid fa-gears"></i></div><div><h2 class="text-lg md:text-xl font-bold text-gray-800">Módulo de Operaciones</h2><p class="text-[10px] md:text-xs text-gray-400 mt-0.5">Bitácoras, checklist y seguimiento de cada servicio</p></div></div>
+                    <div class="flex items-center gap-3 border-b border-gray-100 pb-4 mb-6"><div class="bg-green-100 p-3 rounded-xl text-green-700 text-xl"><i class="fa-solid fa-gears"></i></div><div class="flex-1"><h2 class="text-lg md:text-xl font-bold text-gray-800">Módulo de Operaciones</h2><p class="text-[10px] md:text-xs text-gray-400 mt-0.5">Bitácoras, checklist y seguimiento de cada servicio</p></div><button id="btnMiFirmaOperaciones" onclick="abrirModalFirma()" class="hidden bg-[#064e3b] hover:bg-[#0a4a2e] text-white text-xs font-bold py-2.5 px-4 rounded-lg shadow-sm transition-colors shrink-0"><i class="fa-solid fa-signature mr-2"></i> Mi Firma</button></div>
 
                     <div class="flex gap-2 text-xs mb-6 flex-wrap">
                         <button id="opTab_bitacoras" onclick="cambiarSubTabOperaciones('bitacoras')" class="tab-crm tab-crm-activo"><i class="fa-solid fa-screwdriver-wrench mr-1"></i> Bitácoras de Mantenimiento</button>
@@ -1446,7 +1449,9 @@
         <div style="display: flex; justify-content: space-between; margin-top: 30px; text-align: center;">
             <div style="width: 45%;">
                 <p style="margin: 0 0 6px 0; font-size: 11px; color: transparent;">Elaboró</p>
-                <div style="width: 90%; margin: 0 auto 10px auto; height: 50px;"></div>
+                <div style="position: relative; height: 50px; width: 90%; margin: 0 auto 0 auto;">
+                    <div id="pdfcot_elaboro_firma_wrap" style="position: absolute; bottom: 0; left: 0; width: 100%; height: 50px; display: flex; align-items: flex-end; justify-content: center; z-index: 2; pointer-events: none; opacity: 0.92;"></div>
+                </div>
                 <div style="width: 100%; border-bottom: 1px solid #000; margin-bottom: 10px;"></div>
                 <p style="margin: 0; font-weight: bold; font-size: 13px;" id="pdfcot_elaboro_nombre">---</p>
                 <p style="margin: 2px 0; font-size: 11px; color: #666;">Elaboró</p>
@@ -1559,10 +1564,26 @@
 
     <script>
         const API_URL = "https://agrosoluciones-backend.onrender.com";
+
+        // Registra el Service Worker para que la app pueda abrir sin internet
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./service-worker.js')
+                    .then(() => console.log('Service Worker registrado: la app ya puede abrir sin internet.'))
+                    .catch((err) => console.error('No se pudo registrar el Service Worker:', err));
+            });
+        }
         let memoriaClientes = [], memoriaPropiedades = [], memoriaServicios = [], memoriaCotizaciones = [];
         let memoriaBitacoras = [], memoriaEquiposEstado = [];
         let rolUsuario = localStorage.getItem('rolUsuario') || 'operador';
         let tokenSesion = localStorage.getItem('tokenSesion') || null;
+
+        // --- Identificador único de este dispositivo/navegador, para el "dispositivo de confianza" (evita repetir 2FA el mismo día) ---
+        let dispositivoId = localStorage.getItem('dispositivoId');
+        if (!dispositivoId) {
+            dispositivoId = (crypto.randomUUID) ? crypto.randomUUID() : ('disp-' + Date.now() + '-' + Math.random().toString(36).slice(2));
+            localStorage.setItem('dispositivoId', dispositivoId);
+        }
         let visitasCampoRealizadas = 0; 
         let metodoPagoSeleccionado = 'Efectivo';
         let currentServiceIdForPDF = null;
@@ -1628,7 +1649,7 @@
             try {
                 const res = await fetch(`${API_URL}/login/`, {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: document.getElementById('loginEmail').value, password: document.getElementById('loginPassword').value })
+                    body: JSON.stringify({ email: document.getElementById('loginEmail').value, password: document.getElementById('loginPassword').value, dispositivo_id: dispositivoId })
                 });
                 const data = await res.json(); 
                 
@@ -1664,6 +1685,9 @@
                         btn.innerHTML = originalText; btn.disabled = false;
                     } else {
                         rolUsuario = data.rol || 'trabajador';
+                        tokenSesion = data.access_token || null;
+                        localStorage.setItem('rolUsuario', rolUsuario);
+                        if (tokenSesion) localStorage.setItem('tokenSesion', tokenSesion);
                         iniciarDashboard();
                     }
                 } else {
@@ -1689,7 +1713,7 @@
                 const res = await fetch(`${API_URL}/verificar-2fa/`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ factor_id: factorIdActual, codigo: codigo, email: emailLoginActual })
+                    body: JSON.stringify({ factor_id: factorIdActual, codigo: codigo, email: emailLoginActual, dispositivo_id: dispositivoId })
                 });
                 
                 if(res.ok) {
@@ -1784,9 +1808,11 @@
             // "Por Autorizar" (cotizaciones), solo Admin
             const btnPorAutorizar = document.getElementById('btnPorAutorizar');
             if (btnPorAutorizar) btnPorAutorizar.classList.toggle('hidden', rolUsuario !== 'admin');
-            // "Mi Firma": admin (cotizaciones) y jefe_operaciones (checklist de Operaciones)
+            // "Mi Firma": todos los que pueden crear cotizaciones (admin, operador, auxiliar_del_auxiliar) y jefe_operaciones (checklist)
             const btnMiFirma = document.getElementById('btnMiFirma');
-            if (btnMiFirma) btnMiFirma.classList.toggle('hidden', !['admin', 'jefe_operaciones'].includes(rolUsuario));
+            if (btnMiFirma) btnMiFirma.classList.toggle('hidden', !['admin', 'operador', 'auxiliar_del_auxiliar', 'jefe_operaciones'].includes(rolUsuario));
+            const btnMiFirmaOperaciones = document.getElementById('btnMiFirmaOperaciones');
+            if (btnMiFirmaOperaciones) btnMiFirmaOperaciones.classList.toggle('hidden', !['admin', 'jefe_operaciones'].includes(rolUsuario));
 
             // "Reporte Ejecutivo" también solo Admin
             const btnReporte = document.getElementById('btnReporteEjecutivo');
@@ -3190,10 +3216,19 @@
 
         // --- ¿Ya existe una venta ligada a esta cotización? (relación real por id; respaldo por texto para registros viejos) ---
         function cotizacionEstaConvertida(c) {
-            if (c.estado === 'Convertida') return true;
+            if (c.estado !== 'Convertida') {
+                const numero = obtenerNumeroCotizacion(c);
+                if (!numero) return false;
+                const porTexto = memoriaServicios.find(s => !s.cotizacion_id && (s.no_cotizacion || '').toString().trim() === numero);
+                return !!(porTexto && servicioCuentaParaDinero(porTexto));
+            }
+            // estado === 'Convertida': solo cuenta como venta real si el servicio ligado ya cuenta como dinero
+            const servicioLigado = memoriaServicios.find(s => String(s.cotizacion_id) === String(c.id));
+            if (servicioLigado) return servicioCuentaParaDinero(servicioLigado);
+            // Respaldo por número de cotización, para registros viejos sin cotizacion_id
             const numero = obtenerNumeroCotizacion(c);
-            if (!numero) return false;
-            return memoriaServicios.some(s => !s.cotizacion_id && (s.no_cotizacion || '').toString().trim() === numero);
+            const porTexto = numero ? memoriaServicios.find(s => !s.cotizacion_id && (s.no_cotizacion || '').toString().trim() === numero) : null;
+            return !!(porTexto && servicioCuentaParaDinero(porTexto));
         }
 
         // --- Encuentra la cotización realmente ligada a una venta (por id; respaldo por texto para registros viejos) ---
@@ -3388,6 +3423,18 @@
             document.getElementById('pdfcot_elaboro_nombre').innerText = c.creado_por_nombre || c.creado_por_email || 'N/A';
             document.getElementById('pdfcot_autorizo_nombre').innerText = c.aprobado_por_nombre || 'N/A';
 
+            const wrapFirmaElaboro = document.getElementById('pdfcot_elaboro_firma_wrap');
+            wrapFirmaElaboro.innerHTML = '';
+            if (c.creado_por_email) {
+                try {
+                    const resFirmaElaboro = await fetchAPI(`${API_URL}/firmas/${encodeURIComponent(c.creado_por_email)}`);
+                    const firmaElaboro = await resFirmaElaboro.json();
+                    if (firmaElaboro && firmaElaboro.url_firma) {
+                        wrapFirmaElaboro.innerHTML = `<img src="${firmaElaboro.url_firma}" style="max-height: 50px; max-width: 120%;" crossorigin="anonymous">`;
+                    }
+                } catch (e) { console.error(e); }
+            }
+
             const wrapFirma = document.getElementById('pdfcot_firma_wrap');
             wrapFirma.innerHTML = '';
             if (c.aprobado_por_email) {
@@ -3453,6 +3500,11 @@
             } catch(e) { btn.innerHTML = txt; btn.disabled = false; }
         }
 
+        // --- El dinero de un servicio solo cuenta si es "legacy" (ya existía antes de este cambio) o si Operaciones ya lo liberó ---
+        function servicioCuentaParaDinero(s) {
+            return !!(s.cuenta_legacy || s.liberado);
+        }
+
         function actualizarEstadisticasYMetas() {
             const mesSeleccionado = document.getElementById('filtroMes').value;
             const anioSeleccionado = document.getElementById('filtroAnio').value;
@@ -3467,7 +3519,7 @@
                 } else {
                     return sAnio === anioSeleccionado && sMes === mesSeleccionado;
                 }
-            });
+            }).filter(servicioCuentaParaDinero);
             
             let totalHaFumigadas = 0; let totalIngresos = 0; let totalGastos = 0;
             serviciosFiltrados.forEach(s => {

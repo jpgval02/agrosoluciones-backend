@@ -67,11 +67,13 @@ async def websocket_endpoint(websocket: WebSocket):
 class Credenciales(BaseModel):
     email: str
     password: str
+    dispositivo_id: Optional[str] = None
 
 class Verifica2FA(BaseModel):
     factor_id: str
     codigo: str
     email: str
+    dispositivo_id: Optional[str] = None
 
 # --- SISTEMA DE PERMISOS POR ROL ---
 def obtener_usuario_actual(authorization: str = Header(None)):
@@ -287,7 +289,23 @@ async def iniciar_sesion(credenciales: Credenciales):
             "email": credenciales.email,
             "password": credenciales.password
         })
-        
+
+        # --- ¿Este dispositivo ya quedó confiado hoy? Si sí, saltamos el 2FA ---
+        if credenciales.dispositivo_id:
+            hoy = date.today().isoformat()
+            confiable = supabase.table('dispositivos_confiables').select("id").eq('email', credenciales.email).eq('dispositivo_id', credenciales.dispositivo_id).eq('fecha', hoy).execute()
+            if confiable.data:
+                rol_usuario = "operador"
+                try:
+                    datos_rol = supabase.table('roles').select('rol').eq('email', credenciales.email).execute()
+                    if len(datos_rol.data) > 0:
+                        rol_usuario = datos_rol.data[0]['rol']
+                except Exception:
+                    pass
+                sesion = getattr(respuesta, 'session', None)
+                access_token = getattr(sesion, 'access_token', None) if sesion else None
+                return {"mensaje": "Acceso concedido", "necesita_2fa": False, "rol": rol_usuario, "access_token": access_token}
+
         factores_info = supabase.auth.mfa.list_factors()
         factores = getattr(factores_info, 'all', []) if hasattr(factores_info, 'all') else factores_info.get('all', [])
         
@@ -362,6 +380,15 @@ async def verificar_2fa(req: Verifica2FA):
             pass
 
         access_token = getattr(verificacion, 'access_token', None) if hasattr(verificacion, 'access_token') else verificacion.get('access_token')
+
+        if req.dispositivo_id:
+            try:
+                hoy = date.today().isoformat()
+                supabase.table('dispositivos_confiables').upsert({
+                    "email": req.email, "dispositivo_id": req.dispositivo_id, "fecha": hoy
+                }, on_conflict="email,dispositivo_id,fecha").execute()
+            except Exception:
+                pass
 
         return {"mensaje": "Acceso concedido", "rol": rol_usuario, "access_token": access_token}
     except Exception as e:
@@ -676,7 +703,7 @@ async def rechazar_cotizacion(cot_id: str, cuerpo: RechazoCotizacion, usuario: d
 
 # --- FIRMA DIGITAL DEL JEFE (Admin) ---
 @app.get("/firmas/mia")
-async def obtener_mi_firma(usuario: dict = Depends(requiere_rol("admin", "jefe_operaciones"))):
+async def obtener_mi_firma(usuario: dict = Depends(requiere_rol("admin", "jefe_operaciones", "operador", "auxiliar_del_auxiliar"))):
     respuesta = supabase.table('firmas').select("*").eq('email', usuario["email"]).execute()
     return respuesta.data[0] if respuesta.data else None
 
@@ -686,7 +713,7 @@ async def obtener_firma_de(email: str, usuario: dict = Depends(obtener_usuario_a
     return respuesta.data[0] if respuesta.data else None
 
 @app.post("/firmas/")
-async def subir_firma(archivo: UploadFile = File(...), usuario: dict = Depends(requiere_rol("admin", "jefe_operaciones"))):
+async def subir_firma(archivo: UploadFile = File(...), usuario: dict = Depends(requiere_rol("admin", "jefe_operaciones", "operador", "auxiliar_del_auxiliar"))):
     contenido = await archivo.read()
     extension = archivo.filename.split('.')[-1] if '.' in archivo.filename else 'png'
     nombre_archivo = f"{usuario['email']}.{extension}"
@@ -754,8 +781,11 @@ async def obtener_dashboard(mes_anio: str, usuario: dict = Depends(requiere_rol(
         metas = respuesta_metas.data[0] if len(respuesta_metas.data) > 0 else { "meta_ventas": 0, "meta_servicios": 0, "meta_clientes": 0, "meta_prospectos": 0, "meta_prospectos_visitas": 0, "visitas_reales": 0 }
         mes, anio = mes_anio.split("-")
         filtro_fecha = f"{anio}-{mes}" 
-        respuesta_servicios = supabase.table('servicios_aplicacion').select('costo_servicio', 'fecha_aplicacion', 'propiedad_id').execute()
-        servicios_mes = [s for s in respuesta_servicios.data if s.get('fecha_aplicacion') and s.get('fecha_aplicacion', '').startswith(filtro_fecha)]
+        respuesta_servicios = supabase.table('servicios_aplicacion').select('costo_servicio', 'fecha_aplicacion', 'propiedad_id', 'liberado', 'cuenta_legacy').execute()
+        servicios_mes_todos = [s for s in respuesta_servicios.data if s.get('fecha_aplicacion') and s.get('fecha_aplicacion', '').startswith(filtro_fecha)]
+        # El dinero solo cuenta si el servicio es "legacy" (ya existía antes de este cambio)
+        # o si Operaciones ya lo liberó (checklist validado por el jefe de operaciones).
+        servicios_mes = [s for s in servicios_mes_todos if s.get('cuenta_legacy') or s.get('liberado')]
         ventas_reales = sum(float(s.get('costo_servicio') or 0) for s in servicios_mes)
         servicios_reales = len(servicios_mes)
         respuesta_clientes = supabase.table('clientes').select('id', 'created_at').execute()

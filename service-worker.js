@@ -1,15 +1,16 @@
 // Sistema ASOA - Service Worker
 // Guarda una copia de la página en el dispositivo para que pueda abrir sin internet.
 // Sube este número cada vez que quieras forzar que los celulares bajen la versión nueva.
-const VERSION_CACHE = 'asoa-cache-v1';
+const VERSION_CACHE = 'asoa-cache-v2';
 
 const ARCHIVOS_A_GUARDAR = [
     './index.html',
-    './manifest.json',
-    'https://cdn.tailwindcss.com',
-    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
-    'https://cdn.jsdelivr.net/npm/apexcharts',
-    'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js'
+    './manifest.json'
+    // Los recursos externos (Tailwind, Font Awesome, ApexCharts, html2pdf) NO se
+    // precargan aquí porque el navegador bloquea por CORS el intento de guardarlos
+    // en bloque al instalar. En su lugar, el "fetch" de abajo los va guardando
+    // solos la primera vez que se cargan normalmente (con internet), y de ahí
+    // en adelante ya quedan disponibles sin internet también.
 ];
 
 // Se ejecuta cuando se instala el Service Worker (primera vez que alguien entra con internet)
@@ -49,7 +50,11 @@ self.addEventListener('fetch', (evento) => {
             .then((respuestaRed) => {
                 // Si hay internet, guarda una copia fresca para la próxima vez sin señal
                 const copia = respuestaRed.clone();
-                caches.open(VERSION_CACHE).then((cache) => cache.put(evento.request, copia));
+                caches.open(VERSION_CACHE).then((cache) => {
+                    cache.put(evento.request, copia).catch(() => {
+                        // Algunos recursos de otros dominios no se pueden guardar; no pasa nada, se ignora.
+                    });
+                });
                 return respuestaRed;
             })
             .catch(() => {

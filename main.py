@@ -87,15 +87,19 @@ def obtener_usuario_actual(authorization: str = Header(None)):
     except Exception:
         raise HTTPException(status_code=401, detail="Sesión inválida o expirada. Vuelve a iniciar sesión.")
 
-    rol = "operador"
+    rol = None
     nombre = None
     try:
-        datos_rol = supabase.table('roles').select('rol, nombre').eq('email', email).execute()
+        datos_rol = supabase.table('roles').select('rol, nombre').ilike('email', email.strip()).execute()
         if len(datos_rol.data) > 0:
             rol = datos_rol.data[0]['rol']
             nombre = datos_rol.data[0].get('nombre')
     except Exception:
-        pass
+        logger.error("No se pudo obtener el rol para %s: %s", email, traceback.format_exc())
+
+    if not rol:
+        logger.error("Usuario autenticado sin rol asignado en la tabla 'roles': %s", email)
+        raise HTTPException(status_code=403, detail="Tu cuenta no tiene un rol asignado. Contacta al administrador.")
 
     return {"email": email, "rol": rol, "nombre": nombre or email}
 
@@ -295,16 +299,21 @@ async def iniciar_sesion(credenciales: Credenciales):
             hoy = date.today().isoformat()
             confiable = supabase.table('dispositivos_confiables').select("id").eq('email', credenciales.email).eq('dispositivo_id', credenciales.dispositivo_id).eq('fecha', hoy).execute()
             if confiable.data:
-                rol_usuario = "operador"
+                rol_usuario = None
                 try:
-                    datos_rol = supabase.table('roles').select('rol').eq('email', credenciales.email).execute()
+                    datos_rol = supabase.table('roles').select('rol').ilike('email', credenciales.email.strip()).execute()
                     if len(datos_rol.data) > 0:
                         rol_usuario = datos_rol.data[0]['rol']
                 except Exception:
-                    pass
-                sesion = getattr(respuesta, 'session', None)
-                access_token = getattr(sesion, 'access_token', None) if sesion else None
-                return {"mensaje": "Acceso concedido", "necesita_2fa": False, "rol": rol_usuario, "access_token": access_token}
+                    logger.error("No se pudo obtener el rol en el atajo de dispositivo confiable para %s: %s", credenciales.email, traceback.format_exc())
+
+                # Si por cualquier motivo no se pudo determinar el rol real, NO adivinamos
+                # (antes esto se quedaba en "operador" por default, causando que un admin
+                # apareciera como operador). Mejor caemos al flujo normal de 2FA.
+                if rol_usuario:
+                    sesion = getattr(respuesta, 'session', None)
+                    access_token = getattr(sesion, 'access_token', None) if sesion else None
+                    return {"mensaje": "Acceso concedido", "necesita_2fa": False, "rol": rol_usuario, "access_token": access_token}
 
         factores_info = supabase.auth.mfa.list_factors()
         factores = getattr(factores_info, 'all', []) if hasattr(factores_info, 'all') else factores_info.get('all', [])
@@ -371,13 +380,17 @@ async def verificar_2fa(req: Verifica2FA):
             "code": req.codigo
         })
         
-        rol_usuario = "operador"
+        rol_usuario = None
         try:
-            datos_rol = supabase.table('roles').select('rol').eq('email', req.email).execute()
+            datos_rol = supabase.table('roles').select('rol').ilike('email', req.email.strip()).execute()
             if len(datos_rol.data) > 0:
                 rol_usuario = datos_rol.data[0]['rol']
         except Exception:
-            pass
+            logger.error("No se pudo obtener el rol tras verificar 2FA para %s: %s", req.email, traceback.format_exc())
+
+        if not rol_usuario:
+            logger.error("Login sin rol asignado en la tabla 'roles' para %s", req.email)
+            raise HTTPException(status_code=403, detail="Tu cuenta no tiene un rol asignado. Contacta al administrador.")
 
         access_token = getattr(verificacion, 'access_token', None) if hasattr(verificacion, 'access_token') else verificacion.get('access_token')
 
@@ -391,6 +404,8 @@ async def verificar_2fa(req: Verifica2FA):
                 pass
 
         return {"mensaje": "Acceso concedido", "rol": rol_usuario, "access_token": access_token}
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=401, detail="Código 2FA incorrecto o expirado.")
 

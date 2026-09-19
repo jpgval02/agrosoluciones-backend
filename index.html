@@ -1725,7 +1725,8 @@
                     if (tokenSesion) localStorage.setItem('tokenSesion', tokenSesion);
                     iniciarDashboard();
                 } else {
-                    alert("Código de seguridad incorrecto. Intenta de nuevo.");
+                    const dataError = await res.json().catch(() => ({}));
+                    alert(dataError.detail || "Código de seguridad incorrecto. Intenta de nuevo.");
                 }
             } catch(e) {
                 alert("Error de conexión durante la verificación.");

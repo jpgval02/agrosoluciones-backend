@@ -91,7 +91,7 @@ def buscar_fila_de_rol(email: str):
     for fila in (todas.data or []):
         if (fila.get('email') or "").strip().lower() == objetivo:
             return fila
-    logger.error("Correo '%s' no encontró match en 'roles'. Correos existentes: %s", objetivo, [f.get('email') for f in (todas.data or [])])
+    logger.error("Correo %r no encontró match en 'roles'. Correos existentes: %r", objetivo, [f.get('email') for f in (todas.data or [])])
     return None
 
 def obtener_usuario_actual(authorization: str = Header(None)):

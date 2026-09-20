@@ -22,18 +22,6 @@ url: str = os.environ.get("SUPABASE_URL")
 key: str = os.environ.get("SUPABASE_KEY")
 supabase: Client = create_client(url, key)
 
-# --- DIAGNÓSTICO TEMPORAL: confirma en los logs de Render qué llave/rol se cargó de verdad ---
-try:
-    _partes_key = (key or "").split(".")
-    if len(_partes_key) == 3:
-        _relleno = "=" * (-len(_partes_key[1]) % 4)
-        _payload_decodificado = base64.urlsafe_b64decode(_partes_key[1] + _relleno)
-        logger.info("DIAGNÓSTICO SUPABASE_KEY -> largo=%d, payload=%s", len(key or ""), _payload_decodificado.decode("utf-8", errors="replace"))
-    else:
-        logger.error("DIAGNÓSTICO SUPABASE_KEY -> la variable no tiene forma de JWT válido. Largo=%d, valor(primeros 15)=%r", len(key or ""), (key or "")[:15])
-except Exception as _e:
-    logger.error("DIAGNÓSTICO SUPABASE_KEY -> no se pudo decodificar: %s", _e)
-
 app = FastAPI(title="API Operativa - Agrosoluciones Aéreas")
 
 app.add_middleware(

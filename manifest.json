@@ -1,6 +1,6 @@
 {
   "name": "Sistema ASOA - Agrosoluciones Aéreas",
-  "short_name": "Sistema ASOA",
+  "short_name": "SGI Asoa",
   "description": "Sistema de gestión de Agrosoluciones Aéreas",
   "start_url": "./index.html",
   "scope": "./",
@@ -10,15 +10,15 @@
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "logo_nuevo.jpeg",
+      "src": "icono-192.png",
       "sizes": "192x192",
-      "type": "image/jpeg",
+      "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "logo_nuevo.jpeg",
+      "src": "icono-512.png",
       "sizes": "512x512",
-      "type": "image/jpeg",
+      "type": "image/png",
       "purpose": "any"
     }
   ]

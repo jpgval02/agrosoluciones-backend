@@ -3,6 +3,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional, List
 from supabase import create_client, Client
+try:
+    from supabase.lib.client_options import ClientOptions
+except Exception:
+    ClientOptions = None
 import os
 import logging
 import traceback
@@ -20,7 +24,16 @@ from datetime import datetime, date
 load_dotenv()
 url: str = os.environ.get("SUPABASE_URL")
 key: str = os.environ.get("SUPABASE_KEY")
-supabase: Client = create_client(url, key)
+# Tiempos de espera más altos: si Supabase tarda un poco en responder (red lenta,
+# arranque en frío, etc.), esperamos más antes de darlo por caído, en vez de
+# cortar la conexión de golpe y perder la operación (guardar cliente, cotización, etc.)
+try:
+    if ClientOptions is None:
+        raise RuntimeError("ClientOptions no disponible en esta versión de supabase-py")
+    supabase: Client = create_client(url, key, options=ClientOptions(postgrest_client_timeout=30, storage_client_timeout=30))
+except Exception:
+    logger.error("No se pudo aplicar el timeout extendido a Supabase, usando conexión normal: %s", traceback.format_exc())
+    supabase: Client = create_client(url, key)
 
 app = FastAPI(title="API Operativa - Agrosoluciones Aéreas")
 
@@ -81,18 +94,20 @@ def buscar_fila_de_rol(email: str):
     Busca la fila de 'roles' para este correo comparando en Python (no con el
     filtro de Supabase), para blindarnos contra espacios invisibles u otras
     diferencias que el filtro ilike de la base de datos no perdona.
+
+    Regresa: (fila_o_None, hubo_error_de_conexión)
     """
     objetivo = (email or "").strip().lower()
     try:
         todas = supabase.table('roles').select('rol, nombre, email').execute()
     except Exception:
-        logger.error("No se pudo consultar la tabla 'roles': %s", traceback.format_exc())
-        return None
+        logger.error("No se pudo consultar la tabla 'roles' (probable corte de red con Supabase): %s", traceback.format_exc())
+        return None, True
     for fila in (todas.data or []):
         if (fila.get('email') or "").strip().lower() == objetivo:
-            return fila
+            return fila, False
     logger.error("Correo %r no encontró match en 'roles'. Correos existentes: %r", objetivo, [f.get('email') for f in (todas.data or [])])
-    return None
+    return None, False
 
 def obtener_usuario_actual(authorization: str = Header(None)):
     """Valida el token que manda el frontend y devuelve el correo + rol del usuario."""
@@ -105,7 +120,10 @@ def obtener_usuario_actual(authorization: str = Header(None)):
     except Exception:
         raise HTTPException(status_code=401, detail="Sesión inválida o expirada. Vuelve a iniciar sesión.")
 
-    fila = buscar_fila_de_rol(email)
+    fila, hubo_error_conexion = buscar_fila_de_rol(email)
+    if hubo_error_conexion:
+        raise HTTPException(status_code=503, detail="No se pudo conectar con la base de datos en este momento. Intenta de nuevo en unos segundos.")
+
     rol = fila.get('rol') if fila else None
     nombre = fila.get('nombre') if fila else None
 
@@ -311,7 +329,7 @@ async def iniciar_sesion(credenciales: Credenciales):
             hoy = date.today().isoformat()
             confiable = supabase.table('dispositivos_confiables').select("id").eq('email', credenciales.email).eq('dispositivo_id', credenciales.dispositivo_id).eq('fecha', hoy).execute()
             if confiable.data:
-                fila = buscar_fila_de_rol(credenciales.email)
+                fila, _ = buscar_fila_de_rol(credenciales.email)
                 rol_usuario = fila.get('rol') if fila else None
 
                 # Si por cualquier motivo no se pudo determinar el rol real, NO adivinamos
@@ -387,9 +405,11 @@ async def verificar_2fa(req: Verifica2FA):
             "code": req.codigo
         })
         
-        fila = buscar_fila_de_rol(req.email)
+        fila, hubo_error_conexion = buscar_fila_de_rol(req.email)
         rol_usuario = fila.get('rol') if fila else None
 
+        if hubo_error_conexion:
+            raise HTTPException(status_code=503, detail="No se pudo conectar con la base de datos en este momento. Intenta de nuevo en unos segundos.")
         if not rol_usuario:
             raise HTTPException(status_code=403, detail="Tu cuenta no tiene un rol asignado. Contacta al administrador.")
 

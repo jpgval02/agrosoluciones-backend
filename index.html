@@ -1989,9 +1989,13 @@
             const sel = document.getElementById('ao_selector_servicio');
             if (!sel) return;
             const valorPrevio = sel.value;
-            if (!memoriaServicios.length) { sel.innerHTML = `<option value="">No hay servicios registrados</option>`; return; }
-            sel.innerHTML = `<option value="">Selecciona un servicio...</option>` + memoriaServicios.map(s => `<option value="${s.id}">${etiquetaServicio(s)}${s.liberado ? ' ✅ Liberado' : ''}</option>`).join('');
-            if (valorPrevio && memoriaServicios.some(s => String(s.id) === String(valorPrevio))) sel.value = valorPrevio;
+            const hoy = new Date().toISOString().split('T')[0];
+            const futuros = memoriaServicios
+                .filter(s => s.fecha_aplicacion && s.fecha_aplicacion >= hoy)
+                .sort((a, b) => a.fecha_aplicacion.localeCompare(b.fecha_aplicacion));
+            if (!futuros.length) { sel.innerHTML = `<option value="">No hay servicios agendados a futuro</option>`; return; }
+            sel.innerHTML = `<option value="">Selecciona un servicio...</option>` + futuros.map(s => `<option value="${s.id}">${etiquetaServicio(s)}${s.liberado ? ' ✅ Liberado' : ''}</option>`).join('');
+            if (valorPrevio && futuros.some(s => String(s.id) === String(valorPrevio))) sel.value = valorPrevio;
         }
 
         async function seleccionarServicioAcompObs() {

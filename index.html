@@ -310,15 +310,8 @@
                             </div>
                             <div id="wrapDescuentoVenta" class="hidden"><label class="text-[10px] text-gray-500 font-bold uppercase">Monto del descuento ($)</label><input type="number" step="0.01" id="venta_descuento" placeholder="0.00" class="w-full px-3 py-2 bg-rose-50 border border-rose-200 rounded-lg text-sm font-bold text-rose-600"><input type="hidden" id="h_ingreso_bruto" value="0"></div>
                             <div class="border-t border-dashed border-gray-200 pt-3">
-                                <label class="text-[10px] text-gray-500 font-bold uppercase flex items-center justify-between">
-                                    ¿A quién avisamos? (Calendario)
-                                    <button type="button" id="btnAdminContactos" onclick="abrirModalContactos()" class="hidden text-[10px] font-bold text-blue-600 hover:underline normal-case"><i class="fa-solid fa-gear"></i> Administrar</button>
-                                </label>
-                                <div id="listaContactosVenta" class="mt-1 max-h-28 overflow-y-auto bg-gray-50 border border-gray-200 rounded-lg p-2 space-y-1 text-sm text-gray-500">
-                                    Cargando contactos...
-                                </div>
+                                <label class="text-[10px] text-gray-500 font-bold uppercase">Observaciones</label><textarea id="observaciones" rows="1" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm"></textarea>
                             </div>
-                            <div><label class="text-[10px] text-gray-500 font-bold uppercase">Observaciones</label><textarea id="observaciones" rows="1" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm"></textarea></div>
                             <div class="hidden"><input type="text" id="no_factura" value="S/N"><select id="estado_cuenta"><option value="Cobrado">Cobrado</option></select><input type="number" id="satisfaccion" value="5"></div>
                             
                             <button type="submit" id="btnSubmitServicio" class="w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-green-700 hover:bg-green-600 transition-colors shadow-sm"><i class="fa-solid fa-save mr-1"></i> Guardar en BD</button>
@@ -467,56 +460,53 @@
                 </div>
 
                 <!-- Tabla Operaciones -->
-                <div id="vista-tabla-operaciones" class="hidden bg-white p-4 md:p-8 rounded-2xl shadow-xl border border-gray-200 min-h-[450px]">
-                    <div class="flex items-center gap-3 border-b border-gray-100 pb-4 mb-6"><div class="bg-green-100 p-3 rounded-xl text-green-700 text-xl"><i class="fa-solid fa-gears"></i></div><div class="flex-1"><h2 class="text-lg md:text-xl font-bold text-gray-800">Módulo de Operaciones</h2><p class="text-[10px] md:text-xs text-gray-400 mt-0.5">Bitácoras, checklist y seguimiento de cada servicio</p></div><button id="btnMiFirmaOperaciones" onclick="abrirModalFirma()" class="hidden bg-[#064e3b] hover:bg-[#0a4a2e] text-white text-xs font-bold py-2.5 px-4 rounded-lg shadow-sm transition-colors shrink-0"><i class="fa-solid fa-signature mr-2"></i> Mi Firma</button></div>
+                <div id="vista-tabla-operaciones" class="hidden space-y-6">
+                    <!-- SECCIÓN 1: SERVICIOS -->
+                    <div class="bg-white p-4 md:p-8 rounded-2xl shadow-xl border border-gray-200 min-h-[450px]">
+                        <div class="flex items-center gap-3 border-b border-gray-100 pb-4 mb-6"><div class="bg-green-100 p-3 rounded-xl text-green-700 text-xl"><i class="fa-solid fa-gears"></i></div><div class="flex-1"><h2 class="text-lg md:text-xl font-bold text-gray-800">Servicios</h2><p class="text-[10px] md:text-xs text-gray-400 mt-0.5">Asignación, checklist y reporte de cada servicio</p></div><button id="btnMiFirmaOperaciones" onclick="abrirModalFirma()" class="hidden bg-[#064e3b] hover:bg-[#0a4a2e] text-white text-xs font-bold py-2.5 px-4 rounded-lg shadow-sm transition-colors shrink-0"><i class="fa-solid fa-signature mr-2"></i> Mi Firma</button></div>
 
-                    <div class="flex gap-2 text-xs mb-6 flex-wrap">
-                        <button id="opTab_bitacoras" onclick="cambiarSubTabOperaciones('bitacoras')" class="tab-crm tab-crm-activo"><i class="fa-solid fa-screwdriver-wrench mr-1"></i> Bitácoras de Mantenimiento</button>
-                        <button id="opTab_checklist" onclick="cambiarSubTabOperaciones('checklist')" class="tab-crm"><i class="fa-solid fa-clipboard-check mr-1"></i> Inventario / Checklist</button>
-                        <button id="opTab_reporte" onclick="cambiarSubTabOperaciones('reporte')" class="tab-crm"><i class="fa-solid fa-file-signature mr-1"></i> Reporte de Servicio</button>
-                        <button id="opTab_otros" onclick="cambiarSubTabOperaciones('otros')" class="tab-crm"><i class="fa-solid fa-users mr-1"></i> Acompañantes y Observaciones</button>
-                    </div>
+                        <div class="flex gap-2 text-xs mb-6 flex-wrap">
+                            <button id="opTab_asignacion" onclick="cambiarSubTabOperaciones('asignacion')" class="tab-crm tab-crm-activo"><i class="fa-solid fa-user-check mr-1"></i> Asignación</button>
+                            <button id="opTab_checklist" onclick="cambiarSubTabOperaciones('checklist')" class="tab-crm"><i class="fa-solid fa-clipboard-check mr-1"></i> Inventario / Checklist</button>
+                            <button id="opTab_reporte" onclick="cambiarSubTabOperaciones('reporte')" class="tab-crm"><i class="fa-solid fa-file-signature mr-1"></i> Reporte de Servicio</button>
+                        </div>
 
-                    <!-- SUB-VISTA: BITÁCORAS DE MANTENIMIENTO -->
-                    <div id="opSub-bitacoras" class="space-y-6">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="cont-horometros"></div>
+                        <!-- SUB-VISTA: ASIGNACIÓN (a quién avisamos) -->
+                        <div id="opSub-asignacion" class="space-y-5">
+                            <div>
+                                <label class="text-xs font-bold text-gray-500">Servicio</label>
+                                <select id="ao_selector_servicio" onchange="seleccionarServicioAcompObs()" class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm"></select>
+                            </div>
 
-                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
-                            <h3 class="text-sm font-bold text-gray-700"><i class="fa-solid fa-clock-rotate-left mr-1 text-gray-400"></i> Historial de mantenimientos</h3>
-                            <div class="flex gap-2">
-                                <button onclick="descargarPDFBitacoras()" class="bg-gray-700 hover:bg-gray-800 text-white px-4 py-2 rounded-lg text-xs font-bold transition-colors shadow-sm"><i class="fa-solid fa-file-pdf mr-2"></i> Descargar PDF</button>
-                                <button id="btnNuevaBitacora" onclick="abrirModalBitacora()" class="hidden bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded-lg text-xs font-bold transition-colors shadow-sm"><i class="fa-solid fa-plus mr-2"></i> Registrar Mantenimiento</button>
+                            <div id="ao_contenido" class="hidden space-y-5">
+                                <div id="ao_bloqueado_banner" class="hidden bg-emerald-50 border border-emerald-300 text-emerald-800 text-xs font-bold px-4 py-2 rounded-lg"><i class="fa-solid fa-lock mr-2"></i> Este servicio ya fue liberado, ya no se pueden agregar cambios.</div>
+
+                                <div id="ao_observaciones_wrap" class="hidden bg-amber-50 border border-amber-200 rounded-xl p-4">
+                                    <h4 class="font-bold text-sm text-amber-900 mb-1"><i class="fa-solid fa-note-sticky mr-2"></i>Observación de quien registró la venta</h4>
+                                    <p id="ao_observaciones_texto" class="text-sm text-amber-900"></p>
+                                </div>
+
+                                <div class="bg-gray-50 border border-gray-200 rounded-xl p-4">
+                                    <div class="flex justify-between items-center mb-3">
+                                        <h4 class="font-bold text-sm text-gray-700"><i class="fa-solid fa-user-check mr-2 text-gray-400"></i>¿A quién avisamos?</h4>
+                                        <button type="button" id="btnAdminContactos" onclick="abrirModalContactos()" class="hidden text-[10px] font-bold text-blue-600 hover:underline"><i class="fa-solid fa-gear mr-1"></i>Administrar directorio</button>
+                                    </div>
+                                    <div id="ao_lista_acompanantes" class="space-y-2 mb-3"></div>
+                                    <div id="ao_agregar_acompanante_wrap" class="flex gap-2">
+                                        <select id="ao_selector_contacto" class="flex-1 px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm"></select>
+                                        <button onclick="agregarAcompanante()" class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded-lg text-xs font-bold shrink-0"><i class="fa-solid fa-plus mr-1"></i>Asignar</button>
+                                    </div>
+                                    <p class="text-[10px] text-gray-400 mt-2">Al asignar o quitar gente, se actualiza la invitación de Google Calendar automáticamente.</p>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
-                            <div class="overflow-x-auto custom-scrollbar max-h-[500px] relative">
-                                <table class="w-full divide-y divide-gray-200 text-sm border-collapse">
-                                    <thead class="bg-gray-100 text-gray-700 sticky top-0 z-10 shadow-sm border-b-2 border-gray-300">
-                                        <tr>
-                                            <th class="th-excel">Equipo</th>
-                                            <th class="th-excel">Tipo de Mantenimiento</th>
-                                            <th class="th-excel">Fecha</th>
-                                            <th class="th-excel">Realizó</th>
-                                            <th class="th-excel">Costo</th>
-                                            <th class="th-excel">Horas de Uso</th>
-                                            <th class="th-excel bg-amber-50 text-amber-900">Próximo Mant.</th>
-                                            <th class="th-excel">Notas</th>
-                                            <th class="th-excel bg-gray-200 text-center">Acciones</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="cuerpoTablaBitacoras" class="bg-white divide-y divide-gray-200"></tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
+                        <!-- SUB-VISTA: CHECKLIST -->
+                        <div id="opSub-checklist" class="hidden space-y-5">
+                            <div id="chk_offline_banner" class="hidden bg-amber-50 border border-amber-300 text-amber-800 text-xs font-bold px-4 py-2 rounded-lg"><i class="fa-solid fa-wifi-slash mr-2"></i> Sin conexión: lo que guardes aquí se subirá solo en cuanto vuelva el internet.</div>
+                            <div id="chk_pendientes_banner" class="hidden bg-blue-50 border border-blue-300 text-blue-800 text-xs font-bold px-4 py-2 rounded-lg"><i class="fa-solid fa-clock-rotate-left mr-2"></i><span id="chk_pendientes_texto"></span></div>
 
-                    <!-- SUB-VISTA: CHECKLIST -->
-                    <div id="opSub-checklist" class="hidden space-y-5">
-                        <div id="chk_offline_banner" class="hidden bg-amber-50 border border-amber-300 text-amber-800 text-xs font-bold px-4 py-2 rounded-lg"><i class="fa-solid fa-wifi-slash mr-2"></i> Sin conexión: lo que guardes aquí se subirá solo en cuanto vuelva el internet.</div>
-                        <div id="chk_pendientes_banner" class="hidden bg-blue-50 border border-blue-300 text-blue-800 text-xs font-bold px-4 py-2 rounded-lg"><i class="fa-solid fa-clock-rotate-left mr-2"></i><span id="chk_pendientes_texto"></span></div>
-
-                        <div>
+                            <div>
                             <label class="text-xs font-bold text-gray-500">Servicio</label>
                             <select id="chk_selector_servicio" onchange="seleccionarServicioChecklist()" class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm"></select>
                         </div>
@@ -623,34 +613,43 @@
                         </div>
                     </div>
 
-                    <!-- SUB-VISTA: ACOMPAÑANTES / OBSERVACIONES -->
-                    <div id="opSub-otros" class="hidden space-y-5">
-                        <div>
-                            <label class="text-xs font-bold text-gray-500">Servicio</label>
-                            <select id="ao_selector_servicio" onchange="seleccionarServicioAcompObs()" class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm"></select>
-                        </div>
+                    </div>
+                    <!-- fin sección Servicios -->
 
-                        <div id="ao_contenido" class="hidden space-y-5">
-                            <div id="ao_bloqueado_banner" class="hidden bg-emerald-50 border border-emerald-300 text-emerald-800 text-xs font-bold px-4 py-2 rounded-lg"><i class="fa-solid fa-lock mr-2"></i> Este servicio ya fue liberado, ya no se pueden agregar cambios.</div>
+                    <!-- SECCIÓN 2: BITÁCORAS DE MANTENIMIENTO (aparte, del equipo en general) -->
+                    <div class="bg-white p-4 md:p-8 rounded-2xl shadow-xl border border-gray-200 min-h-[300px]">
+                        <div class="flex items-center gap-3 border-b border-gray-100 pb-4 mb-6"><div class="bg-amber-100 p-3 rounded-xl text-amber-700 text-xl"><i class="fa-solid fa-screwdriver-wrench"></i></div><div><h2 class="text-lg md:text-xl font-bold text-gray-800">Bitácoras de Mantenimiento</h2><p class="text-[10px] md:text-xs text-gray-400 mt-0.5">Dron y Generador</p></div></div>
 
-                            <div class="bg-gray-50 border border-gray-200 rounded-xl p-4">
-                                <div class="flex justify-between items-center mb-3">
-                                    <h4 class="font-bold text-sm text-gray-700"><i class="fa-solid fa-users mr-2 text-gray-400"></i>Acompañantes</h4>
-                                </div>
-                                <div id="ao_lista_acompanantes" class="space-y-2 mb-3"></div>
-                                <div id="ao_agregar_acompanante_wrap" class="flex gap-2">
-                                    <select id="ao_selector_contacto" class="flex-1 px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm"></select>
-                                    <button onclick="agregarAcompanante()" class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded-lg text-xs font-bold shrink-0"><i class="fa-solid fa-plus mr-1"></i>Agregar</button>
+                        <div class="space-y-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="cont-horometros"></div>
+
+                            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+                                <h3 class="text-sm font-bold text-gray-700"><i class="fa-solid fa-clock-rotate-left mr-1 text-gray-400"></i> Historial de mantenimientos</h3>
+                                <div class="flex gap-2">
+                                    <button onclick="descargarPDFBitacoras()" class="bg-gray-700 hover:bg-gray-800 text-white px-4 py-2 rounded-lg text-xs font-bold transition-colors shadow-sm"><i class="fa-solid fa-file-pdf mr-2"></i> Descargar PDF</button>
+                                    <button id="btnNuevaBitacora" onclick="abrirModalBitacora()" class="hidden bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded-lg text-xs font-bold transition-colors shadow-sm"><i class="fa-solid fa-plus mr-2"></i> Registrar Mantenimiento</button>
                                 </div>
                             </div>
 
-                            <div class="bg-gray-50 border border-gray-200 rounded-xl p-4">
-                                <h4 class="font-bold text-sm text-gray-700 mb-3"><i class="fa-solid fa-note-sticky mr-2 text-gray-400"></i>Observaciones Operativas</h4>
-                                <div id="ao_agregar_observacion_wrap" class="flex gap-2 mb-4">
-                                    <input type="text" id="ao_nueva_observacion" placeholder="Escribe una observación..." class="flex-1 px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm">
-                                    <button onclick="agregarObservacion()" class="bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded-lg text-xs font-bold shrink-0"><i class="fa-solid fa-plus mr-1"></i>Agregar</button>
+                            <div class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
+                                <div class="overflow-x-auto custom-scrollbar max-h-[500px] relative">
+                                    <table class="w-full divide-y divide-gray-200 text-sm border-collapse">
+                                        <thead class="bg-gray-100 text-gray-700 sticky top-0 z-10 shadow-sm border-b-2 border-gray-300">
+                                            <tr>
+                                                <th class="th-excel">Equipo</th>
+                                                <th class="th-excel">Tipo de Mantenimiento</th>
+                                                <th class="th-excel">Fecha</th>
+                                                <th class="th-excel">Realizó</th>
+                                                <th class="th-excel">Costo</th>
+                                                <th class="th-excel">Horas de Uso</th>
+                                                <th class="th-excel bg-amber-50 text-amber-900">Próximo Mant.</th>
+                                                <th class="th-excel">Notas</th>
+                                                <th class="th-excel bg-gray-200 text-center">Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="cuerpoTablaBitacoras" class="bg-white divide-y divide-gray-200"></tbody>
+                                    </table>
                                 </div>
-                                <div id="ao_lista_observaciones" class="space-y-3"></div>
                             </div>
                         </div>
                     </div>
@@ -1802,9 +1801,9 @@
             const btnMetas = document.getElementById('btn-configurar-metas');
             if (btnMetas) btnMetas.classList.toggle('hidden', rolUsuario !== 'admin');
 
-            // "Administrar" el directorio de contactos, también solo Admin
+            // "Administrar" el directorio de contactos: admin y jefe_operaciones (ahora se usa desde Asignación en Operaciones)
             const btnContactos = document.getElementById('btnAdminContactos');
-            if (btnContactos) btnContactos.classList.toggle('hidden', rolUsuario !== 'admin');
+            if (btnContactos) btnContactos.classList.toggle('hidden', !['admin', 'jefe_operaciones'].includes(rolUsuario));
 
             // "Por Autorizar" (cotizaciones), solo Admin
             const btnPorAutorizar = document.getElementById('btnPorAutorizar');
@@ -1974,16 +1973,16 @@
 
         // --- SUB-TABS DENTRO DE OPERACIONES ---
         function cambiarSubTabOperaciones(sub) {
-            ['bitacoras', 'checklist', 'reporte', 'otros'].forEach(s => {
+            ['asignacion', 'checklist', 'reporte'].forEach(s => {
                 document.getElementById('opSub-' + s).classList.toggle('hidden', s !== sub);
                 document.getElementById('opTab_' + s).classList.toggle('tab-crm-activo', s === sub);
             });
             if (sub === 'checklist') { poblarSelectorChecklist(); actualizarBannerOfflineChecklist(); }
             if (sub === 'reporte') { poblarSelectorReporte(); inicializarFirmaCanvas('rs_firma_cliente_canvas'); inicializarFirmaCanvas('rs_firma_operador_canvas'); }
-            if (sub === 'otros') { poblarSelectorAcompObs(); }
+            if (sub === 'asignacion') { poblarSelectorAcompObs(); }
         }
 
-        // --- OPERACIONES: ACOMPAÑANTES Y OBSERVACIONES OPERATIVAS ---
+        // --- OPERACIONES: ASIGNACIÓN (a quién avisamos) ---
         let aoServicioActual = null;
 
         function poblarSelectorAcompObs() {
@@ -2005,16 +2004,21 @@
             const bloqueado = !!(servicio && servicio.liberado);
             document.getElementById('ao_bloqueado_banner').classList.toggle('hidden', !bloqueado);
 
-            const puedeEditarAcomp = ['admin', 'operador', 'jefe_operaciones'].includes(rolUsuario) && !bloqueado;
+            const wrapObs = document.getElementById('ao_observaciones_wrap');
+            if (servicio && servicio.observaciones && servicio.observaciones.trim()) {
+                document.getElementById('ao_observaciones_texto').innerText = servicio.observaciones;
+                wrapObs.classList.remove('hidden');
+            } else {
+                wrapObs.classList.add('hidden');
+            }
+
+            const puedeEditarAcomp = ['admin', 'jefe_operaciones'].includes(rolUsuario) && !bloqueado;
             document.getElementById('ao_agregar_acompanante_wrap').classList.toggle('hidden', !puedeEditarAcomp);
-            const puedeEscribirObs = ['admin', 'jefe_operaciones'].includes(rolUsuario) && !bloqueado;
-            document.getElementById('ao_agregar_observacion_wrap').classList.toggle('hidden', !puedeEscribirObs);
 
             const sel2 = document.getElementById('ao_selector_contacto');
             sel2.innerHTML = memoriaContactos.map(c => `<option value="${c.id}">${c.nombre}</option>`).join('') || `<option value="">Sin contactos en el Directorio</option>`;
 
             await cargarAcompanantes();
-            await cargarObservaciones();
         }
 
         async function cargarAcompanantes() {
@@ -2030,8 +2034,8 @@
             const cont = document.getElementById('ao_lista_acompanantes');
             const servicio = memoriaServicios.find(s => String(s.id) === String(aoServicioActual));
             const bloqueado = !!(servicio && servicio.liberado);
-            const puedeEditar = ['admin', 'operador', 'jefe_operaciones'].includes(rolUsuario) && !bloqueado;
-            if (!lista.length) { cont.innerHTML = `<p class="text-xs text-gray-400">Sin acompañantes registrados.</p>`; return; }
+            const puedeEditar = ['admin', 'jefe_operaciones'].includes(rolUsuario) && !bloqueado;
+            if (!lista.length) { cont.innerHTML = `<p class="text-xs text-gray-400">Todavía no se le ha asignado a nadie.</p>`; return; }
             cont.innerHTML = lista.map(a => `
                 <div class="flex justify-between items-center bg-white border border-gray-200 rounded-lg px-3 py-2">
                     <span class="text-sm text-gray-700"><i class="fa-solid fa-user mr-2 text-gray-400"></i>${a.contacto_nombre}</span>
@@ -2045,49 +2049,17 @@
             try {
                 const res = await fetchAPI(`${API_URL}/operaciones/acompanantes/${aoServicioActual}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contacto_id: parseInt(contactoId, 10) }) });
                 const data = await res.json();
-                if (!res.ok) throw new Error(data.detail || 'Error al agregar');
+                if (!res.ok) throw new Error(data.detail || 'Error al asignar');
                 await cargarAcompanantes();
-            } catch (e) { alert('No se pudo agregar: ' + e.message); }
+            } catch (e) { alert('No se pudo asignar: ' + e.message); }
         }
 
         async function eliminarAcompanante(acompananteId) {
-            if (!confirm('¿Quitar a este acompañante del servicio?')) return;
+            if (!confirm('¿Quitar a esta persona de la asignación?')) return;
             try {
                 await fetchAPI(`${API_URL}/operaciones/acompanantes/${aoServicioActual}/${acompananteId}`, { method: 'DELETE' });
                 await cargarAcompanantes();
             } catch (e) { alert('No se pudo quitar.'); }
-        }
-
-        async function cargarObservaciones() {
-            if (!aoServicioActual) return;
-            try {
-                const res = await fetchAPI(`${API_URL}/operaciones/observaciones/${aoServicioActual}`);
-                const lista = await res.json();
-                renderizarObservaciones(lista);
-            } catch (e) { console.error(e); }
-        }
-
-        function renderizarObservaciones(lista) {
-            const cont = document.getElementById('ao_lista_observaciones');
-            if (!lista.length) { cont.innerHTML = `<p class="text-xs text-gray-400">Sin observaciones registradas aún.</p>`; return; }
-            cont.innerHTML = lista.map(o => `
-                <div class="bg-white border-l-4 border-blue-400 rounded-lg px-3 py-2 shadow-sm">
-                    <p class="text-sm text-gray-700">${o.texto}</p>
-                    <p class="text-[10px] text-gray-400 mt-1">${o.autor_nombre || ''} · ${new Date(o.fecha).toLocaleString('es-MX')}</p>
-                </div>`).join('');
-        }
-
-        async function agregarObservacion() {
-            const input = document.getElementById('ao_nueva_observacion');
-            const texto = input.value.trim();
-            if (!texto || !aoServicioActual) return;
-            try {
-                const res = await fetchAPI(`${API_URL}/operaciones/observaciones/${aoServicioActual}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ texto }) });
-                const data = await res.json();
-                if (!res.ok) throw new Error(data.detail || 'Error al agregar');
-                input.value = '';
-                await cargarObservaciones();
-            } catch (e) { alert('No se pudo agregar la observación: ' + e.message); }
         }
 
         // --- OPERACIONES: REPORTE DE SERVICIO ---
@@ -2814,7 +2786,7 @@
                     </div>
                     <p class="text-[10px] text-gray-400 mb-2">${detalle.join(' · ')}</p>
                     <div class="flex gap-2 mt-2">
-                        <button onclick="cerrarPanelNotif(); cambiarVista('operaciones'); cambiarSubTabOperaciones('bitacoras');" class="flex-1 bg-amber-600 hover:bg-amber-500 text-white text-[10px] font-bold py-1.5 rounded transition-colors shadow-sm">Ver Bitácoras</button>
+                        <button onclick="cerrarPanelNotif(); cambiarVista('operaciones');" class="flex-1 bg-amber-600 hover:bg-amber-500 text-white text-[10px] font-bold py-1.5 rounded transition-colors shadow-sm">Ver Bitácoras</button>
                     </div>
                 `;
                 lista.appendChild(tarjeta);
@@ -4245,7 +4217,7 @@
             const datos = { 
                 propiedad_id: document.getElementById('selectPropiedad2').value, fecha_aplicacion: document.getElementById('fecha_aplicacion').value, 
                 costo_servicio: parseFloat(document.getElementById('costo_servicio').value || 0), estado_cuenta: 'Cobrado', satisfaccion: 5,
-                no_cotizacion: document.getElementById('no_cotizacion_venta').value, cotizacion_id: document.getElementById('cotizacion_id_venta').value || null, descuento: parseFloat(document.getElementById('venta_descuento').value) || 0, notificar_a: Array.from(document.querySelectorAll('.chk-contacto-venta:checked')).map(el => el.value), no_orden: document.getElementById('no_orden').value,
+                no_cotizacion: document.getElementById('no_cotizacion_venta').value, cotizacion_id: document.getElementById('cotizacion_id_venta').value || null, descuento: parseFloat(document.getElementById('venta_descuento').value) || 0, no_orden: document.getElementById('no_orden').value,
                 gastos: parseFloat(document.getElementById('gastos').value || 0), fecha_seguimiento: document.getElementById('fecha_seguimiento').value,
                 no_factura: document.getElementById('no_factura').value, observaciones: document.getElementById('observaciones').value,
                 gasto_gasolina_unidad: parseFloat(document.getElementById('h_gas_unidad').value || 0), gasto_gasolina_generador: parseFloat(document.getElementById('h_gas_gen').value || 0), gasto_sueldos: parseFloat(document.getElementById('h_sueldos').value || 0), gasto_insumos: parseFloat(document.getElementById('h_insumos').value || 0), gasto_comidas: parseFloat(document.getElementById('h_comidas').value || 0), gasto_oxxo: parseFloat(document.getElementById('h_oxxo').value || 0),

@@ -250,15 +250,20 @@ class ObservacionNueva(BaseModel):
 
 
 # --- FUNCIÓN DE GOOGLE CALENDAR (ACTUALIZADA PARA INVITADOS) ---
-def agendar_en_google_calendar(fecha, no_cotizacion, observaciones, nombre_productor, parcela, hectareas, notificar_a=None):
-    # ¡IMPORTANTE! Cambia esto por el correo dueño del calendario
-    CORREO_CALENDARIO = 'facturacion@asoa.com.mx' 
+def agendar_en_google_calendar(fecha, no_cotizacion, observaciones, nombre_productor, parcela, hectareas, notificar_a=None, event_id=None):
+    """
+    Crea o actualiza el evento de la cita en Google Calendar.
+    - Si event_id es None: crea un evento nuevo y regresa su ID.
+    - Si event_id ya existe: actualiza los invitados de ESE mismo evento
+      (para cuando en Operaciones se agrega o quita gente de la asignación,
+      en vez de crear un evento duplicado cada vez).
+    Regresa el ID del evento (nuevo o el mismo que se actualizó), o None si no se pudo agendar.
+    """
+    CORREO_CALENDARIO = 'facturacion@asoa.com.mx'
     ARCHIVO_CREDENCIALES = 'credenciales_calendario.json'
 
-    # --- Correos elegidos por el usuario al registrar la venta (ya no están fijos en el código) ---
     correos_equipo = [{'email': e} for e in (notificar_a or []) if e]
 
-    # --- Solo agendamos si la fecha es hoy o a futuro ---
     try:
         fecha_evento = datetime.strptime(fecha, '%Y-%m-%d').date()
         if fecha_evento < date.today():
@@ -276,7 +281,7 @@ def agendar_en_google_calendar(fecha, no_cotizacion, observaciones, nombre_produ
         creds = service_account.Credentials.from_service_account_file(
             ARCHIVO_CREDENCIALES, scopes=['https://www.googleapis.com/auth/calendar']
         ).with_subject('facturacion@asoa.com.mx')
-        servicio = build('calendar', 'v3', credentials=creds)
+        servicio_cal = build('calendar', 'v3', credentials=creds)
 
         evento = {
             'summary': f'🚜 Vuelo: {nombre_productor} ({hectareas} Ha.)',
@@ -286,33 +291,54 @@ def agendar_en_google_calendar(fecha, no_cotizacion, observaciones, nombre_produ
             'end': {'date': fecha, 'timeZone': 'America/Mexico_City'},
         }
 
-        # Si el usuario no seleccionó a nadie, creamos el evento directo sin invitados.
-        if not correos_equipo:
-            servicio.events().insert(calendarId=CORREO_CALENDARIO, body=evento).execute()
-            print("¡Cita agendada sin invitados (no se seleccionó a nadie)!")
-            return
+        # --- Ya existe un evento para este servicio: lo actualizamos (no creamos uno nuevo) ---
+        if event_id:
+            try:
+                evento['attendees'] = correos_equipo
+                resultado = servicio_cal.events().patch(
+                    calendarId=CORREO_CALENDARIO, eventId=event_id, body=evento, sendUpdates='all'
+                ).execute()
+                print("¡Evento actualizado con la nueva lista de invitados!")
+                return resultado.get('id', event_id)
+            except Exception as update_err:
+                if 'forbiddenForServiceAccounts' in str(update_err) or 'Domain-Wide Delegation' in str(update_err):
+                    evento.pop('attendees', None)
+                    resultado = servicio_cal.events().patch(calendarId=CORREO_CALENDARIO, eventId=event_id, body=evento).execute()
+                    return resultado.get('id', event_id)
+                if 'notFound' in str(update_err) or '404' in str(update_err):
+                    # El evento ya no existe (se borró a mano en Calendar) -> lo creamos de nuevo abajo
+                    event_id = None
+                else:
+                    raise
 
-        # Si sí eligió gente: primero intentamos con invitados (requiere Domain-Wide Delegation).
-        # Si falla por permisos, creamos el evento sin invitados en vez de perderlo por completo.
+        # --- No hay evento todavía: lo creamos ---
+        if not correos_equipo:
+            resultado = servicio_cal.events().insert(calendarId=CORREO_CALENDARIO, body=evento).execute()
+            print("¡Cita agendada sin invitados (no se seleccionó a nadie)!")
+            return resultado.get('id')
+
         try:
             evento['attendees'] = correos_equipo
-            servicio.events().insert(
+            resultado = servicio_cal.events().insert(
                 calendarId=CORREO_CALENDARIO,
                 body=evento,
                 sendUpdates='all'  # <-- ESTO LES AVISA POR CORREO
             ).execute()
             print("¡Cita agendada y equipo notificado con éxito!")
+            return resultado.get('id')
         except Exception as invite_err:
             if 'forbiddenForServiceAccounts' in str(invite_err) or 'Domain-Wide Delegation' in str(invite_err):
                 print("No se pudo invitar al equipo (falta Domain-Wide Delegation). Se crea la cita sin invitados.")
                 evento.pop('attendees', None)
-                servicio.events().insert(calendarId=CORREO_CALENDARIO, body=evento).execute()
+                resultado = servicio_cal.events().insert(calendarId=CORREO_CALENDARIO, body=evento).execute()
                 print("¡Cita agendada sin invitados!")
+                return resultado.get('id')
             else:
                 raise
 
     except Exception as e:
         print(f"Error con Google Calendar: {e}")
+        return None
 
 
 # --- RUTA DE LOGIN PRINCIPAL ---
@@ -531,20 +557,11 @@ async def registrar_servicio(servicio: ServicioNuevo, usuario: dict = Depends(re
 
         # 2. Refrescamos el panel de todos los usuarios
         await manager.broadcast("update")
-        
-        # 3. Disparamos la agenda a Google Calendar (usa la fecha real de la venta/servicio)
-        fecha_cita = servicio.fecha_aplicacion
-        if fecha_cita:
-            agendar_en_google_calendar(
-                fecha=fecha_cita,
-                no_cotizacion=servicio.no_cotizacion or 'S/N',
-                observaciones=servicio.observaciones or 'Sin detalles',
-                nombre_productor=nombre_productor,
-                parcela=nombre_parcela,
-                hectareas=servicio.ha_trabajadas or 0,
-                notificar_a=servicio.notificar_a
-            )
-            
+
+        # El agendado a Google Calendar y la selección de a quién avisar ya NO se hacen aquí:
+        # ahora se hacen en Operaciones, dentro de "Asignación", cuando el jefe de
+        # operaciones o el admin asignen el servicio.
+
         return {"mensaje": "Guardado", "datos": respuesta.data[0]}
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
 
@@ -1096,16 +1113,62 @@ async def guardar_firma_reporte(servicio_id: str, quien: str, cuerpo: FirmaBase6
 
 
 # ============================================================
-# --- OPERACIONES: ACOMPAÑANTES ---
-# Se eligen del Directorio de Notificaciones ya existente, por cada servicio.
+# --- OPERACIONES: ASIGNACIÓN (antes "Acompañantes") ---
+# Aquí es donde el jefe_operaciones o admin elige a quién se le avisa de
+# cada servicio. Se eligen del Directorio de Notificaciones ya existente.
+# Cada cambio (agregar o quitar) sincroniza el MISMO evento de Google
+# Calendar (lo crea la primera vez, después solo actualiza invitados).
 # ============================================================
+def _sincronizar_calendario_servicio(servicio_id: str):
+    try:
+        serv = supabase.table('servicios_aplicacion').select("*").eq('id', servicio_id).execute()
+        if not serv.data:
+            return
+        s = serv.data[0]
+        if not s.get('fecha_aplicacion'):
+            return
+
+        nombre_productor = "Productor Desconocido"
+        nombre_parcela = "Ubicación Desconocida"
+        try:
+            prop_data = supabase.table('propiedades').select('cliente_id, nombre_propiedad, direccion').eq('id', s.get('propiedad_id')).execute()
+            if prop_data.data:
+                nombre_parcela = f"{prop_data.data[0]['nombre_propiedad']} ({prop_data.data[0]['direccion']})"
+                cliente_data = supabase.table('clientes').select('nombre, apellidos').eq('id', prop_data.data[0]['cliente_id']).execute()
+                if cliente_data.data:
+                    nombre_productor = f"{cliente_data.data[0]['nombre']} {cliente_data.data[0]['apellidos']}"
+        except Exception:
+            pass
+
+        asignados = supabase.table('servicio_acompanantes').select("contacto_id").eq('servicio_id', servicio_id).execute()
+        emails = []
+        for a in (asignados.data or []):
+            c = supabase.table('contactos_notificacion').select('email').eq('id', a['contacto_id']).execute()
+            if c.data and c.data[0].get('email'):
+                emails.append(c.data[0]['email'])
+
+        nuevo_event_id = agendar_en_google_calendar(
+            fecha=s.get('fecha_aplicacion'),
+            no_cotizacion=s.get('no_cotizacion') or 'S/N',
+            observaciones=s.get('observaciones') or 'Sin detalles',
+            nombre_productor=nombre_productor,
+            parcela=nombre_parcela,
+            hectareas=s.get('ha_trabajadas') or 0,
+            notificar_a=emails,
+            event_id=s.get('google_event_id')
+        )
+        if nuevo_event_id and nuevo_event_id != s.get('google_event_id'):
+            supabase.table('servicios_aplicacion').update({'google_event_id': nuevo_event_id}).eq('id', servicio_id).execute()
+    except Exception:
+        logger.error("No se pudo sincronizar el calendario para el servicio %s: %s", servicio_id, traceback.format_exc())
+
 @app.get("/operaciones/acompanantes/{servicio_id}")
 async def obtener_acompanantes(servicio_id: str, usuario: dict = Depends(obtener_usuario_actual)):
     respuesta = supabase.table('servicio_acompanantes').select("*").eq('servicio_id', servicio_id).order('agregado_en').execute()
     return respuesta.data
 
 @app.post("/operaciones/acompanantes/{servicio_id}")
-async def agregar_acompanante(servicio_id: str, cuerpo: AcompananteNuevo, usuario: dict = Depends(requiere_rol("admin", "operador", "jefe_operaciones"))):
+async def agregar_acompanante(servicio_id: str, cuerpo: AcompananteNuevo, usuario: dict = Depends(requiere_rol("admin", "jefe_operaciones"))):
     try:
         _verificar_servicio_no_liberado(servicio_id)
         contacto = supabase.table('contactos_notificacion').select("*").eq('id', cuerpo.contacto_id).execute()
@@ -1119,21 +1182,23 @@ async def agregar_acompanante(servicio_id: str, cuerpo: AcompananteNuevo, usuari
             "agregado_por_nombre": usuario["nombre"],
         }
         respuesta = supabase.table('servicio_acompanantes').insert(datos).execute()
+        _sincronizar_calendario_servicio(servicio_id)
         await manager.broadcast("update")
-        return {"mensaje": "Acompañante agregado", "datos": respuesta.data[0]}
+        return {"mensaje": "Asignado", "datos": respuesta.data[0]}
     except HTTPException: raise
     except Exception as e:
         if "duplicate" in str(e).lower() or "unique" in str(e).lower():
-            raise HTTPException(status_code=400, detail="Ese contacto ya está agregado como acompañante de este servicio.")
+            raise HTTPException(status_code=400, detail="Esa persona ya está asignada a este servicio.")
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.delete("/operaciones/acompanantes/{servicio_id}/{acompanante_id}")
-async def eliminar_acompanante(servicio_id: str, acompanante_id: str, usuario: dict = Depends(requiere_rol("admin", "operador", "jefe_operaciones"))):
+async def eliminar_acompanante(servicio_id: str, acompanante_id: str, usuario: dict = Depends(requiere_rol("admin", "jefe_operaciones"))):
     try:
         _verificar_servicio_no_liberado(servicio_id)
         supabase.table('servicio_acompanantes').delete().eq('id', acompanante_id).execute()
+        _sincronizar_calendario_servicio(servicio_id)
         await manager.broadcast("update")
-        return {"mensaje": "Acompañante eliminado"}
+        return {"mensaje": "Quitado de la asignación"}
     except HTTPException: raise
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
 

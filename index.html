@@ -2076,9 +2076,12 @@
             const sel = document.getElementById('rs_selector_servicio');
             if (!sel) return;
             const valorPrevio = sel.value;
-            if (!memoriaServicios.length) { sel.innerHTML = `<option value="">No hay servicios registrados</option>`; return; }
-            sel.innerHTML = `<option value="">Selecciona un servicio...</option>` + memoriaServicios.map(s => `<option value="${s.id}">${etiquetaServicio(s)}${s.liberado ? ' ✅ Liberado' : ''}</option>`).join('');
-            if (valorPrevio && memoriaServicios.some(s => String(s.id) === String(valorPrevio))) sel.value = valorPrevio;
+            const disponibles = memoriaServicios
+                .filter(s => !s.cuenta_legacy)
+                .sort((a, b) => (b.fecha_aplicacion || '').localeCompare(a.fecha_aplicacion || ''));
+            if (!disponibles.length) { sel.innerHTML = `<option value="">No hay servicios registrados</option>`; return; }
+            sel.innerHTML = `<option value="">Selecciona un servicio...</option>` + disponibles.map(s => `<option value="${s.id}">${etiquetaServicio(s)}${s.liberado ? ' ✅ Liberado' : ''}</option>`).join('');
+            if (valorPrevio && disponibles.some(s => String(s.id) === String(valorPrevio))) sel.value = valorPrevio;
         }
 
         async function seleccionarServicioReporte() {
@@ -2490,7 +2493,9 @@
             const sel = document.getElementById('chk_selector_servicio');
             if (!sel) return;
             const valorPrevio = sel.value;
-            const pendientes = memoriaServicios.filter(s => !s.liberado);
+            const pendientes = memoriaServicios
+                .filter(s => !s.liberado && !s.cuenta_legacy)
+                .sort((a, b) => (b.fecha_aplicacion || '').localeCompare(a.fecha_aplicacion || ''));
             if (!pendientes.length) {
                 sel.innerHTML = `<option value="">No hay servicios pendientes en Operaciones</option>`;
                 document.getElementById('chk_contenido').classList.add('hidden');

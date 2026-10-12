@@ -180,6 +180,8 @@ class ServicioNuevo(BaseModel):
     gasto_insumos: Optional[float] = 0.0
     gasto_comidas: Optional[float] = 0.0
     gasto_oxxo: Optional[float] = 0.0
+    gasto_accesorios_refacciones: Optional[float] = 0.0
+    agroquimico_usado: Optional[str] = ""
     ha_trabajadas: Optional[float] = 0.0
     precio_por_ha: Optional[float] = 0.0
     ingreso_viaticos: Optional[float] = 0.0
@@ -519,7 +521,7 @@ async def eliminar_propiedad(propiedad_id: str, usuario: dict = Depends(requiere
 # --- RUTAS DE SERVICIOS (MODIFICADA CON GOOGLE CALENDAR) ---
 CAMPOS_FINANCIEROS_SERVICIO = [
     'costo_servicio', 'gastos', 'gasto_gasolina_unidad', 'gasto_gasolina_generador',
-    'gasto_sueldos', 'gasto_insumos', 'gasto_comidas', 'gasto_oxxo',
+    'gasto_sueldos', 'gasto_insumos', 'gasto_comidas', 'gasto_oxxo', 'gasto_accesorios_refacciones',
     'precio_por_ha', 'ingreso_viaticos', 'ingreso_suministros', 'descuento'
 ]
 
@@ -939,34 +941,8 @@ async def obtener_checklist(servicio_id: str, usuario: dict = Depends(obtener_us
     respuesta = supabase.table('checklists_servicio').select("*").eq('servicio_id', servicio_id).execute()
     return respuesta.data[0] if respuesta.data else None
 
-@app.post("/operaciones/checklist/{servicio_id}/{tipo}")
-async def guardar_checklist(servicio_id: str, tipo: str, cuerpo: ChecklistParte, usuario: dict = Depends(requiere_rol("admin", "operador", "jefe_operaciones"))):
-    try:
-        if tipo not in ("salida", "regreso"):
-            raise HTTPException(status_code=400, detail="Tipo inválido, debe ser 'salida' o 'regreso'.")
-
-        existente = supabase.table('checklists_servicio').select("id, validado").eq('servicio_id', servicio_id).execute()
-        if existente.data and existente.data[0].get("validado"):
-            raise HTTPException(status_code=400, detail="Este checklist ya fue validado y liberado, no se puede modificar.")
-
-        ahora = datetime.utcnow().isoformat()
-        datos = {
-            f"items_{tipo}": cuerpo.items,
-            f"fecha_{tipo}": ahora,
-            f"operador_{tipo}_email": usuario["email"],
-            f"operador_{tipo}_nombre": usuario["nombre"],
-        }
-        if existente.data:
-            supabase.table('checklists_servicio').update(datos).eq('servicio_id', servicio_id).execute()
-        else:
-            datos["servicio_id"] = servicio_id
-            supabase.table('checklists_servicio').insert(datos).execute()
-
-        await manager.broadcast("update")
-        return {"mensaje": f"Checklist de {tipo} guardado"}
-    except HTTPException: raise
-    except Exception as e: raise HTTPException(status_code=500, detail=str(e))
-
+# IMPORTANTE: esta ruta debe ir ANTES de "/{tipo}". FastAPI revisa las rutas en orden,
+# y si "/{tipo}" va primero, captura "validar" como si fuera un tipo y nunca llega aquí.
 @app.post("/operaciones/checklist/{servicio_id}/validar")
 async def validar_checklist(servicio_id: str, usuario: dict = Depends(requiere_rol("admin", "jefe_operaciones"))):
     try:
@@ -1003,6 +979,34 @@ async def validar_checklist(servicio_id: str, usuario: dict = Depends(requiere_r
     except HTTPException: raise
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
 
+
+@app.post("/operaciones/checklist/{servicio_id}/{tipo}")
+async def guardar_checklist(servicio_id: str, tipo: str, cuerpo: ChecklistParte, usuario: dict = Depends(requiere_rol("admin", "operador", "jefe_operaciones"))):
+    try:
+        if tipo not in ("salida", "regreso"):
+            raise HTTPException(status_code=400, detail="Tipo inválido, debe ser 'salida' o 'regreso'.")
+
+        existente = supabase.table('checklists_servicio').select("id, validado").eq('servicio_id', servicio_id).execute()
+        if existente.data and existente.data[0].get("validado"):
+            raise HTTPException(status_code=400, detail="Este checklist ya fue validado y liberado, no se puede modificar.")
+
+        ahora = datetime.utcnow().isoformat()
+        datos = {
+            f"items_{tipo}": cuerpo.items,
+            f"fecha_{tipo}": ahora,
+            f"operador_{tipo}_email": usuario["email"],
+            f"operador_{tipo}_nombre": usuario["nombre"],
+        }
+        if existente.data:
+            supabase.table('checklists_servicio').update(datos).eq('servicio_id', servicio_id).execute()
+        else:
+            datos["servicio_id"] = servicio_id
+            supabase.table('checklists_servicio').insert(datos).execute()
+
+        await manager.broadcast("update")
+        return {"mensaje": f"Checklist de {tipo} guardado"}
+    except HTTPException: raise
+    except Exception as e: raise HTTPException(status_code=500, detail=str(e))
 
 # ============================================================
 # --- OPERACIONES: REPORTE DE SERVICIO ---

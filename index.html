@@ -270,7 +270,7 @@
                         <h3 id="tituloFormServio" class="text-lg md:text-xl font-bold text-gray-800 mb-5 flex items-center"><i class="fa-solid fa-file-invoice-dollar text-green-600 mr-2 text-xl md:text-2xl"></i> Registrar Venta</h3>
                         <form id="servicioForm" class="space-y-4">
                             <input type="hidden" id="editServioId">
-                            <input type="hidden" id="h_gas_unidad" value="0"><input type="hidden" id="h_gas_gen" value="0"><input type="hidden" id="h_sueldos" value="0"><input type="hidden" id="h_insumos" value="0"><input type="hidden" id="h_comidas" value="0"><input type="hidden" id="h_oxxo" value="0">
+                            <input type="hidden" id="h_gas_unidad" value="0"><input type="hidden" id="h_gas_gen" value="0"><input type="hidden" id="h_sueldos" value="0"><input type="hidden" id="h_insumos" value="0"><input type="hidden" id="h_comidas" value="0"><input type="hidden" id="h_oxxo" value="0"><input type="hidden" id="h_accesorios" value="0"><input type="hidden" id="h_agroquimico_usado" value="">
                             <input type="hidden" id="h_ha_trabajadas" value="0"><input type="hidden" id="h_precio_por_ha" value="0"><input type="hidden" id="h_ingreso_viaticos" value="0"><input type="hidden" id="h_ingreso_suministros" value="0">
                             <input type="hidden" id="h_metodo_pago" value="Efectivo">
 
@@ -694,9 +694,10 @@
                                         <th class="th-excel text-rose-900 bg-rose-50 border-rose-200"><i class="fa-solid fa-gas-pump mr-1"></i> Gas. Unidad</th>
                                         <th class="th-excel text-rose-900 bg-rose-50 border-rose-200"><i class="fa-solid fa-bolt mr-1"></i> Gas. Generador</th>
                                         <th class="th-excel text-rose-900 bg-rose-50 border-rose-200"><i class="fa-solid fa-users mr-1"></i> Sueldos</th>
-                                        <th class="th-excel text-rose-900 bg-rose-50 border-rose-200"><i class="fa-solid fa-flask mr-1"></i> Insumos</th>
+                                        <th class="th-excel text-rose-900 bg-rose-50 border-rose-200"><i class="fa-solid fa-flask mr-1"></i> Agroquímicos</th>
                                         <th class="th-excel text-rose-900 bg-rose-50 border-rose-200"><i class="fa-solid fa-utensils mr-1"></i> Comidas</th>
                                         <th class="th-excel text-rose-900 bg-rose-50 border-rose-200"><i class="fa-solid fa-cookie mr-1"></i> Oxxo</th>
+                                        <th class="th-excel text-rose-900 bg-rose-50 border-rose-200"><i class="fa-solid fa-screwdriver-wrench mr-1"></i> Accesorios y Refacciones</th>
                                         <th class="th-excel bg-red-600 text-white font-extrabold border-l-4 border-white">GASTO TOTAL</th>
                                     </tr>
                                 </thead>
@@ -897,9 +898,11 @@
                         <div class="flex justify-between items-center"><label class="text-[10px] md:text-xs font-bold text-gray-600 uppercase"><i class="fa-solid fa-gas-pump w-5 text-gray-400"></i> Gas Unidad</label><input type="number" step="0.01" id="m_gas_unidad" class="w-28 md:w-32 px-2 py-1 bg-gray-50 border border-gray-300 text-right font-bold text-red-600 outline-none"></div>
                         <div class="flex justify-between items-center"><label class="text-[10px] md:text-xs font-bold text-gray-600 uppercase"><i class="fa-solid fa-bolt w-5 text-gray-400"></i> Gas Gen.</label><input type="number" step="0.01" id="m_gas_gen" class="w-28 md:w-32 px-2 py-1 bg-gray-50 border border-gray-300 text-right font-bold text-red-600 outline-none"></div>
                         <div class="flex justify-between items-center"><label class="text-[10px] md:text-xs font-bold text-gray-600 uppercase"><i class="fa-solid fa-users w-5 text-gray-400"></i> Sueldos</label><input type="number" step="0.01" id="m_sueldos" class="w-28 md:w-32 px-2 py-1 bg-gray-50 border border-gray-300 text-right font-bold text-red-600 outline-none"></div>
-                        <div class="flex justify-between items-center"><label class="text-[10px] md:text-xs font-bold text-gray-600 uppercase"><i class="fa-solid fa-flask w-5 text-gray-400"></i> Insumos</label><input type="number" step="0.01" id="m_insumos" class="w-28 md:w-32 px-2 py-1 bg-gray-50 border border-gray-300 text-right font-bold text-red-600 outline-none"></div>
+                        <div class="flex justify-between items-center"><label class="text-[10px] md:text-xs font-bold text-gray-600 uppercase"><i class="fa-solid fa-flask w-5 text-gray-400"></i> Agroquímicos</label><input type="number" step="0.01" id="m_insumos" class="w-28 md:w-32 px-2 py-1 bg-gray-50 border border-gray-300 text-right font-bold text-red-600 outline-none"></div>
+                        <div><label class="text-[10px] text-gray-500 font-bold uppercase block mb-1"><i class="fa-solid fa-vial w-5 text-gray-400"></i> ¿Qué agroquímico se usó?</label><input type="text" id="m_agroquimico_usado" placeholder="Ej. Glifosato, Paraquat..." class="w-full px-2 py-1.5 bg-gray-50 border border-gray-300 rounded text-sm outline-none"></div>
                         <div class="flex justify-between items-center"><label class="text-[10px] md:text-xs font-bold text-gray-600 uppercase"><i class="fa-solid fa-utensils w-5 text-gray-400"></i> Comidas</label><input type="number" step="0.01" id="m_comidas" class="w-28 md:w-32 px-2 py-1 bg-gray-50 border border-gray-300 text-right font-bold text-red-600 outline-none"></div>
                         <div class="flex justify-between items-center"><label class="text-[10px] md:text-xs font-bold text-gray-600 uppercase"><i class="fa-solid fa-cookie w-5 text-gray-400"></i> Oxxo</label><input type="number" step="0.01" id="m_oxxo" class="w-28 md:w-32 px-2 py-1 bg-gray-50 border border-gray-300 text-right font-bold text-red-600 outline-none"></div>
+                        <div class="flex justify-between items-center"><label class="text-[10px] md:text-xs font-bold text-gray-600 uppercase"><i class="fa-solid fa-screwdriver-wrench w-5 text-gray-400"></i> Accesorios y Refacciones</label><input type="number" step="0.01" id="m_accesorios" class="w-28 md:w-32 px-2 py-1 bg-gray-50 border border-gray-300 text-right font-bold text-red-600 outline-none"></div>
                         <div class="flex justify-between items-center mt-4 pt-3 border-t border-gray-200"><label class="text-sm font-extrabold text-gray-800 uppercase">Suma Total</label><span id="m_total_display" class="text-xl font-extrabold text-red-600">$0.00</span></div>
                     </div>
                     <button type="button" onclick="confirmarDesgloseGastos()" class="w-full mt-5 py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg shadow-md"><i class="fa-solid fa-check mr-1"></i> Confirmar y Sumar</button>
@@ -1105,8 +1108,9 @@
                                 <div class="space-y-2 text-xs md:text-sm">
                                     <div class="flex justify-between text-gray-600"><span>Gasolinas (Unidad + Gen)</span><span id="det_gasolinas" class="font-medium">$0.00</span></div>
                                     <div class="flex justify-between text-gray-600"><span>Sueldos</span><span id="det_sueldos" class="font-medium">$0.00</span></div>
-                                    <div class="flex justify-between text-gray-600"><span>Insumos aplicados</span><span id="det_out_insumos" class="font-medium">$0.00</span></div>
+                                    <div class="flex justify-between text-gray-600"><span>Agroquímicos aplicados<span id="det_agroquimico_usado" class="block text-[10px] text-gray-400"></span></span><span id="det_out_insumos" class="font-medium">$0.00</span></div>
                                     <div class="flex justify-between text-gray-600"><span>Alimentos (Comidas + Oxxo)</span><span id="det_alimentos" class="font-medium">$0.00</span></div>
+                                    <div class="flex justify-between text-gray-600"><span>Accesorios y refacciones</span><span id="det_accesorios" class="font-medium">$0.00</span></div>
                                     <div class="flex justify-between pt-2 border-t border-rose-200 mt-2"><span class="font-bold text-rose-800 text-[10px] md:text-xs uppercase">Costo Total</span><span id="det_out_total" class="font-extrabold text-rose-700">$0.00</span></div>
                                 </div>
                             </div>
@@ -1268,8 +1272,8 @@
                 <td style="border: 1px solid black; padding: 4px; background-color: #e5e7eb;"></td>
             </tr>
             <tr>
-                <td style="font-weight: bold; border: 1px solid black; padding: 4px; text-align: left;">Insumos:</td>
-                <td style="border: 1px solid black; padding: 4px; background-color: #f3f4f6;" colspan="2">Agroquímico</td>
+                <td style="font-weight: bold; border: 1px solid black; padding: 4px; text-align: left;">Agroquímicos:</td>
+                <td style="border: 1px solid black; padding: 4px; background-color: #f3f4f6;" colspan="2">¿Cuál se usó?</td>
                 <td style="border: 1px solid black; padding: 4px; background-color: #f3f4f6;" colspan="3">Otros</td>
                 <td style="font-weight: bold; border: 1px solid black; padding: 4px; background-color: #e5e7eb;">T:</td>
                 <td style="border: 1px solid black; padding: 4px; font-weight: bold; color: #dc2626; background-color: #fef2f2;" id="pdf_ins_t"></td>
@@ -1280,6 +1284,12 @@
                 <td style="border: 1px solid black; padding: 4px; color: #6b7280;" colspan="3">$ 0.00</td>
                 <td style="border: 1px solid black; padding: 4px; background-color: #e5e7eb;"></td>
                 <td style="border: 1px solid black; padding: 4px; background-color: #e5e7eb;"></td>
+            </tr>
+            <tr>
+                <td style="font-weight: bold; border: 1px solid black; padding: 4px; text-align: left;">Accesorios y Refacciones:</td>
+                <td style="border: 1px solid black; padding: 4px; color: #6b7280;" colspan="5">&nbsp;</td>
+                <td style="font-weight: bold; border: 1px solid black; padding: 4px; background-color: #e5e7eb;">T:</td>
+                <td style="border: 1px solid black; padding: 4px; font-weight: bold; color: #dc2626; background-color: #fef2f2;" id="pdf_acc_t"></td>
             </tr>
             <tr>
                 <td style="font-weight: bold; border: 1px solid black; padding: 4px; text-align: left;">Comidas:</td>
@@ -1589,6 +1599,15 @@
         let currentCotIdForPDF = null;
 
         // --- Helper: manda todas las peticiones al backend con el token de sesión ---
+        // Convierte el mensaje de error del servidor a texto legible (evita ver "[object Object]")
+        function textoDeError(detalle) {
+            if (!detalle) return '';
+            if (typeof detalle === 'string') return detalle;
+            if (Array.isArray(detalle)) return detalle.map(d => (d && d.msg) ? d.msg : (typeof d === 'string' ? d : JSON.stringify(d))).join(' | ');
+            if (typeof detalle === 'object') return detalle.msg || detalle.message || JSON.stringify(detalle);
+            return String(detalle);
+        }
+
         function fetchAPI(url, options = {}) {
             const headers = options.headers || {};
             if (tokenSesion) headers['Authorization'] = `Bearer ${tokenSesion}`;
@@ -1690,7 +1709,7 @@
                         iniciarDashboard();
                     }
                 } else {
-                    const errorTxt = data.detail || "Correo o contraseña incorrectos.";
+                    const errorTxt = textoDeError(data.detail) || "Correo o contraseña incorrectos.";
                     document.getElementById('loginError').textContent = errorTxt; 
                     document.getElementById('loginError').classList.remove('hidden'); 
                     btn.innerHTML = originalText; btn.disabled = false;
@@ -1725,7 +1744,7 @@
                     iniciarDashboard();
                 } else {
                     const dataError = await res.json().catch(() => ({}));
-                    alert(dataError.detail || "Código de seguridad incorrecto. Intenta de nuevo.");
+                    alert(textoDeError(dataError.detail) || "Código de seguridad incorrecto. Intenta de nuevo.");
                 }
             } catch(e) {
                 alert("Error de conexión durante la verificación.");
@@ -2054,7 +2073,7 @@
             try {
                 const res = await fetchAPI(`${API_URL}/operaciones/acompanantes/${aoServicioActual}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contacto_id: parseInt(contactoId, 10) }) });
                 const data = await res.json();
-                if (!res.ok) throw new Error(data.detail || 'Error al asignar');
+                if (!res.ok) throw new Error(textoDeError(data.detail) || 'Error al asignar');
                 await cargarAcompanantes();
             } catch (e) { alert('No se pudo asignar: ' + e.message); }
         }
@@ -2163,7 +2182,7 @@
             try {
                 const res = await fetchAPI(`${API_URL}/operaciones/reporte/${reporteServicioActual}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
                 const data = await res.json();
-                if (!res.ok) throw new Error(data.detail || 'Error al guardar');
+                if (!res.ok) throw new Error(textoDeError(data.detail) || 'Error al guardar');
                 await cargarReporteServicioActual();
                 alert('✅ Reporte guardado.');
             } catch (e) { alert('No se pudo guardar: ' + e.message); }
@@ -2177,7 +2196,7 @@
             try {
                 const res = await fetchAPI(`${API_URL}/operaciones/reporte/${reporteServicioActual}/foto`, { method: 'POST', body: fd });
                 const data = await res.json();
-                if (!res.ok) throw new Error(data.detail || 'Error al subir la foto');
+                if (!res.ok) throw new Error(textoDeError(data.detail) || 'Error al subir la foto');
                 await cargarReporteServicioActual();
             } catch (e) { alert('No se pudo subir la foto: ' + e.message); }
             evento.target.value = '';
@@ -2236,7 +2255,7 @@
             try {
                 const res = await fetchAPI(`${API_URL}/operaciones/reporte/${reporteServicioActual}/firma/${quien}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ imagen_base64: dataUrl }) });
                 const data = await res.json();
-                if (!res.ok) throw new Error(data.detail || 'Error al guardar la firma');
+                if (!res.ok) throw new Error(textoDeError(data.detail) || 'Error al guardar la firma');
                 await cargarReporteServicioActual();
             } catch (e) { alert('No se pudo guardar la firma: ' + e.message); }
         }
@@ -2577,7 +2596,7 @@
 
         async function enviarParteChecklist(payload) {
             const res = await fetchAPI(`${API_URL}/operaciones/checklist/${payload.servicio_id}/${payload.tipo}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ items: payload.items }) });
-            if (!res.ok) { const d = await res.json().catch(() => ({})); throw new Error(d.detail || 'Error al guardar el checklist'); }
+            if (!res.ok) { const d = await res.json().catch(() => ({})); throw new Error(textoDeError(d.detail) || 'Error al guardar el checklist'); }
         }
 
         async function guardarParteChecklist(tipo) {
@@ -2645,7 +2664,7 @@
             try {
                 const res = await fetchAPI(`${API_URL}/operaciones/checklist/${checklistServicioActual}/validar`, { method: 'POST' });
                 const data = await res.json();
-                if (!res.ok) throw new Error(data.detail || 'No se pudo validar');
+                if (!res.ok) throw new Error(textoDeError(data.detail) || 'No se pudo validar');
                 await cargarServicios();
                 poblarSelectorChecklist();
                 await cargarChecklistServicioActual();
@@ -3159,7 +3178,7 @@
                 const res = await fetchAPI(`${API_URL}/firmas/`, { method: 'POST', body: formData });
                 let data = {};
                 try { data = await res.json(); } catch (_) {}
-                if (!res.ok) throw new Error(data.detail || `Error ${res.status} al subir la firma`);
+                if (!res.ok) throw new Error(textoDeError(data.detail) || `Error ${res.status} al subir la firma`);
                 alert('✅ Firma guardada. A partir de ahora se usará en las cotizaciones que autorices.');
                 cerrarModalFirma();
             } catch (e) {
@@ -4174,7 +4193,7 @@
                             cuerpoIngresos.innerHTML += `<tr class="hover:bg-emerald-50"><td class="td-excel font-bold text-emerald-800">${noControl}</td><td class="td-excel font-semibold">${nomProd}</td><td class="td-excel text-gray-600">${pr?pr.tipo_cultivo:'N/A'}</td><td class="td-excel text-center font-bold">${s.ha_trabajadas||0} Ha</td><td class="td-excel text-right">$${(s.precio_por_ha||0).toLocaleString()}</td><td class="td-excel text-right text-emerald-600">$${(s.ingreso_viaticos||0).toLocaleString()}</td><td class="td-excel text-right text-emerald-600">$${(s.ingreso_suministros||0).toLocaleString()}</td><td class="td-excel text-right text-emerald-700 font-extrabold bg-emerald-50 border-l border-emerald-200 flex items-center justify-end">$${totalIngreso.toLocaleString()}${badgePago}</td></tr>`;
                         }
                         if(cuerpoGastos) {
-                            cuerpoGastos.innerHTML += `<tr class="hover:bg-rose-50"><td class="td-excel font-bold text-emerald-800">${noControl}</td><td class="td-excel font-semibold">${nomProd}</td><td class="td-excel text-gray-600">${pr?pr.tipo_cultivo:'N/A'}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_gasolina_unidad||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_gasolina_generador||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_sueldos||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_insumos||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_comidas||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_oxxo||0).toLocaleString()}</td><td class="td-excel text-right text-red-700 font-extrabold bg-red-50 border-l border-red-200">$${totalGasto.toLocaleString()}</td></tr>`;
+                            cuerpoGastos.innerHTML += `<tr class="hover:bg-rose-50"><td class="td-excel font-bold text-emerald-800">${noControl}</td><td class="td-excel font-semibold">${nomProd}</td><td class="td-excel text-gray-600">${pr?pr.tipo_cultivo:'N/A'}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_gasolina_unidad||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_gasolina_generador||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_sueldos||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_insumos||0).toLocaleString()}${s.agroquimico_usado ? `<div class="text-[10px] text-gray-400 font-normal">${s.agroquimico_usado}</div>` : ''}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_comidas||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_oxxo||0).toLocaleString()}</td><td class="td-excel text-right text-rose-600">$${(s.gasto_accesorios_refacciones||0).toLocaleString()}</td><td class="td-excel text-right text-red-700 font-extrabold bg-red-50 border-l border-red-200">$${totalGasto.toLocaleString()}</td></tr>`;
                         }
                     }
                 }); 
@@ -4230,7 +4249,7 @@
                 no_cotizacion: document.getElementById('no_cotizacion_venta').value, cotizacion_id: document.getElementById('cotizacion_id_venta').value || null, descuento: parseFloat(document.getElementById('venta_descuento').value) || 0, no_orden: document.getElementById('no_orden').value,
                 gastos: parseFloat(document.getElementById('gastos').value || 0), fecha_seguimiento: document.getElementById('fecha_seguimiento').value,
                 no_factura: document.getElementById('no_factura').value, observaciones: document.getElementById('observaciones').value,
-                gasto_gasolina_unidad: parseFloat(document.getElementById('h_gas_unidad').value || 0), gasto_gasolina_generador: parseFloat(document.getElementById('h_gas_gen').value || 0), gasto_sueldos: parseFloat(document.getElementById('h_sueldos').value || 0), gasto_insumos: parseFloat(document.getElementById('h_insumos').value || 0), gasto_comidas: parseFloat(document.getElementById('h_comidas').value || 0), gasto_oxxo: parseFloat(document.getElementById('h_oxxo').value || 0),
+                gasto_gasolina_unidad: parseFloat(document.getElementById('h_gas_unidad').value || 0), gasto_gasolina_generador: parseFloat(document.getElementById('h_gas_gen').value || 0), gasto_sueldos: parseFloat(document.getElementById('h_sueldos').value || 0), gasto_insumos: parseFloat(document.getElementById('h_insumos').value || 0), agroquimico_usado: document.getElementById('h_agroquimico_usado').value || '', gasto_comidas: parseFloat(document.getElementById('h_comidas').value || 0), gasto_oxxo: parseFloat(document.getElementById('h_oxxo').value || 0), gasto_accesorios_refacciones: parseFloat(document.getElementById('h_accesorios').value || 0),
                 ha_trabajadas: parseFloat(document.getElementById('h_ha_trabajadas').value || 0), precio_por_ha: parseFloat(document.getElementById('h_precio_por_ha').value || 0), ingreso_viaticos: parseFloat(document.getElementById('h_ingreso_viaticos').value || 0), ingreso_suministros: parseFloat(document.getElementById('h_ingreso_suministros').value || 0),
                 metodo_pago: document.getElementById('h_metodo_pago').value 
             }; 
@@ -4315,11 +4334,11 @@
         }
         document.getElementById('venta_descuento').addEventListener('input', recalcularIngresoNeto);
 
-        function abrirModalDesgloseGastos() { document.getElementById('m_gas_unidad').value = document.getElementById('h_gas_unidad').value || 0; document.getElementById('m_gas_gen').value = document.getElementById('h_gas_gen').value || 0; document.getElementById('m_sueldos').value = document.getElementById('h_sueldos').value || 0; document.getElementById('m_insumos').value = document.getElementById('h_insumos').value || 0; document.getElementById('m_comidas').value = document.getElementById('h_comidas').value || 0; document.getElementById('m_oxxo').value = document.getElementById('h_oxxo').value || 0; calcularTotalModal(); document.getElementById('modal-gastos').classList.remove('hidden'); }
+        function abrirModalDesgloseGastos() { document.getElementById('m_gas_unidad').value = document.getElementById('h_gas_unidad').value || 0; document.getElementById('m_gas_gen').value = document.getElementById('h_gas_gen').value || 0; document.getElementById('m_sueldos').value = document.getElementById('h_sueldos').value || 0; document.getElementById('m_insumos').value = document.getElementById('h_insumos').value || 0; document.getElementById('m_agroquimico_usado').value = document.getElementById('h_agroquimico_usado').value || ''; document.getElementById('m_comidas').value = document.getElementById('h_comidas').value || 0; document.getElementById('m_oxxo').value = document.getElementById('h_oxxo').value || 0; document.getElementById('m_accesorios').value = document.getElementById('h_accesorios').value || 0; calcularTotalModal(); document.getElementById('modal-gastos').classList.remove('hidden'); }
         function cerrarModalGastos() { document.getElementById('modal-gastos').classList.add('hidden'); }
-        function calcularTotalModal() { let total = (parseFloat(document.getElementById('m_gas_unidad').value) || 0) + (parseFloat(document.getElementById('m_gas_gen').value) || 0) + (parseFloat(document.getElementById('m_sueldos').value) || 0) + (parseFloat(document.getElementById('m_insumos').value) || 0) + (parseFloat(document.getElementById('m_comidas').value) || 0) + (parseFloat(document.getElementById('m_oxxo').value) || 0); document.getElementById('m_total_display').innerText = "$" + total.toLocaleString('es-MX', {minimumFractionDigits: 2}); return total; }
-        ['m_gas_unidad', 'm_gas_gen', 'm_sueldos', 'm_insumos', 'm_comidas', 'm_oxxo'].forEach(id => { let el = document.getElementById(id); if(el) el.addEventListener('input', calcularTotalModal); });
-        function confirmarDesgloseGastos() { let totalGasto = calcularTotalModal(); document.getElementById('h_gas_unidad').value = document.getElementById('m_gas_unidad').value || 0; document.getElementById('h_gas_gen').value = document.getElementById('m_gas_gen').value || 0; document.getElementById('h_sueldos').value = document.getElementById('m_sueldos').value || 0; document.getElementById('h_insumos').value = document.getElementById('m_insumos').value || 0; document.getElementById('h_comidas').value = document.getElementById('m_comidas').value || 0; document.getElementById('h_oxxo').value = document.getElementById('m_oxxo').value || 0; document.getElementById('gastos').value = totalGasto; cerrarModalGastos(); }
+        function calcularTotalModal() { let total = (parseFloat(document.getElementById('m_gas_unidad').value) || 0) + (parseFloat(document.getElementById('m_gas_gen').value) || 0) + (parseFloat(document.getElementById('m_sueldos').value) || 0) + (parseFloat(document.getElementById('m_insumos').value) || 0) + (parseFloat(document.getElementById('m_comidas').value) || 0) + (parseFloat(document.getElementById('m_oxxo').value) || 0) + (parseFloat(document.getElementById('m_accesorios').value) || 0); document.getElementById('m_total_display').innerText = "$" + total.toLocaleString('es-MX', {minimumFractionDigits: 2}); return total; }
+        ['m_gas_unidad', 'm_gas_gen', 'm_sueldos', 'm_insumos', 'm_comidas', 'm_oxxo', 'm_accesorios'].forEach(id => { let el = document.getElementById(id); if(el) el.addEventListener('input', calcularTotalModal); });
+        function confirmarDesgloseGastos() { let totalGasto = calcularTotalModal(); document.getElementById('h_gas_unidad').value = document.getElementById('m_gas_unidad').value || 0; document.getElementById('h_gas_gen').value = document.getElementById('m_gas_gen').value || 0; document.getElementById('h_sueldos').value = document.getElementById('m_sueldos').value || 0; document.getElementById('h_insumos').value = document.getElementById('m_insumos').value || 0; document.getElementById('h_agroquimico_usado').value = document.getElementById('m_agroquimico_usado').value || ''; document.getElementById('h_comidas').value = document.getElementById('m_comidas').value || 0; document.getElementById('h_oxxo').value = document.getElementById('m_oxxo').value || 0; document.getElementById('h_accesorios').value = document.getElementById('m_accesorios').value || 0; document.getElementById('gastos').value = totalGasto; cerrarModalGastos(); }
 
         function prepararEdicionServicio(id) { 
             const s = memoriaServicios.find(x => String(x.id) === String(id)); 
@@ -4331,7 +4350,7 @@
             document.getElementById('h_ingreso_bruto').value = brutoEdicion;
             document.getElementById('venta_descuento').value = s.descuento || '';
             toggleDescuentoVenta((s.descuento || 0) > 0);
-            document.getElementById('h_gas_unidad').value = s.gasto_gasolina_unidad || 0; document.getElementById('h_gas_gen').value = s.gasto_gasolina_generador || 0; document.getElementById('h_sueldos').value = s.gasto_sueldos || 0; document.getElementById('h_insumos').value = s.gasto_insumos || 0; document.getElementById('h_comidas').value = s.gasto_comidas || 0; document.getElementById('h_oxxo').value = s.gasto_oxxo || 0;
+            document.getElementById('h_gas_unidad').value = s.gasto_gasolina_unidad || 0; document.getElementById('h_gas_gen').value = s.gasto_gasolina_generador || 0; document.getElementById('h_sueldos').value = s.gasto_sueldos || 0; document.getElementById('h_insumos').value = s.gasto_insumos || 0; document.getElementById('h_agroquimico_usado').value = s.agroquimico_usado || ''; document.getElementById('h_comidas').value = s.gasto_comidas || 0; document.getElementById('h_oxxo').value = s.gasto_oxxo || 0; document.getElementById('h_accesorios').value = s.gasto_accesorios_refacciones || 0;
             document.getElementById('h_ha_trabajadas').value = s.ha_trabajadas || 0; document.getElementById('h_precio_por_ha').value = s.precio_por_ha || 0; document.getElementById('h_ingreso_viaticos').value = s.ingreso_viaticos || 0; document.getElementById('h_ingreso_suministros').value = s.ingreso_suministros || 0;
             document.getElementById('h_metodo_pago').value = s.metodo_pago || 'Efectivo';
             document.getElementById('tituloFormServio').innerHTML = `<i class="fa-solid fa-pen text-amber-500 mr-2 text-xl md:text-2xl"></i> Editando Venta`; cambiarVista('inicio'); 
@@ -4340,7 +4359,8 @@
         
         function limpiarFormService() { 
             document.getElementById('servicioForm').reset(); document.getElementById('editServioId').value = ''; 
-            ['h_gas_unidad', 'h_gas_gen', 'h_sueldos', 'h_insumos', 'h_comidas', 'h_oxxo', 'h_ha_trabajadas', 'h_precio_por_ha', 'h_ingreso_viaticos', 'h_ingreso_suministros'].forEach(id => document.getElementById(id).value = 0); 
+            ['h_gas_unidad', 'h_gas_gen', 'h_sueldos', 'h_insumos', 'h_comidas', 'h_oxxo', 'h_accesorios', 'h_ha_trabajadas', 'h_precio_por_ha', 'h_ingreso_viaticos', 'h_ingreso_suministros'].forEach(id => document.getElementById(id).value = 0);
+            document.getElementById('h_agroquimico_usado').value = '';
             document.getElementById('h_metodo_pago').value = 'Efectivo';
             document.getElementById('tituloFormServio').innerHTML = `<i class="fa-solid fa-file-invoice-dollar text-green-600 mr-2 text-xl md:text-2xl"></i> Registrar Venta`; 
             poblarSelectCotizaciones();
@@ -4404,6 +4424,8 @@
             document.getElementById('det_gasolinas').innerText = "$" + gasolinas.toLocaleString('es-MX', {minimumFractionDigits: 2});
             document.getElementById('det_sueldos').innerText = "$" + (s.gasto_sueldos || 0).toLocaleString('es-MX', {minimumFractionDigits: 2});
             document.getElementById('det_out_insumos').innerText = "$" + (s.gasto_insumos || 0).toLocaleString('es-MX', {minimumFractionDigits: 2});
+            document.getElementById('det_agroquimico_usado').innerText = s.agroquimico_usado || '';
+            document.getElementById('det_accesorios').innerText = "$" + (s.gasto_accesorios_refacciones || 0).toLocaleString('es-MX', {minimumFractionDigits: 2});
             document.getElementById('det_alimentos').innerText = "$" + alimentos.toLocaleString('es-MX', {minimumFractionDigits: 2});
             document.getElementById('det_out_total').innerText = "$" + (s.gastos || 0).toLocaleString('es-MX', {minimumFractionDigits: 2});
 
@@ -4455,8 +4477,10 @@
             document.getElementById('pdf_sue_t1').innerText = `$ ${(s.gasto_sueldos || 0).toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
             document.getElementById('pdf_sue_t').innerText = `$ ${(s.gasto_sueldos || 0).toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
 
-            document.getElementById('pdf_ins_agro').innerText = `$ ${(s.gasto_insumos || 0).toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+            document.getElementById('pdf_ins_agro').innerText = s.agroquimico_usado || '—';
             document.getElementById('pdf_ins_t').innerText = `$ ${(s.gasto_insumos || 0).toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+
+            document.getElementById('pdf_acc_t').innerText = `$ ${(s.gasto_accesorios_refacciones || 0).toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
 
             document.getElementById('pdf_com_comida').innerText = `$ ${(s.gasto_comidas || 0).toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
             document.getElementById('pdf_com_oxxo').innerText = `$ ${(s.gasto_oxxo || 0).toLocaleString('es-MX', {minimumFractionDigits: 2})}`;

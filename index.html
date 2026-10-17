@@ -535,7 +535,6 @@
                                 <div id="chk_validacion_info" class="text-xs text-gray-500"></div>
                                 <div class="flex gap-2">
                                     <button onclick="descargarPDFChecklist()" class="bg-gray-700 hover:bg-gray-800 text-white px-4 py-2 rounded-lg text-xs font-bold"><i class="fa-solid fa-file-pdf mr-2"></i>Descargar PDF</button>
-                                    <button id="chk_btn_validar" onclick="validarYLiberarChecklist()" class="hidden bg-emerald-700 hover:bg-emerald-800 text-white px-4 py-2 rounded-lg text-xs font-bold"><i class="fa-solid fa-signature mr-2"></i>Validar y Liberar Servicio</button>
                                 </div>
                             </div>
                         </div>
@@ -607,8 +606,12 @@
                                 </div>
                             </div>
 
-                            <div class="flex justify-end border-t border-gray-100 pt-4">
-                                <button onclick="descargarPDFReporte()" class="bg-gray-700 hover:bg-gray-800 text-white px-4 py-2 rounded-lg text-xs font-bold"><i class="fa-solid fa-file-pdf mr-2"></i>Descargar PDF</button>
+                            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 border-t border-gray-100 pt-4">
+                                <p id="rs_liberacion_info" class="text-xs text-gray-500"></p>
+                                <div class="flex flex-wrap gap-2">
+                                    <button id="rs_btn_pdf" onclick="descargarPDFReporte()" class="bg-gray-700 hover:bg-gray-800 text-white px-4 py-2 rounded-lg text-xs font-bold"><i class="fa-solid fa-file-pdf mr-2"></i>Descargar PDF (borrador)</button>
+                                    <button id="rs_btn_liberar" onclick="liberarYDescargarReporte()" class="hidden bg-emerald-700 hover:bg-emerald-800 text-white px-4 py-2 rounded-lg text-xs font-bold"><i class="fa-solid fa-signature mr-2"></i>Liberar y descargar PDF</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -781,6 +784,7 @@
                                         <th class="th-excel">Factura</th>
                                         <th class="th-excel">Observaciones</th>
                                         <th class="th-excel bg-purple-50 text-purple-900">Encuesta</th>
+                                        <th class="th-excel bg-emerald-50 text-emerald-900 text-center">Reporte</th>
                                         <th class="th-excel bg-gray-200 text-center"><i class="fa-solid fa-gears"></i></th>
                                     </tr>
                                 </thead>
@@ -1548,6 +1552,7 @@
                 <div style="font-weight: normal; font-size: 11px; color: #6b7280;" id="pdfrep_servicio"></div>
             </div>
         </div>
+        <div id="pdfrep_estado" style="text-align: center; font-weight: bold; font-size: 12px; padding: 5px 8px; margin-bottom: 12px; border: 1px solid #ccc;"></div>
         <table style="width: 100%; font-size: 12px; margin-bottom: 12px; border-collapse: collapse;">
             <tr><td style="padding: 3px 0; width: 50%;"><strong>Hectáreas trabajadas:</strong> <span id="pdfrs_hectareas"></span></td><td style="padding: 3px 0;"><strong>Clima:</strong> <span id="pdfrs_clima"></span></td></tr>
             <tr><td colspan="2" style="padding: 3px 0;"><strong>Incidencias:</strong> <span id="pdfrs_incidencias"></span></td></tr>
@@ -1559,13 +1564,17 @@
         </div>
         <table style="width: 100%; margin-top: 20px;">
             <tr>
-                <td style="width: 50%; text-align: center; vertical-align: bottom;">
+                <td style="width: 33.33%; text-align: center; vertical-align: bottom; padding: 0 8px;">
                     <div id="pdfrep_firma_cliente" style="height: 60px; display: flex; align-items: flex-end; justify-content: center;"></div>
                     <div style="border-top: 1px solid black; margin-top: 4px; padding-top: 4px;">Firma del Cliente</div>
                 </td>
-                <td style="width: 50%; text-align: center; vertical-align: bottom;">
+                <td style="width: 33.33%; text-align: center; vertical-align: bottom; padding: 0 8px;">
                     <div id="pdfrep_firma_operador" style="height: 60px; display: flex; align-items: flex-end; justify-content: center;"></div>
                     <div style="border-top: 1px solid black; margin-top: 4px; padding-top: 4px;">Firma del Operador</div>
+                </td>
+                <td style="width: 33.33%; text-align: center; vertical-align: bottom; padding: 0 8px;">
+                    <div id="pdfrep_firma_jefe" style="height: 60px; display: flex; align-items: flex-end; justify-content: center;"></div>
+                    <div style="border-top: 1px solid black; margin-top: 4px; padding-top: 4px;">Libera (Jefe de Operaciones)<div id="pdfrep_jefe_nombre" style="font-size: 10px; color: #6b7280; margin-top: 2px;"></div></div>
                 </td>
             </tr>
         </table>
@@ -2144,6 +2153,14 @@
 
             mostrarFirmaGuardadaReporte('cliente', reporteActual?.firma_cliente_url, puedeEditar);
             mostrarFirmaGuardadaReporte('operador', reporteActual?.firma_operador_url, puedeEditar);
+
+            // Botones del pie: el borrador lo puede bajar cualquiera; liberar solo admin / jefe de operaciones
+            const puedeLiberar = ['admin', 'jefe_operaciones'].includes(rolUsuario) && !bloqueado;
+            document.getElementById('rs_btn_liberar').classList.toggle('hidden', !puedeLiberar);
+            document.getElementById('rs_btn_pdf').innerHTML = `<i class="fa-solid fa-file-pdf mr-2"></i>${bloqueado ? 'Descargar PDF' : 'Descargar PDF (borrador)'}`;
+            document.getElementById('rs_liberacion_info').innerHTML = bloqueado
+                ? `<i class="fa-solid fa-circle-check text-emerald-600 mr-1"></i> Liberado por <strong>${servicio.liberado_por_nombre || ''}</strong>`
+                : 'Pendiente de liberación por admin o jefe de operaciones.';
         }
 
         function mostrarFirmaGuardadaReporte(quien, url, puedeEditar) {
@@ -2260,21 +2277,42 @@
             } catch (e) { alert('No se pudo guardar la firma: ' + e.message); }
         }
 
-        function descargarPDFReporte() {
-            if (!reporteServicioActual || !reporteActual) { alert('Selecciona un servicio con datos guardados primero.'); return; }
-            const servicio = memoriaServicios.find(s => String(s.id) === String(reporteServicioActual));
+        // Descarga el PDF del reporte de cualquier servicio (se usa en Operaciones y en la tabla de Ventas BD).
+        // Si el servicio aún no está liberado sale como BORRADOR; si ya está liberado sale el final.
+        async function descargarPDFReporteDe(servicioId) {
+            let reporte = null;
+            try {
+                const res = await fetchAPI(`${API_URL}/operaciones/reporte/${servicioId}`);
+                reporte = await res.json();
+            } catch (e) { console.error(e); }
+            if (!reporte) { alert('Este servicio todavía no tiene reporte guardado.'); return; }
+
+            const servicio = memoriaServicios.find(s => String(s.id) === String(servicioId));
+            const liberado = !!reporte.liberado;
             document.getElementById('pdfrep_servicio').innerText = servicio ? etiquetaServicio(servicio) : '';
-            document.getElementById('pdfrs_hectareas').innerText = reporteActual.hectareas_trabajadas ?? '—';
-            document.getElementById('pdfrs_clima').innerText = reporteActual.clima || '—';
-            document.getElementById('pdfrs_incidencias').innerText = reporteActual.incidencias || '—';
-            document.getElementById('pdfrs_observaciones').innerText = reporteActual.observaciones || '—';
+            document.getElementById('pdfrs_hectareas').innerText = reporte.hectareas_trabajadas ?? '—';
+            document.getElementById('pdfrs_clima').innerText = reporte.clima || '—';
+            document.getElementById('pdfrs_incidencias').innerText = reporte.incidencias || '—';
+            document.getElementById('pdfrs_observaciones').innerText = reporte.observaciones || '—';
+
+            const estado = document.getElementById('pdfrep_estado');
+            if (liberado) {
+                const fecha = reporte.fecha_liberacion ? new Date(reporte.fecha_liberacion + (String(reporte.fecha_liberacion).endsWith('Z') ? '' : 'Z')).toLocaleString('es-MX', { dateStyle: 'long', timeStyle: 'short' }) : '';
+                estado.innerText = `LIBERADO por ${reporte.liberado_por_nombre || ''}${fecha ? ' — ' + fecha : ''}`;
+                estado.style.color = '#065f46'; estado.style.background = '#ecfdf5'; estado.style.borderColor = '#6ee7b7';
+            } else {
+                estado.innerText = 'BORRADOR — pendiente de liberación';
+                estado.style.color = '#b91c1c'; estado.style.background = '#fef2f2'; estado.style.borderColor = '#fca5a5';
+            }
 
             const fotosCont = document.getElementById('pdfrep_fotos');
-            const fotos = reporteActual.fotos || [];
+            const fotos = reporte.fotos || [];
             fotosCont.innerHTML = fotos.length ? fotos.map(url => `<img src="${url}" crossorigin="anonymous" style="width: 110px; height: 110px; object-fit: cover; border: 1px solid #ccc;">`).join('') : `<span style="font-size:11px; color:#888;">Sin fotos</span>`;
 
-            document.getElementById('pdfrep_firma_cliente').innerHTML = reporteActual.firma_cliente_url ? `<img src="${reporteActual.firma_cliente_url}" crossorigin="anonymous" style="max-height: 60px;">` : '';
-            document.getElementById('pdfrep_firma_operador').innerHTML = reporteActual.firma_operador_url ? `<img src="${reporteActual.firma_operador_url}" crossorigin="anonymous" style="max-height: 60px;">` : '';
+            document.getElementById('pdfrep_firma_cliente').innerHTML = reporte.firma_cliente_url ? `<img src="${reporte.firma_cliente_url}" crossorigin="anonymous" style="max-height: 60px;">` : '';
+            document.getElementById('pdfrep_firma_operador').innerHTML = reporte.firma_operador_url ? `<img src="${reporte.firma_operador_url}" crossorigin="anonymous" style="max-height: 60px;">` : '';
+            document.getElementById('pdfrep_firma_jefe').innerHTML = (liberado && reporte.firma_liberador_url) ? `<img src="${reporte.firma_liberador_url}" crossorigin="anonymous" style="max-height: 60px;">` : '';
+            document.getElementById('pdfrep_jefe_nombre').innerText = liberado ? (reporte.liberado_por_nombre || '') : 'Pendiente';
 
             const overlay = document.getElementById('pdf-loading-overlay');
             const appContent = document.getElementById('app-content');
@@ -2285,23 +2323,42 @@
             template.style.display = 'block';
             window.scrollTo(0, 0);
 
+            const terminar = () => {
+                template.style.display = 'none'; appContent.style.display = 'block';
+                overlay.style.display = 'none'; overlay.classList.add('hidden');
+            };
             setTimeout(() => {
                 const opt = {
                     margin: 0.3,
-                    filename: `Reporte_Servicio_${reporteServicioActual}.pdf`,
+                    filename: `Reporte_Servicio_${servicioId}${liberado ? '' : '_BORRADOR'}.pdf`,
                     image: { type: 'jpeg', quality: 1.0 },
                     html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
                     jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
                 };
-                html2pdf().set(opt).from(template).save().then(() => {
-                    template.style.display = 'none'; appContent.style.display = 'block';
-                    overlay.style.display = 'none'; overlay.classList.add('hidden');
-                }).catch(err => {
-                    console.error(err);
-                    template.style.display = 'none'; appContent.style.display = 'block';
-                    overlay.style.display = 'none'; overlay.classList.add('hidden');
-                });
+                html2pdf().set(opt).from(template).save().then(terminar).catch(err => { console.error(err); terminar(); });
             }, 200);
+        }
+
+        function descargarPDFReporte() {
+            if (!reporteServicioActual || !reporteActual) { alert('Selecciona un servicio con datos guardados primero.'); return; }
+            descargarPDFReporteDe(reporteServicioActual);
+        }
+
+        // Botón único: libera el servicio (el backend revisa que no falte nada) y descarga el PDF final.
+        async function liberarYDescargarReporte() {
+            if (!reporteServicioActual) return;
+            if (!confirm('¿Liberar este servicio y descargar el PDF final?\n\nDespués de liberar, el reporte y el checklist ya no se podrán modificar y el servicio empezará a contar como dinero.')) return;
+            const id = reporteServicioActual;
+            try {
+                const res = await fetchAPI(`${API_URL}/operaciones/reporte/${id}/liberar`, { method: 'POST' });
+                const data = await res.json().catch(() => ({}));
+                if (!res.ok) throw new Error(textoDeError(data.detail) || 'No se pudo liberar');
+            } catch (e) { alert('No se pudo liberar: ' + e.message); return; }
+            await cargarServicios();
+            poblarSelectorReporte();
+            document.getElementById('rs_selector_servicio').value = id;
+            await cargarReporteServicioActual();
+            await descargarPDFReporteDe(id);
         }
 
         // --- OPERACIONES: BITÁCORAS DE MANTENIMIENTO ---
@@ -2579,12 +2636,8 @@
             if (bloqueado) {
                 info.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600 mr-1"></i> Validado y liberado por <strong>${checklistActual.validado_por_nombre}</strong>`;
             } else {
-                info.textContent = 'Pendiente de validar por el Jefe de Operaciones.';
+                info.textContent = 'Se libera desde "Reporte de Servicio" (admin o jefe de operaciones).';
             }
-
-            const puedeValidar = ['admin', 'jefe_operaciones'].includes(rolUsuario);
-            const completo = checklistActual && checklistActual.items_salida && checklistActual.items_regreso;
-            document.getElementById('chk_btn_validar').classList.toggle('hidden', !(puedeValidar && completo && !bloqueado));
 
             actualizarBannerOfflineChecklist();
         }
@@ -2657,20 +2710,6 @@
 
         window.addEventListener('online', flushColaChecklistOffline);
         window.addEventListener('offline', actualizarBannerOfflineChecklist);
-
-        async function validarYLiberarChecklist() {
-            if (!checklistServicioActual) return;
-            if (!confirm('¿Validar este checklist y liberar el servicio? Ya no se podrá editar después.')) return;
-            try {
-                const res = await fetchAPI(`${API_URL}/operaciones/checklist/${checklistServicioActual}/validar`, { method: 'POST' });
-                const data = await res.json();
-                if (!res.ok) throw new Error(textoDeError(data.detail) || 'No se pudo validar');
-                await cargarServicios();
-                poblarSelectorChecklist();
-                await cargarChecklistServicioActual();
-                alert('✅ Checklist validado y servicio liberado.');
-            } catch (e) { alert('No se pudo validar: ' + e.message); }
-        }
 
         function descargarPDFChecklist() {
             if (!checklistServicioActual || !checklistActual) { alert('Selecciona un servicio con checklist guardado primero.'); return; }
@@ -4169,6 +4208,11 @@
         async function cargarServicios() { 
             try { 
                 const res = await fetchAPI(`${API_URL}/servicios/`); memoriaServicios = await res.json(); 
+                try {
+                    const resRep = await fetchAPI(`${API_URL}/operaciones/reportes-existentes`);
+                    const idsRep = await resRep.json();
+                    serviciosConReporte = new Set((Array.isArray(idsRep) ? idsRep : []).map(String));
+                } catch (e) { serviciosConReporte = new Set(); }
                 const cuerpoGastos = document.getElementById('cuerpoTablaGastos'); 
                 const cuerpoIngresos = document.getElementById('cuerpoTablaIngresos'); 
                 
@@ -4203,6 +4247,15 @@
             poblarSelectCotizaciones();
         }
 
+        // Columna "Reporte" de Ventas BD: PDF del Reporte de Servicio, o un guion si el servicio aún no tiene reporte.
+        let serviciosConReporte = new Set();
+        function celdaReporteServicio(s) {
+            if (!serviciosConReporte.has(String(s.id))) return '<span class="text-gray-300">—</span>';
+            return s.liberado
+                ? `<button onclick="descargarPDFReporteDe('${s.id}')" class="text-emerald-600 hover:text-emerald-800" title="Descargar reporte de servicio (liberado)"><i class="fa-solid fa-file-pdf text-lg"></i></button>`
+                : `<button onclick="descargarPDFReporteDe('${s.id}')" class="text-amber-500 hover:text-amber-600" title="Descargar reporte de servicio (borrador, aún sin liberar)"><i class="fa-solid fa-file-pdf text-lg"></i></button>`;
+        }
+
         // --- Tabla BD Ventas (dentro de Ventas CRM): separada para poder filtrar por "Ventas del mes" sin tocar el Módulo Financiero ---
         function filaBDVenta(s) {
             const pr = memoriaPropiedades.find(p => String(p.id) === String(s.propiedad_id)); 
@@ -4214,7 +4267,7 @@
                     ? `<a href="${s.url_encuesta}" target="_blank" class="text-emerald-600 hover:text-emerald-800 mr-2" title="Ver encuesta"><i class="fa-solid fa-file-circle-check text-lg"></i></a><button onclick="abrirModalEncuesta('${s.id}')" class="text-gray-400 hover:text-purple-600" title="Reemplazar encuesta"><i class="fa-solid fa-rotate text-sm"></i></button>`
                     : `<button onclick="abrirModalEncuesta('${s.id}')" class="text-gray-400 hover:text-purple-600" title="Subir encuesta"><i class="fa-solid fa-file-arrow-up text-lg"></i></button>`
                 }
-            </td><td class="td-excel text-center space-x-2">
+            </td><td class="td-excel text-center">${celdaReporteServicio(s)}</td><td class="td-excel text-center space-x-2">
                 <button onclick="verDetalleServicio('${s.id}')" class="text-blue-500 bg-blue-50 px-2 py-1 rounded shadow-sm"><i class="fa-solid fa-magnifying-glass"></i></button>
                 <button onclick="prepararEdicionServicio('${s.id}')" class="text-amber-500"><i class="fa-solid fa-pen-to-square"></i></button>
                 <button onclick="eliminarServio('${s.id}')" class="btn-eliminar-rol text-rose-500"><i class="fa-solid fa-trash"></i></button>

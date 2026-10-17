@@ -933,52 +933,13 @@ async def actualizar_horometro(equipo: str, cuerpo: HorometroActualizado, usuari
 
 # ============================================================
 # --- OPERACIONES: INVENTARIO / CHECKLIST (Sale y Regresa) ---
-# Lo marca: operador. Se valida y libera el servicio con la firma
-# del jefe_operaciones (Beto), una sola vez, al completar salida + regreso.
+# Lo marca: operador. La validación/liberación ya NO se hace aquí: se hace
+# desde el Reporte de Servicio con el botón "Liberar y descargar PDF".
 # ============================================================
 @app.get("/operaciones/checklist/{servicio_id}")
 async def obtener_checklist(servicio_id: str, usuario: dict = Depends(obtener_usuario_actual)):
     respuesta = supabase.table('checklists_servicio').select("*").eq('servicio_id', servicio_id).execute()
     return respuesta.data[0] if respuesta.data else None
-
-# IMPORTANTE: esta ruta debe ir ANTES de "/{tipo}". FastAPI revisa las rutas en orden,
-# y si "/{tipo}" va primero, captura "validar" como si fuera un tipo y nunca llega aquí.
-@app.post("/operaciones/checklist/{servicio_id}/validar")
-async def validar_checklist(servicio_id: str, usuario: dict = Depends(requiere_rol("admin", "jefe_operaciones"))):
-    try:
-        existente = supabase.table('checklists_servicio').select("*").eq('servicio_id', servicio_id).execute()
-        if not existente.data:
-            raise HTTPException(status_code=400, detail="Aún no hay checklist de salida ni de regreso para este servicio.")
-        chk = existente.data[0]
-        if not chk.get("items_salida") or not chk.get("items_regreso"):
-            raise HTTPException(status_code=400, detail="Falta completar el checklist de salida o el de regreso.")
-        if chk.get("validado"):
-            raise HTTPException(status_code=400, detail="Este checklist ya estaba validado.")
-
-        firma = supabase.table('firmas').select("*").eq('email', usuario["email"]).execute()
-        if not firma.data:
-            raise HTTPException(status_code=400, detail="Primero debes subir tu firma en 'Mi Firma' antes de poder validar.")
-
-        ahora = datetime.utcnow().isoformat()
-        supabase.table('checklists_servicio').update({
-            "validado": True,
-            "validado_por_email": usuario["email"],
-            "validado_por_nombre": usuario["nombre"],
-            "fecha_validacion": ahora
-        }).eq('servicio_id', servicio_id).execute()
-
-        supabase.table('servicios_aplicacion').update({
-            "liberado": True,
-            "liberado_por_email": usuario["email"],
-            "liberado_por_nombre": usuario["nombre"],
-            "fecha_liberacion": ahora
-        }).eq('id', servicio_id).execute()
-
-        await manager.broadcast("update")
-        return {"mensaje": "Checklist validado y servicio liberado"}
-    except HTTPException: raise
-    except Exception as e: raise HTTPException(status_code=500, detail=str(e))
-
 
 @app.post("/operaciones/checklist/{servicio_id}/{tipo}")
 async def guardar_checklist(servicio_id: str, tipo: str, cuerpo: ChecklistParte, usuario: dict = Depends(requiere_rol("admin", "operador", "jefe_operaciones"))):
@@ -1021,7 +982,83 @@ def _verificar_servicio_no_liberado(servicio_id: str):
 @app.get("/operaciones/reporte/{servicio_id}")
 async def obtener_reporte_servicio(servicio_id: str, usuario: dict = Depends(obtener_usuario_actual)):
     respuesta = supabase.table('reportes_servicio').select("*").eq('servicio_id', servicio_id).execute()
-    return respuesta.data[0] if respuesta.data else None
+    if not respuesta.data:
+        return None
+    reporte = dict(respuesta.data[0])
+    # Datos de la liberación (para el PDF final): quién liberó, cuándo y su firma
+    reporte["liberado"] = False
+    try:
+        srv = supabase.table('servicios_aplicacion').select("liberado, liberado_por_email, liberado_por_nombre, fecha_liberacion").eq('id', servicio_id).execute()
+        if srv.data and srv.data[0].get("liberado"):
+            fila = srv.data[0]
+            reporte["liberado"] = True
+            reporte["liberado_por_nombre"] = fila.get("liberado_por_nombre")
+            reporte["fecha_liberacion"] = fila.get("fecha_liberacion")
+            if fila.get("liberado_por_email"):
+                f = supabase.table('firmas').select("url_firma").eq('email', fila["liberado_por_email"]).execute()
+                reporte["firma_liberador_url"] = f.data[0]["url_firma"] if f.data else None
+    except Exception:
+        logger.error("No se pudieron leer los datos de liberación: %s", traceback.format_exc())
+    return reporte
+
+# Lista de servicios que ya tienen un reporte guardado (para la columna "Reporte" de Ventas BD)
+@app.get("/operaciones/reportes-existentes")
+async def reportes_existentes(usuario: dict = Depends(obtener_usuario_actual)):
+    try:
+        respuesta = supabase.table('reportes_servicio').select("servicio_id").execute()
+        return [fila["servicio_id"] for fila in (respuesta.data or [])]
+    except Exception:
+        logger.error("No se pudo leer la lista de reportes: %s", traceback.format_exc())
+        return []
+
+# ÚNICO punto de liberación: el botón "Liberar y descargar PDF" (solo admin y jefe_operaciones).
+# Exige checklist de salida y regreso, reporte con hectáreas, ambas firmas y la firma del jefe.
+@app.post("/operaciones/reporte/{servicio_id}/liberar")
+async def liberar_servicio(servicio_id: str, usuario: dict = Depends(requiere_rol("admin", "jefe_operaciones"))):
+    try:
+        srv = supabase.table('servicios_aplicacion').select("id, liberado").eq('id', servicio_id).execute()
+        if not srv.data:
+            raise HTTPException(status_code=404, detail="Servicio no encontrado.")
+        if srv.data[0].get("liberado"):
+            raise HTTPException(status_code=400, detail="Este servicio ya fue liberado.")
+
+        faltan = []
+        chk = supabase.table('checklists_servicio').select("*").eq('servicio_id', servicio_id).execute()
+        fila_chk = chk.data[0] if chk.data else {}
+        if not fila_chk.get("items_salida"): faltan.append("checklist de salida")
+        if not fila_chk.get("items_regreso"): faltan.append("checklist de regreso")
+
+        rep = supabase.table('reportes_servicio').select("*").eq('servicio_id', servicio_id).execute()
+        fila_rep = rep.data[0] if rep.data else {}
+        if fila_rep.get("hectareas_trabajadas") is None: faltan.append("hectáreas trabajadas en el reporte")
+        if not fila_rep.get("firma_cliente_url"): faltan.append("firma del cliente")
+        if not fila_rep.get("firma_operador_url"): faltan.append("firma del operador")
+
+        firma = supabase.table('firmas').select("url_firma").eq('email', usuario["email"]).execute()
+        if not firma.data: faltan.append("tu firma en 'Mi Firma'")
+
+        if faltan:
+            raise HTTPException(status_code=400, detail="Para liberar falta: " + ", ".join(faltan) + ".")
+
+        ahora = datetime.utcnow().isoformat()
+        supabase.table('checklists_servicio').update({
+            "validado": True,
+            "validado_por_email": usuario["email"],
+            "validado_por_nombre": usuario["nombre"],
+            "fecha_validacion": ahora
+        }).eq('servicio_id', servicio_id).execute()
+
+        supabase.table('servicios_aplicacion').update({
+            "liberado": True,
+            "liberado_por_email": usuario["email"],
+            "liberado_por_nombre": usuario["nombre"],
+            "fecha_liberacion": ahora
+        }).eq('id', servicio_id).execute()
+
+        await manager.broadcast("update")
+        return {"mensaje": "Servicio liberado"}
+    except HTTPException: raise
+    except Exception as e: raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/operaciones/reporte/{servicio_id}")
 async def guardar_reporte_servicio(servicio_id: str, info: ReporteServicioInfo, usuario: dict = Depends(requiere_rol("admin", "operador", "jefe_operaciones"))):

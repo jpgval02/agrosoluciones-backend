@@ -3304,14 +3304,23 @@
         }
 
         // --- Llena el select de "Cotización Relacionada" con las que aún no se han convertido ---
+        // ¿Esta cotización ya tiene una venta asociada (sin importar si la venta ya fue liberada)?
+        // Se usa solo para el selector de "Registrar Venta"; las métricas siguen usando cotizacionEstaConvertida.
+        function cotizacionTieneVentaAsociada(c) {
+            if (c.estado === 'Convertida') return true;
+            if (memoriaServicios.some(s => s.cotizacion_id && String(s.cotizacion_id) === String(c.id))) return true;
+            const numero = obtenerNumeroCotizacion(c);
+            return !!numero && memoriaServicios.some(s => !s.cotizacion_id && (s.no_cotizacion || '').toString().trim() === numero);
+        }
+
         function poblarSelectCotizaciones(cotizacionIdActual) {
             const sel = document.getElementById('cotizacion_id_venta');
             if (!sel) return;
             const valorPrevio = cotizacionIdActual || sel.value;
             sel.innerHTML = '<option value="">-- Venta directa (sin cotización) --</option>';
             memoriaCotizaciones.forEach(c => {
-                const yaConvertida = cotizacionEstaConvertida(c);
-                // Si ya está convertida, solo la mostramos si es justo la que esta venta (en edición) ya trae ligada
+                const yaConvertida = cotizacionTieneVentaAsociada(c);
+                // Si ya tiene venta asociada, solo la mostramos si es justo la que esta venta (en edición) ya trae ligada
                 if (yaConvertida && String(c.id) !== String(valorPrevio)) return;
                 const numero = obtenerNumeroCotizacion(c);
                 const cl = memoriaClientes.find(x => String(x.id) === String(c.cliente_id));

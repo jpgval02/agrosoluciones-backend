@@ -8,6 +8,7 @@ try:
 except Exception:
     ClientOptions = None
 import os
+import json
 import logging
 import traceback
 import base64
@@ -681,10 +682,29 @@ async def marcar_seguimiento_hecho(servicio_id: str, req: SeguimientoHecho, usua
         raise HTTPException(status_code=500, detail=str(e))
 
 # --- RUTAS DE COTIZACIONES ---
+def _numero_de_cotizacion(observaciones) -> str:
+    """El número de cotización vive dentro del JSON de 'observaciones' (campo no_cotizacion)."""
+    try:
+        return str((json.loads(observaciones) if observaciones else {}).get("no_cotizacion") or "").strip()
+    except Exception:
+        return ""
+
+def _verificar_numero_cotizacion_libre(numero: str, excluir_id=None):
+    """Evita que dos cotizaciones tengan el mismo número (por ejemplo, si dos personas capturan a la vez)."""
+    if not numero:
+        return
+    filas = supabase.table('cotizaciones').select("id, observaciones").execute().data or []
+    for f in filas:
+        if excluir_id is not None and str(f.get("id")) == str(excluir_id):
+            continue
+        if _numero_de_cotizacion(f.get("observaciones")) == numero:
+            raise HTTPException(status_code=409, detail=f"Ya existe una cotización con el número {numero}.")
+
 @app.post("/cotizaciones/")
 async def registrar_cotizacion(cot: CotizacionNueva, usuario: dict = Depends(requiere_rol("admin", "operador", "auxiliar_del_auxiliar"))):
     try:
         datos = cot.dict()
+        _verificar_numero_cotizacion_libre(_numero_de_cotizacion(datos.get("observaciones")))
         datos["creado_por_email"] = usuario["email"]
         datos["creado_por_nombre"] = usuario["nombre"]
 
@@ -709,6 +729,7 @@ async def registrar_cotizacion(cot: CotizacionNueva, usuario: dict = Depends(req
 
         await manager.broadcast("update")
         return {"mensaje": "Cotización guardada", "datos": respuesta.data[0]}
+    except HTTPException: raise
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/cotizaciones/")
@@ -720,6 +741,11 @@ async def obtener_cotizaciones(usuario: dict = Depends(obtener_usuario_actual)):
 async def actualizar_cotizacion(cot_id: str, cot: CotizacionNueva, usuario: dict = Depends(requiere_rol("admin", "operador", "auxiliar_del_auxiliar"))):
     try:
         datos = cot.dict()
+        # Solo se revisa duplicado si el número cambió (para no bloquear ediciones de cotizaciones viejas)
+        anterior = supabase.table('cotizaciones').select("observaciones").eq('id', cot_id).execute().data
+        numero_nuevo = _numero_de_cotizacion(datos.get("observaciones"))
+        if not anterior or _numero_de_cotizacion(anterior[0].get("observaciones")) != numero_nuevo:
+            _verificar_numero_cotizacion_libre(numero_nuevo, excluir_id=cot_id)
         # Si quien edita no es Admin, cualquier corrección regresa la cotización a "pendiente" de revisión
         if usuario["rol"] != "admin":
             datos["estado_autorizacion"] = "pendiente"
@@ -727,6 +753,7 @@ async def actualizar_cotizacion(cot_id: str, cot: CotizacionNueva, usuario: dict
         respuesta = supabase.table('cotizaciones').update(datos).eq('id', cot_id).execute()
         await manager.broadcast("update")
         return {"mensaje": "Actualizado", "datos": respuesta.data[0]}
+    except HTTPException: raise
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
 
 class RechazoCotizacion(BaseModel):

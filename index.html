@@ -2962,6 +2962,20 @@
         document.getElementById('cotizacionForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const id = document.getElementById('editCotId').value;
+
+            // Cotización nueva: se revisa con datos frescos que el número no lo haya tomado otra persona
+            if (!id) {
+                const campoNum = document.getElementById('cot_numero');
+                const numAntes = campoNum.value.trim();
+                try { await cargarCotizaciones(); } catch (err) { console.error(err); }
+                let numAhora = campoNum.value.trim();
+                const yaExiste = numAhora && memoriaCotizaciones.some(c => obtenerNumeroCotizacion(c) === numAhora);
+                if (numAhora !== numAntes || yaExiste) {
+                    if (numAhora === numAntes) { numAhora = siguienteNumeroCotizacion(); campoNum.value = numAhora; numeroCotAutoSugerido = numAhora; }
+                    alert(`El número ${numAntes} ya fue tomado por otra cotización. Ahora te toca el ${numAhora}. Revisa y vuelve a guardar.`);
+                    return;
+                }
+            }
             
             const obsObj = {
                 no_cotizacion: document.getElementById('cot_numero').value,
@@ -2989,14 +3003,18 @@
             btn.disabled = true;
 
             try {
-                await fetchAPI(id ? `${API_URL}/cotizaciones/${id}` : `${API_URL}/cotizaciones/`, { 
+                const resGuardar = await fetchAPI(id ? `${API_URL}/cotizaciones/${id}` : `${API_URL}/cotizaciones/`, { 
                     method: id ? 'PUT' : 'POST', 
                     headers: { 'Content-Type': 'application/json' }, 
                     body: JSON.stringify(datos) 
                 });
-                limpiarFormCotizacion();
+                if (!resGuardar.ok) {
+                    const d = await resGuardar.json().catch(() => ({}));
+                    throw new Error(textoDeError(d.detail) || 'Error al guardar cotización.');
+                }
                 await cargarCotizaciones();
-            } catch(e) { alert("Error al guardar cotización."); }
+                limpiarFormCotizacion();
+            } catch(e) { alert(e.message || "Error al guardar cotización."); }
             
             btn.innerHTML = originalText;
             btn.disabled = false;
@@ -3006,6 +3024,7 @@
             try {
                 const res = await fetchAPI(`${API_URL}/cotizaciones/`);
                 memoriaCotizaciones = await res.json();
+                sugerirNumeroCotizacion();
 
                 // Ordena por número de cotización (COT-XXXX), la más reciente arriba
                 memoriaCotizaciones.sort((a, b) => {
@@ -3359,10 +3378,32 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
+        // --- Número de cotización consecutivo: se propone el más alto existente + 1 (sigue siendo editable) ---
+        let numeroCotAutoSugerido = '';
+        function siguienteNumeroCotizacion() {
+            let max = 0;
+            memoriaCotizaciones.forEach(c => {
+                const n = obtenerNumeroCotizacion(c);
+                if (/^\d+$/.test(n)) max = Math.max(max, parseInt(n, 10));
+            });
+            return max ? String(max + 1) : '';
+        }
+        function sugerirNumeroCotizacion() {
+            const campo = document.getElementById('cot_numero');
+            if (!campo || document.getElementById('editCotId').value) return; // al editar no se toca
+            // Solo se llena si está vacío o si aún trae la sugerencia anterior (no pisa lo que el usuario escribió)
+            if (campo.value === '' || campo.value === numeroCotAutoSugerido) {
+                numeroCotAutoSugerido = siguienteNumeroCotizacion();
+                campo.value = numeroCotAutoSugerido;
+            }
+        }
+
         function limpiarFormCotizacion() {
             document.getElementById('cotizacionForm').reset();
             document.getElementById('editCotId').value = '';
             document.getElementById('cot_numero').value = '';
+            numeroCotAutoSugerido = '';
+            sugerirNumeroCotizacion();
             document.getElementById('cot_total_display').value = '';
             document.getElementById('tituloFormCotizacion').innerHTML = `<i class="fa-solid fa-file-signature text-amber-500 mr-2 text-xl md:text-2xl"></i> Nueva Cotización`;
             document.getElementById('btnSubmitCotizacion').className = "w-full mt-4 py-3 rounded-xl text-base font-bold text-white bg-amber-600 hover:bg-amber-500 transition-colors shadow-sm";

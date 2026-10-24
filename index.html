@@ -91,9 +91,6 @@
                 <button id="nav-financieros" onclick="cambiarVista('financieros'); toggleSidebar();" class="w-full text-left px-4 py-3.5 hover:bg-green-800/60 rounded-xl transition-colors flex items-center gap-3 font-semibold text-sm tracking-wide group">
                     <div class="bg-green-900 group-hover:bg-green-700 p-2 rounded-lg transition-colors"><i class="fa-solid fa-wallet text-green-400 w-5 text-center"></i></div> Financieros
                 </button>
-                <button id="nav-almacen" onclick="cambiarVista('almacen'); toggleSidebar();" class="w-full text-left px-4 py-3.5 hover:bg-green-800/60 rounded-xl transition-colors flex items-center gap-3 font-semibold text-sm tracking-wide group">
-                    <div class="bg-green-900 group-hover:bg-green-700 p-2 rounded-lg transition-colors"><i class="fa-solid fa-boxes-stacked text-green-400 w-5 text-center"></i></div> Almacén
-                </button>
                 <button id="nav-ventas-crm" onclick="cambiarVista('ventas-crm'); toggleSidebar();" class="w-full text-left px-4 py-3.5 hover:bg-green-800/60 rounded-xl transition-colors flex items-center gap-3 font-semibold text-sm tracking-wide group">
                     <div class="bg-green-900 group-hover:bg-green-700 p-2 rounded-lg transition-colors"><i class="fa-solid fa-chart-line text-green-400 w-5 text-center"></i></div> Ventas CRM
                 </button>
@@ -662,127 +659,6 @@
                 </div>
 
                 <!-- Tablas Financieros -->
-                <!-- ===================== ALMACÉN ===================== -->
-                <div id="vista-tabla-almacen" class="hidden space-y-6">
-                    <div class="bg-white p-4 md:p-8 rounded-2xl shadow-xl border border-gray-200 min-h-[450px]">
-                        <div class="flex flex-col md:flex-row md:items-center gap-3 border-b border-gray-100 pb-4 mb-6">
-                            <div class="flex items-center gap-3 flex-1">
-                                <div class="bg-amber-100 p-3 rounded-xl text-amber-700 text-xl"><i class="fa-solid fa-boxes-stacked"></i></div>
-                                <div><h2 class="text-lg md:text-xl font-bold text-gray-800">Almacén</h2><p class="text-[10px] md:text-xs text-gray-400 mt-0.5">Inventario, solicitudes de material y préstamos</p></div>
-                            </div>
-                            <div id="alm_card_valor" class="hidden bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-2 md:text-right">
-                                <p class="text-[10px] font-bold text-emerald-700 uppercase">Valor total del almacén</p>
-                                <p id="alm_valor_total" class="text-xl font-extrabold text-emerald-800">$0.00</p>
-                                <p id="alm_valor_nota" class="text-[10px] text-gray-400"></p>
-                            </div>
-                        </div>
-
-                        <div id="alm_error" class="hidden mb-4 bg-rose-50 border border-rose-200 text-rose-700 text-xs font-bold px-4 py-3 rounded-lg"></div>
-
-                        <div class="flex gap-2 text-xs mb-6 flex-wrap">
-                            <button id="almTab_solicitudes" onclick="cambiarSubTabAlmacen('solicitudes')" class="tab-crm tab-crm-activo"><i class="fa-solid fa-hand mr-1"></i> Solicitudes</button>
-                            <button id="almTab_inventario" onclick="cambiarSubTabAlmacen('inventario')" class="tab-crm"><i class="fa-solid fa-boxes-stacked mr-1"></i> Inventario</button>
-                            <button id="almTab_prestamos" onclick="cambiarSubTabAlmacen('prestamos')" class="tab-crm hidden"><i class="fa-solid fa-hand-holding mr-1"></i> Préstamos</button>
-                            <button id="almTab_historial" onclick="cambiarSubTabAlmacen('historial')" class="tab-crm hidden"><i class="fa-solid fa-clock-rotate-left mr-1"></i> Historial</button>
-                            <button id="almTab_organigrama" onclick="cambiarSubTabAlmacen('organigrama')" class="tab-crm hidden"><i class="fa-solid fa-sitemap mr-1"></i> Organigrama</button>
-                        </div>
-
-                        <!-- SUB-VISTA: SOLICITUDES -->
-                        <div id="almSub-solicitudes" class="space-y-5">
-                            <div class="bg-amber-50/60 border border-amber-200 rounded-xl p-4">
-                                <h3 class="text-sm font-extrabold text-amber-800 mb-3"><i class="fa-solid fa-plus mr-1"></i> Solicitar material</h3>
-                                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                                    <div class="md:col-span-2">
-                                        <label class="text-[10px] text-gray-500 font-bold uppercase">¿Qué necesitas?</label>
-                                        <input type="text" id="alm_sol_nombre" list="alm_sol_datalist" oninput="almSugerirArticulo()" placeholder="Ej. Embudo, aceite 2T..." autocomplete="off" class="w-full mt-1 px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm">
-                                        <datalist id="alm_sol_datalist"></datalist>
-                                        <div id="alm_sol_hint" class="text-xs mt-2"></div>
-                                    </div>
-                                    <div>
-                                        <label class="text-[10px] text-gray-500 font-bold uppercase">Cantidad</label>
-                                        <input type="number" step="0.01" min="0" id="alm_sol_cantidad" value="1" class="w-full mt-1 px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm">
-                                    </div>
-                                    <div class="md:col-span-2">
-                                        <label class="text-[10px] text-gray-500 font-bold uppercase">Motivo (opcional)</label>
-                                        <input type="text" id="alm_sol_motivo" placeholder="Para qué se va a usar" class="w-full mt-1 px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm">
-                                    </div>
-                                    <div>
-                                        <label class="text-[10px] text-gray-500 font-bold uppercase">Servicio (opcional)</label>
-                                        <select id="alm_sol_servicio" class="w-full mt-1 px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm"></select>
-                                    </div>
-                                </div>
-                                <button id="alm_sol_boton" onclick="almEnviarSolicitud()" class="mt-3 bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-lg text-xs font-bold"><i class="fa-solid fa-paper-plane mr-1"></i> Enviar solicitud</button>
-                            </div>
-
-                            <div class="flex items-center gap-2 flex-wrap">
-                                <label class="text-xs font-bold text-gray-500">Ver:</label>
-                                <select id="alm_sol_filtro" onchange="almFiltroSolicitudesManual = true; almRenderSolicitudes()" class="px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-lg text-xs">
-                                    <option value="accion">Pendientes de mi acción</option>
-                                    <option value="mias">Mis solicitudes</option>
-                                    <option value="todas">Todas las que puedo ver</option>
-                                </select>
-                            </div>
-                            <div id="alm_sol_lista" class="space-y-3"></div>
-                        </div>
-
-                        <!-- SUB-VISTA: INVENTARIO -->
-                        <div id="almSub-inventario" class="hidden space-y-4">
-                            <div class="flex flex-col md:flex-row md:items-center gap-3">
-                                <input type="text" id="alm_inv_buscar" oninput="almRenderInventario()" placeholder="Buscar en el almacén (ej. embudo)..." class="flex-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
-                                <label class="text-xs text-gray-500 flex items-center gap-1"><input type="checkbox" id="alm_inv_archivados" onchange="almRenderInventario()"> Ver archivados</label>
-                                <button id="alm_btn_nuevo_articulo" onclick="almModalArticulo()" class="hidden bg-emerald-700 hover:bg-emerald-800 text-white px-4 py-2 rounded-lg text-xs font-bold"><i class="fa-solid fa-plus mr-1"></i> Nuevo artículo</button>
-                            </div>
-                            <div class="overflow-x-auto border border-gray-200 rounded-xl">
-                                <table class="min-w-full">
-                                    <thead id="alm_inv_head" class="bg-[#187547] text-white"></thead>
-                                    <tbody id="alm_inv_cuerpo" class="bg-white divide-y divide-gray-200"></tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        <!-- SUB-VISTA: PRÉSTAMOS -->
-                        <div id="almSub-prestamos" class="hidden space-y-4">
-                            <div class="flex items-center gap-2">
-                                <label class="text-xs font-bold text-gray-500">Ver:</label>
-                                <select id="alm_pre_filtro" onchange="almRenderPrestamos()" class="px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-lg text-xs">
-                                    <option value="abiertos">Pendientes de regreso</option>
-                                    <option value="todos">Todos (historial)</option>
-                                </select>
-                            </div>
-                            <div class="overflow-x-auto border border-gray-200 rounded-xl">
-                                <table class="min-w-full">
-                                    <thead class="bg-[#187547] text-white"><tr>
-                                        <th class="th-excel">Artículo</th><th class="th-excel">Lo tiene</th><th class="th-excel text-right">Cantidad</th><th class="th-excel text-right">Pendiente</th>
-                                        <th class="th-excel">Entregó</th><th class="th-excel">Fecha</th><th class="th-excel">Servicio</th><th class="th-excel">Estado</th><th class="th-excel text-center">Acciones</th>
-                                    </tr></thead>
-                                    <tbody id="alm_pre_cuerpo" class="bg-white divide-y divide-gray-200"></tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        <!-- SUB-VISTA: HISTORIAL -->
-                        <div id="almSub-historial" class="hidden space-y-4">
-                            <div class="flex items-center gap-2 flex-wrap">
-                                <label class="text-xs font-bold text-gray-500">Artículo:</label>
-                                <select id="alm_his_articulo" onchange="almCargarHistorial()" class="px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-lg text-xs max-w-full"></select>
-                                <span class="text-[10px] text-gray-400">Se muestran los últimos 500 movimientos.</span>
-                            </div>
-                            <div class="overflow-x-auto border border-gray-200 rounded-xl">
-                                <table class="min-w-full">
-                                    <thead id="alm_his_head" class="bg-[#187547] text-white"></thead>
-                                    <tbody id="alm_his_cuerpo" class="bg-white divide-y divide-gray-200"></tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        <!-- SUB-VISTA: ORGANIGRAMA (solo admin) -->
-                        <div id="almSub-organigrama" class="hidden space-y-4">
-                            <p class="text-xs text-gray-500">Elige el <strong>jefe directo</strong> de cada persona: él aprueba sus solicitudes de material (después aprueba Finanzas). Si lo dejas en "Según el rol", operadores y auxiliares dependen del jefe de operaciones y los demás del admin.</p>
-                            <div id="alm_org_lista" class="divide-y divide-gray-100 border border-gray-200 rounded-xl"></div>
-                        </div>
-                    </div>
-                </div>
-
                 <div id="vista-tabla-financieros" class="hidden bg-white p-4 md:p-8 rounded-2xl shadow-xl border border-gray-200 min-h-[450px]">
                     <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4 border-b border-gray-100 pb-4 mb-6">
                         <div class="flex items-center gap-3"><div class="bg-rose-100 p-3 rounded-xl text-rose-700 text-xl"><i class="fa-solid fa-wallet"></i></div><div><h2 class="text-lg md:text-xl font-bold text-gray-800">Módulo Financiero</h2><p class="text-[10px] md:text-xs text-gray-400 mt-0.5">Auditoría completa de entradas y salidas</p></div></div>
@@ -1037,20 +913,6 @@
                 </div>
             </div>
 
-            <!-- MODAL GENÉRICO DEL ALMACÉN (entradas, bajas, artículos, regresos...) -->
-            <div id="modal-alm" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 p-4">
-                <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md border border-gray-200 overflow-hidden">
-                    <div class="bg-[#064e3b] px-5 py-3 flex justify-between items-center text-white">
-                        <h3 id="modal-alm-titulo" class="font-bold text-sm tracking-wide"></h3>
-                        <button onclick="almCerrarModal()" class="text-gray-300 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
-                    </div>
-                    <div id="modal-alm-cuerpo" class="p-5 space-y-3 max-h-[70vh] overflow-y-auto"></div>
-                    <div class="px-5 pb-5">
-                        <button id="modal-alm-boton" onclick="almConfirmarModal()" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-2.5 rounded-lg shadow-md text-sm">Guardar</button>
-                    </div>
-                </div>
-            </div>
-
             <div id="modal-contactos" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 p-4">
                 <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md border border-gray-200 overflow-hidden">
                     <div class="bg-[#064e3b] px-4 md:px-6 py-4 flex justify-between items-center text-white shadow-md">
@@ -1262,10 +1124,6 @@
                             <div id="det_utilidad" class="text-2xl md:text-3xl font-extrabold tracking-tight">$0.00</div>
                         </div>
                         
-                        <div id="det_materiales_wrap" class="hidden bg-white p-4 rounded-xl border border-gray-200 shadow-sm mb-4">
-                            <h4 class="text-xs font-extrabold text-amber-700 uppercase mb-2"><i class="fa-solid fa-boxes-stacked mr-1"></i> Material de almacén usado</h4>
-                            <div id="det_materiales_lista" class="text-xs text-gray-700"></div>
-                        </div>
                         <div class="flex flex-col md:flex-row justify-between items-end gap-3 mt-4">
                             <div class="bg-white p-3 rounded-xl border border-gray-200 flex-1 w-full">
                                 <p class="text-[10px] text-gray-400 font-bold uppercase mb-1">Notas / Observaciones</p>
@@ -2029,7 +1887,6 @@
             await cargarBitacoras();
             if (navigator.onLine) flushColaChecklistOffline(); else actualizarBannerOfflineChecklist();
             cambiarVista('inicio'); 
-            await cargarPendientesAlmacen();
             revisarSeguimientos(); 
         }
 
@@ -2121,7 +1978,7 @@
                 alert('🔒 Tu usuario no tiene permiso para entrar a esta sección.');
                 return;
             }
-            ['inicio', 'financieros', 'operaciones', 'ventas-crm', 'cotizaciones', 'almacen'].forEach(sec => {
+            ['inicio', 'financieros', 'operaciones', 'ventas-crm', 'cotizaciones'].forEach(sec => {
                 const tabla = document.getElementById('vista-tabla-' + sec);
                 if(tabla) { tabla.classList.add('hidden'); tabla.classList.remove('block'); }
             });
@@ -2140,7 +1997,6 @@
                 const targetTabla = document.getElementById('vista-tabla-' + vista); 
                 if(targetTabla) { targetTabla.classList.remove('hidden'); targetTabla.classList.add('block'); } 
             }
-            if (vista === 'almacen') cargarAlmacen();
         }
 
         // --- SUB-TABS DENTRO DE OPERACIONES ---
@@ -2441,8 +2297,7 @@
 
             const estado = document.getElementById('pdfrep_estado');
             if (liberado) {
-                const fechaLib = parseFechaServidor(reporte.fecha_liberacion);
-                const fecha = fechaLib ? fechaLib.toLocaleString('es-MX', { dateStyle: 'long', timeStyle: 'short' }) : '';
+                const fecha = reporte.fecha_liberacion ? new Date(reporte.fecha_liberacion + (String(reporte.fecha_liberacion).endsWith('Z') ? '' : 'Z')).toLocaleString('es-MX', { dateStyle: 'long', timeStyle: 'short' }) : '';
                 estado.innerText = `LIBERADO por ${reporte.liberado_por_nombre || ''}${fecha ? ' — ' + fecha : ''}`;
                 estado.style.color = '#065f46'; estado.style.background = '#ecfdf5'; estado.style.borderColor = '#6ee7b7';
             } else {
@@ -2903,596 +2758,6 @@
             }, 200);
         }
 
-        // =====================================================================
-        // --- ALMACÉN: inventario, solicitudes con aprobación, préstamos e historial ---
-        // =====================================================================
-        const ALM_FINANZAS = ['admin', 'financiero'];            // capturan artículos, entradas y precios
-        const ALM_ENTREGA = ['admin', 'jefe_operaciones'];       // entregan y reciben el material
-        const ALM_HISTORIAL = ['admin', 'financiero', 'jefe_operaciones'];
-
-        let almYo = null, almArticulos = [], almSolicitudes = [], almPrestamos = [], almMovimientos = [], almOrganigrama = [];
-        let almPendientes = { por_aprobar: [], por_entregar: [], por_comprar: [], respuestas: [] };
-        let almSubActual = 'solicitudes';
-        let almFiltroSolicitudesManual = false;
-        let almSugerencias = [];
-        let almModalOk = null;
-
-        // Las fechas que manda Supabase pueden traer "+00:00" o "Z"; si no traen zona se asume UTC
-        function parseFechaServidor(s) {
-            if (!s) return null;
-            const t = String(s);
-            const d = /([zZ]|[+-]\d\d:?\d\d)$/.test(t) ? new Date(t) : new Date(t + 'Z');
-            return isNaN(d.getTime()) ? null : d;
-        }
-        function almFmtFecha(s) {
-            const d = parseFechaServidor(s);
-            return d ? d.toLocaleString('es-MX', { dateStyle: 'short', timeStyle: 'short' }) : '—';
-        }
-        function almEsc(t) {
-            return String(t == null ? '' : t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-        }
-        function almDinero(n) { return '$' + (Number(n) || 0).toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
-        function almCant(n) { return (Number(n) || 0).toLocaleString('es-MX', { maximumFractionDigits: 2 }); }
-
-        async function almFetch(url, opciones) {
-            const res = await fetchAPI(url, opciones || {});
-            let data = null;
-            try { data = await res.json(); } catch (e) { data = null; }
-            if (!res.ok) throw new Error(textoDeError(data && data.detail) || 'Error al comunicarse con el servidor');
-            return data;
-        }
-        function almPost(url, cuerpo) {
-            return almFetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(cuerpo || {}) });
-        }
-
-        // ---------- Carga y pintado general ----------
-        async function cargarAlmacen() {
-            const caja = document.getElementById('alm_error');
-            try {
-                if (!almYo) almYo = await almFetch(`${API_URL}/almacen/yo`);
-                const tareas = [almFetch(`${API_URL}/almacen/articulos`), almFetch(`${API_URL}/almacen/solicitudes`)];
-                if (ALM_HISTORIAL.includes(rolUsuario)) tareas.push(almFetch(`${API_URL}/almacen/prestamos`));
-                const r = await Promise.all(tareas);
-                almArticulos = r[0] || []; almSolicitudes = r[1] || []; almPrestamos = r[2] || [];
-                caja.classList.add('hidden');
-            } catch (e) {
-                console.error(e);
-                caja.textContent = 'No se pudo cargar el Almacén: ' + e.message + ' (si es la primera vez, revisa que la migración 09 ya se corrió en Supabase).';
-                caja.classList.remove('hidden');
-            }
-            almConfigurarPorRol();
-            almRenderTodo();
-        }
-
-        function almConfigurarPorRol() {
-            const fin = ALM_FINANZAS.includes(rolUsuario), hist = ALM_HISTORIAL.includes(rolUsuario);
-            document.getElementById('almTab_prestamos').classList.toggle('hidden', !hist);
-            document.getElementById('almTab_historial').classList.toggle('hidden', !hist);
-            document.getElementById('almTab_organigrama').classList.toggle('hidden', rolUsuario !== 'admin');
-            document.getElementById('alm_card_valor').classList.toggle('hidden', !fin);
-            document.getElementById('alm_btn_nuevo_articulo').classList.toggle('hidden', !fin);
-        }
-
-        function almRenderTodo() {
-            almRenderValor();
-            almPoblarFormularioSolicitud();
-            almRenderSolicitudes();
-            almRenderInventario();
-            if (ALM_HISTORIAL.includes(rolUsuario)) almRenderPrestamos();
-        }
-
-        function cambiarSubTabAlmacen(sub) {
-            almSubActual = sub;
-            ['solicitudes', 'inventario', 'prestamos', 'historial', 'organigrama'].forEach(s => {
-                document.getElementById('almSub-' + s).classList.toggle('hidden', s !== sub);
-                document.getElementById('almTab_' + s).classList.toggle('tab-crm-activo', s === sub);
-            });
-            if (sub === 'historial') { almPoblarFiltroHistorial(); almCargarHistorial(); }
-            if (sub === 'organigrama') almCargarOrganigrama();
-        }
-
-        function almRenderValor() {
-            if (!ALM_FINANZAS.includes(rolUsuario)) return;
-            let total = 0, sinPrecio = 0;
-            almArticulos.forEach(a => {
-                if (a.valor != null) total += Number(a.valor) || 0;
-                else if ((Number(a.cantidad_total) || 0) > 0) sinPrecio++;
-            });
-            document.getElementById('alm_valor_total').textContent = almDinero(total);
-            document.getElementById('alm_valor_nota').textContent = sinPrecio ? `${sinPrecio} artículo(s) sin precio no suman al valor` : 'Existencias × precio (lo prestado sigue contando)';
-        }
-
-        // ---------- Solicitudes ----------
-        function almPoblarFormularioSolicitud() {
-            const dl = document.getElementById('alm_sol_datalist');
-            dl.innerHTML = almArticulos.filter(a => a.activo !== false).map(a => `<option value="${almEsc(a.nombre)}"></option>`).join('');
-            const sel = document.getElementById('alm_sol_servicio');
-            const previo = sel.value;
-            const servicios = memoriaServicios.filter(s => !s.cuenta_legacy && !s.liberado)
-                .sort((a, b) => (b.fecha_aplicacion || '').localeCompare(a.fecha_aplicacion || ''));
-            sel.innerHTML = '<option value="">Sin servicio</option>' + servicios.map(s => `<option value="${s.id}">${almEsc(etiquetaServicio(s))}</option>`).join('');
-            if (previo && servicios.some(s => String(s.id) === String(previo))) sel.value = previo;
-        }
-
-        function almBuscarExacto(texto) {
-            const t = (texto || '').trim().toLowerCase();
-            return t ? almArticulos.find(a => a.activo !== false && (a.nombre || '').trim().toLowerCase() === t) : null;
-        }
-
-        function almSugerirArticulo() {
-            const hint = document.getElementById('alm_sol_hint');
-            const texto = document.getElementById('alm_sol_nombre').value.trim();
-            almSugerencias = [];
-            if (!texto) { hint.innerHTML = ''; return; }
-            const exacto = almBuscarExacto(texto);
-            if (exacto) {
-                const u = almEsc(exacto.unidad);
-                const extra = exacto.tipo === 'retornable' ? ' Se presta y debe regresar.' : '';
-                hint.innerHTML = exacto.disponible > 0
-                    ? `<span class="text-emerald-700 font-bold">✅ Hay ${almCant(exacto.disponible)} ${u} disponible(s) en el almacén.</span><span class="text-gray-500">${extra}</span>`
-                    : `<span class="text-amber-700 font-bold">⚠️ Existe en el almacén pero no hay disponibles${exacto.en_prestamo > 0 ? ` (${almCant(exacto.en_prestamo)} en préstamo)` : ''}.</span> Se puede solicitar y Finanzas decidirá si se compra.`;
-                return;
-            }
-            almSugerencias = almArticulos.filter(a => a.activo !== false && (a.nombre || '').toLowerCase().includes(texto.toLowerCase())).slice(0, 5);
-            if (almSugerencias.length) {
-                hint.innerHTML = `<span class="text-gray-500">Quizá buscas:</span> ` + almSugerencias.map((a, i) =>
-                    `<button type="button" onclick="almElegirSugerencia(${i})" class="mr-1 mb-1 px-2 py-0.5 rounded-full border border-amber-300 bg-white text-[11px] font-bold text-amber-800 hover:bg-amber-100">${almEsc(a.nombre)} (${almCant(a.disponible)})</button>`).join('');
-            } else {
-                hint.innerHTML = `<span class="text-amber-700 font-bold">⚠️ No está en el almacén.</span> <span class="text-gray-500">Se enviará como material nuevo y Finanzas decidirá si se compra.</span>`;
-            }
-        }
-        function almElegirSugerencia(i) {
-            const a = almSugerencias[i]; if (!a) return;
-            document.getElementById('alm_sol_nombre').value = a.nombre;
-            almSugerirArticulo();
-        }
-
-        async function almEnviarSolicitud() {
-            const nombre = document.getElementById('alm_sol_nombre').value.trim();
-            const cantidad = parseFloat(document.getElementById('alm_sol_cantidad').value);
-            if (!nombre) { alert('Escribe qué material necesitas.'); return; }
-            if (!(cantidad > 0)) { alert('La cantidad debe ser mayor a cero.'); return; }
-            const exacto = almBuscarExacto(nombre);
-            const btn = document.getElementById('alm_sol_boton');
-            btn.disabled = true;
-            try {
-                await almPost(`${API_URL}/almacen/solicitudes`, {
-                    articulo_id: exacto ? exacto.id : null,
-                    nombre_solicitado: exacto ? '' : nombre,
-                    cantidad: cantidad,
-                    motivo: document.getElementById('alm_sol_motivo').value.trim(),
-                    servicio_id: document.getElementById('alm_sol_servicio').value || null
-                });
-                document.getElementById('alm_sol_nombre').value = '';
-                document.getElementById('alm_sol_cantidad').value = 1;
-                document.getElementById('alm_sol_motivo').value = '';
-                document.getElementById('alm_sol_servicio').value = '';
-                document.getElementById('alm_sol_hint').innerHTML = '';
-                almFiltroSolicitudesManual = true;
-                document.getElementById('alm_sol_filtro').value = 'mias';
-                await cargarAlmacen();
-                cargarPendientesAlmacen();
-                alert('✅ Solicitud enviada. Primero la revisa tu jefe directo y después Finanzas.');
-            } catch (e) { alert('No se pudo enviar: ' + e.message); }
-            btn.disabled = false;
-        }
-
-        const ALM_ESTADOS = {
-            pendiente_jefe: ['Esperando al jefe directo', 'bg-yellow-100 text-yellow-800 border-yellow-300', 'border-l-yellow-400'],
-            pendiente_final: ['Esperando a Finanzas', 'bg-orange-100 text-orange-800 border-orange-300', 'border-l-orange-400'],
-            aprobada: ['Aprobada · por entregar', 'bg-blue-100 text-blue-800 border-blue-300', 'border-l-blue-500'],
-            entregada: ['Entregada', 'bg-emerald-100 text-emerald-800 border-emerald-300', 'border-l-emerald-500'],
-            rechazada: ['Rechazada', 'bg-rose-100 text-rose-800 border-rose-300', 'border-l-rose-500'],
-            cancelada: ['Cancelada', 'bg-gray-100 text-gray-600 border-gray-300', 'border-l-gray-300']
-        };
-
-        function almTarjetaSolicitud(s) {
-            const est = ALM_ESTADOS[s.estado] || [s.estado, 'bg-gray-100 text-gray-600 border-gray-300', 'border-l-gray-300'];
-            const nombre = almEsc(s.articulo_nombre || '(sin nombre)');
-            const unidad = almEsc(s.articulo_unidad || '');
-            const servicio = s.servicio_id ? memoriaServicios.find(x => String(x.id) === String(s.servicio_id)) : null;
-            const fin = ALM_FINANZAS.includes(rolUsuario);
-            const abierta = ['pendiente_jefe', 'pendiente_final', 'aprobada'].includes(s.estado);
-
-            let lineas = [];
-            lineas.push(`Pidió: <strong>${almEsc(s.solicitante_nombre || s.solicitante_email)}</strong> · ${almFmtFecha(s.creado_en)}`);
-            if (s.motivo) lineas.push(`Motivo: ${almEsc(s.motivo)}`);
-            if (servicio) lineas.push(`Servicio: ${almEsc(etiquetaServicio(servicio))}`);
-            else if (s.servicio_id) lineas.push('Servicio: (ya liberado o no disponible)');
-            if (s.articulo_id) {
-                if (abierta) lineas.push(s.sin_existencia
-                    ? `<span class="text-amber-700 font-bold">⚠️ Disponible ahora: ${almCant(s.disponible)} ${unidad}. No alcanza${fin ? ': registra la compra en Inventario → Entrada' : ' (Finanzas debe comprar)'}.</span>`
-                    : `Disponible ahora: ${almCant(s.disponible)} ${unidad}`);
-                if (s.articulo_tipo === 'retornable') lineas.push('Tipo: herramienta (se presta y debe regresar)');
-            } else {
-                lineas.push('<span class="text-amber-700 font-bold">Material que no está en el catálogo del almacén.</span>');
-            }
-            let ruta = [];
-            if (s.aprobado_jefe_por) ruta.push(`✔ Jefe: ${almEsc(s.aprobado_jefe_por)}`);
-            if (s.aprobado_final_por) ruta.push(`✔ Finanzas: ${almEsc(s.aprobado_final_por)}`);
-            if (s.entregado_por) ruta.push(`📦 Entregó: ${almEsc(s.entregado_por)} (${almFmtFecha(s.entregado_en)})`);
-            if (s.rechazado_por) ruta.push(`✖ Rechazó: ${almEsc(s.rechazado_por)}${s.motivo_rechazo ? ' — ' + almEsc(s.motivo_rechazo) : ''}`);
-
-            let botones = [];
-            const btn = (txt, cls, fn) => `<button onclick="${fn}" class="${cls} text-white text-[11px] font-bold px-3 py-1.5 rounded-lg shadow-sm">${txt}</button>`;
-            if (s.puede_aprobar_jefe) botones.push(btn('<i class="fa-solid fa-check mr-1"></i>Aprobar', 'bg-emerald-600 hover:bg-emerald-700', `almAccionSolicitud('${s.id}','aprobar-jefe')`));
-            if (s.puede_aprobar_final) {
-                if (s.articulo_id) botones.push(btn('<i class="fa-solid fa-check-double mr-1"></i>Aprobar (final)', 'bg-emerald-600 hover:bg-emerald-700', `almAccionSolicitud('${s.id}','aprobar-final')`));
-                else botones.push(btn('<i class="fa-solid fa-link mr-1"></i>Vincular y aprobar', 'bg-blue-600 hover:bg-blue-700', `almModalVincular('${s.id}')`));
-            } else if (s.puede_vincular) {
-                botones.push(btn('<i class="fa-solid fa-link mr-1"></i>Vincular artículo', 'bg-blue-600 hover:bg-blue-700', `almModalVincular('${s.id}')`));
-            }
-            if (s.puede_aprobar_jefe || s.puede_aprobar_final) botones.push(btn('<i class="fa-solid fa-xmark mr-1"></i>Rechazar', 'bg-rose-600 hover:bg-rose-700', `almRechazarSolicitud('${s.id}')`));
-            if (s.puede_entregar) botones.push(btn(`<i class="fa-solid fa-box-open mr-1"></i>${s.articulo_tipo === 'retornable' ? 'Entregar en préstamo' : 'Entregar'}`, 'bg-blue-600 hover:bg-blue-700', `almEntregar('${s.id}')`));
-            if (s.puede_cancelar) botones.push(btn('Cancelar solicitud', 'bg-gray-500 hover:bg-gray-600', `almCancelarSolicitud('${s.id}')`));
-            if (s.puede_enterado) botones.push(btn('Enterado', 'bg-gray-700 hover:bg-gray-800', `almAccionSolicitud('${s.id}','enterado')`));
-
-            return `<div class="border border-gray-200 border-l-4 ${est[2]} rounded-xl p-4 bg-white shadow-sm">
-                <div class="flex justify-between items-start flex-wrap gap-2">
-                    <p class="font-bold text-gray-800 text-sm">${nombre} <span class="text-gray-500 font-normal">× ${almCant(s.cantidad)} ${unidad}</span></p>
-                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-full border ${est[1]}">${est[0]}</span>
-                </div>
-                <div class="text-xs text-gray-500 mt-1 space-y-0.5">${lineas.map(l => `<p>${l}</p>`).join('')}${ruta.length ? `<p class="text-gray-600">${ruta.join(' · ')}</p>` : ''}</div>
-                ${botones.length ? `<div class="flex flex-wrap gap-2 mt-3">${botones.join('')}</div>` : ''}
-            </div>`;
-        }
-
-        function almRenderSolicitudes() {
-            const cont = document.getElementById('alm_sol_lista');
-            if (!cont) return;
-            const miEmail = ((almYo && almYo.email) || '').toLowerCase();
-            const hayAccion = almSolicitudes.some(s => s.puede_aprobar_jefe || s.puede_aprobar_final || s.puede_entregar || s.puede_vincular || s.puede_enterado);
-            const selFiltro = document.getElementById('alm_sol_filtro');
-            if (!almFiltroSolicitudesManual) selFiltro.value = hayAccion ? 'accion' : 'mias';
-            const filtro = selFiltro.value;
-            let lista = almSolicitudes;
-            if (filtro === 'accion') lista = lista.filter(s => s.puede_aprobar_jefe || s.puede_aprobar_final || s.puede_entregar || s.puede_vincular || s.puede_enterado);
-            else if (filtro === 'mias') lista = lista.filter(s => (s.solicitante_email || '').toLowerCase() === miEmail);
-            const vacio = { accion: 'Nada pendiente de tu acción por ahora. 🎉', mias: 'Aún no has hecho solicitudes.', todas: 'No hay solicitudes.' }[filtro];
-            cont.innerHTML = lista.length ? lista.map(almTarjetaSolicitud).join('') : `<p class="text-xs text-gray-400 text-center py-6">${vacio}</p>`;
-        }
-
-        async function almAccionSolicitud(id, accion, cuerpo) {
-            try { await almPost(`${API_URL}/almacen/solicitudes/${id}/${accion}`, cuerpo); }
-            catch (e) { alert('No se pudo completar: ' + e.message); return; }
-            await cargarAlmacen();
-            cargarPendientesAlmacen();
-        }
-        async function almRechazarSolicitud(id) {
-            const motivo = prompt('¿Por qué se rechaza? (opcional, lo verá quien la pidió)');
-            if (motivo === null) return;
-            await almAccionSolicitud(id, 'rechazar', { motivo: motivo });
-        }
-        async function almCancelarSolicitud(id) {
-            if (!confirm('¿Cancelar esta solicitud?')) return;
-            await almAccionSolicitud(id, 'cancelar');
-        }
-        async function almEntregar(id) {
-            const s = almSolicitudes.find(x => String(x.id) === String(id));
-            const retorna = s && s.articulo_tipo === 'retornable';
-            const texto = retorna
-                ? `¿Entregar ${s.articulo_nombre} en préstamo a ${s.solicitante_nombre}? Quedará registrado a su nombre hasta que lo regrese.`
-                : `¿Entregar ${s ? s.articulo_nombre : 'el material'}? Se descontará del almacén.`;
-            if (!confirm(texto)) return;
-            await almAccionSolicitud(id, 'entregar');
-        }
-
-        // ---------- Modal genérico ----------
-        function almAbrirModal(titulo, cuerpoHtml, textoBoton, onOk) {
-            document.getElementById('modal-alm-titulo').textContent = titulo;
-            document.getElementById('modal-alm-cuerpo').innerHTML = cuerpoHtml;
-            document.getElementById('modal-alm-boton').textContent = textoBoton || 'Guardar';
-            almModalOk = onOk;
-            document.getElementById('modal-alm').classList.remove('hidden');
-        }
-        function almCerrarModal() { document.getElementById('modal-alm').classList.add('hidden'); almModalOk = null; }
-        async function almConfirmarModal() {
-            if (!almModalOk) return;
-            const boton = document.getElementById('modal-alm-boton');
-            boton.disabled = true;
-            try {
-                const cerrar = await almModalOk();
-                if (cerrar !== false) almCerrarModal();
-            } catch (e) { alert('No se pudo guardar: ' + e.message); }
-            boton.disabled = false;
-        }
-        function almCampo(id, etiqueta, tipo, valor, extra) {
-            return `<div><label class="text-[10px] text-gray-500 font-bold uppercase block mb-1">${etiqueta}</label><input type="${tipo}" id="${id}" value="${almEsc(valor == null ? '' : valor)}" ${extra || ''} class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm"></div>`;
-        }
-        const almNum = (id) => { const v = document.getElementById(id).value; return v === '' ? null : parseFloat(v); };
-
-        // ---------- Inventario ----------
-        function almRenderInventario() {
-            const cuerpo = document.getElementById('alm_inv_cuerpo');
-            if (!cuerpo) return;
-            const fin = ALM_FINANZAS.includes(rolUsuario), hist = ALM_HISTORIAL.includes(rolUsuario);
-            const q = (document.getElementById('alm_inv_buscar').value || '').trim().toLowerCase();
-            const verArch = document.getElementById('alm_inv_archivados').checked;
-            const lista = almArticulos.filter(a => (verArch || a.activo !== false) &&
-                (!q || (a.nombre || '').toLowerCase().includes(q) || (a.descripcion || '').toLowerCase().includes(q)));
-
-            document.getElementById('alm_inv_head').innerHTML = `<tr>
-                <th class="th-excel">Artículo</th><th class="th-excel">Tipo</th><th class="th-excel text-right">Disponible</th>
-                <th class="th-excel text-right">En préstamo</th><th class="th-excel text-right">Total</th>
-                ${fin ? '<th class="th-excel text-right">Precio</th><th class="th-excel text-right">Valor</th>' : ''}
-                ${(fin || hist) ? '<th class="th-excel text-center">Acciones</th>' : ''}</tr>`;
-
-            if (!lista.length) {
-                cuerpo.innerHTML = `<tr><td colspan="9" class="text-center text-xs text-gray-400 py-8">${almArticulos.length ? 'Sin resultados.' : 'El almacén aún está vacío.' + (fin ? ' Agrega el primer artículo con "Nuevo artículo".' : '')}</td></tr>`;
-                return;
-            }
-            cuerpo.innerHTML = lista.map(a => {
-                const disp = Number(a.disponible) || 0;
-                const tipo = a.tipo === 'retornable'
-                    ? '<span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">Se presta</span>'
-                    : '<span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200">Consumible</span>';
-                const acciones = [];
-                if (fin) {
-                    acciones.push(`<button onclick="almModalEntrada('${a.id}')" class="text-emerald-600 hover:text-emerald-800 font-bold text-[11px]" title="Registrar una compra / entrada">+ Entrada</button>`);
-                    acciones.push(`<button onclick="almModalBaja('${a.id}')" class="text-rose-500 hover:text-rose-700 font-bold text-[11px]" title="Baja manual (merma, corrección)">− Baja</button>`);
-                    acciones.push(`<button onclick="almModalArticulo('${a.id}')" class="text-amber-500 hover:text-amber-700" title="Editar"><i class="fa-solid fa-pen-to-square"></i></button>`);
-                }
-                if (hist) acciones.push(`<button onclick="almVerHistorialDe('${a.id}')" class="text-blue-500 hover:text-blue-700" title="Ver historial"><i class="fa-solid fa-clock-rotate-left"></i></button>`);
-                return `<tr class="${a.activo === false ? 'opacity-50' : ''}">
-                    <td class="td-excel whitespace-normal"><p class="font-bold text-gray-800">${almEsc(a.nombre)}${a.activo === false ? ' <span class="text-[9px] text-gray-400">(archivado)</span>' : ''}</p>${a.descripcion ? `<p class="text-[10px] text-gray-400">${almEsc(a.descripcion)}</p>` : ''}</td>
-                    <td class="td-excel">${tipo}</td>
-                    <td class="td-excel text-right font-extrabold ${disp <= 0 ? 'text-rose-600' : 'text-emerald-700'}">${almCant(disp)} ${almEsc(a.unidad)}</td>
-                    <td class="td-excel text-right">${a.en_prestamo > 0 ? almCant(a.en_prestamo) : '—'}</td>
-                    <td class="td-excel text-right">${almCant(a.cantidad_total)}</td>
-                    ${fin ? `<td class="td-excel text-right">${a.precio_unitario != null ? almDinero(a.precio_unitario) : '<span class="text-gray-300">sin precio</span>'}</td><td class="td-excel text-right font-bold">${a.valor != null ? almDinero(a.valor) : '—'}</td>` : ''}
-                    ${(fin || hist) ? `<td class="td-excel text-center space-x-2">${acciones.join('')}</td>` : ''}</tr>`;
-            }).join('');
-        }
-
-        function almModalArticulo(id) {
-            const a = id ? almArticulos.find(x => String(x.id) === String(id)) : null;
-            const editar = !!a;
-            const cuerpo = `
-                ${almCampo('alm_f_nombre', 'Nombre', 'text', a ? a.nombre : '')}
-                ${almCampo('alm_f_desc', 'Descripción (opcional)', 'text', a ? a.descripcion : '')}
-                <div class="grid grid-cols-2 gap-3">
-                    <div><label class="text-[10px] text-gray-500 font-bold uppercase block mb-1">Tipo</label>
-                        <select id="alm_f_tipo" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
-                            <option value="consumible" ${a && a.tipo === 'consumible' ? 'selected' : ''}>Consumible (sale y no regresa)</option>
-                            <option value="retornable" ${a && a.tipo === 'retornable' ? 'selected' : ''}>Se presta (debe regresar)</option>
-                        </select></div>
-                    ${almCampo('alm_f_unidad', 'Unidad', 'text', a ? a.unidad : 'pza', 'placeholder="pza, L, kg..."')}
-                </div>
-                ${editar ? '' : almCampo('alm_f_cantidad', 'Cantidad inicial en almacén', 'number', 0, 'step="0.01" min="0"')}
-                ${almCampo('alm_f_precio', editar ? 'Precio unitario (déjalo vacío para no cambiarlo)' : 'Precio unitario (opcional)', 'number', editar ? '' : '', 'step="0.01" min="0" placeholder="' + (editar && a.precio_unitario != null ? a.precio_unitario : '') + '"')}
-                ${editar ? `<label class="flex items-center gap-2 text-xs text-gray-600"><input type="checkbox" id="alm_f_quitar_precio"> Quitar el precio (volver a "sin precio")</label>
-                <label class="flex items-center gap-2 text-xs text-gray-600"><input type="checkbox" id="alm_f_activo" ${a.activo !== false ? 'checked' : ''}> Artículo activo (si lo desmarcas se archiva)</label>` : ''}`;
-            almAbrirModal(editar ? 'Editar artículo' : 'Nuevo artículo', cuerpo, editar ? 'Guardar cambios' : 'Crear artículo', async () => {
-                const nombre = document.getElementById('alm_f_nombre').value.trim();
-                if (!nombre) { alert('Escribe el nombre del artículo.'); return false; }
-                const base = { nombre, descripcion: document.getElementById('alm_f_desc').value.trim(), tipo: document.getElementById('alm_f_tipo').value, unidad: document.getElementById('alm_f_unidad').value.trim() || 'pza' };
-                if (editar) {
-                    const precio = almNum('alm_f_precio');
-                    const cambios = { ...base, quitar_precio: document.getElementById('alm_f_quitar_precio').checked, activo: document.getElementById('alm_f_activo').checked };
-                    if (precio != null) cambios.precio_unitario = precio;
-                    await almFetch(`${API_URL}/almacen/articulos/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(cambios) });
-                } else {
-                    await almPost(`${API_URL}/almacen/articulos`, { ...base, cantidad_inicial: almNum('alm_f_cantidad') || 0, precio_unitario: almNum('alm_f_precio') });
-                }
-                await cargarAlmacen();
-            });
-        }
-
-        function almModalEntrada(id) {
-            const a = almArticulos.find(x => String(x.id) === String(id)); if (!a) return;
-            almAbrirModal(`Entrada: ${a.nombre}`, `
-                <p class="text-xs text-gray-500">Registra lo que entra al almacén (compra o reposición). Hoy hay <strong>${almCant(a.cantidad_total)} ${almEsc(a.unidad)}</strong>.</p>
-                ${almCampo('alm_f_cantidad', `Cantidad que entra (${almEsc(a.unidad)})`, 'number', '', 'step="0.01" min="0"')}
-                ${almCampo('alm_f_precio', 'Precio unitario de esta compra (opcional)', 'number', '', 'step="0.01" min="0"')}
-                ${almCampo('alm_f_nota', 'Nota (opcional)', 'text', '', 'placeholder="Proveedor, factura..."')}`, 'Registrar entrada', async () => {
-                const cantidad = almNum('alm_f_cantidad');
-                if (!(cantidad > 0)) { alert('La cantidad debe ser mayor a cero.'); return false; }
-                await almPost(`${API_URL}/almacen/articulos/${id}/entrada`, { cantidad, precio_unitario: almNum('alm_f_precio'), nota: document.getElementById('alm_f_nota').value.trim() });
-                await cargarAlmacen(); cargarPendientesAlmacen();
-            });
-        }
-
-        function almModalBaja(id) {
-            const a = almArticulos.find(x => String(x.id) === String(id)); if (!a) return;
-            almAbrirModal(`Baja: ${a.nombre}`, `
-                <p class="text-xs text-gray-500">Resta existencias y baja el valor del almacén (merma, conteo corregido). Disponibles ahora: <strong>${almCant(a.disponible)} ${almEsc(a.unidad)}</strong>.</p>
-                ${almCampo('alm_f_cantidad', `Cantidad a dar de baja (${almEsc(a.unidad)})`, 'number', '', 'step="0.01" min="0"')}
-                ${almCampo('alm_f_nota', 'Motivo', 'text', '', 'placeholder="Merma, error de conteo..."')}`, 'Registrar baja', async () => {
-                const cantidad = almNum('alm_f_cantidad');
-                if (!(cantidad > 0)) { alert('La cantidad debe ser mayor a cero.'); return false; }
-                await almPost(`${API_URL}/almacen/articulos/${id}/baja`, { cantidad, nota: document.getElementById('alm_f_nota').value.trim() });
-                await cargarAlmacen();
-            });
-        }
-
-        function almModalVincular(solId) {
-            const s = almSolicitudes.find(x => String(x.id) === String(solId)); if (!s) return;
-            const opciones = almArticulos.filter(a => a.activo !== false).map(a => `<option value="${a.id}">${almEsc(a.nombre)} (${almCant(a.disponible)} ${almEsc(a.unidad)})</option>`).join('');
-            almAbrirModal('Vincular con un artículo del almacén', `
-                <p class="text-xs text-gray-500">Pidieron: <strong>${almEsc(s.articulo_nombre)}</strong> × ${almCant(s.cantidad)}. Liga la solicitud a un artículo del catálogo o crea uno nuevo.</p>
-                <select id="alm_v_articulo" onchange="document.getElementById('alm_v_nuevo').classList.toggle('hidden', this.value !== '__nuevo')" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
-                    <option value="__nuevo">➕ Crear artículo nuevo</option>${opciones}
-                </select>
-                <div id="alm_v_nuevo" class="space-y-3">
-                    ${almCampo('alm_f_nombre', 'Nombre del artículo', 'text', s.articulo_nombre || '')}
-                    <div class="grid grid-cols-2 gap-3">
-                        <div><label class="text-[10px] text-gray-500 font-bold uppercase block mb-1">Tipo</label>
-                            <select id="alm_f_tipo" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm"><option value="consumible">Consumible</option><option value="retornable">Se presta</option></select></div>
-                        ${almCampo('alm_f_unidad', 'Unidad', 'text', 'pza')}
-                    </div>
-                    <p class="text-[10px] text-gray-400">Se crea sin existencias. Cuando se compre, regístralo en Inventario → Entrada.</p>
-                </div>`, 'Vincular', async () => {
-                const eleccion = document.getElementById('alm_v_articulo').value;
-                let cuerpo;
-                if (eleccion === '__nuevo') {
-                    const nombre = document.getElementById('alm_f_nombre').value.trim();
-                    if (!nombre) { alert('Escribe el nombre del artículo nuevo.'); return false; }
-                    cuerpo = { crear: { nombre, tipo: document.getElementById('alm_f_tipo').value, unidad: document.getElementById('alm_f_unidad').value.trim() || 'pza', cantidad_inicial: 0 } };
-                } else cuerpo = { articulo_id: eleccion };
-                await almPost(`${API_URL}/almacen/solicitudes/${solId}/vincular-articulo`, cuerpo);
-                await cargarAlmacen(); cargarPendientesAlmacen();
-            });
-        }
-
-        // ---------- Préstamos ----------
-        function almRenderPrestamos() {
-            const cuerpo = document.getElementById('alm_pre_cuerpo');
-            if (!cuerpo) return;
-            const soloAbiertos = document.getElementById('alm_pre_filtro').value === 'abiertos';
-            const lista = almPrestamos.filter(p => !soloAbiertos || p.estado === 'abierto');
-            if (!lista.length) { cuerpo.innerHTML = `<tr><td colspan="9" class="text-center text-xs text-gray-400 py-8">${soloAbiertos ? 'No hay herramientas pendientes de regreso. 🎉' : 'Aún no hay préstamos.'}</td></tr>`; return; }
-            cuerpo.innerHTML = lista.map(p => {
-                const servicio = p.servicio_id ? memoriaServicios.find(x => String(x.id) === String(p.servicio_id)) : null;
-                const abierto = p.estado === 'abierto';
-                return `<tr>
-                    <td class="td-excel font-bold">${almEsc(p.articulo_nombre)}</td>
-                    <td class="td-excel">${almEsc(p.persona_nombre || p.persona_email)}</td>
-                    <td class="td-excel text-right">${almCant(p.cantidad)} ${almEsc(p.articulo_unidad)}</td>
-                    <td class="td-excel text-right font-bold ${abierto ? 'text-amber-700' : 'text-gray-400'}">${almCant(p.cantidad_pendiente)}</td>
-                    <td class="td-excel">${almEsc(p.entregado_por_nombre || '')}</td>
-                    <td class="td-excel">${almFmtFecha(p.entregado_en)}</td>
-                    <td class="td-excel whitespace-normal max-w-[180px]">${servicio ? almEsc(etiquetaServicio(servicio)) : '—'}</td>
-                    <td class="td-excel">${abierto ? '<span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-300">Prestado</span>' : '<span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-gray-100 text-gray-600 border border-gray-300">Cerrado</span>'}</td>
-                    <td class="td-excel text-center space-x-2">${p.puede_registrar ? `<button onclick="almModalRegreso('${p.id}','regreso')" class="text-emerald-600 hover:text-emerald-800 font-bold text-[11px]">Regresó</button><button onclick="almModalRegreso('${p.id}','extravio')" class="text-rose-500 hover:text-rose-700 font-bold text-[11px]">Extraviado</button>` : ''}</td></tr>`;
-            }).join('');
-        }
-
-        function almModalRegreso(prestamoId, tipo) {
-            const p = almPrestamos.find(x => String(x.id) === String(prestamoId)); if (!p) return;
-            const extravio = tipo === 'extravio';
-            almAbrirModal(extravio ? `Extraviado: ${p.articulo_nombre}` : `Regreso: ${p.articulo_nombre}`, `
-                <p class="text-xs text-gray-500">${extravio
-                    ? `Lo extraviado sale del inventario y baja el valor del almacén. Quedará registrado que lo tenía <strong>${almEsc(p.persona_nombre || p.persona_email)}</strong>.`
-                    : `Lo tiene <strong>${almEsc(p.persona_nombre || p.persona_email)}</strong>. Pendiente de regreso: <strong>${almCant(p.cantidad_pendiente)} ${almEsc(p.articulo_unidad)}</strong>.`}</p>
-                ${almCampo('alm_f_cantidad', `Cantidad (${almEsc(p.articulo_unidad)})`, 'number', p.cantidad_pendiente, 'step="0.01" min="0"')}
-                ${almCampo('alm_f_nota', 'Nota (opcional)', 'text', '', extravio ? 'placeholder="Qué pasó"' : 'placeholder="Estado en que regresó"')}`,
-                extravio ? 'Marcar como extraviado' : 'Registrar regreso', async () => {
-                const cantidad = almNum('alm_f_cantidad');
-                if (!(cantidad > 0)) { alert('La cantidad debe ser mayor a cero.'); return false; }
-                await almPost(`${API_URL}/almacen/prestamos/${prestamoId}/${tipo}`, { cantidad, nota: document.getElementById('alm_f_nota').value.trim() });
-                await cargarAlmacen();
-            });
-        }
-
-        // ---------- Historial ----------
-        const ALM_TIPOS_MOV = { entrada: 'Entrada', salida: 'Salida (consumo)', prestamo: 'Préstamo', regreso: 'Regreso', extravio: 'Extraviado', baja: 'Baja' };
-        function almPoblarFiltroHistorial() {
-            const sel = document.getElementById('alm_his_articulo');
-            const previo = sel.value;
-            sel.innerHTML = '<option value="">Todos los artículos</option>' + almArticulos.map(a => `<option value="${a.id}">${almEsc(a.nombre)}</option>`).join('');
-            if (previo) sel.value = previo;
-        }
-        function almVerHistorialDe(id) {
-            cambiarSubTabAlmacen('historial');
-            document.getElementById('alm_his_articulo').value = id;
-            almCargarHistorial();
-        }
-        async function almCargarHistorial() {
-            const cuerpo = document.getElementById('alm_his_cuerpo');
-            const fin = ALM_FINANZAS.includes(rolUsuario);
-            document.getElementById('alm_his_head').innerHTML = `<tr><th class="th-excel">Fecha</th><th class="th-excel">Movimiento</th><th class="th-excel">Artículo</th><th class="th-excel text-right">Cantidad</th><th class="th-excel">Persona</th><th class="th-excel">Registró</th>${fin ? '<th class="th-excel text-right">Precio</th>' : ''}<th class="th-excel">Nota</th></tr>`;
-            cuerpo.innerHTML = `<tr><td colspan="8" class="text-center text-xs text-gray-400 py-6">Cargando...</td></tr>`;
-            try {
-                const art = document.getElementById('alm_his_articulo').value;
-                almMovimientos = await almFetch(`${API_URL}/almacen/movimientos${art ? '?articulo_id=' + encodeURIComponent(art) : ''}`);
-            } catch (e) { cuerpo.innerHTML = `<tr><td colspan="8" class="text-center text-xs text-rose-600 py-6">${almEsc(e.message)}</td></tr>`; return; }
-            if (!almMovimientos.length) { cuerpo.innerHTML = `<tr><td colspan="8" class="text-center text-xs text-gray-400 py-6">Sin movimientos.</td></tr>`; return; }
-            cuerpo.innerHTML = almMovimientos.map(m => `<tr>
-                <td class="td-excel">${almFmtFecha(m.creado_en)}</td>
-                <td class="td-excel font-bold">${ALM_TIPOS_MOV[m.tipo] || almEsc(m.tipo)}</td>
-                <td class="td-excel">${almEsc(m.articulo_nombre)}</td>
-                <td class="td-excel text-right">${almCant(m.cantidad)} ${almEsc(m.articulo_unidad)}</td>
-                <td class="td-excel">${almEsc(m.persona_nombre || '')}</td>
-                <td class="td-excel">${almEsc(m.registrado_por_nombre || '')}</td>
-                ${fin ? `<td class="td-excel text-right">${m.precio_unitario != null ? almDinero(m.precio_unitario) : '—'}</td>` : ''}
-                <td class="td-excel whitespace-normal max-w-[220px]">${almEsc(m.nota || '')}</td></tr>`).join('');
-        }
-
-        // ---------- Organigrama (admin) ----------
-        async function almCargarOrganigrama() {
-            const cont = document.getElementById('alm_org_lista');
-            cont.innerHTML = '<p class="text-xs text-gray-400 p-4">Cargando...</p>';
-            try { almOrganigrama = await almFetch(`${API_URL}/almacen/organigrama`); }
-            catch (e) { cont.innerHTML = `<p class="text-xs text-rose-600 p-4">${almEsc(e.message)}</p>`; return; }
-            cont.innerHTML = almOrganigrama.map(u => {
-                const opciones = '<option value="">— Según el rol —</option>' + almOrganigrama.filter(o => o.email !== u.email)
-                    .map(o => `<option value="${almEsc(o.email)}" ${(o.email || '').toLowerCase() === (u.jefe_directo_email || '').toLowerCase() ? 'selected' : ''}>${almEsc(o.nombre)}</option>`).join('');
-                return `<div class="flex flex-col md:flex-row md:items-center gap-2 p-3">
-                    <div class="flex-1"><p class="text-sm font-bold text-gray-800">${almEsc(u.nombre)}</p><p class="text-[10px] text-gray-400">${almEsc(u.email)} · ${almEsc(u.rol)}</p></div>
-                    <div class="flex items-center gap-2"><span class="text-[10px] text-gray-500 font-bold uppercase">Jefe directo</span>
-                    <select data-email="${almEsc(u.email)}" onchange="almGuardarJefe(this)" class="px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-lg text-xs">${opciones}</select></div></div>`;
-            }).join('');
-        }
-        async function almGuardarJefe(sel) {
-            try {
-                await almFetch(`${API_URL}/almacen/organigrama`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: sel.dataset.email, jefe_directo_email: sel.value || null }) });
-                sel.classList.add('border-emerald-400');
-                setTimeout(() => sel.classList.remove('border-emerald-400'), 1200);
-            } catch (e) { alert('No se pudo guardar: ' + e.message); almCargarOrganigrama(); }
-        }
-
-        // ---------- Campanita ----------
-        async function cargarPendientesAlmacen() {
-            try {
-                const res = await fetchAPI(`${API_URL}/almacen/mis-pendientes`);
-                if (res.ok) {
-                    const data = await res.json();
-                    almPendientes = { por_aprobar: data.por_aprobar || [], por_entregar: data.por_entregar || [], por_comprar: data.por_comprar || [], respuestas: data.respuestas || [] };
-                }
-            } catch (e) { /* sin conexión o migración sin correr: la campanita sigue con lo demás */ }
-            revisarSeguimientos();
-        }
-        function almTotalPendientes() {
-            return almPendientes.por_aprobar.length + almPendientes.por_entregar.length + almPendientes.por_comprar.length + almPendientes.respuestas.length;
-        }
-        function almAgregarTarjetasCampanita(lista) {
-            const tarjeta = (borde, icono, titulo, detalle, botones) => {
-                const div = document.createElement('div');
-                div.className = `bg-gray-800 rounded-xl p-3 border-l-4 ${borde} shadow-sm`;
-                div.innerHTML = `<p class="font-bold text-white text-sm pr-2"><i class="fa-solid ${icono} mr-1 text-amber-400"></i> ${titulo}</p>
-                    <p class="text-[10px] text-gray-400 mb-2">${detalle}</p><div class="flex gap-2 mt-2">${botones}</div>`;
-                lista.appendChild(div);
-            };
-            const ir = (filtro) => `<button onclick="almIrASolicitudes('${filtro}')" class="flex-1 bg-amber-600 hover:bg-amber-500 text-white text-[10px] font-bold py-1.5 rounded transition-colors shadow-sm">Ver en Almacén</button>`;
-            const desc = (s) => `${almEsc(s.solicitante_nombre || '')} pide ${almCant(s.cantidad)} ${almEsc(s.unidad || '')} de ${almEsc(s.articulo_nombre || '')}`;
-            almPendientes.por_aprobar.forEach(s => tarjeta('border-l-yellow-500', 'fa-hand', 'Solicitud por aprobar', desc(s), ir('accion')));
-            almPendientes.por_entregar.forEach(s => tarjeta('border-l-blue-500', 'fa-box-open', 'Material por entregar', desc(s), ir('accion')));
-            almPendientes.por_comprar.forEach(s => tarjeta('border-l-orange-500', 'fa-cart-shopping', 'Por comprar (sin existencia)', desc(s), ir('accion')));
-            almPendientes.respuestas.forEach(s => {
-                const rech = s.estado === 'rechazada';
-                const titulo = rech ? 'Tu solicitud fue rechazada' : (s.estado === 'entregada' ? 'Tu material fue entregado' : 'Tu solicitud fue aprobada');
-                const det = `${almCant(s.cantidad)} ${almEsc(s.unidad || '')} de ${almEsc(s.articulo_nombre || '')}${rech && s.motivo_rechazo ? ' — ' + almEsc(s.motivo_rechazo) : ''}`;
-                tarjeta(rech ? 'border-l-red-500' : 'border-l-emerald-500', rech ? 'fa-circle-xmark' : 'fa-circle-check', titulo, det,
-                    `<button onclick="almAccionSolicitud('${s.id}','enterado')" class="flex-1 bg-gray-700 hover:bg-gray-600 text-white text-[10px] font-bold py-1.5 rounded border border-gray-600">Enterado</button>` + ir('mias'));
-            });
-        }
-        function almIrASolicitudes(filtro) {
-            cerrarPanelNotif();
-            cambiarVista('almacen');
-            cambiarSubTabAlmacen('solicitudes');
-            almFiltroSolicitudesManual = true;
-            document.getElementById('alm_sol_filtro').value = filtro;
-            almRenderSolicitudes();
-        }
-
-        // ---------- Material de almacén usado en un servicio (se muestra en el detalle de la venta) ----------
-        async function almCargarMaterialesServicio(servicioId) {
-            const wrap = document.getElementById('det_materiales_wrap');
-            const lista = document.getElementById('det_materiales_lista');
-            if (!wrap || !lista) return;
-            wrap.classList.add('hidden');
-            try {
-                const res = await fetchAPI(`${API_URL}/almacen/servicio/${servicioId}/materiales`);
-                if (!res.ok) return;
-                const filas = await res.json();
-                if (!filas.length || String(currentServiceIdForPDF) !== String(servicioId)) return;
-                lista.innerHTML = filas.map(f => `<div class="flex justify-between gap-2 py-1 border-b border-gray-100 last:border-0">
-                    <span>${almEsc(f.articulo_nombre)} × ${almCant(f.cantidad)} ${almEsc(f.unidad)}${f.movimiento === 'prestamo' ? ' <span class="text-[10px] text-blue-600">(préstamo)</span>' : ''}<span class="block text-[10px] text-gray-400">${almEsc(f.persona_nombre || '')} · ${almFmtFecha(f.fecha)}</span></span>
-                    <span class="font-medium text-gray-600">${f.costo != null ? almDinero(f.costo) : ''}</span></div>`).join('');
-                wrap.classList.remove('hidden');
-            } catch (e) { /* el detalle funciona igual sin esta sección */ }
-        }
-
         // --- SISTEMA DE NOTIFICACIONES TIPO PANEL ---
         function revisarSeguimientos() {
             const lista = document.getElementById('lista-notificaciones');
@@ -3558,7 +2823,7 @@
                 }
             });
 
-            const total = seguimientosPendientes.length + mantenimientosPendientes.length + almTotalPendientes();
+            const total = seguimientosPendientes.length + mantenimientosPendientes.length;
             if (total > 0) {
                 badge.textContent = total;
                 badge.classList.remove('hidden');
@@ -3622,8 +2887,6 @@
                 `;
                 lista.appendChild(tarjeta);
             });
-
-            almAgregarTarjetasCampanita(lista);
         }
         
         function toggleNotificaciones() {
@@ -5214,7 +4477,6 @@
             
             const s = memoriaServicios.find(x => String(x.id) === String(id));
             if(!s) return;
-            almCargarMaterialesServicio(id);
             const pr = memoriaPropiedades.find(p => String(p.id) === String(s.propiedad_id));
             const cl = pr ? memoriaClientes.find(c => String(c.id) === String(pr.cliente_id)) : null;
             
@@ -5410,8 +4672,7 @@
                         const modalesAbiertos = !document.getElementById('modal-ingresos').classList.contains('hidden') || 
                                                 !document.getElementById('modal-gastos').classList.contains('hidden') || 
                                                 !document.getElementById('modal-detalle').classList.contains('hidden') ||
-                                                !document.getElementById('modal-metas').classList.contains('hidden') ||
-                                                !document.getElementById('modal-alm').classList.contains('hidden');
+                                                !document.getElementById('modal-metas').classList.contains('hidden');
                         
                         if (!escribiendo && !modalesAbiertos) {
                             try {
@@ -5421,8 +4682,6 @@
                                 await cargarCotizaciones();
                                 actualizarEstadisticasYMetas();
                                 revisarSeguimientos(); 
-                                cargarPendientesAlmacen();
-                                if (!document.getElementById('vista-tabla-almacen').classList.contains('hidden')) cargarAlmacen();
                                 
                                 if(document.getElementById('buscadorClientes') && document.getElementById('buscadorClientes').value.trim() !== '') {
                                     filtrarClientes();

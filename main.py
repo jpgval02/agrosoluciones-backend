@@ -1957,3 +1957,4 @@ async def almacen_mis_pendientes(usuario: dict = Depends(obtener_usuario_actual)
         }
     except HTTPException: raise
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
+    

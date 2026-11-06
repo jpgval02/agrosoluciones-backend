@@ -645,7 +645,7 @@ async def subir_encuesta(servicio_id: str, archivo: UploadFile = File(...), usua
         supabase.storage.from_('encuestas').upload(
             nombre_archivo,
             contenido,
-            {"content-type": archivo.content_type, "upsert": "true"}
+            {"content-type": archivo.content_type, "x-upsert": "true"}
         )
 
         url_publica = supabase.storage.from_('encuestas').get_public_url(nombre_archivo)
@@ -1125,7 +1125,7 @@ async def subir_foto_reporte(servicio_id: str, archivo: UploadFile = File(...), 
         nombre_archivo = f"{servicio_id}/foto_{int(datetime.utcnow().timestamp()*1000)}.{extension}"
 
         supabase.storage.from_('reportes_servicio').upload(
-            nombre_archivo, contenido, {"content-type": archivo.content_type, "upsert": "true"}
+            nombre_archivo, contenido, {"content-type": archivo.content_type, "x-upsert": "true"}
         )
         url_publica = supabase.storage.from_('reportes_servicio').get_public_url(nombre_archivo)
 
@@ -1165,7 +1165,7 @@ async def guardar_firma_reporte(servicio_id: str, quien: str, cuerpo: FirmaBase6
         nombre_archivo = f"{servicio_id}/firma_{quien}.png"
 
         supabase.storage.from_('reportes_servicio').upload(
-            nombre_archivo, contenido, {"content-type": "image/png", "upsert": "true"}
+            nombre_archivo, contenido, {"content-type": "image/png", "x-upsert": "true"}
         )
         url_publica = supabase.storage.from_('reportes_servicio').get_public_url(nombre_archivo)
 
@@ -1957,4 +1957,3 @@ async def almacen_mis_pendientes(usuario: dict = Depends(obtener_usuario_actual)
         }
     except HTTPException: raise
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
-    

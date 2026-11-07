@@ -846,39 +846,6 @@
                         <select id="crmFiltroAnio" onchange="aplicarFiltrosCRM()" class="px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-lg text-sm"></select>
                         <span class="text-[11px] text-gray-400">Este filtro solo afecta las pestañas "Nuevos/Trabajados del mes" de las tablas de abajo — no toca las tarjetas de arriba.</span>
                     </div>
-                    <div class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
-                        <div class="tabla-header px-4 md:px-6 py-4 flex flex-col md:flex-row md:justify-between items-center text-white gap-3">
-                            <h2 class="text-xs md:text-sm font-bold uppercase tracking-wider whitespace-nowrap"><i class="fa-solid fa-list mr-2"></i> Directorio Clientes</h2>
-                            <div class="relative w-full md:w-72">
-                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><i class="fa-solid fa-search text-gray-400"></i></div>
-                                <input type="text" id="buscadorClientes" onkeyup="filtrarClientes()" placeholder="Buscar..." class="w-full pl-10 pr-4 py-1.5 bg-white text-gray-800 rounded-full text-sm outline-none shadow-inner">
-                            </div>
-                            <span id="contadorClientes" class="bg-white text-green-800 text-xs font-bold px-3 py-1 rounded-full shadow-sm whitespace-nowrap hidden md:inline-block">0 REGISTRADOS</span>
-                        </div>
-                        <div class="px-4 md:px-6 py-2 bg-gray-50 border-b border-gray-200 flex gap-2 text-xs">
-                            <button id="tabCli_todos" onclick="cambiarPestanaClientes('todos')" class="tab-crm tab-crm-activo">Todos</button>
-                            <button id="tabCli_nuevos" onclick="cambiarPestanaClientes('nuevos')" class="tab-crm">Nuevos del mes</button>
-                            <button id="tabCli_trabajados" onclick="cambiarPestanaClientes('trabajados')" class="tab-crm">Trabajados el mes</button>
-                        </div>
-                        <div class="overflow-x-auto custom-scrollbar"><table class="min-w-full divide-y divide-gray-100 text-sm"><thead class="bg-[#187547] text-white"><tr><th class="px-6 py-3 text-left text-xs font-semibold tracking-wider">CLIENTE</th><th class="px-6 py-3 text-left text-xs font-semibold tracking-wider">TELÉFONO DE CONTACTO</th><th class="px-6 py-3 text-center text-xs font-semibold tracking-wider">ACCIONES</th></tr></thead><tbody id="cuerpoTabla" class="bg-white divide-y divide-gray-100"></tbody></table></div>
-                    </div>
-                    
-                    <div class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
-                        <div class="tabla-header px-4 md:px-6 py-4 flex flex-col md:flex-row md:justify-between items-center text-white gap-3">
-                            <h2 class="text-xs md:text-sm font-bold uppercase tracking-wider whitespace-nowrap"><i class="fa-solid fa-map mr-2"></i> Inventario Parcelas</h2>
-                            <div class="relative w-full md:w-72">
-                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><i class="fa-solid fa-search text-gray-400"></i></div>
-                                <input type="text" id="buscadorPropiedades" onkeyup="filtrarPropiedades()" placeholder="Buscar por terreno o propietario..." class="w-full pl-10 pr-4 py-1.5 bg-white text-gray-800 rounded-full text-sm outline-none shadow-inner">
-                            </div>
-                        </div>
-                        <div class="px-4 md:px-6 py-2 bg-gray-50 border-b border-gray-200 flex gap-2 text-xs">
-                            <button id="tabProp_todos" onclick="cambiarPestanaPropiedades('todos')" class="tab-crm tab-crm-activo">Todas</button>
-                            <button id="tabProp_nuevas" onclick="cambiarPestanaPropiedades('nuevas')" class="tab-crm">Nuevas del mes</button>
-                            <button id="tabProp_trabajadas" onclick="cambiarPestanaPropiedades('trabajadas')" class="tab-crm">Trabajadas el mes</button>
-                        </div>
-                        <div class="overflow-x-auto custom-scrollbar"><table class="min-w-full divide-y divide-gray-100 text-sm"><thead class="bg-[#187547] text-white"><tr><th class="px-6 py-3 text-left text-xs font-semibold tracking-wider">PROPIEDAD / PREDIO</th><th class="px-6 py-3 text-center text-xs font-semibold tracking-wider">CULTIVO</th><th class="px-6 py-3 text-center text-xs font-semibold tracking-wider">SUPERFICIE</th><th class="px-6 py-3 text-center text-xs font-semibold tracking-wider">ACCIONES</th></tr></thead><tbody id="cuerpoTablaPropiedades" class="bg-white divide-y divide-gray-100"></tbody></table></div>
-                    </div>
-                    
                     <div id="bloque-bd-ventas" class="bg-white rounded-xl shadow-lg border border-gray-300 overflow-hidden">
                         <div class="tabla-header px-4 py-3 flex flex-col md:flex-row justify-between items-center text-white gap-2">
                             <h2 id="titulo-bd-ventas" class="text-xs md:text-sm font-bold uppercase tracking-wider"><i class="fa-solid fa-table border border-white/30 p-1.5 rounded bg-white/10 mr-2"></i> BD Ventas</h2>
@@ -915,6 +882,39 @@
                                 <tbody id="cuerpoTablaServicios" class="bg-white divide-y divide-gray-200"></tbody>
                             </table>
                         </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
+                        <div class="tabla-header px-4 md:px-6 py-4 flex flex-col md:flex-row md:justify-between items-center text-white gap-3">
+                            <h2 class="text-xs md:text-sm font-bold uppercase tracking-wider whitespace-nowrap"><i class="fa-solid fa-list mr-2"></i> Directorio Clientes</h2>
+                            <div class="relative w-full md:w-72">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><i class="fa-solid fa-search text-gray-400"></i></div>
+                                <input type="text" id="buscadorClientes" onkeyup="filtrarClientes()" placeholder="Buscar..." class="w-full pl-10 pr-4 py-1.5 bg-white text-gray-800 rounded-full text-sm outline-none shadow-inner">
+                            </div>
+                            <span id="contadorClientes" class="bg-white text-green-800 text-xs font-bold px-3 py-1 rounded-full shadow-sm whitespace-nowrap hidden md:inline-block">0 REGISTRADOS</span>
+                        </div>
+                        <div class="px-4 md:px-6 py-2 bg-gray-50 border-b border-gray-200 flex gap-2 text-xs">
+                            <button id="tabCli_todos" onclick="cambiarPestanaClientes('todos')" class="tab-crm tab-crm-activo">Todos</button>
+                            <button id="tabCli_nuevos" onclick="cambiarPestanaClientes('nuevos')" class="tab-crm">Nuevos del mes</button>
+                            <button id="tabCli_trabajados" onclick="cambiarPestanaClientes('trabajados')" class="tab-crm">Trabajados el mes</button>
+                        </div>
+                        <div class="overflow-x-auto custom-scrollbar"><table class="min-w-full divide-y divide-gray-100 text-sm"><thead class="bg-[#187547] text-white"><tr><th class="px-6 py-3 text-left text-xs font-semibold tracking-wider">CLIENTE</th><th class="px-6 py-3 text-left text-xs font-semibold tracking-wider">TELÉFONO DE CONTACTO</th><th class="px-6 py-3 text-center text-xs font-semibold tracking-wider">ACCIONES</th></tr></thead><tbody id="cuerpoTabla" class="bg-white divide-y divide-gray-100"></tbody></table></div>
+                    </div>
+                    
+                    <div class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
+                        <div class="tabla-header px-4 md:px-6 py-4 flex flex-col md:flex-row md:justify-between items-center text-white gap-3">
+                            <h2 class="text-xs md:text-sm font-bold uppercase tracking-wider whitespace-nowrap"><i class="fa-solid fa-map mr-2"></i> Inventario Parcelas</h2>
+                            <div class="relative w-full md:w-72">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><i class="fa-solid fa-search text-gray-400"></i></div>
+                                <input type="text" id="buscadorPropiedades" onkeyup="filtrarPropiedades()" placeholder="Buscar por terreno o propietario..." class="w-full pl-10 pr-4 py-1.5 bg-white text-gray-800 rounded-full text-sm outline-none shadow-inner">
+                            </div>
+                        </div>
+                        <div class="px-4 md:px-6 py-2 bg-gray-50 border-b border-gray-200 flex gap-2 text-xs">
+                            <button id="tabProp_todos" onclick="cambiarPestanaPropiedades('todos')" class="tab-crm tab-crm-activo">Todas</button>
+                            <button id="tabProp_nuevas" onclick="cambiarPestanaPropiedades('nuevas')" class="tab-crm">Nuevas del mes</button>
+                            <button id="tabProp_trabajadas" onclick="cambiarPestanaPropiedades('trabajadas')" class="tab-crm">Trabajadas el mes</button>
+                        </div>
+                        <div class="overflow-x-auto custom-scrollbar"><table class="min-w-full divide-y divide-gray-100 text-sm"><thead class="bg-[#187547] text-white"><tr><th class="px-6 py-3 text-left text-xs font-semibold tracking-wider">PROPIEDAD / PREDIO</th><th class="px-6 py-3 text-center text-xs font-semibold tracking-wider">CULTIVO</th><th class="px-6 py-3 text-center text-xs font-semibold tracking-wider">SUPERFICIE</th><th class="px-6 py-3 text-center text-xs font-semibold tracking-wider">ACCIONES</th></tr></thead><tbody id="cuerpoTablaPropiedades" class="bg-white divide-y divide-gray-100"></tbody></table></div>
                     </div>
                 </div>
             </div>
@@ -2697,7 +2697,12 @@
         }
 
         // --- OPERACIONES: INVENTARIO / CHECKLIST ---
-        const ITEMS_CHECKLIST = ['Dron', 'Generador', 'Vehículo', 'Lentes de protección', 'Guantes', 'Cubrebocas'];
+        const ITEMS_CHECKLIST = ['Dron y Generador', 'Radios', 'Bolsas de insumos (2)', 'Baterías del dron (3)', 'Machete'];
+        // Un checklist ya guardado conserva los puntos con los que se llenó (aunque la lista cambie después);
+        // uno nuevo usa la lista actual.
+        function itemsDeChecklist(guardados) {
+            return (guardados && guardados.length) ? guardados.map(x => x.item) : ITEMS_CHECKLIST;
+        }
         const CLAVE_COLA_CHECKLIST_OFFLINE = 'asoa_checklist_cola_offline';
         let checklistServicioActual = null;
         let checklistActual = null;
@@ -2751,7 +2756,7 @@
             const bloqueado = checklistActual && checklistActual.validado;
             const guardados = checklistActual ? checklistActual[`items_${tipo}`] : null;
             const puedeMarcar = ['admin', 'operador', 'jefe_operaciones'].includes(rolUsuario) && !bloqueado;
-            cont.innerHTML = ITEMS_CHECKLIST.map(item => {
+            cont.innerHTML = itemsDeChecklist(guardados).map(item => {
                 const g = guardados ? guardados.find(x => x.item === item) : null;
                 const checked = g ? g.revisado : false;
                 return `<label class="flex items-center gap-2 text-sm text-gray-700 ${puedeMarcar ? '' : 'opacity-70'}">
@@ -2865,7 +2870,8 @@
             document.getElementById('pdfchk_validado_por').innerText = checklistActual.validado ? `${checklistActual.validado_por_nombre} — ${checklistActual.fecha_validacion || ''}` : 'Pendiente de validar';
 
             const cuerpo = document.getElementById('pdfchk_cuerpo');
-            cuerpo.innerHTML = ITEMS_CHECKLIST.map(item => {
+            const listaPdf = [...new Set([...itemsDeChecklist(checklistActual.items_salida), ...itemsDeChecklist(checklistActual.items_regreso)])];
+            cuerpo.innerHTML = listaPdf.map(item => {
                 const gs = (checklistActual.items_salida || []).find(x => x.item === item);
                 const gr = (checklistActual.items_regreso || []).find(x => x.item === item);
                 return `<tr>

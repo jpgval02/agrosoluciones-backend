@@ -4544,9 +4544,22 @@
             btn.disabled = false;
         });
 
+        // Orden del Directorio: por número de cliente, del primero al más nuevo.
+        // Acepta "31" o "C-031" (toma el número). Los que no tienen número van al final.
+        function numeroDeCliente(c) {
+            const m = String((c && c.no_cliente) || '').match(/\d+/);
+            return m ? parseInt(m[0], 10) : Infinity;
+        }
+        function compararClientesPorNumero(x, y) {
+            const nx = numeroDeCliente(x), ny = numeroDeCliente(y);
+            if (nx !== ny) return nx < ny ? -1 : 1;
+            return `${x.nombre || ''} ${x.apellidos || ''}`.localeCompare(`${y.nombre || ''} ${y.apellidos || ''}`, 'es');
+        }
+
         function renderizarTablaClientes(lista) { 
             const cuerpo = document.getElementById('cuerpoTabla'); 
             if(!cuerpo) return;
+            lista = [...lista].sort(compararClientesPorNumero);
             cuerpo.innerHTML = ''; 
             document.getElementById('contadorClientes').textContent = `${lista.length} REGISTRADOS`;
             lista.forEach(c => {

@@ -2697,6 +2697,9 @@
         }
 
         // --- OPERACIONES: INVENTARIO / CHECKLIST ---
+        // Número de cliente para mostrarlo junto al nombre: "[31] Oscar Aguilar Montero"
+        function folioClienteHTML(cl) { return (cl && cl.no_cliente) ? `<span class="text-emerald-700 font-extrabold mr-1">[${cl.no_cliente}]</span>` : ''; }
+        function folioClienteTexto(cl) { return (cl && cl.no_cliente) ? `[${cl.no_cliente}] ` : ''; }
         const ITEMS_CHECKLIST = ['Dron y Generador', 'Radios', 'Bolsas de insumos (2)', 'Baterías del dron (3)', 'Machete'];
         // Un checklist ya guardado conserva los puntos con los que se llenó (aunque la lista cambie después);
         // uno nuevo usa la lista actual.
@@ -3812,7 +3815,7 @@
                                 <td class="px-6 py-4 font-bold text-amber-700">COT-${numCot}</td>
                                 <td class="px-6 py-4">${c.fecha}</td>
                                 <td class="px-6 py-4">
-                                    <p class="font-bold text-gray-800">${nomCliente}</p>
+                                    <p class="font-bold text-gray-800">${folioClienteHTML(cl)}${nomCliente}</p>
                                     <p class="text-[10px] text-gray-500">${telCliente}</p>
                                 </td>
                                 <td class="px-6 py-4 text-gray-600">${c.cultivo}</td>
@@ -3902,7 +3905,7 @@
                 return `<div class="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
                     <div class="flex justify-between items-start gap-3">
                         <div>
-                            <p class="font-bold text-gray-800">COT-${numCot} — ${nomCliente}</p>
+                            <p class="font-bold text-gray-800">COT-${numCot} — ${folioClienteHTML(cl)}${nomCliente}</p>
                             <p class="text-xs text-gray-500">${c.cultivo} · ${c.hectareas} Ha · $${(c.total||0).toLocaleString('es-MX')}</p>
                             <p class="text-[11px] text-gray-400 mt-1">Elaboró: <strong>${c.creado_por_nombre || c.creado_por_email || 'N/A'}</strong> · ${c.fecha}</p>
                         </div>
@@ -4070,7 +4073,7 @@
                 const nombre = cl ? `${cl.nombre} ${cl.apellidos}` : 'N/A';
                 const opt = document.createElement('option');
                 opt.value = c.id;
-                opt.textContent = `COT-${numero || String(c.id).substring(0,4).toUpperCase()} - ${nombre} - $${(c.total||0).toLocaleString('es-MX')}`;
+                opt.textContent = `COT-${numero || String(c.id).substring(0,4).toUpperCase()} - ${folioClienteTexto(cl)}${nombre} - $${(c.total||0).toLocaleString('es-MX')}`;
                 sel.appendChild(opt);
             });
             if (valorPrevio) sel.value = valorPrevio;
@@ -4871,8 +4874,9 @@
                 
                 memoriaClientes.forEach(c => { 
                     const optHTML = `<option value="${c.id}">${c.nombre} ${c.apellidos}</option>`;
+                    const optCotHTML = `<option value="${c.id}">${folioClienteTexto(c)}${c.nombre} ${c.apellidos}</option>`;
                     if(sel) sel.innerHTML += optHTML; 
-                    if(selCot) selCot.innerHTML += optHTML;
+                    if(selCot) selCot.innerHTML += optCotHTML;
                 }); 
                 filtrarClientes(); 
             } catch (e) { console.error(e); } 

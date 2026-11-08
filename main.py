@@ -461,7 +461,7 @@ async def verificar_2fa(req: Verifica2FA):
 
 # --- RUTAS DE CLIENTES ---
 @app.post("/clientes/")
-async def registrar_cliente(cliente: ClienteNuevo, usuario: dict = Depends(requiere_rol("admin", "operador", "auxiliar_del_auxiliar"))):
+async def registrar_cliente(cliente: ClienteNuevo, usuario: dict = Depends(requiere_rol("admin", "operador", "auxiliar_del_auxiliar", "jefe_operaciones"))):
     try:
         respuesta = supabase.table('clientes').insert(cliente.dict()).execute()
         await manager.broadcast("update") 
@@ -491,7 +491,7 @@ async def eliminar_cliente(cliente_id: str, usuario: dict = Depends(requiere_rol
 
 # --- RUTAS DE PROPIEDADES ---
 @app.post("/propiedades/")
-async def registrar_propiedad(propiedad: PropiedadNueva, usuario: dict = Depends(requiere_rol("admin", "operador", "auxiliar_del_auxiliar"))):
+async def registrar_propiedad(propiedad: PropiedadNueva, usuario: dict = Depends(requiere_rol("admin", "operador", "auxiliar_del_auxiliar", "jefe_operaciones"))):
     try:
         respuesta = supabase.table('propiedades').insert(propiedad.dict()).execute()
         await manager.broadcast("update")
@@ -701,7 +701,7 @@ def _verificar_numero_cotizacion_libre(numero: str, excluir_id=None):
             raise HTTPException(status_code=409, detail=f"Ya existe una cotización con el número {numero}.")
 
 @app.post("/cotizaciones/")
-async def registrar_cotizacion(cot: CotizacionNueva, usuario: dict = Depends(requiere_rol("admin", "operador", "auxiliar_del_auxiliar"))):
+async def registrar_cotizacion(cot: CotizacionNueva, usuario: dict = Depends(requiere_rol("admin", "operador", "auxiliar_del_auxiliar", "jefe_operaciones"))):
     try:
         datos = cot.dict()
         _verificar_numero_cotizacion_libre(_numero_de_cotizacion(datos.get("observaciones")))
@@ -857,7 +857,7 @@ async def registrar_visita(mes_anio: str, usuario: dict = Depends(obtener_usuari
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/api/dashboard/{mes_anio}")
-async def obtener_dashboard(mes_anio: str, usuario: dict = Depends(requiere_rol("admin", "financiero"))):
+async def obtener_dashboard(mes_anio: str, usuario: dict = Depends(requiere_rol("admin", "financiero", "jefe_operaciones"))):
     try:
         respuesta_metas = supabase.table('metas_mensuales').select('*').eq('mes_anio', mes_anio).execute()
         metas = respuesta_metas.data[0] if len(respuesta_metas.data) > 0 else { "meta_ventas": 0, "meta_servicios": 0, "meta_clientes": 0, "meta_prospectos": 0, "meta_prospectos_visitas": 0, "visitas_reales": 0 }
@@ -875,12 +875,37 @@ async def obtener_dashboard(mes_anio: str, usuario: dict = Depends(requiere_rol(
         respuesta_propiedades = supabase.table('propiedades').select('id', 'cliente_id').execute()
         mapa_propiedades = {p['id']: p.get('cliente_id') for p in respuesta_propiedades.data if p.get('cliente_id')}
         clientes_activos_mes = set([mapa_propiedades[s.get('propiedad_id')] for s in servicios_mes if s.get('propiedad_id') and s.get('propiedad_id') in mapa_propiedades])
+        # Jefe de Operaciones: solo ve vuelos y visitas a campo (nada de dinero, clientes ni prospectos)
+        if usuario["rol"] == "jefe_operaciones":
+            return {
+                "metas": {"meta_servicios": metas.get("meta_servicios", 0), "meta_prospectos_visitas": metas.get("meta_prospectos_visitas", 0)},
+                "reales": {"servicios": servicios_reales, "visitas": metas.get("visitas_reales", 0)}
+            }
         return {
             "metas": metas, 
             "reales": {
                 "ventas": ventas_reales, "servicios": servicios_reales, "clientes": len(clientes_activos_mes), "prospectos": len(prospectos_mes), "visitas": metas.get("visitas_reales", 0)
             }
         }
+    except Exception as e: raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/operativo/{periodo}")
+async def resumen_operativo(periodo: str, usuario: dict = Depends(obtener_usuario_actual)):
+    """Vuelos (servicios liberados) y visitas a campo de un periodo. Sin dinero, lo puede ver cualquier rol.
+    periodo = 'MM-YYYY' (un mes) o 'todos-YYYY' (todo el año)."""
+    try:
+        mes, anio = periodo.split("-")
+        if mes == "todos":
+            prefijo = f"{anio}-"
+            filas_metas = supabase.table('metas_mensuales').select('mes_anio, visitas_reales').execute().data or []
+            visitas = sum((f.get('visitas_reales') or 0) for f in filas_metas if str(f.get('mes_anio', '')).endswith(f"-{anio}"))
+        else:
+            prefijo = f"{anio}-{mes}"
+            filas_metas = supabase.table('metas_mensuales').select('visitas_reales').eq('mes_anio', periodo).execute().data or []
+            visitas = (filas_metas[0].get('visitas_reales') or 0) if filas_metas else 0
+        servicios = supabase.table('servicios_aplicacion').select('fecha_aplicacion', 'liberado', 'cuenta_legacy').execute().data or []
+        vuelos = len([s for s in servicios if (s.get('fecha_aplicacion') or '').startswith(prefijo) and (s.get('cuenta_legacy') or s.get('liberado'))])
+        return {"vuelos": vuelos, "visitas": visitas}
     except Exception as e: raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/api/metas/")
